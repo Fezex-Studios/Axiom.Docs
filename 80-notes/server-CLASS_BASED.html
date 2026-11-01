@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axiom: Warrior, Healer and Mage · Axiom Docs</title>
+<meta name="description" content="This source refactor replaces combinable skillsets with one permanent class chosen during character creation: Warrior (1), Healer (2), or Mage (3). It changes the Unity client, shared network contracts, World server,…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html" class="active" aria-current="page">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/server/CLASS_BASED.md</code></div>
+<h1 id="axiom-warrior-healer-and-mage">Axiom: Warrior, Healer and Mage<a class="anchor" href="#axiom-warrior-healer-and-mage" title="Permanent link">#</a></h1>
+<p>This source refactor replaces combinable skillsets with one permanent class chosen during character creation: <strong>Warrior (1), Healer (2), or Mage (3)</strong>. It changes the Unity client, shared network contracts, World server, Persistence server, content editor, stat calculations, ability progression, and equipment rules together.</p>
+<p>This is updated source, with database/content checks completed. The .NET and Unity builds still need to run on your machine. This workspace cannot initialize CoreCLR because <code>/proc</code> is unavailable, and has no Unity editor or live MySQL server. <strong>Run the included build and verification runner before deploying.</strong> No old compiled DLL is included as a purported new build.</p>
+<h2 id="package-contents">Package contents<a class="anchor" href="#package-contents" title="Permanent link">#</a></h2>
+<ul>
+<li><code>src/</code>: complete server source from the supplied archive, updated for classes. Build caches, old nested backup ZIPs, local secret configuration, and compiled outputs are excluded.</li>
+<li><code>Assets/</code>: an overlay of changed/new Unity assets and their existing <code>.meta</code> files. Apply this to your existing Unity project; the unchanged models, scenes, plugins and third-party assets stay in that project.</li>
+<li><code>README.md</code>: installation, migration, gameplay rules, and testing instructions.</li>
+<li><code>VALIDATION.md</code>: checks completed here and checks requiring your environment.</li>
+<li><code>CHANGED_FILES.json</code>: changed/new source paths with before/after SHA-256 values.</li>
+</ul>
+<p>The supplied source databases and original input archives were left unchanged. The server applies its own pending migrations and SQL patches to the database you configure when you run it. The verification tools use disposable copies.</p>
+<h2 id="install-and-build">Install and build<a class="anchor" href="#install-and-build" title="Permanent link">#</a></h2>
+<ol>
+<li>Stop your existing servers and close Unity. Back up your source/project, the live MySQL persistence database, and the live world SQLite database, including any active WAL/SHM files through a proper database backup. First rehearse this upgrade on copies.</li>
+<li>Merge <code>src/</code> into your existing server source directory. Keep your own <code>appsettings.Local.json</code> files, connection strings, service secrets and deployment configuration. Do not replace a live world database with the sample <code>src/Axiom.Server.World/Data/worldserver.db</code> in this package; configure the upgraded server to use your backed-up live database.</li>
+<li>Install/use the .NET <strong>10 SDK</strong>, matching the projects' existing target frameworks, and restore their NuGet packages. The shared Network and Movement assemblies still target <code>netstandard2.1</code> for Unity.</li>
+<li>Build all projects and run the class harness. From the updated server source directory, run the Windows command below, passing the <strong>existing Unity Assets directory</strong>. The script rebuilds all servers, executes the checks against a temporary world DB, and copies the freshly built shared DLLs into <code>Assets/AxiomMMOKit/Plugins</code> only after the checks succeed.</li>
+</ol>
+<div class="hl"><pre><span></span><code><span class="p">.\</span><span class="n">Tools</span><span class="p">\</span><span class="n">Build-ClassBased</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-UnityAssetsPath</span> <span class="s1">&#39;C:\YourUnityProject\Assets&#39;</span>
+</code></pre></div>
+
+<p>On Linux/macOS with the .NET SDK:</p>
+<div class="hl"><pre><span></span><code>bash<span class="w"> </span>Tools/build-class-based.sh<span class="w"> </span>/absolute/path/to/YourUnityProject/Assets
+</code></pre></div>
+
+<p>Omit the Unity path if you want to build/check first and copy <code>Axiom.Network.dll</code> and <code>Axiom.Movement.dll</code> manually from their <code>bin/Release/netstandard2.1/</code> directories to your existing <code>Assets/AxiomMMOKit/Plugins/</code> directory. Preserve the DLL <code>.meta</code> files. Keep your existing MessagePack/LiteNetLib plugin dependencies.</p>
+<ol start="5">
+<li>Merge the package's <code>Assets/</code> contents into the existing project's <code>Assets/</code>, preserving the supplied <code>.meta</code> files. Reopen Unity and let it recompile. No new scene component is required: the existing character creation panel and spellbook implementations were updated in place.</li>
+<li>Apply the persistence migration explicitly, using EF Core CLI <strong>9.x</strong>, which matches the project's EF packages. Your project's local configuration/environment must point to the intended test database for the rehearsal and the intended live database for deployment.</li>
+</ol>
+<div class="hl"><pre><span></span><code>dotnet<span class="w"> </span>ef<span class="w"> </span>database<span class="w"> </span>update<span class="w"> </span>--project<span class="w"> </span>Axiom.Server.Persistence<span class="w"> </span>--startup-project<span class="w"> </span>Axiom.Server.Persistence
+</code></pre></div>
+
+<p>If you do not have the EF CLI, install <code>dotnet-ef</code> version <code>9.0.0</code> or use a compatible 9.x installation. The persistence process now refuses to serve the old class-less schema until <code>20261010180000_ClassBasedCharacters</code> is applied.</p>
+<ol start="7">
+<li>Start the rebuilt Persistence/Auth/Auction services and then World using your existing deployment setup. World first runs EF migrations, then SQL patches, then loads its catalogs. Its new <code>20261010180000_ClassBasedContent</code> EF migration is a model snapshot marker; patch <strong>056</strong> owns the world class schema and content. Keep pending patches <strong>054</strong> and <strong>055</strong> in their original order. Patch 054 requires its matching earlier EF migration, so do not run these SQL files out of sequence by hand.</li>
+<li>Build the Unity client with the newly rebuilt shared DLL. Deploy client and services together: the shared protocol is now <strong>24</strong>, connection key <strong>Axiom/24</strong>. An old client cannot connect to the upgraded World server. Remove stale packaged server binaries from your deployment process so they cannot overwrite the rebuilt assemblies.</li>
+</ol>
+<h2 id="existing-character-migration">Existing character migration<a class="anchor" href="#existing-character-migration" title="Permanent link">#</a></h2>
+<p>The MySQL migration adds <code>characters.class_id</code>, defaulting to Warrior, and enforces IDs 1–3. It preserves the old school selections by renaming <code>character_skillsets</code> to <code>legacy_character_skillsets</code> for audit/backup purposes. New runtime code never reads or writes that legacy table.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Existing selection</th>
+<th>Migrated class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vitalism only</td>
+<td>Healer</td>
+</tr>
+<tr>
+<td>Battlerage, Defense, or both</td>
+<td>Warrior</td>
+</tr>
+<tr>
+<td>Hybrid containing melee/tank plus Vitalism</td>
+<td>Warrior</td>
+</tr>
+<tr>
+<td>No selected skillset</td>
+<td>Warrior</td>
+</tr>
+<tr>
+<td>Existing characters automatically becoming Mage</td>
+<td>None; Mage is a new character choice</td>
+</tr>
+</tbody>
+</table></div>
+<p>The first World login removes foreign, removed, over-level, and over-budget learned ranks and invalid ability hotbar entries. Skill points are derived from level and valid purchased ranks, so removed ranks/old selection costs return to the available budget. Item hotbar bindings remain. Free starter skills are added to empty hotbar slots. When an old save is over budget, valid owned skills are retained in ascending skill ID order until the budget is exhausted; excess ranks are refunded.</p>
+<p>Old owned equipment is preserved. Class-incompatible or over-level worn gear moves to free inventory slots. If the bag is full, it stays saved in its worn slot but contributes <strong>no stats</strong> and cannot satisfy a skill's weapon requirement; free bag space and log in again or unequip it to move it. Main/off-hand conflicts are also reconciled. Trade packs keep their existing separate backpack behavior.</p>
+<p>Existing characters do not receive duplicate starter kits. New characters receive their bound class kit in the same persistence transaction that creates the character. Class is immutable through gameplay; ability reset does not change it. If you want different assignments for individual old hybrid characters, make that explicit in a separately reviewed data migration while those characters are offline; do not expose a class-change packet or change IDs casually.</p>
+<p>Rollback requires the coordinated old source/binaries <strong>and both database backups</strong>. World patch 056 has no safe gameplay rollback: resetting learned skills and newly created Mage characters cannot be reversed by merely dropping a column. The new World EF migration refuses <code>Down</code> with this instruction.</p>
+<h2 id="classes-stats-and-resources">Classes, stats and resources<a class="anchor" href="#classes-stats-and-resources" title="Permanent link">#</a></h2>
+<p>Warrior combines the existing melee and tank abilities. Healer keeps healing/support and gains a free offensive Holy Bolt for solo play. Mage gains ranged damage, elemental control, a defensive ward, and its own progression/passives. Each class has distinct level growth, a starter kit, and weapon/armor proficiencies.</p>
+<p>All three currently use the project's existing <strong>mana</strong> resource. This change does not add rage, energy, block chance, dual wield damage, or a second resource system. Class armor and weapon types control eligibility; actual attack power/armor/spell/healing bonuses still come from the item's stats, rather than a hidden bonus merely for having a type.</p>
+<p>The five primary stats use <code>class base + growth × (level - 1)</code> before gear, learned passives and status modifiers. Primary order below is <strong>Strength / Agility / Vitality / Intelligence / Spirit</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class ID</th>
+<th>Class</th>
+<th>Level-one bases</th>
+<th>Gain each level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Warrior</td>
+<td>16 / 10 / 16 / 6 / 6</td>
+<td>3 / 1.5 / 3 / 0.8 / 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Healer</td>
+<td>6 / 8 / 10 / 12 / 18</td>
+<td>0.8 / 1 / 2 / 2 / 3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Mage</td>
+<td>5 / 8 / 9 / 18 / 12</td>
+<td>0.5 / 1 / 1.5 / 3.5 / 2</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>StatBase</code>/<code>StatPerLevel</code> remain as a fallback for callers without a class template; normal player sessions use class-specific growth. CombatRules continues to own the derived coefficients and can be tuned without changing class IDs.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stat(s)</th>
+<th>Player effect with the supplied rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strength</td>
+<td>+2 Attack Power per point</td>
+</tr>
+<tr>
+<td>Agility</td>
+<td>+1 Attack Power, +2 Armor, +0.05 percentage points crit per point</td>
+</tr>
+<tr>
+<td>Vitality</td>
+<td>Max Health = 60 + 4 × Vitality</td>
+</tr>
+<tr>
+<td>Intelligence</td>
+<td>Max Mana = 50 + 5 × Intelligence; Spell Power = 2 × Intelligence</td>
+</tr>
+<tr>
+<td>Spirit</td>
+<td>Healing Power = 2 × Spirit; Health Regen = 0.5 × Spirit; Mana Regen = 2 + 0.5 × Spirit</td>
+</tr>
+<tr>
+<td>Attack Power</td>
+<td>Scales physical damage effects</td>
+</tr>
+<tr>
+<td>Spell Power</td>
+<td>Scales magic damage effects, including Healer's Holy Bolt</td>
+</tr>
+<tr>
+<td>Healing Power</td>
+<td>Scales healing effects and healing-over-time coefficients; independent of Spell Power</td>
+</tr>
+<tr>
+<td>Armor</td>
+<td>Physical mitigation through the existing armor formula</td>
+</tr>
+<tr>
+<td>Crit Chance</td>
+<td>Applies to damage and healing; base 5%, clamped 0–100%</td>
+</tr>
+<tr>
+<td>Haste</td>
+<td>Shortens cast time, cooldowns and global cooldown subject to existing limits; clamped -50% to 200%</td>
+</tr>
+<tr>
+<td>Health/Mana Regen</td>
+<td>Per existing 2-second regeneration tick; health regeneration requires being out of combat</td>
+</tr>
+<tr>
+<td>Fire/Frost/Nature/Arcane/Holy/Shadow resistances</td>
+<td>Existing mitigation for each magic school; Elemental Ward adds 30 to all six</td>
+</tr>
+<tr>
+<td>DamageDonePct / DamageTakenPct</td>
+<td>Existing outgoing/incoming damage multipliers; Warrior stances and Healer Sanctuary use these</td>
+</tr>
+<tr>
+<td>HealingDonePct</td>
+<td>Healing multiplier applied after Healing Power scaling</td>
+</tr>
+<tr>
+<td>ThreatPct</td>
+<td>Existing threat multiplier; Warrior stance and Healer Mercy modify it</td>
+</tr>
+<tr>
+<td>MoveSpeedPct</td>
+<td>Existing movement multiplier; slows, roots and trade packs retain their handling</td>
+</tr>
+</tbody>
+</table></div>
+<p>All original stat IDs <strong>0–24 stay stable</strong>. Healing Power is appended at <strong>25</strong>, and Count becomes 26. The client character window and gear tooltips show it. NPC template stat construction stays separate from player class growth. Existing fixed-value item/NPC heals with coefficient zero retain fixed-value healing.</p>
+<p>Modifier order remains deterministic: primary flats/percentages first; derive combat stats; then apply derived flats/percentages. Percentage modifiers for a stat add together, and passive modifiers are multiplied by learned rank. Learning/resetting a passive recalculates immediately; changing a max-health or max-mana bonus preserves current percentage rather than refilling it. Spawn/level-up retain the existing fill behavior.</p>
+<p>These are coherent starting values, not a claim of finished PvP/raid balance. The supplied progression cap remains 30; the starter active kits and passives focus on the current early-game content, with further ranks at their existing level intervals.</p>
+<h2 id="learning-and-passive-rules">Learning and passive rules<a class="anchor" href="#learning-and-passive-rules" title="Permanent link">#</a></h2>
+<p>Class choice is free. Each class's starter abilities provide rank 1 without spending points; buying higher starter ranks costs points normally. The supplied point budget is <strong>3 at level 1, +1 per later level</strong>. Purchased ranks/passives share that budget.</p>
+<p>Each row uses <code>RequiredLevel + (rank - 1) × RankLevelStep</code>. Active damage/healing ranks keep existing <code>RankBonusPct</code> scaling. Passives use their separate modifier rows once per learned rank, not the active damage-rank multiplier. Passive skills cannot be cast or assigned to the hotbar, and cannot be learned from another class.</p>
+<p>Reset refunds purchased active/passive ranks and retains the class, free starter ranks and item hotbar bindings. It costs the existing <code>AbilityResetGoldPerLevel × level</code> in <strong>copper</strong> (default 10 copper/level), and is refused while dead, casting, or in combat. The historical field name contains “Gold”; the amount uses your existing copper-based currency system.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>ID</th>
+<th>Skill</th>
+<th>Kind</th>
+<th>Rank-one level</th>
+<th>Max ranks</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warrior</td>
+<td>1</td>
+<td>Strike</td>
+<td>Free starter</td>
+<td>1</td>
+<td>3</td>
+<td>Your basic Warrior weapon attack. Rank 1 is free.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>2</td>
+<td>Rend</td>
+<td>Active</td>
+<td>1</td>
+<td>3</td>
+<td>Wound the target and make it bleed. The bleed stacks up to 3 times.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>3</td>
+<td>Taunt</td>
+<td>Active</td>
+<td>1</td>
+<td>1</td>
+<td>Force the target to attack you for 3 seconds and put you at the top of its threat. Weakens it.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4</td>
+<td>Mend</td>
+<td>Free starter</td>
+<td>1</td>
+<td>3</td>
+<td>A basic friendly heal with a short healing-over-time effect. Rank 1 is free; scales with Healing Power.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>5</td>
+<td>Battle Shout</td>
+<td>Active</td>
+<td>2</td>
+<td>1</td>
+<td>Increase your attack power by 15% for a minute.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>10</td>
+<td>Cleave</td>
+<td>Active</td>
+<td>1</td>
+<td>3</td>
+<td>A heavy cut that leaves the target Exposed: armor down 8%, stacking 3 times.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>11</td>
+<td>Hamstring</td>
+<td>Active</td>
+<td>2</td>
+<td>1</td>
+<td>Cut the legs: movement speed down 40% for 6 seconds. Sets up Leg Sweep.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>12</td>
+<td>Crushing Blow</td>
+<td>Active</td>
+<td>3</td>
+<td>3</td>
+<td>Bring your weapon down with everything you have. Combo: 60% more damage to a Knocked Down target.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>13</td>
+<td>Leg Sweep</td>
+<td>Active</td>
+<td>4</td>
+<td>1</td>
+<td>Kick the legs out. Combo: a Hamstrung target is Knocked Down for 1.5 seconds.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>14</td>
+<td>Whirlwind</td>
+<td>Active</td>
+<td>5</td>
+<td>3</td>
+<td>Spin and hit up to 5 enemies within 5 metres.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>20</td>
+<td>Shield Bash</td>
+<td>Active</td>
+<td>2</td>
+<td>1</td>
+<td>Slam your shield into the target: interrupts whatever it's casting and silences it for 3 seconds.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>21</td>
+<td>Shield Wall</td>
+<td>Active</td>
+<td>3</td>
+<td>1</td>
+<td>Brace behind your shield: damage taken down 40% for 6 seconds.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>22</td>
+<td>Guardian Stance</td>
+<td>Active</td>
+<td>1</td>
+<td>1</td>
+<td>For 10 minutes: double threat, 25% more armor, 10% less damage dealt.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>23</td>
+<td>Challenging Roar</td>
+<td>Active</td>
+<td>5</td>
+<td>1</td>
+<td>Taunt every enemy within 8 metres.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>24</td>
+<td>Punishing Strike</td>
+<td>Active</td>
+<td>4</td>
+<td>3</td>
+<td>A solid hit that draws extra attention. Combo: 50% more damage to a Stunned target.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>25</td>
+<td>Concussive Blow</td>
+<td>Active</td>
+<td>6</td>
+<td>1</td>
+<td>Stun the target for 2 seconds.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>30</td>
+<td>Healing Light</td>
+<td>Active</td>
+<td>1</td>
+<td>3</td>
+<td>A slow, strong heal on a friendly target. Combo: 30% more healing on a target with your Renewal.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>31</td>
+<td>Renewal</td>
+<td>Active</td>
+<td>2</td>
+<td>3</td>
+<td>Heal a friendly target every 2 seconds for 12 seconds.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>32</td>
+<td>Purify</td>
+<td>Active</td>
+<td>3</td>
+<td>1</td>
+<td>Remove up to two harmful effects from a friendly target.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>33</td>
+<td>Binding Roots</td>
+<td>Active</td>
+<td>3</td>
+<td>1</td>
+<td>Roots burst from the ground and hold the target in place for 4 seconds.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>34</td>
+<td>Healing Wave</td>
+<td>Active</td>
+<td>5</td>
+<td>3</td>
+<td>Heal up to 5 allies within 12 metres, you included.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4000</td>
+<td>Holy Bolt</td>
+<td>Free starter</td>
+<td>1</td>
+<td>3</td>
+<td>A basic holy attack for solo play. Rank 1 is free; scales with Spell Power (Intelligence).</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4001</td>
+<td>Sanctuary</td>
+<td>Active</td>
+<td>4</td>
+<td>1</td>
+<td>Reduce damage taken by nearby allies by 10% for 8 seconds.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4100</td>
+<td>Arcane Bolt</td>
+<td>Free starter</td>
+<td>1</td>
+<td>3</td>
+<td>Your basic ranged magic attack. Rank 1 is free; scales with Spell Power.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4101</td>
+<td>Fireball</td>
+<td>Active</td>
+<td>2</td>
+<td>3</td>
+<td>A strong fire spell that scales with Spell Power.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4102</td>
+<td>Frostbolt</td>
+<td>Active</td>
+<td>3</td>
+<td>3</td>
+<td>Frost damage and a 35% movement slow for 6 seconds.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4103</td>
+<td>Arcane Burst</td>
+<td>Active</td>
+<td>5</td>
+<td>3</td>
+<td>Arcane damage to nearby enemies, capped by the normal area-target limit.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4104</td>
+<td>Elemental Ward</td>
+<td>Active</td>
+<td>4</td>
+<td>1</td>
+<td>Increase your magic resistances by 30 for 10 seconds.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4105</td>
+<td>Frost Nova</td>
+<td>Active</td>
+<td>6</td>
+<td>1</td>
+<td>Frost damage and a 3-second root on nearby enemies. Uses existing crowd-control diminishing returns.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>4200</td>
+<td>Might</td>
+<td>Passive</td>
+<td>2</td>
+<td>3</td>
+<td>Gain 3 Strength per learned rank.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>4201</td>
+<td>Fortitude</td>
+<td>Passive</td>
+<td>3</td>
+<td>3</td>
+<td>Gain 5% maximum health per learned rank.</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>4202</td>
+<td>Armor Training</td>
+<td>Passive</td>
+<td>5</td>
+<td>2</td>
+<td>Gain 8% armor per learned rank.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4300</td>
+<td>Devotion</td>
+<td>Passive</td>
+<td>2</td>
+<td>3</td>
+<td>Gain 8% Healing Power per learned rank.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4301</td>
+<td>Meditation</td>
+<td>Passive</td>
+<td>3</td>
+<td>3</td>
+<td>Gain 2 mana regeneration per tick per learned rank.</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>4302</td>
+<td>Mercy</td>
+<td>Passive</td>
+<td>5</td>
+<td>2</td>
+<td>Generate 5% less threat per learned rank.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4400</td>
+<td>Arcane Mastery</td>
+<td>Passive</td>
+<td>2</td>
+<td>3</td>
+<td>Gain 8% Spell Power per learned rank.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4401</td>
+<td>Expanded Mind</td>
+<td>Passive</td>
+<td>3</td>
+<td>3</td>
+<td>Gain 5% maximum mana per learned rank.</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>4402</td>
+<td>Quick Casting</td>
+<td>Passive</td>
+<td>5</td>
+<td>3</td>
+<td>Gain 2% haste per learned rank.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Shield Bash and Shield Wall specifically require an active equipped shield. Other skills do not require a particular weapon kind. The server checks ownership, rank, level, resource cost, crowd control and equipment; the client shows the catalog and previews, not authority.</p>
+<h2 id="weapons-armor-and-starter-kits">Weapons, armor and starter kits<a class="anchor" href="#weapons-armor-and-starter-kits" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Weapons</th>
+<th>Armor</th>
+<th>New-character equipment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warrior</td>
+<td>Sword, Axe, Spear, Mace, Shield</td>
+<td>Cloth, Leather, Plate</td>
+<td>6001 sword; 6002 shield; 6003 plate chest</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>Mace, Staff, Wand, Shield</td>
+<td>Cloth, Leather</td>
+<td>6010 mace; 6011 support shield; 6012 cloth robe</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>Staff, Wand</td>
+<td>Cloth</td>
+<td>6020 two-handed staff; 6021 cloth robe</td>
+</tr>
+</tbody>
+</table></div>
+<p>The general merchant (Shop 1) gains the class starter-tier gear, level-five upgrades, and a shared level-three Traveler Wand <strong>6040</strong> / two-handed Pilgrim Staff <strong>6041</strong> usable by Healer and Mage. The old ring 26 also gains +6 Healing Power. Existing swords, spear, nodachi, leather armor and buckler now declare explicit class/type metadata.</p>
+<p>Axes are a supported Warrior proficiency but the supplied content does not contain an authored axe item. Armor and weapon prefab mappings are a separate art task: this package reuses your supplied icons/animation framework and does not fabricate robe, staff, mace or plate meshes. Add those item IDs to your actual GearVisualCatalog and prefabs to display new equipment meshes. The supplied Assets snapshot does not include that catalog asset. Gameplay stats and tooltips work from the server catalog even before new item IDs are exported into <code>gamedata.bin</code>.</p>
+<p><code>AllowedClasses</code> is a <strong>bitmask</strong>, not the class ID:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Class ID</th>
+<th>Equipment mask bit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warrior</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Healer</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Mage</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Warrior + Healer</td>
+<td>—</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Healer + Mage</td>
+<td>—</td>
+<td>6</td>
+</tr>
+<tr>
+<td>All explicitly allowed</td>
+<td>—</td>
+<td>7</td>
+</tr>
+</tbody>
+</table></div>
+<p>Mask <strong>0</strong> means no additional class lock; it still enforces weapon/armor proficiency. <code>WeaponKind</code>: None 0, Sword 1, Axe 2, Spear 3, Mace 4, Staff 5, Wand 6, Shield 7. <code>ArmorKind</code>: None 0, Cloth 1, Leather 2, Plate 3. Accessories use None/None, while armor and hand slots must declare real types. An unknown type/mask is rejected at catalog startup.</p>
+<p>Two-handed gear uses Main Hand and displaces Off Hand into the bag. Equipping an off-hand item while a two-handed main-hand is equipped displaces that main-hand. Every displacement is planned on copies before committing: a full bag refuses the swap without losing either item. Existing binding is preserved. Gear changes and skill learning/reset are blocked during a cast.</p>
+<h2 id="authoring-future-class-content">Authoring future class content<a class="anchor" href="#authoring-future-class-content" title="Permanent link">#</a></h2>
+<p>Use the updated Unity Content Studio against a database that has completed the upgrade. Its Combat section now exposes <code>Classes</code>, class ownership/flags/weapon requirements on <code>Skills</code>, and <code>AbilityPassiveModifiers</code>. ItemStats exposes class masks, armor/weapon kinds, two-handed status and Healing Power. Validation checks the same key restrictions used by the server.</p>
+<ul>
+<li>Add an active skill as a <code>Skills</code> row with ClassId 1, 2 or 3 plus <code>Effects</code> rows owned by the skill (OwnerType 2). Keep NPC/internal interaction skills at ClassId 0 with their existing flags. <code>ClassId=0</code> with neither flag is a common automatic basic skill, so do not use it for a class-exclusive ability.</li>
+<li>Add a passive as a class-owned <code>Skills</code> row with IsPassive=1, IsStarter=0, TargetRule=Self, no cast/mana/cooldown/GCD/hotbar/weapon requirement, and one or more <code>AbilityPassiveModifiers</code> rows. Stat uses the shared StatId; Flat and Percent multiply by learned rank. Damage/healing/threat percentage stats generally use Flat to add percentage points to that multiplier.</li>
+<li>Set IsStarter=1 only for active level-one skills. Set RequiredWeapon=Shield (7) where a shield is required. A weapon restriction must agree with the class proficiency.</li>
+<li>Add gear using Items + ItemStats. Set a correct EquipSlot, AllowedClasses mask and WeaponKind/ArmorKind; TwoHanded is only allowed on Main Hand. Validate new starter IDs at level 1 and the correct hand/chest slot.</li>
+<li>Publish later SQL changes as <strong>057 or later</strong>, with their own filename/version tracking. Never edit or rerun 056 after it is recorded in a deployed database. Keep EF snapshots/models synchronized when changing columns.</li>
+<li>Adding a fourth class requires coordinated changes to the shared enum/mask/proficiencies, catalog validation, MySQL class constraint, Unity choices and content, with a new protocol version where the wire changes. A fourth database row alone is deliberately rejected.</li>
+</ul>
+<h2 id="verify-on-your-machine">Verify on your machine<a class="anchor" href="#verify-on-your-machine" title="Permanent link">#</a></h2>
+<p>The PowerShell/bash runner builds all six existing projects and the new <code>Axiom.ClassVerification</code> console project. The harness runs the <strong>actual world EF migrations</strong> and patch runner on a temporary database; runs the patch runner twice; loads real catalogs and checks creation serialization, starter kits, ownership, points, healing scaling, passive application/reset, health preservation, saved-rank cleanup, hotbar restrictions, proficiency, shield requirements, atomic full-bag two-hand swaps and saved equipment reconciliation; checks SQLite integrity/FKs; and checks the persistence EF snapshot and MySQL migration SQL without opening MySQL.</p>
+<p>A standard-library Python content check is also included and was run here:</p>
+<div class="hl"><pre><span></span><code>python<span class="w"> </span>Tools/verify_class_content.py
+</code></pre></div>
+
+<p>It validates SQL/content and the actual legacy CASE expression on copies. It explicitly reproduces the prerequisite world EF schema changes; it does <strong>not</strong> execute EF, compile C#, launch Unity, or test live MySQL.</p>
+<p>Before deployment, rehearse the MySQL migration on a copy of your real persistence DB and confirm the eight legacy selection combinations map as documented. Then use Unity to complete this smoke test:</p>
+<ol>
+<li>Create one Warrior, Healer and Mage. Confirm class in roster/character window, bound kit, correct starter hotbar, and distinct primary/derived stats.</li>
+<li>Learn active and passive ranks, level up, relog, and reset. Confirm points, immediately updated bonuses, persistent ranks, and unchanged class. Passive cards cannot drag to/cast from the hotbar.</li>
+<li>Attack/heal with each kit. Confirm Mage spells, Healer Holy Bolt and Healing Power-based heals, and Warrior shield skills requiring a shield. Check target types, cast bars, cooldowns, mana use and CC.</li>
+<li>Try foreign-class learning/casting and wrong armor/weapons. Check rejection by the server, including modified packets.</li>
+<li>Test two-handed swaps with zero and one additional free bag slot; verify both displaced items and binding survive. Test invalid legacy worn equipment with a full bag.</li>
+<li>Return to character selection and create another character; ensure class/faction options repopulate. Verify old characters' mapping and relog/save cleanup.</li>
+<li>Reconnect with a protocol-23 build and verify it is rejected; rebuild every shipped service/client with the same protocol-24 Network DLL.</li>
+</ol>
+<p>The previous <code>Docs/PHASE4.md</code> is marked historical. <code>Docs/CLASS_BASED.md</code> is the current class-system reference.</p>
+<nav class="pager">
+<a class="prev" href="server-AUCTION_BIDDING.html"><span>Previous</span>Auction House bidding (protocol 36)</a>
+<a class="next" href="server-CLIENT_CONTENT.html"><span>Next</span>Client game data: one source of truth</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#package-contents">Package contents</a>
+</li>
+<li><a href="#install-and-build">Install and build</a>
+</li>
+<li><a href="#existing-character-migration">Existing character migration</a>
+</li>
+<li><a href="#classes-stats-and-resources">Classes, stats and resources</a>
+</li>
+<li><a href="#learning-and-passive-rules">Learning and passive rules</a>
+</li>
+<li><a href="#weapons-armor-and-starter-kits">Weapons, armor and starter kits</a>
+</li>
+<li><a href="#authoring-future-class-content">Authoring future class content</a>
+</li>
+<li><a href="#verify-on-your-machine">Verify on your machine</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

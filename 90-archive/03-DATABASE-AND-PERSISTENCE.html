@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Database &amp; Persistence · Axiom Docs</title>
+<meta name="description" content="Axiom has four separate SQLite databases, owned by three different processes, managed by three different mechanisms. Knowing which one owns what — and one real collision between two of them — will save you a confusing…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html" class="active" aria-current="page">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/03-DATABASE-AND-PERSISTENCE.md</code></div>
+<h1 id="database--persistence">Database &amp; Persistence<a class="anchor" href="#database--persistence" title="Permanent link">#</a></h1>
+<p>Axiom has <strong>four</strong> separate SQLite databases, owned by three different
+processes, managed by three different mechanisms. Knowing which one owns
+what — and one real collision between two of them — will save you a
+confusing debugging session.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Database file</th>
+<th>Owning process</th>
+<th>Managed by</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Data/worldserver.db</code></td>
+<td>WorldServer (C#)</td>
+<td><strong>EF Core migrations</strong> (the SQL patch runner has been retired — see below)</td>
+<td>Quests, Items, NpcTemplates, NpcSpawners, and a growing set of Items/Shop/Quests tables (static game-design data)</td>
+</tr>
+<tr>
+<td><code>persistence.db</code></td>
+<td>PersistenceServer (Bun/TS)</td>
+<td>Hand-written <code>db.exec(...)</code> in <code>Database.ts</code></td>
+<td><code>characters</code> table — account_id, name, level, position</td>
+</tr>
+<tr>
+<td><code>gamedata.db</code></td>
+<td>Unity Client (read-only copy)</td>
+<td>Built/served by the AuthServer, downloaded by <code>GameDataBootstrap</code></td>
+<td>Client-local mirror of reference data (items, etc.) for offline lookups, shipped encrypted</td>
+</tr>
+<tr>
+<td>(AuthServer's own DB)</td>
+<td>AuthServer</td>
+<td>Not in this snapshot</td>
+<td>Accounts, credentials, session tokens</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="worldserverdb--ef-core-migrations-only-formerly-two-competing-systems"><code>worldserver.db</code> — EF Core migrations only (formerly two competing systems)<a class="anchor" href="#worldserverdb--ef-core-migrations-only-formerly-two-competing-systems" title="Permanent link">#</a></h2>
+<p><strong>Current state: EF Core migrations are the single schema-management
+system for this database.</strong> <code>WorldServer.StartAsync</code> calls
+<code>WorldDataDbContext.Database.MigrateAsync()</code> at boot, which applies
+whatever migrations haven't run yet. Seeding actual rows (NPC templates,
+spawners, and whatever else) is deliberately <strong>not</strong> part of this — that's
+handled by separate tooling, not baked into the boot sequence. Adding a
+new table is: write the POCO, add a <code>DbSet&lt;T&gt;</code>, run
+<code>dotnet ef migrations add &lt;Name&gt;</code>, done — see <code>code/GameData/README.md</code> in
+this doc set for a worked 15-table example (Items, Shop, and Quests
+domains) and <code>code/MIGRATION-STEPS.md</code> for the exact cutover steps.</p>
+<p>The rest of this section is kept as a record of <strong>why</strong> — this is what
+the database looked like before the fix, and the reasoning that led to
+picking EF over the alternative.</p>
+<p>This is the one to be careful with. <code>WorldServerConfig</code>/<code>DatabaseConfig</code>
+point <strong>both</strong> of the following at the exact same file
+(<code>Data/worldserver.db</code>):</p>
+<p><strong>1. EF Core migrations</strong> (<code>Migrations/</code>, driven by <code>WorldDataDbContext</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">WorldDataDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">QuestTable</span><span class="o">&gt;</span><span class="w">      </span><span class="n">Quests</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">QuestTable</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ItemTable</span><span class="o">&gt;</span><span class="w">       </span><span class="n">Items</span><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">ItemTable</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">NpcTemplate</span><span class="o">&gt;</span><span class="w">     </span><span class="n">NpcTemplates</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">NpcTemplate</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">NpcSpawnerTable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">NpcSpawners</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">NpcSpawnerTable</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Three migrations exist: <code>InitialCreate</code> (Quests), <code>AddItemTable</code> (Items),
+and <code>AddNpcInteractRange</code>, which — despite the name suggesting a single
+column add — actually creates <strong>both</strong> <code>NpcSpawners</code> and <code>NpcTemplates</code>
+from scratch, <code>InteractRange</code> column included:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// 20260705082758_AddNpcInteractRange.cs</span>
+<span class="n">migrationBuilder</span><span class="p">.</span><span class="n">CreateTable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NpcTemplates&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">columns</span><span class="p">:</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(...).</span><span class="n">Annotation</span><span class="p">(</span><span class="s">&quot;Sqlite:Autoincrement&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(...),</span>
+<span class="w">    </span><span class="n">Level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(...),</span>
+<span class="w">    </span><span class="n">ModelType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(...),</span>
+<span class="w">    </span><span class="n">InteractRange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(...)</span><span class="w">   </span><span class="c1">// &lt;- included from the start here</span>
+<span class="p">},</span><span class="w"> </span><span class="n">constraints</span><span class="p">:</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">PrimaryKey</span><span class="p">(</span><span class="s">&quot;PK_NpcTemplates&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Id</span><span class="p">));</span>
+</code></pre></div>
+
+<p><strong>2. A raw SQL patch runner</strong> (<code>GameDataPatchRunner</code>, <code>SQL/patches/*.sql</code>),
+run unconditionally on every boot, first thing, before the persistence
+connection is even opened:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// WorldServer.StartAsync</span>
+<span class="k">await</span><span class="w"> </span><span class="n">_dataPatchRunner</span><span class="p">.</span><span class="n">RunAsync</span><span class="p">();</span><span class="w">       </span><span class="c1">// &lt;- step 0, every boot</span>
+<span class="k">await</span><span class="w"> </span><span class="n">_persistenceClient</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+</code></pre></div>
+
+<p>The patch runner tracks what it's applied in its own <code>schema_versions</code>
+table and skips anything already recorded — but it has <strong>no idea EF
+migrations exist</strong>, and vice versa. Patch <code>005_npc_templates.sql</code> creates
+<code>NpcTemplates</code> <em>without</em> <code>InteractRange</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- 005_npc_templates.sql</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="ss">&quot;NpcTemplates&quot;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="ss">&quot;Id&quot;</span><span class="w">        </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;Name&quot;</span><span class="w">      </span><span class="nb">TEXT</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;Level&quot;</span><span class="w">     </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;ModelType&quot;</span><span class="w"> </span><span class="nb">TEXT</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="ss">&quot;PK_NpcTemplates&quot;</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">(</span><span class="ss">&quot;Id&quot;</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div>
+
+<p>...while migration <code>AddNpcInteractRange</code> creates the <em>same table name</em>
+<em>with</em> <code>InteractRange</code>. <strong>Whichever one runs first on a fresh database
+wins</strong>, and — this is the important part — <strong>nothing in this codebase ever
+calls <code>dbContext.Database.Migrate()</code>.</strong> Grepping the whole <code>Server.World</code>
+project for <code>Database.Migrate</code> turns up nothing. The EF migrations exist as
+C# files and describe a schema, but nothing here applies them
+automatically at startup. In practice, on a fresh checkout, the SQL patch
+runner is the only one of the two systems that actually mutates
+<code>worldserver.db</code> on boot — the migrations only take effect if someone runs
+<code>dotnet ef database update</code> by hand, and if they do, they need patch
+<code>005</code>+<code>006</code>+<code>007</code> to either already be marked applied in <code>schema_versions</code>
+or to be deleted, or the patch runner will try to <code>CREATE TABLE</code> something
+that already exists with a different shape.</p>
+<p><strong>What this means practically:</strong> if <code>NpcTemplate.InteractRange</code> is coming
+back as <code>0</code> or the column doesn't exist, check which of the two systems
+actually created the table on that particular <code>worldserver.db</code> file, not
+just whether the migration exists in source.</p>
+<p><strong>Decision: EF Core migrations are the schema system going forward, the
+SQL patch runner is being retired.</strong> See
+<a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">09-KNOWN-GAPS-AND-NEXT-STEPS.md</a> and
+<code>code/MIGRATION-STEPS.md</code> for the exact steps. In short:
+<code>WorldServer.StartAsync</code> calls <code>WorldDataDbContext.Database.MigrateAsync()</code>
+instead of <code>GameDataPatchRunner.RunAsync()</code>. The three seed-only patches
+(<code>007</code>, <code>010</code>, <code>023</code> — all auto-generated by the Unity "NPC Spawner
+Exporter" tool) insert <em>data</em>, not schema, so they aren't something EF
+migrations replace at all — that content gets seeded through whatever
+tooling the project already has for it, separate from schema management
+entirely.</p>
+<h3 id="patch-runner-mechanics">Patch runner mechanics<a class="anchor" href="#patch-runner-mechanics" title="Permanent link">#</a></h3>
+<p><code>GameDataPatchRunner.RunAsync()</code> (<code>Utils/Database/SQLite/GameDataPatchRunner.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">patches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Directory</span><span class="p">.</span><span class="n">GetFiles</span><span class="p">(</span><span class="n">_patchDir</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.sql&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">GetFileName</span><span class="p">(</span><span class="n">f</span><span class="p">))</span><span class="w">   </span><span class="c1">// lexicographic: 001_, 002_, ...</span>
+<span class="w">    </span><span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
+
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">patchPath</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">patches</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">patchName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">GetFileName</span><span class="p">(</span><span class="n">patchPath</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// skip if already in schema_versions...</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">tx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">conn</span><span class="p">.</span><span class="n">BeginTransactionAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="k">try</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SqliteCommand</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">SqliteTransaction</span><span class="p">)</span><span class="n">tx</span><span class="p">);</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="n">ExecuteNonQueryAsync</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// record in schema_versions...</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">tx</span><span class="p">.</span><span class="n">CommitAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">tx</span><span class="p">.</span><span class="n">RollbackAsync</span><span class="p">();</span>
+<span class="w">        </span><span class="n">Logger</span><span class="p">.</span><span class="n">Error</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;[Patcher] Failed applying {patchName} — rolled back. Fix the script and restart.&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="p">;</span><span class="w">   </span><span class="c1">// stops server boot entirely</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Ordering is purely lexicographic on filename — hence the <code>005_</code>, <code>006_</code>,
+<code>007_</code>, <code>010_</code>, <code>023_</code> numbering. A failed patch <strong>aborts server startup</strong>
+(the <code>throw</code> propagates out of <code>StartAsync</code>), which is the right call for a
+half-applied schema, but means a typo in a new patch file takes the whole
+WorldServer down at boot, not just at the point something queries the
+broken table.</p>
+<p>To add a new patch: drop a new <code>NNN_description.sql</code> file in
+<code>SQL/patches/</code>, numbered higher than anything existing. It'll run exactly
+once, transactionally, next boot.</p>
+<h2 id="persistencedb--the-buntypescript-character-store"><code>persistence.db</code> — the Bun/TypeScript character store<a class="anchor" href="#persistencedb--the-buntypescript-character-store" title="Permanent link">#</a></h2>
+<p>Owned entirely by <code>Axiom.Server.Persistence</code>. Schema is created inline,
+not migrated, in <code>Database.ts</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Database</span><span class="p">(</span><span class="s2">&quot;persistence.db&quot;</span><span class="p">);</span>
+
+<span class="nx">db</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="sb">`</span>
+<span class="sb">    CREATE TABLE IF NOT EXISTS characters</span>
+<span class="sb">    (</span>
+<span class="sb">        character_id INTEGER PRIMARY KEY AUTOINCREMENT,</span>
+<span class="sb">        account_id   INTEGER NOT NULL,</span>
+<span class="sb">        name         TEXT    NOT NULL,</span>
+<span class="sb">        level        INTEGER NOT NULL DEFAULT 1,</span>
+<span class="sb">        pos_x        REAL    NOT NULL DEFAULT 0,</span>
+<span class="sb">        pos_y        REAL    NOT NULL DEFAULT 2,</span>
+<span class="sb">        pos_z        REAL    NOT NULL DEFAULT 0</span>
+<span class="sb">    )</span>
+<span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+
+<p>If you need a second table here (inventory, for a shop system) this is the
+pattern to follow today — there's no migration tool on this side at all,
+just <code>CREATE TABLE IF NOT EXISTS</code> guarding idempotency. A real migration
+story (even a minimal numbered-file runner like <code>GameDataPatchRunner</code>, just
+in TypeScript) is worth adding before this table count grows past two or
+three.</p>
+<p>Every handler that touches this DB uses <code>better-sqlite3</code>-style synchronous
+prepared statements (via <code>bun:sqlite</code>, which has a compatible API):</p>
+<div class="hl"><pre><span></span><code><span class="c1">// W2PCharacterSaveHandler.ts</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="sb">`</span>
+<span class="sb">    INSERT OR REPLACE INTO characters</span>
+<span class="sb">    (character_id, account_id, name, level, pos_x, pos_y, pos_z)</span>
+<span class="sb">    VALUES (?, ?, ?, ?, ?, ?, ?)</span>
+<span class="sb">`</span><span class="p">).</span><span class="nx">run</span><span class="p">(</span><span class="nx">save</span><span class="p">.</span><span class="nx">CharacterId</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">AccountId</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">Level</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">Y</span><span class="p">,</span><span class="w"> </span><span class="nx">save</span><span class="p">.</span><span class="nx">Z</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// W2PCharacterListHandler.ts</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="sb">`SELECT * FROM characters WHERE account_id = ?`</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">AccountId</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">CharacterRow</span><span class="p">[];</span>
+
+<span class="nx">SendP2WCharacterListResponse</span><span class="p">(</span><span class="nx">socket</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">AccountId</span><span class="o">:</span><span class="w"> </span><span class="kt">request.AccountId</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">Characters</span><span class="o">:</span><span class="w"> </span><span class="kt">rows.map</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
+<span class="w">        </span><span class="nx">CharacterId</span><span class="o">:</span><span class="w"> </span><span class="kt">r.character_id</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Name</span><span class="o">:</span><span class="w"> </span><span class="kt">r.name</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Level</span><span class="o">:</span><span class="w"> </span><span class="kt">r.level</span>
+<span class="w">    </span><span class="p">}))</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>Note the <code>INSERT OR REPLACE</code> on save keys off <code>character_id</code> — a save for a
+<code>character_id</code> that doesn't exist yet will silently create it with
+whatever <code>AUTOINCREMENT</code> would have assigned, which is fine for the
+current single-writer-per-character flow but worth remembering if you ever
+allow concurrent saves for the same character from two sources.</p>
+<h2 id="gamedatadb--client-local-read-only-encrypted"><code>gamedata.db</code> — client-local, read-only, encrypted<a class="anchor" href="#gamedatadb--client-local-read-only-encrypted" title="Permanent link">#</a></h2>
+<p>This one belongs to the Unity client but is <em>produced</em> server-side (by the
+AuthServer, not in this snapshot) and shipped two ways: bundled in
+<code>StreamingAssets/GameData/gamedata.db</code> for day-0, and downloadable/
+version-checked at runtime by <code>GameDataBootstrap</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// GameDataBootstrap.cs</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">GameDataDir</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Application</span><span class="p">.</span><span class="n">persistentDataPath</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;GameData&quot;</span><span class="p">);</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">DbPath</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">GameDataDir</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gamedata.db&quot;</span><span class="p">);</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">HashPath</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">GameDataDir</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gamedata.hash&quot;</span><span class="p">);</span>
+<span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">BundledDbPath</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Application</span><span class="p">.</span><span class="n">streamingAssetsPath</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;GameData&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gamedata.db&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>It checks a hash against the AuthServer, downloads a fresh copy if it's
+stale, then <code>GameDataDatabase.Initialize(encryptedDbPath)</code> decrypts it to a
+throwaway temp file before opening a <strong>read-only</strong> <code>sqlite-net</code> connection:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// GameDataDatabase.cs</span>
+<span class="n">decryptedTempPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Application</span><span class="p">.</span><span class="n">temporaryCachePath</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gamedata.decrypted.db&quot;</span><span class="p">);</span>
+<span class="c1">// ...GameDataCrypto.DecryptToFile(encryptedDbPath, decryptedTempPath)...</span>
+
+<span class="n">SQLiteConnectionString</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SQLiteConnectionString</span><span class="p">(</span>
+<span class="w">    </span><span class="n">decryptedTempPath</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SQLiteOpenFlags</span><span class="p">.</span><span class="n">ReadOnly</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">SQLiteOpenFlags</span><span class="p">.</span><span class="n">FullMutex</span><span class="p">,</span>
+<span class="w">    </span><span class="n">storeDateTimeAsTicks</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+
+<span class="n">Connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SQLiteConnection</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
+</code></pre></div>
+
+<p>The plaintext temp file is deliberately written to <code>temporaryCachePath</code>
+(not <code>persistentDataPath</code>) and deleted again in <code>Close()</code> — the encrypted
+copy is what persists between sessions, never the decrypted one. This
+exists so item names/stats/etc. can be looked up client-side (tooltips,
+UI) without a round trip to the WorldServer for pure reference data, while
+still making the raw values mildly inconvenient to rip out of the client
+install. <code>ItemRepository</code>/<code>ItemRecord</code> (<code>Assets/AxiomMMOKit/Axiom.Client/GameData/</code>)
+are the read-side API over this connection.</p>
+<p><strong>This is a fifth conceptual data source you'll want to keep in sync
+manually</strong>: whatever authoritative item/NPC data lives in
+<code>worldserver.db</code>'s <code>Items</code>/<code>NpcTemplates</code> tables needs a corresponding
+export step into whatever builds <code>gamedata.db</code> on the AuthServer side.
+Nothing in this snapshot automates that — worth designing before a shop
+system doubles the amount of reference data that needs to stay in sync
+across both databases.</p>
+<h2 id="requestresponse-pattern-across-the-worldserver--persistenceserver-link">Request/response pattern across the WorldServer ↔ PersistenceServer link<a class="anchor" href="#requestresponse-pattern-across-the-worldserver--persistenceserver-link" title="Permanent link">#</a></h2>
+<p>See <a href="02-NETWORKING-AND-PACKETS.html">02-NETWORKING-AND-PACKETS.md</a> for the
+wire format; the short version for anything touching character data from a
+C2W handler is: call the matching method on <code>PersistenceClient</code> (e.g.
+<code>persistence.W2PCharacter.LoadList(accountId)</code>), <code>await</code> it — it resolves
+via the <code>TaskCompletionSource</code> dictionaries once the P2W reply arrives —
+and re-enter <code>playerManager.EnqueueAction(...)</code> before touching any
+tick-thread state afterward.</p>
+<nav class="pager">
+<a class="prev" href="02-NETWORKING-AND-PACKETS.html"><span>Previous</span>Networking &amp; Packets</a>
+<a class="next" href="04-LUA-SCRIPTING.html"><span>Next</span>Lua Scripting System</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#worldserverdb--ef-core-migrations-only-formerly-two-competing-systems">worldserver.db — EF Core migrations only (formerly two competing systems)</a>
+<ul>
+<li><a href="#patch-runner-mechanics">Patch runner mechanics</a>
+</li>
+</ul>
+</li>
+<li><a href="#persistencedb--the-buntypescript-character-store">persistence.db — the Bun/TypeScript character store</a>
+</li>
+<li><a href="#gamedatadb--client-local-read-only-encrypted">gamedata.db — client-local, read-only, encrypted</a>
+</li>
+<li><a href="#requestresponse-pattern-across-the-worldserver--persistenceserver-link">Request/response pattern across the WorldServer ↔ PersistenceServer link</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

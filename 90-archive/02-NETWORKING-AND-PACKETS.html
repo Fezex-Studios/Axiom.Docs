@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Networking &amp; Packets · Axiom Docs</title>
+<meta name="description" content="This doc covers the two transports and their wire formats. For the step-by-step of adding a new packet, AxiomServerWorld/Docs/ADDINGPACKETSv2.md is the canonical reference — read that for process, read this for the…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html" class="active" aria-current="page">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/02-NETWORKING-AND-PACKETS.md</code></div>
+<h1 id="networking--packets">Networking &amp; Packets<a class="anchor" href="#networking--packets" title="Permanent link">#</a></h1>
+<p>This doc covers the two transports and their wire formats. For the
+step-by-step of <em>adding</em> a new packet, <code>Axiom_Server_World/Docs/ADDING_PACKETSv2.md</code>
+is the canonical reference — read that for process, read this for the
+underlying mechanics and for how the two systems differ.</p>
+<h2 id="two-transports-two-opcode-enums">Two transports, two opcode enums<a class="anchor" href="#two-transports-two-opcode-enums" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Client ↔ WorldServer</th>
+<th>WorldServer ↔ PersistenceServer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transport</td>
+<td>LiteNetLib (UDP, reliable/sequenced by default)</td>
+<td>Raw TCP</td>
+</tr>
+<tr>
+<td>Port</td>
+<td>7777</td>
+<td>7778</td>
+</tr>
+<tr>
+<td>Opcode enum</td>
+<td><code>Opcodes</code> (<code>Axiom.Network/Shared/Opcodes.cs</code>)</td>
+<td><code>PServerOpcodes</code> (C#) / <code>ProtocolPersistence</code> (TS) — must stay numerically identical by hand</td>
+</tr>
+<tr>
+<td>Framing</td>
+<td>LiteNetLib handles message boundaries</td>
+<td>Manual length-prefix (see below)</td>
+</tr>
+<tr>
+<td>Registration</td>
+<td>Attribute + reflection (<code>AutoRegister</code>) on the server side; <strong>manual</strong> on the client side today</td>
+<td>Fully manual in both languages</td>
+</tr>
+<tr>
+<td>Dispatcher</td>
+<td><code>PacketDispatcher</code> (server) / <code>ClientPacketDispatcher</code> (client)</td>
+<td><code>PersistenceDispatcher</code> (C#) / <code>PacketDispatcher.ts</code> (Node)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="client--worldserver-wire-format">Client ↔ WorldServer wire format<a class="anchor" href="#client--worldserver-wire-format" title="Permanent link">#</a></h3>
+<p><code>WorldServer.OnNetworkReceive</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnNetworkReceive</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="w"> </span><span class="n">delivery</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Opcodes</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Opcodes</span><span class="p">)</span><span class="n">reader</span><span class="p">.</span><span class="n">GetUShort</span><span class="p">();</span>
+<span class="w">    </span><span class="n">_packetDispatcher</span><span class="p">.</span><span class="n">Handle</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">reader</span><span class="p">);</span>
+<span class="w">    </span><span class="n">reader</span><span class="p">.</span><span class="n">Recycle</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Every message is a <code>ushort</code> opcode followed by the MessagePack-encoded
+payload for that opcode's packet class. LiteNetLib itself handles message
+boundaries, so there's no length prefix needed here — that's only required
+on the raw-TCP persistence link (see below). The client's
+<code>ClientNetwork.OnNetworkReceive</code> is the mirror image.</p>
+<p>Connection uses a shared string key rather than any real auth at the
+transport layer:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnectionRequest</span><span class="p">(</span><span class="n">ConnectionRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">request</span><span class="p">.</span><span class="n">AcceptIfKey</span><span class="p">(</span><span class="n">ConnectionKey</span><span class="p">);</span><span class="w"> </span><span class="c1">// ConnectionKey = &quot;MMO&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Real authentication happens one level up, after connection, via the
+<code>Authenticate</code> opcode and <code>AuthService.ValidateToken</code> — see
+<a href="06-AUTH-AND-SESSION-FLOW.html">06-AUTH-AND-SESSION-FLOW.md</a>.</p>
+<h3 id="worldserver--persistenceserver-wire-format">WorldServer ↔ PersistenceServer wire format<a class="anchor" href="#worldserver--persistenceserver-wire-format" title="Permanent link">#</a></h3>
+<p>This link has no framing help from the transport, so <code>PersistenceClient</code>
+(C#) and <code>index.ts</code> (Node) both hand-roll a 4-byte little-endian length
+prefix around a MessagePack-encoded envelope:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// PersistenceClient.Send&lt;T&gt;</span>
+<span class="n">PersistencePacket</span><span class="w"> </span><span class="n">persistencePacket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PersistencePacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Opcode</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">ushort</span><span class="p">)</span><span class="n">opcode</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="kt">byte</span><span class="p">[]</span><span class="w"> </span><span class="n">packetBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">persistencePacket</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span><span class="w"> </span><span class="n">lengthBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BitConverter</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="n">packetBytes</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">stream</span><span class="p">.</span><span class="n">WriteAsync</span><span class="p">(</span><span class="n">lengthBytes</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">stream</span><span class="p">.</span><span class="n">WriteAsync</span><span class="p">(</span><span class="n">packetBytes</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// index.ts — reassembling that same framing on the Node side</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">buffer</span><span class="p">.</span><span class="nx">readInt32LE</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">4</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w">         </span><span class="c1">// wait for more data</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">packetBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">buffer</span><span class="p">.</span><span class="nx">subarray</span><span class="p">(</span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">length</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">buffer</span><span class="p">.</span><span class="nx">subarray</span><span class="p">(</span><span class="mf">4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">length</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">packet</span><span class="o">:</span><span class="w"> </span><span class="kt">Packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">decode</span><span class="p">(</span><span class="nx">packetBytes</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Packet</span><span class="p">;</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">Dispatch</span><span class="p">(</span><span class="nx">socket</span><span class="p">,</span><span class="w"> </span><span class="nx">packet</span><span class="p">.</span><span class="nx">Opcode</span><span class="p">,</span><span class="w"> </span><span class="nx">packet</span><span class="p">.</span><span class="nx">Payload</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>PersistencePacket</code> (the outer envelope: <code>{ Opcode: ushort, Payload: byte[] }</code>)
+is distinct from every individual request/response packet class — the
+opcode tells the dispatcher which class to deserialize <code>Payload</code> as next.
+The Node side mirrors this with the <code>Packet</code> type
+(<code>Shared/Packet.ts</code>, <code>{ Opcode: number, Payload: Uint8Array }</code>).</p>
+<h2 id="server-side-dispatch-attribute--reflection">Server-side dispatch: attribute + reflection<a class="anchor" href="#server-side-dispatch-attribute--reflection" title="Permanent link">#</a></h2>
+<p><code>PacketDispatcher.AutoRegister</code> (<code>Axiom.Network/Utils/Worldserver/WSPacketDispatcher.cs</code>)
+is what makes adding a C2W handler a one-file change:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">AutoRegister</span><span class="p">(</span><span class="n">Func</span><span class="o">&lt;</span><span class="n">Type</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">resolve</span><span class="p">,</span><span class="w"> </span><span class="n">Assembly</span><span class="w"> </span><span class="n">assembly</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">handlerTypes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assembly</span><span class="p">.</span><span class="n">GetTypes</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">typeof</span><span class="p">(</span><span class="n">IPacketHandler</span><span class="p">).</span><span class="n">IsAssignableFrom</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">t</span><span class="p">.</span><span class="n">IsAbstract</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">handlerTypes</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">type</span><span class="p">.</span><span class="n">GetCustomAttribute</span><span class="o">&lt;</span><span class="n">PacketOpcodeAttribute</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">attr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;[PacketDispatcher] WARNING: {type.Name} implements IPacketHandler &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">                               </span><span class="s">&quot;but has no [PacketOpcode] attribute - skipped.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">ctor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">type</span><span class="p">.</span><span class="n">GetConstructors</span><span class="p">().</span><span class="n">Single</span><span class="p">();</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctor</span><span class="p">.</span><span class="n">GetParameters</span><span class="p">().</span><span class="n">Select</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">resolve</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">ParameterType</span><span class="p">)).</span><span class="n">ToArray</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">Register</span><span class="p">(</span><span class="n">attr</span><span class="p">.</span><span class="n">Opcode</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">IPacketHandler</span><span class="p">)</span><span class="n">Activator</span><span class="p">.</span><span class="n">CreateInstance</span><span class="p">(</span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Two things to internalize:</p>
+<ul>
+<li><strong>Every handler must have exactly one public constructor.</strong> <code>.Single()</code>
+  throws at startup if that's ever violated — which is the point: you find
+  out at boot, not the first time a player triggers the packet.</li>
+<li><strong>Every constructor parameter must be resolvable</strong> via the <code>resolve</code>
+  function passed in, which in practice is <code>ServiceContainer.Resolve</code> (see
+  <code>WorldServer.RegisterPackets</code>). If you add a handler that asks for a type
+  nobody registered, you get a clear <code>InvalidOperationException</code> naming the
+  missing type, at boot — not a <code>NullReferenceException</code> three requests
+  later.</li>
+</ul>
+<p><code>ServiceContainer</code> itself is deliberately not a general DI container:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ServiceContainer</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">Type</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_services</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="n">Register</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">instance</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_services</span><span class="p">[</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">)]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">object</span><span class="w"> </span><span class="nf">Resolve</span><span class="p">(</span><span class="n">Type</span><span class="w"> </span><span class="n">type</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_services</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">instance</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
+<span class="w">            </span><span class="s">$&quot;[ServiceContainer] No instance registered for {type.Name}. &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="s">&quot;Add a services.Register(...) call for it in WorldServer.RegisterPackets.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>It exists specifically to guarantee every handler that asks for, say,
+<code>InterestManager</code> gets the <em>same</em> instance — see the class doc-comment,
+which references a real bug this fixed (a handler accidentally constructed
+with its own private empty <code>InterestManager</code>).</p>
+<h2 id="client-side-dispatch-this-is-not-auto-registered-today">Client-side dispatch: this is NOT auto-registered today<a class="anchor" href="#client-side-dispatch-this-is-not-auto-registered-today" title="Permanent link">#</a></h2>
+<p>This is worth calling out explicitly because it contradicts what you'd
+expect from <code>ClientPacketDispatcher.AutoRegister</code> existing at all.
+<code>ClientNetwork.RegisterHandlers()</code> (Unity side) does this by hand:</p>
+<div class="hl"><pre><span></span><code><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RegisterHandlers</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">MOTD</span><span class="p">,</span><span class="w">           </span><span class="k">new</span><span class="w"> </span><span class="n">W2CMOTDHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">SpawnPlayer</span><span class="p">,</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">W2CSpawnPlayerHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">PlayerPosition</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">W2CPlayerPositionHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">PlayerLeave</span><span class="p">,</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">W2CPlayerLeaveHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">Announcement</span><span class="p">,</span><span class="w">   </span><span class="k">new</span><span class="w"> </span><span class="n">W2CAnnouncementHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">SpawnNpc</span><span class="p">,</span><span class="w">       </span><span class="k">new</span><span class="w"> </span><span class="n">W2CSpawnNpcHandler</span><span class="p">());</span>
+<span class="w">    </span><span class="c1">// ...one line per opcode, all the way down</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>None of the <code>W2CHandlers</code> classes carry a <code>[PacketOpcode]</code> attribute — they
+don't need to, because nothing calls <code>ClientPacketDispatcher.AutoRegister</code>
+on the client. That method is fully implemented and would work (client
+handlers are all parameterless, which is exactly the case it optimizes
+for), it's just not wired up. This is exactly the class of bug
+<code>ADDING_PACKETSv2.md</code> describes <code>AutoRegister</code> as having eliminated on the
+server — on the client it's still possible today to add a <code>W2CHandler</code> and
+forget the <code>dispatcher.Register(...)</code> line, and the packet will silently
+print <code>[ClientPacketDispatcher] Unhandled packet: X</code> with no compile-time
+signal. See <a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">09-KNOWN-GAPS-AND-NEXT-STEPS.md</a>
+for the concrete fix.</p>
+<h2 id="persistence-side-dispatch-fully-manual-in-two-languages">Persistence-side dispatch: fully manual, in two languages<a class="anchor" href="#persistence-side-dispatch-fully-manual-in-two-languages" title="Permanent link">#</a></h2>
+<p>Neither <code>PersistenceDispatcher</code> (C#, world-server side, handling P2W
+replies) nor <code>PacketDispatcher.ts</code> (Node side, handling W2P requests) has
+any reflection or attribute system. Every opcode needs a manual
+registration call:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// PersistenceClient.RegisterHandlers()</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">P2WConnectResponse</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WConnectResponseHandler</span><span class="p">());</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">CharacterLoad</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WCharacterLoadHandler</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">P2WCharacterCreateResponse</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WCharacterCreateResponseHandler</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">P2WCharacterListResponse</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WCharacterListResponseHandler</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// RegisterHandlers.ts — the ONE place Node-side opcodes get wired up</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RegisterHandlers</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">CharacterSave</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PCharacterSaveHandler</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">CharacterLoad</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PCharacterLoadHandler</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">W2PConnectRequest</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PConnectHandler</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">HelloWorld</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PHelloWorldHandler</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">CharacterCreate</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PCharacterCreateHandler</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">CharacterList</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PCharacterListHandler</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Missing a registration on either side doesn't crash anything — it just
+prints <code>Unknown Opcode N</code> (Node) or leaves the request permanently pending
+(C#, since nothing ever calls <code>Resolve(...)</code>/<code>ResolveList(...)</code> on the
+<code>TaskCompletionSource</code> — see <code>PersistenceClient.pendingLoads</code> /
+<code>pendingCreates</code> / <code>pendingLists</code>). If a persistence round-trip just hangs
+forever with no error, check <code>RegisterHandlers</code> on both sides first.</p>
+<h2 id="the-stale-opcodests-file">The stale <code>Opcodes.ts</code> file<a class="anchor" href="#the-stale-opcodests-file" title="Permanent link">#</a></h2>
+<p><code>Axiom.Server.Persistence/src/Shared/Opcodes.ts</code> is a second, older copy
+of the same enum name (<code>ProtocolPersistence</code>) as the canonical
+<code>protocol.persistence.ts</code>, and it's already drifted:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Opcodes.ts (stale, unused)</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="nx">ProtocolPersistence</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">W2PConnectRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WConnectResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WErrorResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6</span><span class="p">,</span><span class="w">   </span><span class="c1">// &lt;- doesn&#39;t exist in the real one at all</span>
+<span class="p">}</span>
+
+<span class="c1">// protocol.persistence.ts (canonical — this is what RegisterHandlers.ts imports)</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="nx">ProtocolPersistence</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">W2PConnectRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WConnectResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">HelloWorld</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterCreate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WCharacterCreateResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">7</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">CharacterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WCharacterListResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Nothing currently imports <code>Opcodes.ts</code> (grep the repo before relying on
+that staying true), but it's exactly the trap <code>ADDING_PACKETSv2.md</code> warns
+about in its worked examples — safe to delete, or worth a comment marking
+it dead, before it confuses a future edit.</p>
+<h2 id="correlation-pattern-for-requestresponse-over-the-persistence-link">Correlation pattern for request/response over the persistence link<a class="anchor" href="#correlation-pattern-for-requestresponse-over-the-persistence-link" title="Permanent link">#</a></h2>
+<p>Fire-and-forget sends (<code>W2PHelloWorldSender</code>, <code>W2CMOTDPacketSender</code>) need
+nothing extra. Anything that needs a reply routed back to the specific
+caller that asked (character load/create/list) uses a
+<code>ConcurrentDictionary&lt;TKey, TaskCompletionSource&lt;TResponse&gt;&gt;</code> keyed by
+<code>AccountId</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// PersistenceClient</span>
+<span class="k">internal</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ConcurrentDictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">TaskCompletionSource</span><span class="o">&lt;</span><span class="n">P2WCharacterLoadResponse</span><span class="o">&gt;&gt;</span>
+<span class="w">    </span><span class="n">pendingLoads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ResolveLoad</span><span class="p">(</span><span class="n">P2WCharacterLoadResponse</span><span class="w"> </span><span class="n">response</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pendingLoads</span><span class="p">.</span><span class="n">TryRemove</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">AccountId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">tcs</span><span class="p">))</span>
+<span class="w">        </span><span class="n">tcs</span><span class="p">.</span><span class="n">SetResult</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">Logger</span><span class="p">.</span><span class="n">Warn</span><span class="p">(</span><span class="s">$&quot;[PersistenceClient] No pending load for AccountId={response.AccountId}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>AccountId</code>-keying only works because there's never more than one in-flight
+request per account for load/create/list today. If you add a request type
+a player could trigger multiple times in quick succession (a "check shop
+price" call, for instance), key it by a fresh <code>Guid</code> generated at the call
+site instead, echoed back unchanged in the response — see
+<code>ADDING_PACKETSv2.md</code>'s edge-case notes for the <code>Guid</code>-as-<code>string</code>-across-the-
+C#/TS-boundary caveat, which applies here too.</p>
+<p>Every C2W handler that awaits a persistence round-trip
+(<code>C2WAuthenticateHandler</code>, <code>C2WCreateCharacterHandler</code>,
+<code>C2WSelectCharacterHandler</code>) wraps everything after the <code>await</code> in
+<code>playerManager.EnqueueAction(() =&gt; { ... })</code> to get back onto the tick
+thread — see <code>C2WAuthenticateHandler.ValidateAndConnect</code> in
+<a href="06-AUTH-AND-SESSION-FLOW.html">06-AUTH-AND-SESSION-FLOW.md</a> for a complete
+worked example of this pattern.</p>
+<nav class="pager">
+<a class="prev" href="01-ARCHITECTURE.html"><span>Previous</span>Axiom Architecture</a>
+<a class="next" href="03-DATABASE-AND-PERSISTENCE.html"><span>Next</span>Database &amp; Persistence</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#two-transports-two-opcode-enums">Two transports, two opcode enums</a>
+<ul>
+<li><a href="#client--worldserver-wire-format">Client ↔ WorldServer wire format</a>
+</li>
+<li><a href="#worldserver--persistenceserver-wire-format">WorldServer ↔ PersistenceServer wire format</a>
+</li>
+</ul>
+</li>
+<li><a href="#server-side-dispatch-attribute--reflection">Server-side dispatch: attribute + reflection</a>
+</li>
+<li><a href="#client-side-dispatch-this-is-not-auto-registered-today">Client-side dispatch: this is NOT auto-registered today</a>
+</li>
+<li><a href="#persistence-side-dispatch-fully-manual-in-two-languages">Persistence-side dispatch: fully manual, in two languages</a>
+</li>
+<li><a href="#the-stale-opcodests-file">The stale Opcodes.ts file</a>
+</li>
+<li><a href="#correlation-pattern-for-requestresponse-over-the-persistence-link">Correlation pattern for request/response over the persistence link</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

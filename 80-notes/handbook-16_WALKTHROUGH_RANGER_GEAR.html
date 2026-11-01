@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16. Walkthrough: the Ranger Tunic, then Boots and a Sword · Axiom Docs</title>
+<meta name="description" content="This is the exact path we took to get the Ranger Tunic working on men and women, written up so the next pieces go quickly. Part A is the one-time setup, Part B is the tunic as we did it, and Parts C and D are the…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html" class="active" aria-current="page">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Content Handbook</div>
+
+<h1 id="16-walkthrough-the-ranger-tunic-then-boots-and-a-sword">16. Walkthrough: the Ranger Tunic, then Boots and a Sword<a class="anchor" href="#16-walkthrough-the-ranger-tunic-then-boots-and-a-sword" title="Permanent link">#</a></h1>
+<p>This is the exact path we took to get the <strong>Ranger Tunic</strong> working on men
+and women, written up so the next pieces go quickly. Part A is the one-time
+setup, Part B is the tunic as we did it, and Parts C and D are the <strong>Ranger
+Boots</strong> and a <strong>sword</strong> on the same pattern.</p>
+<p>The other guides explain the why: armour in <a href="handbook-12_ADDING_ARMOR.html">guide 12</a>,
+weapons in <a href="handbook-11_ADDING_WEAPONS.html">guide 11</a>, bodies in
+<a href="handbook-14_CHARACTERS_RACES_GENDERS.html">guide 14</a>. This one is just the steps.</p>
+<p><strong>Assets used:</strong> Quaternius <em>Modular Character Outfits - Fantasy</em>, on the
+<em>Universal Base Characters</em> bodies (<code>Superhero_Male_FullBody</code>,
+<code>Superhero_Female_FullBody</code>). Every Ranger part is skinned to the same
+65-bone skeleton as those bodies (<code>root</code>, <code>pelvis</code>, <code>spine_01</code>…), so they
+bind with no positioning.</p>
+<hr>
+<h2 id="part-a-one-time-setup">Part A: One-time setup<a class="anchor" href="#part-a-one-time-setup" title="Permanent link">#</a></h2>
+<p>Do these once. If they're done, skip to Part B.</p>
+<h3 id="a1-dev-tools-must-point-at-the-database-the-server-runs-on">A1. Dev Tools must point at the database the server runs on<a class="anchor" href="#a1-dev-tools-must-point-at-the-database-the-server-runs-on" title="Permanent link">#</a></h3>
+<p>The World server runs from <code>bin\Debug\</code> (Server Control builds Debug), so
+<strong>that's</strong> the database the tools must edit.</p>
+<ol>
+<li><strong>Tools &gt; Axiom &gt; Settings…</strong></li>
+<li><strong>World database:</strong> press <strong>Use</strong> next to
+   <code>src\Axiom.Server.World\bin\Debug\net10.0\Data\worldserver.db</code>.</li>
+<li><strong>Patches folder</strong> stays <code>src\Axiom.Server.World\SQL\patches</code>.</li>
+</ol>
+<blockquote>
+<p>We lost time here: Settings pointed at <code>src\…\Data\worldserver.db</code>, the
+<em>source</em> copy, which never gets the server's new tables. Saving then failed
+with "Run the patched world server once to create GearVisuals…". Building
+the server also copies the source database over the <code>bin</code> one whenever the
+source is newer, so editing the wrong copy can undo your work.</p>
+</blockquote>
+<p>Check: <strong>Dev Tools &gt; Overview &gt; World database</strong> shows a folder ending in
+<code>bin\Debug\net10.0\Data</code>, and the status bar shows <strong>World DB</strong> green.</p>
+<h3 id="a2-the-two-bodies">A2. The two bodies<a class="anchor" href="#a2-the-two-bodies" title="Permanent link">#</a></h3>
+<p>Each body is a prefab with an <strong>empty root</strong> and the <strong>model as a child</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>Default_Male_Char</code></th>
+<th><code>Default_Female_Char</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FBX</td>
+<td><code>Superhero_Male_FullBody.fbx</code></td>
+<td><code>Superhero_Female_FullBody.fbx</code></td>
+</tr>
+<tr>
+<td>FBX import</td>
+<td>Rig: <strong>Humanoid</strong>, Avatar: Create From This Model</td>
+<td>same</td>
+</tr>
+<tr>
+<td>Root</td>
+<td>Position 0,0,0 · Rotation <strong>0,0,0</strong> · Scale 1</td>
+<td>same</td>
+</tr>
+<tr>
+<td>Child (the model)</td>
+<td>Position 0,0,0 · Rotation <strong>0,180,0</strong></td>
+<td>same</td>
+</tr>
+<tr>
+<td>Child's Animator</td>
+<td>Controller <strong>AxiomCharacter</strong>, <strong>Apply Root Motion off</strong></td>
+<td>same</td>
+</tr>
+<tr>
+<td>Saved in</td>
+<td><code>Assets/AxiomMMOKit/Axiom.Client/Prefabs/World/Characters/</code></td>
+<td>same</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout"><p><strong>Why the child is turned 180°:</strong> these models face backwards (−Z). Turn
+the <strong>child</strong>, never the root. Test: press forward in game; he must run
+<em>away</em> from the camera. If he runs at it, the child's Y is wrong.</p>
+<p><strong>Why the child's position must be 0:</strong> our first male body had the model
+1.36 m off its root. The camera and movement follow the root, so he swung
+around an empty point. Keep the child at 0,0,0.</p>
+<p><strong>Never drag armour into a body prefab.</strong> The game puts it on at runtime.
+A deleted armour prefab left inside a body shows as <em>"Missing Nested Prefab
+Asset"</em>.</p>
+</blockquote>
+<h3 id="a3-register-the-bodies">A3. Register the bodies<a class="anchor" href="#a3-register-the-bodies" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; Characters &amp; Races &gt; Bodies:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Male</th>
+<th>Female</th>
+<th>Any gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Human</strong></td>
+<td><code>Default_Male_Char</code></td>
+<td><code>Default_Female_Char</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Default</strong></td>
+<td><code>Default_Male_Char</code></td>
+<td><code>Default_Female_Char</code></td>
+<td><code>Default_Male_Char</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The Gear Workshop's body line then says e.g. <em>Uses Character_Human_Female
+(Default_Female_Char)</em>.</p>
+<h3 id="a4-sockets-only-needed-for-weapons-and-hats">A4. Sockets (only needed for weapons and hats)<a class="anchor" href="#a4-sockets-only-needed-for-weapons-and-hats" title="Permanent link">#</a></h3>
+<p><strong>Characters &amp; Races &gt; Sockets</strong>, for each body: <strong>Add missing sockets</strong>.
+All seven rows turn ✓. Lining them up is in Part D.</p>
+<h3 id="a5-import-the-outfit-pack">A5. Import the outfit pack<a class="anchor" href="#a5-import-the-outfit-pack" title="Permanent link">#</a></h3>
+<ol>
+<li>Put the pack's <code>Exports/FBX (Unity)</code> and <code>Textures</code> folders under one
+   folder, e.g. <code>Assets/AxiomMMOKit/Axiom.Client/Art/Armor/</code>.</li>
+<li><strong>Delete <code>Textures/Ranger/Normals-UnrealEngine/</code>.</strong> It's the Unreal-format
+   normal map with the same name as the Unity one, and would make the
+   lighting look inverted.</li>
+<li><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Import Outfit Pack…</strong>: Pack folder =
+   <code>Assets/AxiomMMOKit/Axiom.Client/Art/Armor</code>, Output folder = <code>Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Outfits</code>. <strong>Import</strong>.</li>
+</ol>
+<p>You get the material <code>M_Ranger</code> and one prefab per part in
+<code>Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Outfits/</code>: <code>Male_Ranger_Body</code>, <code>Female_Ranger_Body</code>,
+<code>Male_Ranger_Feet_Boots</code>, <code>Female_Ranger_Feet</code>, …</p>
+<hr>
+<h2 id="part-b-the-ranger-tunic-what-we-did">Part B: The Ranger Tunic (what we did)<a class="anchor" href="#part-b-the-ranger-tunic-what-we-did" title="Permanent link">#</a></h2>
+<p>The pattern for every piece of body armour: <strong>one item, the male model as
+the base, the female model as its Female variant.</strong></p>
+<h3 id="b1-create-the-item">B1. Create the item<a class="anchor" href="#b1-create-the-item" title="Permanent link">#</a></h3>
+<p><strong>Tools &gt; Axiom &gt; Create &gt; Item…</strong> → <strong>Copy an existing one</strong> (a chest armour):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Ranger Tunic</td>
+</tr>
+<tr>
+<td>Gear stats → <strong>EquipSlot</strong></td>
+<td><strong>2</strong> (Chest)</td>
+</tr>
+<tr>
+<td>Gear stats → ArmorKind</td>
+<td>2 (Leather: Warriors and Healers; use 1 Cloth for everyone)</td>
+</tr>
+<tr>
+<td>Gear stats → ArmorRating</td>
+<td>12</td>
+</tr>
+<tr>
+<td><strong>Sold by</strong></td>
+<td>a vendor's shop, with a Buy Price</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Check</strong>, <strong>Create</strong>. Ours got id <strong>970006</strong>.</p>
+<blockquote>
+<p>We forgot two things the first time; both fix the same way in Content
+Studio (<code>Ctrl+Alt+E</code> → <code>Ctrl+K</code> → the item):
+- <strong>EquipSlot</strong>: set it on the item's <strong>Gear stats</strong> row (or press <strong>Make it
+  wearable</strong> if there's none). <code>Ctrl+S</code>.
+- <strong>The vendor</strong>: on the item's <strong>Shop Items</strong>, <strong>Add</strong> a row: ShopId = the
+  shop, BuyPrice = the price. <code>Ctrl+S</code>.</p>
+<p>Then restart the World server. Shops live on the server only, so no game
+data export is needed for those.</p>
+</blockquote>
+<h3 id="b2-the-male-look-everyone">B2. The male look: "Everyone"<a class="anchor" href="#b2-the-male-look-everyone" title="Permanent link">#</a></h3>
+<p>The pack's clothes are made to <strong>replace</strong> the body under them, and they come
+in <strong>sets</strong>: the tunic (<code>Male_Ranger_Body</code>) is sleeveless and stops short of
+the shoulders, and the pack's sleeves (<code>Male_Ranger_Arms</code>: leather sleeves,
+bracers and gloves) fill the gap. Worn alone on our male body, the tunic shows
+skin at the chest (the body's <strong>Shoulders</strong> part pokes through), and hiding
+Shoulders leaves holes at the shoulder caps. So the Ranger Tunic uses the
+tunic <strong>and</strong> the sleeves together (see "Clipping" below for the whole story).</p>
+<ol>
+<li><strong>Make the set prefab.</strong> In <code>Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Outfits/</code>, select
+   <strong>Male_Ranger.prefab</strong> (the pack's complete outfit, every piece on one
+   skeleton), <strong>Ctrl+D</strong>, rename the copy <strong>Male_Ranger_Tunic</strong>. Open it and
+   <strong>untick</strong> the pieces this item doesn't include: <code>Male_Ranger_Legs</code>,
+   <code>Male_Ranger_Feet_Boots</code>, <code>Male_Ranger_Head_Hood</code> and, unless you want the
+   shoulder plate, <code>Male_Ranger_Acc_Pauldron</code>. Keep <code>Male_Ranger_Body</code>, its
+   two belts, <code>Male_Ranger_Arms</code> and <code>Male_Ranger_Arms_Bracer</code>. Ctrl+S.
+   Switched-off pieces stay hidden when the game puts the gear on.</li>
+<li><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Gear Workshop:</strong> <strong>Body:</strong> Human, <strong>Male</strong>.</li>
+<li><strong>Item id:</strong> 970006 → <strong>Load</strong>. Load reads what's <strong>saved</strong> in the world
+   database, so it replaces whatever is in the form: load first, then change
+   the fields.</li>
+<li><strong>Equip slot:</strong> Chest. <strong>Gear prefab:</strong> <code>Male_Ranger_Tunic</code>.</li>
+<li><strong>Attach:</strong> <strong>Skinned</strong>. <strong>Hide body parts:</strong> <strong>Torso, Shoulders, Arms,
+   Hands</strong> (the sleeves include gloves).</li>
+<li><strong>Preview in Scene</strong> → <em>"Armour bound to the body's bones."</em> No skin at the
+   chest, no holes at the shoulders.</li>
+<li><strong>Save for: Everyone</strong> → <strong>Save to world database.</strong>
+   Log: <em>Saved gear visual: item 970006, Chest, prefab Gear/Prefabs/…</em>
+   (a new name each time you save a different prefab).</li>
+</ol>
+<blockquote class="callout"><p><strong>Why "Everyone" and not "Male":</strong> an item has exactly <strong>one</strong> gear visual
+row (slot, attach, hidden parts, base prefab), and that's what Everyone
+saves. A variant is only an extra prefab next to the base, so it needs the
+base saved first. The base is also the fallback for any body without its
+own version.</p>
+</blockquote>
+<h3 id="b3-the-female-look-variant-female">B3. The female look: "Variant: Female"<a class="anchor" href="#b3-the-female-look-variant-female" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Make the female set prefab</strong> the same way: copy <strong>Female_Ranger.prefab</strong>,
+   name it <strong>Female_Ranger_Tunic</strong>, untick its legs, feet, hood and pauldrons,
+   keep the body, belts and arms. Ctrl+S.</li>
+<li>Gear Workshop, <strong>Body:</strong> switch to <strong>Female</strong> (uses <code>Default_Female_Char</code>).</li>
+<li><strong>Load</strong> again.</li>
+<li><strong>Gear prefab:</strong> <code>Female_Ranger_Tunic</code>. <strong>Preview in Scene</strong> → bound.</li>
+<li><strong>Save for: Variant: Female</strong> → <strong>Save as 'Female' variant.</strong></li>
+</ol>
+<blockquote>
+<p>⚠ <strong>Don't press Save to world database with "Everyone" here</strong>, or the
+female model replaces the male base for everyone.</p>
+<p><strong>The variant must be saved with this button.</strong> It's stored next to the
+base under the base's generated name (<code>Resources/Gear/Prefabs/&lt;name&gt;_Female</code>);
+a prefab you name <code>…_Female</code> yourself in <code>Gear/Outfits</code> isn't found.
+<strong>Saving a different base prefab gives it a new name</strong>, so any variants saved
+for the old one stop applying: save them again after changing the base.</p>
+<p><strong>Female, not Human_Female:</strong> Female covers women of every race.
+Human_Female would only cover humans, and elf and fairy women would fall
+back to the <em>male</em> base. Add race versions (<code>Fairy_Female</code>…) later only
+where a body needs a different model; they stack on top.</p>
+</blockquote>
+<h3 id="b4-ship-it-and-test">B4. Ship it and test<a class="anchor" href="#b4-ship-it-and-test" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Dev Tools &gt; Overview &gt; Export game data now.</strong></li>
+<li><strong>Servers &gt; World &gt; Restart.</strong></li>
+<li><strong>Characters &amp; Races &gt; Wardrobe:</strong> Ranger Tunic shows <strong>base</strong> on the
+   male body and <strong>✓ Female</strong> on the female body.</li>
+<li>In game: buy and equip it on a male, then a female character.</li>
+</ol>
+<hr>
+<h2 id="part-c-the-ranger-boots-next">Part C: The Ranger Boots (next)<a class="anchor" href="#part-c-the-ranger-boots-next" title="Permanent link">#</a></h2>
+<p>Exactly Part B, with these differences:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Ranger Tunic</th>
+<th><strong>Ranger Boots</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EquipSlot</td>
+<td>2 (Chest)</td>
+<td><strong>5 (Feet)</strong></td>
+</tr>
+<tr>
+<td>ArmorRating</td>
+<td>12</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Male prefab (Everyone)</td>
+<td><code>Male_Ranger_Body</code></td>
+<td><strong><code>Male_Ranger_Feet_Boots</code></strong></td>
+</tr>
+<tr>
+<td>Female prefab (Variant: Female)</td>
+<td><code>Female_Ranger_Body</code></td>
+<td><strong><code>Female_Ranger_Feet</code></strong></td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li><strong>Create &gt; Item…</strong>: name <em>Ranger Boots</em>, <strong>EquipSlot 5</strong>, ArmorKind 2,
+   ArmorRating 6, <strong>Sold by</strong> your vendor. <strong>Create</strong>, note the id.</li>
+<li><strong>Gear Workshop:</strong> Human / <strong>Male</strong>, id → <strong>Load</strong>, Equip slot <strong>Feet</strong>,
+   Gear prefab <code>Male_Ranger_Feet_Boots</code>, <strong>Skinned</strong>, <strong>Hide body parts:
+   Feet</strong>, <strong>Preview</strong>, <strong>Save for: Everyone</strong> → <strong>Save to world database</strong>.
+   (Our Ranger Boots item is <strong>970007</strong>.)</li>
+<li><strong>Female</strong>, <strong>Load</strong>, Gear prefab <code>Female_Ranger_Feet</code>, <strong>Preview</strong>,
+   <strong>Save for: Variant: Female</strong> → <strong>Save as 'Female' variant</strong>.</li>
+<li><strong>Export game data now</strong>, restart the World server, check the Wardrobe,
+   test.</li>
+</ol>
+<p>The rest of the Ranger set works the same way: <strong>Ranger Pants</strong>
+(<code>*_Ranger_Legs</code>, Legs slot 3, hide <strong>Legs</strong>) and the <strong>hood</strong>
+(<code>*_Ranger_Head_Hood</code>, Head slot 1, hide <strong>Hair</strong>). The hood is <strong>skinned</strong> in
+this pack, so use <strong>Skinned</strong>, not Socket. The sleeves (<code>*_Ranger_Arms</code>) are
+part of the tunic (B2), not an item of their own.</p>
+<p>Pants and boots are a <strong>pair</strong> too: the pants (<code>Male_Ranger_Legs</code>) cover the
+hips down to mid-shin (0.42 m), the boots the floor up to just under the knee
+(0.56 m). Pants hide Legs, so worn without boots the shins would be missing,
+unless the shins count as Feet (one Pipeline setting, see "Clipping"). The
+Peasant pants and shoes are cut the same way.</p>
+<hr>
+<h2 id="part-d-a-sword-next">Part D: A sword (next)<a class="anchor" href="#part-d-a-sword-next" title="Permanent link">#</a></h2>
+<p>Weapons are different from armour: they're <strong>Socket</strong> gear. They're rigid,
+glued to a point on the body, and sheathed somewhere else out of combat.
+Three things make that work:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Lives on</th>
+<th>Done</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Where the hand, hip and back are</td>
+<td>each <strong>body</strong>: <code>Socket_</code> points</td>
+<td>once per body (D1)</td>
+</tr>
+<tr>
+<td>How the model sits on those points</td>
+<td>the <strong>weapon prefab</strong>: one rule</td>
+<td>once per weapon (D2)</td>
+</tr>
+<tr>
+<td>Where a sword is carried</td>
+<td>its <strong>weapon kind</strong>: swords → left hip</td>
+<td>automatic (Weapon Sheaths)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Get those right and <strong>every offset stays at 0</strong>.</p>
+<h3 id="d1-line-up-the-bodys-sockets-once-per-body">D1. Line up the body's sockets (once per body)<a class="anchor" href="#d1-line-up-the-bodys-sockets-once-per-body" title="Permanent link">#</a></h3>
+<p><strong>Characters &amp; Races &gt; Sockets</strong>, Body <code>Character_Default</code> (then do the
+female body too):</p>
+<ol>
+<li><strong>Reference weapon:</strong> a one-handed sword prefab built to the rule in D2.</li>
+<li><strong>MainHand → Line up.</strong> The body appears in the Scene with the sword on
+   the point, and the point is selected.</li>
+<li><strong>Rotate and move the socket, not the sword</strong> (Rotate tool, handle set to
+   <strong>Local</strong>) until the sword is gripped in the fist, pointing forward,
+   blade edge up. <strong>Save sockets to the prefab.</strong></li>
+<li><strong>HipLeft → Line up</strong>: rotate until it hangs at the left hip, blade down
+   and slightly back. <strong>Save sockets to the prefab.</strong></li>
+<li>Do <strong>HipRight</strong> and <strong>Back</strong> the same way when you need them (axes and
+   maces go on the right hip; two-handers and staves on the back).</li>
+</ol>
+<p><strong>Best final check, in the real pose:</strong> Play → equip → draw → <strong>Pause</strong> →
+rotate the live <code>Socket_MainHand</code> until it looks right → right-click
+<strong>Transform → Copy → Component</strong> → stop Play → open the body prefab →
+select <code>Socket_MainHand</code> → <strong>Paste → Component Values</strong> → save.</p>
+<blockquote>
+<p>What happened with the poleaxe: before the sockets existed, the game glued
+weapons to raw bones (<code>hand_r</code>, <code>spine_03</code>), whose axes point in arbitrary
+directions. The poleaxe sat sideways, and offsets couldn't fix both hand
+and back at once. Sockets fixed it.</p>
+</blockquote>
+<h3 id="d2-build-the-sword-prefab-to-the-rule">D2. Build the sword prefab to the rule<a class="anchor" href="#d2-build-the-sword-prefab-to-the-rule" title="Permanent link">#</a></h3>
+<p>The rule, for every weapon: <strong>root = the centre of the grip, blade along
++Y (green), edge along +Z (blue).</strong></p>
+<ol>
+<li>Scene toolbar: <strong>Pivot</strong> (not Center) and <strong>Local</strong> (not Global).</li>
+<li>Hierarchy → <strong>Create Empty</strong>, named <code>Sword_Ranger</code>: Position 0,0,0,
+   Rotation 0,0,0, Scale 1.</li>
+<li>Drag the sword <strong>model</strong> onto it, so the model is a <strong>child</strong>.</li>
+<li>Rotate the <strong>child</strong> until the blade points up the green arrow. Try
+   <code>0,0,90</code>, <code>0,0,-90</code>, <code>90,0,0</code> or <code>-90,0,0</code>.</li>
+<li>Rotate the <strong>child</strong> around Y (0, 90, 180, −90) until the edge faces the
+   blue arrow. From the side (click the red cone on the Scene gizmo), you
+   should see the flat of the blade.</li>
+<li>Move the <strong>child</strong> (Position Y) until the root's gizmo sits where the
+   fist closes on the handle.</li>
+<li>Any size change goes on the <strong>child's</strong> Scale, never the root's.</li>
+<li>Drag <code>Sword_Ranger</code> into <code>Assets/AxiomMMOKit/Axiom.Client/Art/Weapons/</code>, then delete it from the
+   scene.</li>
+</ol>
+<blockquote>
+<p>The poleaxe ended up as child Rotation <strong>0, −90, −90</strong> with its Y position
+moved so the root sat a third of the way up the shaft. Every model is
+different, which is why you check with the gizmo instead of copying numbers.</p>
+<p><strong>The root's position, rotation and scale are overwritten when the game
+attaches a weapon,</strong> so anything you set on the root is lost. That's why
+all the adjusting happens on the child.</p>
+</blockquote>
+<h3 id="d3-create-the-item">D3. Create the item<a class="anchor" href="#d3-create-the-item" title="Permanent link">#</a></h3>
+<p><strong>Create &gt; Item…</strong> → copy an existing sword:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Gear stats field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EquipSlot</strong></td>
+<td><strong>6</strong> (Main Hand)</td>
+</tr>
+<tr>
+<td><strong>WeaponKind</strong></td>
+<td><strong>1</strong> (Sword): Warriors only (Healers and Mages can't use swords)</td>
+</tr>
+<tr>
+<td>TwoHanded</td>
+<td>off (on = a greatsword, carried on the back)</td>
+</tr>
+<tr>
+<td>AttackPower</td>
+<td>e.g. 25</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plus <strong>Sold by</strong> your vendor. <strong>Create</strong>, note the id.</p>
+<h3 id="d4-fit-it">D4. Fit it<a class="anchor" href="#d4-fit-it" title="Permanent link">#</a></h3>
+<p><strong>Gear Workshop:</strong></p>
+<ol>
+<li>Body: Human / Male. Item id → <strong>Load</strong> (this reads the weapon kind).</li>
+<li>Equip slot <strong>Main Hand</strong>, Gear prefab <code>Sword_Ranger</code>.</li>
+<li><strong>Attach: Socket.</strong> <strong>In use:</strong> <em>(the slot's hand)</em>. <strong>Sheathed:</strong> <em>(by
+   weapon kind)</em>. The line underneath should read <em>drawn on MainHand,
+   sheathed on HipLeft (from Sword in Weapon Sheaths)</em>.</li>
+<li>Position and Rotation <strong>0</strong>, Scale <strong>1</strong>.</li>
+<li><strong>Preview in Scene</strong>; tick <strong>Preview sheathed</strong> to see it on the hip.
+   Switch the body to Female and <strong>Rebuild preview</strong> to check her too.</li>
+<li><strong>Sheathed size</strong> below 1 only if it clips on the hip (0.85 is typical
+   for big weapons on the back).</li>
+<li><strong>Save for: Everyone</strong> → <strong>Save to world database.</strong> Weapons usually need
+   no Female variant: the sockets already fit each body.</li>
+<li><strong>Export game data now</strong>, restart the World server, test: equip, draw,
+   sheathe, run.</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Looks like</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every weapon wrong in the hand</td>
+<td>the body's <code>Socket_MainHand</code> (D1)</td>
+</tr>
+<tr>
+<td>Only this sword is wrong</td>
+<td>its prefab doesn't follow the rule (D2)</td>
+</tr>
+<tr>
+<td>Right in hand, wrong at the hip</td>
+<td>the body's <code>Socket_HipLeft</code>, not the sword</td>
+</tr>
+<tr>
+<td>On the back instead of the hip</td>
+<td>Sheathed isn't <em>(by weapon kind)</em>, or TwoHanded is on</td>
+</tr>
+<tr>
+<td>"You can't use that"</td>
+<td>the class can't use swords (Warrior only)</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="clipping-split-the-body-then-hide-what-the-clothes-cover">Clipping: split the body, then hide what the clothes cover<a class="anchor" href="#clipping-split-the-body-then-hide-what-the-clothes-cover" title="Permanent link">#</a></h2>
+<p>The outfit pack's Readme says the clothes are made to <em>replace</em> the skin
+under them. Out of the box our bodies are <strong>one mesh head to toe</strong>, so
+<strong>Hide body parts</strong> can't hide just the torso. The tunic is drawn over the
+full skin, and as she walks her hips push through the bottom of it.</p>
+<p><strong>Fix it once per body:</strong></p>
+<ol>
+<li><strong>Dev Tools &gt; Characters &amp; Races &gt; Sockets.</strong> Pick the body
+   (<code>Character_Default_Female</code>, then the male one).</li>
+<li>In the <strong>Body parts</strong> card, press <strong>Split body into parts</strong>.
+   It cuts the skin by its bone weights into <strong>Head, Torso, Arms, Hands,
+   Legs, Feet</strong> (eyes and eyebrows go with the head; the <strong>hips, crotch and
+   buttocks go with Legs</strong>, because the pants cover them, not the top), keeps the original mesh
+   switched off, and fills in the body's <strong>Character Sockets → Body</strong> list.
+   The card turns ✓ and lists the pieces. It turns on the model's Read/Write
+   import setting itself if needed. <strong>Undo split</strong> puts it back.</li>
+<li><strong>Content Studio &gt; Gear Visuals:</strong> set <strong>Hide Body Parts</strong> on each piece:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Gear prefab</th>
+<th>Hide Body Parts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ranger Tunic</td>
+<td><code>Male_Ranger_Tunic</code> (tunic + sleeves, B2)</td>
+<td><strong>Torso, Shoulders, Arms, Hands</strong></td>
+</tr>
+<tr>
+<td>Ranger Boots</td>
+<td><code>Male_Ranger_Feet_Boots</code></td>
+<td><strong>Feet</strong></td>
+</tr>
+<tr>
+<td>Ranger Pants</td>
+<td><code>Male_Ranger_Legs</code></td>
+<td><strong>Legs</strong></td>
+</tr>
+<tr>
+<td>Ranger Hood</td>
+<td><code>Male_Ranger_Head_Hood</code></td>
+<td><strong>Hair</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>Ctrl+S</code>. Edit it here rather than re-saving in the Gear Workshop: saving
+   "Everyone" there with the female body selected would make the female model
+   the base.
+4. <strong>Export game data now</strong>, restart the World server, and walk around.</p>
+<p>The parts meet with no seams: every piece keeps all the original vertices and
+weights, it just draws its own triangles.</p>
+<blockquote class="callout"><p><strong>Why the hips are Legs, not Torso:</strong> the first version put them in Torso,
+and a tunic then hid the crotch along with the chest, leaving a hole under
+its short flaps. Modular outfits split the body the other way: the top
+covers chest and back, the <strong>pants</strong> cover hips and legs. So a tunic worn
+alone leaves the hips visible (and they can poke through its flaps a
+little); wearing the <strong>Ranger Legs</strong> with it hides them. If you split a
+body before this change, press <strong>Split again</strong>.</p>
+</blockquote>
+<h3 id="sets-not-single-pieces">Sets, not single pieces<a class="anchor" href="#sets-not-single-pieces" title="Permanent link">#</a></h3>
+<p>What the pack's models actually do (we checked them against the bodies):</p>
+<ul>
+<li><strong>Every piece sits inside the body.</strong> The bodies are bigger than the clothes
+  everywhere except the tunic's collar, so whatever body part a piece doesn't
+  hide pokes through it.</li>
+<li><strong>The male body has a Shoulders part</strong> (<code>SuperHero_Male__Shoulders</code>); the
+  female's shoulders are in her Torso. It covers the shoulder caps <strong>and the
+  top corners of the chest</strong>. A tunic that hides only Torso shows two wedges
+  of skin on the chest; hiding Shoulders as well removes them but leaves holes
+  at the shoulder caps, because the tunic stops short of the shoulders.</li>
+<li><strong>The sleeves (<code>*_Ranger_Arms</code>) are the other half of the tunic.</strong> They run
+  from the shoulder to the gloves and close that gap. So the tunic item uses
+  both (B2), hiding Torso, Shoulders, Arms and Hands.</li>
+<li><strong>Pants and boots overlap at the shin.</strong> With the body split the standard
+  way (Legs = hips to ankles), pants worn without boots leave the shins
+  missing. Fix: <strong>Characters &amp; Races &gt; Pipeline &gt; Part rules</strong>, add <strong>Left
+  Lower Leg → Feet</strong> and <strong>Right Lower Leg → Feet</strong>, then <strong>Split again</strong> on
+  each body. Now pants hide hips to knee, boots hide knee down, and any mix
+  works (a little shin may show just under the pant hem; boots cover it).</li>
+<li><strong>Nothing on, nothing underneath.</strong> The Superhero bodies have no underwear,
+  so a character without pants is bare under the tunic's flaps. Give every new
+  character a starter pants item if you don't want that.</li>
+</ul>
+<h3 id="lighting-looks-wrong-sleeves-black-from-behind">Lighting looks wrong (sleeves black from behind)<a class="anchor" href="#lighting-looks-wrong-sleeves-black-from-behind" title="Permanent link">#</a></h3>
+<p>The pack's materials as imported used the normal maps from
+<code>Textures/&lt;Outfit&gt;/Normals-UnrealEngine/</code>. Unreal's normal maps have the green
+channel the other way round from Unity's, so bumps are lit upside down and
+surfaces facing away from the sun go almost black. Either select those
+textures and tick <strong>Flip Green Channel</strong> (Apply), or point <strong>M_Ranger</strong> /
+<strong>M_Peasant</strong>'s Normal Map at <code>Textures/&lt;Outfit&gt;/T_&lt;Outfit&gt;_Normal.png</code> (the
+one outside the Unreal folder; <strong>Fix Now</strong> if Unity asks to mark it as a normal
+map). Materials update at once, no export needed.</p>
+<h2 id="problems-we-hit-and-what-fixed-them">Problems we hit, and what fixed them<a class="anchor" href="#problems-we-hit-and-what-fixed-them" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Save says "Run the patched world server once to create GearVisuals…"</td>
+<td>Settings on the source <code>Data\worldserver.db</code>, plus a Gear Workshop bug (session not opened)</td>
+<td>Use the <code>bin\Debug</code> copy (A1); install the Gear Workshop fix</td>
+</tr>
+<tr>
+<td>"FOREIGN KEY constraint failed" on Create</td>
+<td>tables written alphabetically, so the gear visual went in before its item</td>
+<td>fixed in <code>CommitService.cs</code> (foreign keys checked at the end)</td>
+</tr>
+<tr>
+<td>Create window: "Index was outside the bounds of the array"</td>
+<td>an unfinished draft saved before a migration added columns</td>
+<td>fixed in <code>Changeset.cs</code> (stale drafts dropped)</td>
+</tr>
+<tr>
+<td>He runs toward the camera</td>
+<td>model faces −Z</td>
+<td>child Rotation <strong>0, 180, 0</strong> (A2)</td>
+</tr>
+<tr>
+<td>Camera orbits beside him; he swings when turning</td>
+<td>model offset from its root</td>
+<td>child Position <strong>0, 0, 0</strong> (A2)</td>
+</tr>
+<tr>
+<td>Weapon sideways / pointing backwards</td>
+<td>no sockets yet; prefab not to the rule</td>
+<td>D1 and D2</td>
+</tr>
+<tr>
+<td>Hood floating above the head</td>
+<td>old offsets plus a mesh modelled at head height</td>
+<td>clean prefab, offsets 0; or use the skinned hood</td>
+</tr>
+<tr>
+<td>Women wear the men's version</td>
+<td>no female body, or the variant wasn't saved</td>
+<td>A3 and B3</td>
+</tr>
+<tr>
+<td>Skin pokes through the tunic as she walks</td>
+<td>body was one mesh; nothing to hide</td>
+<td>Split body into parts, then Hide Body Parts = Torso (Clipping)</td>
+</tr>
+<tr>
+<td>Two wedges of skin on his chest under the tunic</td>
+<td>the male body's <strong>Shoulders</strong> part isn't hidden</td>
+<td>tunic + sleeves set, hide Torso, Shoulders, Arms, Hands (B2, "Sets")</td>
+</tr>
+<tr>
+<td>Holes at the shoulder caps</td>
+<td>Shoulders hidden but the tunic alone doesn't reach them</td>
+<td>add the sleeves to the tunic prefab (B2)</td>
+</tr>
+<tr>
+<td>Gear Workshop <strong>Load</strong> brings back the old prefab</td>
+<td>Load reads what's saved and replaces the form</td>
+<td>Load first, then set the fields, then Save</td>
+</tr>
+<tr>
+<td>Female characters wear the male tunic after changing its prefab</td>
+<td>the variant belongs to the old base name</td>
+<td>Save as 'Female' variant again (B3)</td>
+</tr>
+<tr>
+<td>Shins missing when wearing pants without boots</td>
+<td>Legs part runs to the ankle</td>
+<td>Pipeline: Lower Leg → Feet, Split again ("Sets")</td>
+</tr>
+<tr>
+<td>Sleeves almost black from behind</td>
+<td>Unreal normal maps</td>
+<td>Flip Green Channel ("Lighting looks wrong")</td>
+</tr>
+<tr>
+<td>In Unity search, nothing found</td>
+<td>search set to <strong>In Packages</strong></td>
+<td>pick <strong>All</strong> or <strong>In Assets</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="checklist-for-every-new-piece">Checklist for every new piece<a class="anchor" href="#checklist-for-every-new-piece" title="Permanent link">#</a></h2>
+<ul>
+<li>[ ] <strong>Item:</strong> created, <strong>EquipSlot</strong> set, armour/weapon kind set, sold somewhere</li>
+<li>[ ] <strong>Prefab:</strong> armour straight from the pack (keep its Armature), or a copy of the pack's whole outfit with the other pieces switched off when pieces come as a pair (tunic + sleeves); weapon built to the rule</li>
+<li>[ ] <strong>Hide body parts:</strong> everything the piece covers, checked in <strong>Preview</strong> on the male <em>and</em> the female body (the male has a separate Shoulders part)</li>
+<li>[ ] <strong>Gear Workshop:</strong> male body → <strong>Everyone</strong> → Save to world database</li>
+<li>[ ] Armour: female body → <strong>Variant: Female</strong> → Save as variant</li>
+<li>[ ] <strong>Export game data now</strong>, then restart the World server</li>
+<li>[ ] <strong>Wardrobe:</strong> ✓ on every body</li>
+<li>[ ] Tested in game on a male and a female character</li>
+<li>[ ] Commit the new patch files in <code>src/Axiom.Server.World/SQL/patches</code> and the new prefabs</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="handbook-15_NPCS_LOOT_SHOPS.html"><span>Previous</span>15. NPCs, Loot, Shops and World Objects</a>
+<a class="next" href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html"><span>Next</span>17. Bringing Your Own Characters</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#part-a-one-time-setup">Part A: One-time setup</a>
+<ul>
+<li><a href="#a1-dev-tools-must-point-at-the-database-the-server-runs-on">A1. Dev Tools must point at the database the server runs on</a>
+</li>
+<li><a href="#a2-the-two-bodies">A2. The two bodies</a>
+</li>
+<li><a href="#a3-register-the-bodies">A3. Register the bodies</a>
+</li>
+<li><a href="#a4-sockets-only-needed-for-weapons-and-hats">A4. Sockets (only needed for weapons and hats)</a>
+</li>
+<li><a href="#a5-import-the-outfit-pack">A5. Import the outfit pack</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-b-the-ranger-tunic-what-we-did">Part B: The Ranger Tunic (what we did)</a>
+<ul>
+<li><a href="#b1-create-the-item">B1. Create the item</a>
+</li>
+<li><a href="#b2-the-male-look-everyone">B2. The male look: &quot;Everyone&quot;</a>
+</li>
+<li><a href="#b3-the-female-look-variant-female">B3. The female look: &quot;Variant: Female&quot;</a>
+</li>
+<li><a href="#b4-ship-it-and-test">B4. Ship it and test</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-c-the-ranger-boots-next">Part C: The Ranger Boots (next)</a>
+</li>
+<li><a href="#part-d-a-sword-next">Part D: A sword (next)</a>
+<ul>
+<li><a href="#d1-line-up-the-bodys-sockets-once-per-body">D1. Line up the body&#x27;s sockets (once per body)</a>
+</li>
+<li><a href="#d2-build-the-sword-prefab-to-the-rule">D2. Build the sword prefab to the rule</a>
+</li>
+<li><a href="#d3-create-the-item">D3. Create the item</a>
+</li>
+<li><a href="#d4-fit-it">D4. Fit it</a>
+</li>
+</ul>
+</li>
+<li><a href="#clipping-split-the-body-then-hide-what-the-clothes-cover">Clipping: split the body, then hide what the clothes cover</a>
+<ul>
+<li><a href="#sets-not-single-pieces">Sets, not single pieces</a>
+</li>
+<li><a href="#lighting-looks-wrong-sleeves-black-from-behind">Lighting looks wrong (sleeves black from behind)</a>
+</li>
+</ul>
+</li>
+<li><a href="#problems-we-hit-and-what-fixed-them">Problems we hit, and what fixed them</a>
+</li>
+<li><a href="#checklist-for-every-new-piece">Checklist for every new piece</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

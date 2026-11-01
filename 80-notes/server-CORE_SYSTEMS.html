@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core systems · Axiom Docs</title>
+<meta name="description" content="The five pieces the roadmap&#x27;s fix-first list asked for before Phase 3 (September 2026). Each one replaces several hand-rolled copies of the same idea, so the next feature is built on one pattern instead of copying a…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html" class="active" aria-current="page">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/server/CORE_SYSTEMS.md</code></div>
+<h1 id="core-systems">Core systems<a class="anchor" href="#core-systems" title="Permanent link">#</a></h1>
+<p>The five pieces the roadmap's <strong>fix-first</strong> list asked for before Phase 3
+(September 2026). Each one replaces several hand-rolled copies of the same
+idea, so the next feature is built on one pattern instead of copying a
+sixth. None of them changed the client or the wire protocol, and gameplay is
+the same as before.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Piece</th>
+<th>Where</th>
+<th>Replaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Effect system</td>
+<td><code>Core/Effects/</code>, <code>Effects</code> table</td>
+<td>Potion code in PlayerManager, three damage rolls in CombatManager</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Scheduler</td>
+<td><code>Core/Simulation/Scheduler.cs</code></td>
+<td>Five timer lists with their own per-tick sweeps</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Session components</td>
+<td><code>Core/Players/Components/</code></td>
+<td>~40 loose fields on PlayerSession</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Two-phase start-up</td>
+<td><code>Core/Services/</code></td>
+<td>Four static <code>Current</code> singletons, setter injection</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Saved components</td>
+<td><code>IPersistentComponent</code></td>
+<td>Save code that knew every field by name</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="1-effects">1. Effects<a class="anchor" href="#1-effects" title="Permanent link">#</a></h2>
+<p>An <strong>effect</strong> is one thing that happens: <em>heal self 50</em>, <em>damage target
+8-14</em>, <em>mount #1</em>. Items, skills and NPC swings are all <strong>lists</strong> of effects,
+and <code>EffectApplier</code> is the only code that carries them out.</p>
+<div class="hl"><pre><span></span><code>item used / skill hits / NPC swings
+        |
+EffectCatalog.ForItem / ForSkill / ForNpcSwing   -&gt; Effect[]  (loaded once)
+        |
+EffectApplier.Check   -&gt; can every effect land? (changes nothing)
+EffectApplier.Apply   -&gt; do them in order, return what happened
+        |
+caller sends the packets, handles death, loot and Lua
+</code></pre></div>
+
+<p><strong>Check before Apply</strong> is what keeps the old rules: a potion at full health
+is refused <em>before</em> it's consumed; an attack that can't land is refused
+<em>before</em> the cooldown starts.</p>
+<h3 id="the-data">The data<a class="anchor" href="#the-data" title="Permanent link">#</a></h3>
+<p><code>Effects</code> table in <code>worldserver.db</code>, one row per effect:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OwnerType</code></td>
+<td>1 = item (<code>OwnerId</code> = <code>Items.item_id</code>), 2 = skill (<code>OwnerId</code> = <code>Skills.Id</code>)</td>
+</tr>
+<tr>
+<td><code>Sort</code></td>
+<td>Run order within the owner, lowest first</td>
+</tr>
+<tr>
+<td><code>OwnerType</code> 3</td>
+<td>Phase 3: a status's tick (<code>OwnerId</code> = <code>StatusTemplates.Id</code>)</td>
+</tr>
+<tr>
+<td><code>OwnerType</code> 4</td>
+<td>Doodads: what an F/G action on a doodad does (<code>OwnerId</code> = <code>DoodadFuncs.Id</code>)</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td>0 Script, 1 Heal, 2 ApplyStatus, 3 CastSkill, 4 Mount, 5 SummonPet, 6 Damage, 7 Dispel, 8 Taunt, 9 Interrupt, 10 SummonNpc (Phase 5: NPCs only; <code>RefId</code> = template, Min..Max how many, at most 10), 11 GiveItem (doodads: <code>RefId</code> item, 0 = what the doodad holds), 12 PlaceDoodad (items: <code>RefId</code> doodad template) - see <a href="server-DOODADS.html">DOODADS.md</a>, 13 OpenCrafting (doodad actions: a station opens the crafting window) - see <a href="../30-server/80-crafting.html">Crafting</a></td>
+</tr>
+<tr>
+<td><code>School</code>, <code>Coefficient</code></td>
+<td>Phase 3: damage school, and how much attack/spell power adds</td>
+</tr>
+<tr>
+<td><code>RequiresStatus</code>, <code>BonusStatus</code>, <code>BonusPct</code>, <code>ConsumesStatus</code></td>
+<td>Phase 4 combos: only if the target has a status; bigger if it has one; use it up - see <a href="../30-server/30-combat.html">Combat</a></td>
+</tr>
+<tr>
+<td><code>Target</code></td>
+<td>0 Self (the user / attacker), 1 Target (what the attack was aimed at)</td>
+</tr>
+<tr>
+<td><code>Min</code>, <code>Max</code></td>
+<td>Heal / damage range, rolled inclusive. Equal for a fixed amount</td>
+</tr>
+<tr>
+<td><code>RefId</code></td>
+<td>Mount id, pet template id, status id, skill id, NPC template id, item id, doodad template id</td>
+</tr>
+<tr>
+<td><code>DurationMs</code></td>
+<td>How long a status lasts</td>
+</tr>
+<tr>
+<td><code>Script</code></td>
+<td>Optional Lua hook name for Script effects</td>
+</tr>
+</tbody>
+</table></div>
+<p>Patch <code>036_effects_from_items_and_skills.sql</code> converted every existing
+<code>ItemUses</code> row and skill into rows. <strong>From now on, edit <code>Effects</code></strong> - once an
+item or skill has rows, <code>ItemUses.EffectType/EffectValue</code> and
+<code>Skills.MinDamage/MaxDamage</code> are ignored for it. <code>ItemUses</code> still decides
+consume-on-use and the cooldown.</p>
+<p>An item or skill with <strong>no</strong> rows falls back to those old columns, so a row
+added the old way still works.</p>
+<h3 id="examples">Examples<a class="anchor" href="#examples" title="Permanent link">#</a></h3>
+<p>A skill that hits for 20-30 and applies status 3 for five seconds:</p>
+<div class="hl"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Effects</span><span class="w"> </span><span class="p">(</span><span class="n">OwnerType</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerId</span><span class="p">,</span><span class="w"> </span><span class="n">Sort</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="k">Min</span><span class="p">,</span><span class="w"> </span><span class="k">Max</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">      </span><span class="c1">-- damage the target</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5000</span><span class="p">);</span><span class="w">   </span><span class="c1">-- apply status 3 for 5s (Min = stacks)</span>
+</code></pre></div>
+
+<p>A potion that heals 40-60 (it also needs its <code>ItemUses</code> row for
+consume/cooldown):</p>
+<div class="hl"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Effects</span><span class="w"> </span><span class="p">(</span><span class="n">OwnerType</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerId</span><span class="p">,</span><span class="w"> </span><span class="n">Sort</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="k">Min</span><span class="p">,</span><span class="w"> </span><span class="k">Max</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Bad rows (unknown kind, <code>Max &lt; Min</code>, a heal of 0...) are skipped at boot with
+a warning naming the row.</p>
+<h3 id="adding-a-new-kind-of-effect">Adding a new kind of effect<a class="anchor" href="#adding-a-new-kind-of-effect" title="Permanent link">#</a></h3>
+<ol>
+<li>Add it to <code>EffectKind</code> (<code>GameData/Effects/EffectRow.cs</code>). Never renumber.</li>
+<li><code>EffectApplier.CheckOne</code>: when can it <strong>not</strong> land?</li>
+<li><code>EffectApplier.ApplyOne</code>: what it does.</li>
+</ol>
+<p>Phase 3 made <code>Damage</code> and <code>Heal</code> go through the combat formulas, and added
+<code>ApplyStatus</code>, <code>Dispel</code> and <code>Taunt</code> for real - see <a href="../30-server/30-combat.html">Combat</a>.
+Phase 4 added <code>Interrupt</code> and the combo columns - see <a href="../30-server/30-combat.html">Combat</a>.
+<code>CastSkill</code> is still a logged stub.</p>
+<hr>
+<h2 id="2-scheduler">2. Scheduler<a class="anchor" href="#2-scheduler" title="Permanent link">#</a></h2>
+<p>One timer system for the world server, run once per tick on the tick thread.</p>
+<div class="hl"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_scheduler</span><span class="p">.</span><span class="n">In</span><span class="p">(</span><span class="mi">12</span><span class="n">_000</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Despawn</span><span class="p">(</span><span class="n">corpse</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;corpse expiry&quot;</span><span class="p">);</span>
+<span class="n">_scheduler</span><span class="p">.</span><span class="n">Cancel</span><span class="p">(</span><span class="n">h</span><span class="p">);</span><span class="w">                                    </span><span class="c1">// looted early</span>
+<span class="n">_scheduler</span><span class="p">.</span><span class="n">Every</span><span class="p">(</span><span class="mi">60</span><span class="n">_000</span><span class="p">,</span><span class="w"> </span><span class="n">SweepExpired</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;auction sweep&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// repeating</span>
+</code></pre></div>
+
+<ul>
+<li>Times are <code>ServerClock</code> milliseconds (monotonic). Resolution is one tick
+  (50ms): a callback never runs early.</li>
+<li>Callbacks run <strong>on the tick thread</strong>, so they can touch sessions, the grid
+  and anything else tick-owned without locks. Code on another thread hops
+  over with <code>PlayerManager.EnqueueAction</code> first.</li>
+<li>A callback that throws is logged and doesn't stop the others.</li>
+<li>Keep the <code>Handle</code> if you might cancel. Cancel is cheap and safe to call
+  twice.</li>
+<li><strong>Cooldowns are not timers.</strong> A cooldown is a "ready at" timestamp checked
+  when the key is pressed; nothing has to happen when it runs out.</li>
+<li>Not saved across restarts. Something that must survive a reboot (a siege
+  at 8pm Saturday) stores its due time and re-schedules on boot.</li>
+</ul>
+<p>Now on the scheduler: corpse expiry, NPC respawns, harvest completion,
+harvest node respawns, the auction expiry sweep.</p>
+<hr>
+<h2 id="3-session-components">3. Session components<a class="anchor" href="#3-session-components" title="Permanent link">#</a></h2>
+<p><code>PlayerSession</code> holds identity, position, zone and save bookkeeping. Each
+system's state is its own component:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Holds</th>
+<th>Saved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session.Inventory</code></td>
+<td><code>Gold</code>, <code>Slots</code>, item <code>Cooldowns</code>, <code>Dirty</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>session.Quests</code></td>
+<td><code>Progress</code>, <code>UnknownRows</code>, <code>Dirty</code>, <code>Loaded</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>session.Combat</code></td>
+<td><code>Health</code>, <code>MaxHealth</code>, <code>Mana</code>, <code>IsDead</code>, <code>SkillCooldowns</code>, <code>DiedAt</code>, <code>Cast</code>, <code>GcdUntilMs</code>, <code>Diminish</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>session.Mount</code></td>
+<td><code>MountId</code>, <code>Model</code>, <code>SpeedMultiplier</code>, <code>PetNetworkId</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>session.Movement</code></td>
+<td>MovementValidator's budgets and violations</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>session.Market</code></td>
+<td><code>TargetId</code> (auction/mail NPC), <code>ClaimingMail</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>session.Equipment</code></td>
+<td>worn gear (Phase 3)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>session.Abilities</code></td>
+<td>class active/passive ranks, hotbar</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rule of thumb: a manager touches its own component. When one needs another's
+state, it reads it (<code>session.Combat.IsDead</code>) and changes it through the
+owning manager (<code>Mounts.Dismount(...)</code>).</p>
+<h3 id="adding-a-component">Adding a component<a class="anchor" href="#adding-a-component" title="Permanent link">#</a></h3>
+<ol>
+<li>A class in <code>Core/Players/Components/</code>.</li>
+<li>A <code>public readonly XComponent X = new();</code> on <code>PlayerSession</code>.</li>
+<li>If it's saved, see 5.</li>
+</ol>
+<hr>
+<h2 id="4-two-phase-start-up">4. Two-phase start-up<a class="anchor" href="#4-two-phase-start-up" title="Permanent link">#</a></h2>
+<p><code>WorldServer.StartAsync</code> does this:</p>
+<ol>
+<li><strong>Construct</strong> every manager. Constructors take only what the manager
+   needs to <em>exist</em>.</li>
+<li><strong>Register</strong> them all in the <code>ServiceContainer</code>.</li>
+<li><strong>Initialize</strong>: every <code>IInitializable</code> gets <code>Initialize(services)</code> and
+   looks up what it <em>talks to</em>. Everything already exists, so two managers
+   that need each other (combat and NPC AI) just work, and the order of the
+   constructor lines no longer matters.</li>
+<li><strong>Load data</strong>. The order matters here and only here (items before
+   quests/shops/loot; abilities before <code>NpcCombatAi</code>, which checks every
+   <code>NpcAbilities.SkillId</code> against them).</li>
+<li><strong>Packet handlers</strong> are built from the same container.</li>
+</ol>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyManager</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IInitializable</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">CombatManager</span><span class="w"> </span><span class="n">_combat</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">ServiceContainer</span><span class="w"> </span><span class="n">services</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_combat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">CombatManager</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Then add <code>services.Register(_myManager);</code> in <code>WorldServer.BuildServiceContainer</code>.</p>
+<p>There are no static <code>Current</code> singletons any more, and a test checks that
+none come back. <code>services.Get&lt;T&gt;()</code> for something never registered fails at
+start-up with the type's name, not mid-game with a null.</p>
+<hr>
+<h2 id="5-saved-components-ipersistentcomponent">5. Saved components (<code>IPersistentComponent</code>)<a class="anchor" href="#5-saved-components-ipersistentcomponent" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IPersistentComponent</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsDirty</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">void</span><span class="w"> </span><span class="nf">WriteTo</span><span class="p">(</span><span class="n">W2PCharacterSaveFullRequest</span><span class="w"> </span><span class="n">snapshot</span><span class="p">);</span>
+<span class="w">    </span><span class="k">void</span><span class="w"> </span><span class="nf">MarkSaved</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>CharacterPersistence.Capture</code> builds the snapshot by asking every component
+in <code>PlayerSession.PersistentComponents</code> to <code>WriteTo</code> it, and
+<code>PlayerSession.IsDirty</code> asks each one. The autosave and save code don't know
+which systems exist.</p>
+<p><strong>Components never save themselves.</strong> A character save is one snapshot in
+one transaction (see <a href="server-SAVES.html">SAVES.md</a>). Separate saves per component
+would bring back the half-applied saves C1-C3 removed: a crash between "quest
+turned in" and "reward items saved".</p>
+<h3 id="adding-a-saved-system-skills-reputation-housing">Adding a saved system (skills, reputation, housing...)<a class="anchor" href="#adding-a-saved-system-skills-reputation-housing" title="Permanent link">#</a></h3>
+<ol>
+<li>A component implementing <code>IPersistentComponent</code>; add it to
+   <code>PersistentComponents</code> in the <code>PlayerSession</code> constructor.</li>
+<li>A field on <code>W2PCharacterSaveFullRequest</code> (null = "leave it alone", like
+   <code>Quests</code>).</li>
+<li>The persistence server writes it inside the same <code>/characters/save-full</code>
+   transaction, and returns it in the load response.</li>
+<li>Fill the component on spawn (<code>PlayerSpawnManager</code>), then <code>MarkSaved</code>.</li>
+</ol>
+<hr>
+<h2 id="tests">Tests<a class="anchor" href="#tests" title="Permanent link">#</a></h2>
+<p><code>Axiom.LoadTest</code> covers all five: scheduler ordering, cancellation and
+exception isolation; start-up wiring and "no static Current"; component
+dirty tracking and the snapshot; effect rolls, clamping, kills and refusals;
+and the <code>AddEffects</code> migration plus patch 036 run on a <strong>copy</strong> of
+<code>worldserver.db</code>, checking that the converted rows behave exactly like the
+old columns.</p>
+<nav class="pager">
+<a class="prev" href="server-CLIENT_CONTENT.html"><span>Previous</span>Client game data: one source of truth</a>
+<a class="next" href="server-DOODADS.html"><span>Next</span>Doodads - interactive world objects</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#1-effects">1. Effects</a>
+<ul>
+<li><a href="#the-data">The data</a>
+</li>
+<li><a href="#examples">Examples</a>
+</li>
+<li><a href="#adding-a-new-kind-of-effect">Adding a new kind of effect</a>
+</li>
+</ul>
+</li>
+<li><a href="#2-scheduler">2. Scheduler</a>
+</li>
+<li><a href="#3-session-components">3. Session components</a>
+<ul>
+<li><a href="#adding-a-component">Adding a component</a>
+</li>
+</ul>
+</li>
+<li><a href="#4-two-phase-start-up">4. Two-phase start-up</a>
+</li>
+<li><a href="#5-saved-components-ipersistentcomponent">5. Saved components (IPersistentComponent)</a>
+<ul>
+<li><a href="#adding-a-saved-system-skills-reputation-housing">Adding a saved system (skills, reputation, housing...)</a>
+</li>
+</ul>
+</li>
+<li><a href="#tests">Tests</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

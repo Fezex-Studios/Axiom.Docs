@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>18. Adding the Ranger Boots and a Sword (current setup) · Axiom Docs</title>
+<meta name="description" content="Step by step, using everything that&#x27;s in Axiom now: the Character Pipeline, split bodies, Hide body parts, variants, Weapon Sheaths and body sockets. Guide 16 tells the story of how we got here; this is the clean recipe.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html" class="active" aria-current="page">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Content Handbook</div>
+
+<h1 id="18-adding-the-ranger-boots-and-a-sword-current-setup">18. Adding the Ranger Boots and a Sword (current setup)<a class="anchor" href="#18-adding-the-ranger-boots-and-a-sword-current-setup" title="Permanent link">#</a></h1>
+<p>Step by step, using everything that's in Axiom now: the Character Pipeline,
+split bodies, Hide body parts, variants, Weapon Sheaths and body sockets.
+Guide 16 tells the story of how we got here; this is the clean recipe.</p>
+<p><strong>Before you start, check once:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Where</th>
+<th>Should show</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tools point at the server's database</td>
+<td>Dev Tools &gt; Overview &gt; World database</td>
+<td>a folder ending <code>bin\Debug\net10.0\Data</code></td>
+</tr>
+<tr>
+<td>Both bodies assigned</td>
+<td>Characters &amp; Races &gt; <strong>Bodies</strong></td>
+<td><code>Default_Male_Char</code> and <code>Default_Female_Char</code> in the Male / Female slots</td>
+</tr>
+<tr>
+<td>Both bodies split</td>
+<td>Characters &amp; Races &gt; <strong>Sockets</strong> &gt; Body parts card</td>
+<td>✓ Split, for each body</td>
+</tr>
+<tr>
+<td>Both bodies have sockets</td>
+<td><strong>Sockets</strong> page</td>
+<td>all rows ✓</td>
+</tr>
+<tr>
+<td>Outfit pack imported</td>
+<td><code>Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Outfits/</code></td>
+<td><code>Male_Ranger_Feet_Boots</code>, <code>Female_Ranger_Feet</code> prefabs</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="part-1-the-ranger-boots">Part 1: The Ranger Boots<a class="anchor" href="#part-1-the-ranger-boots" title="Permanent link">#</a></h2>
+<p>The pattern for all body armour: <strong>one item; the male model is the base
+("Everyone"); the female model is its "Female" variant; the item hides the
+body part it covers.</strong></p>
+<h3 id="11-create-the-item">1.1 Create the item<a class="anchor" href="#11-create-the-item" title="Permanent link">#</a></h3>
+<p><strong>Tools &gt; Axiom &gt; Create &gt; Item…</strong> → <strong>Copy an existing one</strong> (a pair of boots):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Ranger Boots</td>
+</tr>
+<tr>
+<td>Icon name</td>
+<td>a PNG in <code>Resources/Icons/</code> (guide 10)</td>
+</tr>
+<tr>
+<td>Gear stats → <strong>EquipSlot</strong></td>
+<td><strong>5</strong> (Feet)</td>
+</tr>
+<tr>
+<td>Gear stats → ArmorKind</td>
+<td>2 (Leather)</td>
+</tr>
+<tr>
+<td>Gear stats → ArmorRating</td>
+<td>6</td>
+</tr>
+<tr>
+<td><strong>Sold by</strong></td>
+<td>your vendor's shop, with a Buy Price</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Check</strong> → <strong>Create</strong>. Note the item id.</p>
+<h3 id="12-the-male-look-everyone">1.2 The male look (Everyone)<a class="anchor" href="#12-the-male-look-everyone" title="Permanent link">#</a></h3>
+<p><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Gear Workshop:</strong></p>
+<ol>
+<li><strong>Body:</strong> Human, <strong>Male</strong>.</li>
+<li><strong>Item id</strong> → <strong>Load</strong>. <strong>Equip slot:</strong> Feet.</li>
+<li><strong>Gear prefab:</strong> <code>Male_Ranger_Feet_Boots</code>.</li>
+<li><strong>Attach:</strong> <strong>Skinned</strong>.</li>
+<li><strong>Hide body parts:</strong> <strong>Feet</strong>. The bare feet are hidden inside the boots.
+   (If the boots come up over the calves, add <strong>Legs</strong> only if the pants
+   always cover the legs too; otherwise leave it at Feet.)</li>
+<li><strong>Preview in Scene</strong> → <em>"Armour bound to the body's bones."</em> The feet
+   don't poke through.</li>
+<li><strong>Save for: Everyone</strong> → <strong>Save to world database.</strong></li>
+</ol>
+<h3 id="13-the-female-look-variant-female">1.3 The female look (Variant: Female)<a class="anchor" href="#13-the-female-look-variant-female" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Body:</strong> switch to <strong>Female</strong>. <strong>Load</strong> again.</li>
+<li><strong>Gear prefab:</strong> <code>Female_Ranger_Feet</code>. <strong>Preview in Scene</strong> → bound.</li>
+<li><strong>Save for: Variant: Female</strong> → <strong>Save as 'Female' variant.</strong></li>
+</ol>
+<blockquote>
+<p>⚠ Don't press <em>Save to world database</em> with <strong>Everyone</strong> selected here:
+that would make the female model the base for everyone. Hide body parts
+and the slot come from the base row, so the female boots hide Feet too.</p>
+</blockquote>
+<h3 id="14-ship-it-and-test">1.4 Ship it and test<a class="anchor" href="#14-ship-it-and-test" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Overview &gt; Export game data now.</strong> Restart the World server.</li>
+<li><strong>Characters &amp; Races &gt; Wardrobe:</strong> Ranger Boots shows <strong>base</strong> on the
+   male body, <strong>✓ Female</strong> on the female.</li>
+<li>In game: buy and equip on a male and a female character, and walk around.
+   No skin should show through.</li>
+</ol>
+<hr>
+<h2 id="part-2-a-sword">Part 2: A sword<a class="anchor" href="#part-2-a-sword" title="Permanent link">#</a></h2>
+<p>Weapons are <strong>Socket</strong> gear: rigid, held at the body's <strong>MainHand</strong> socket,
+sheathed at the spot its <strong>weapon kind</strong> says (<strong>Content Studio &gt; Weapon
+Sheaths</strong>: swords go on the <strong>left hip</strong>).</p>
+<h3 id="21-the-body-sockets-once-per-body-skip-if-done">2.1 The body sockets (once per body; skip if done)<a class="anchor" href="#21-the-body-sockets-once-per-body-skip-if-done" title="Permanent link">#</a></h3>
+<p><strong>Characters &amp; Races &gt; Sockets</strong>, for each body:</p>
+<ol>
+<li><strong>Reference weapon:</strong> any sword built to the rule below.</li>
+<li><strong>MainHand → Line up</strong> → rotate and move the <strong>socket</strong> until the sword
+   sits in the fist, pointing forward → <strong>Save sockets to the prefab.</strong></li>
+<li><strong>HipLeft → Line up</strong> → it hangs at the left hip, blade down and a little
+   back → <strong>Save sockets to the prefab.</strong></li>
+</ol>
+<p>Best final check: in Play Mode, equip and draw, <strong>pause</strong>, rotate the live
+<code>Socket_MainHand</code> until it looks right, <strong>Transform &gt; Copy &gt; Component</strong>,
+stop, open the body prefab, <strong>Paste &gt; Component Values</strong> on
+<code>Socket_MainHand</code>, save.</p>
+<h3 id="22-build-the-sword-prefab-to-the-rule">2.2 Build the sword prefab to the rule<a class="anchor" href="#22-build-the-sword-prefab-to-the-rule" title="Permanent link">#</a></h3>
+<p><strong>Root at the centre of the grip; blade along +Y (green); edge along +Z
+(blue).</strong> Scene toolbar on <strong>Pivot</strong> and <strong>Local</strong>.</p>
+<ol>
+<li>Hierarchy → <strong>Create Empty</strong> <code>Sword_Ranger</code>: 0,0,0 / 0,0,0 / 1,1,1.</li>
+<li>Drag the sword model onto it (a <strong>child</strong>).</li>
+<li>Rotate the <strong>child</strong> until the blade points up the green arrow
+   (<code>0,0,90</code>, <code>0,0,-90</code>, <code>90,0,0</code> or <code>-90,0,0</code>).</li>
+<li>Rotate the <strong>child</strong> around Y until the edge faces the blue arrow.</li>
+<li>Move the <strong>child</strong> until the root sits where the fist closes.</li>
+<li>Size changes go on the <strong>child</strong>. Drag <code>Sword_Ranger</code> into
+   <code>Assets/AxiomMMOKit/Axiom.Client/Art/Weapons/</code>, delete it from the scene.</li>
+</ol>
+<p>The root's own transform is overwritten in game, so never adjust the root.</p>
+<h3 id="23-create-the-item">2.3 Create the item<a class="anchor" href="#23-create-the-item" title="Permanent link">#</a></h3>
+<p><strong>Create &gt; Item…</strong> → copy a sword:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Gear stats</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EquipSlot</strong></td>
+<td><strong>6</strong> (Main Hand)</td>
+</tr>
+<tr>
+<td><strong>WeaponKind</strong></td>
+<td><strong>1</strong> (Sword: Warriors)</td>
+</tr>
+<tr>
+<td>TwoHanded</td>
+<td>off (on = carried on the back)</td>
+</tr>
+<tr>
+<td>AttackPower</td>
+<td>e.g. 25</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plus <strong>Sold by</strong>. <strong>Create</strong>, note the id.</p>
+<h3 id="24-fit-it">2.4 Fit it<a class="anchor" href="#24-fit-it" title="Permanent link">#</a></h3>
+<p><strong>Gear Workshop:</strong></p>
+<ol>
+<li>Body: Human / Male. <strong>Item id</strong> → <strong>Load</strong> (reads the weapon kind).</li>
+<li>Equip slot <strong>Main Hand</strong>; Gear prefab <code>Sword_Ranger</code>.</li>
+<li><strong>Attach: Socket.</strong> <strong>In use:</strong> <em>(the slot's hand)</em>. <strong>Sheathed:</strong> <em>(by
+   weapon kind)</em>. The line under them reads <em>drawn on MainHand, sheathed
+   on HipLeft (from Sword in Weapon Sheaths)</em>.</li>
+<li>Position and Rotation <strong>0</strong>; Scale <strong>1</strong>.</li>
+<li><strong>Preview in Scene</strong>; tick <strong>Preview sheathed</strong>. Switch the body to
+   Female and <strong>Rebuild preview</strong>: each body uses its own sockets.</li>
+<li>Optional <strong>Sheathed size</strong> (0.85-0.95) if it clips the leg.</li>
+<li><strong>Save for: Everyone</strong> → <strong>Save to world database.</strong> No Female variant:
+   the sockets already fit each body.</li>
+<li><strong>Export game data now</strong>, restart the World server. In game: equip, draw,
+   sheathe, run.</li>
+</ol>
+<hr>
+<h2 id="when-somethings-off">When something's off<a class="anchor" href="#when-somethings-off" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Looks like</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Skin through the boots</td>
+<td><strong>Hide body parts: Feet</strong> on the boots, and the body is split (Sockets &gt; Body parts ✓)</td>
+</tr>
+<tr>
+<td>Bare legs vanish with the boots</td>
+<td>Hide body parts includes <strong>Legs</strong>: set it to Feet only</td>
+</tr>
+<tr>
+<td>Women wear the men's boots</td>
+<td>the Female variant wasn't saved (1.3), or the female body isn't assigned</td>
+</tr>
+<tr>
+<td>Boots float or stretch</td>
+<td>the boots don't match this skeleton: <strong>Pipeline &gt; Test binding</strong></td>
+</tr>
+<tr>
+<td>Every weapon wrong in the hand</td>
+<td>the body's <code>Socket_MainHand</code> (2.1)</td>
+</tr>
+<tr>
+<td>Only this sword wrong</td>
+<td>its prefab breaks the rule (2.2)</td>
+</tr>
+<tr>
+<td>Sword on the back, not the hip</td>
+<td><strong>Sheathed</strong> isn't <em>(by weapon kind)</em>, or <strong>TwoHanded</strong> is on</td>
+</tr>
+<tr>
+<td>"You can't use that"</td>
+<td>swords are Warrior weapons</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="checklist">Checklist<a class="anchor" href="#checklist" title="Permanent link">#</a></h2>
+<ul>
+<li>[ ] Item created: <strong>EquipSlot</strong> set, armour / weapon kind set, sold somewhere</li>
+<li>[ ] Boots: male → <strong>Everyone</strong>, female → <strong>Variant: Female</strong>, <strong>Hide: Feet</strong></li>
+<li>[ ] Sword: prefab to the rule, <strong>Socket</strong>, automatic sockets, offsets 0</li>
+<li>[ ] <strong>Export game data now</strong>, World server restarted</li>
+<li>[ ] Wardrobe ✓; tested on a male and a female character</li>
+<li>[ ] New patch files and prefabs committed</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html"><span>Previous</span>17. Bringing Your Own Characters</a>
+<a class="next" href="handbook-19_CHARACTER_CUSTOMISATION.html"><span>Next</span>19. Character Customisation</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#part-1-the-ranger-boots">Part 1: The Ranger Boots</a>
+<ul>
+<li><a href="#11-create-the-item">1.1 Create the item</a>
+</li>
+<li><a href="#12-the-male-look-everyone">1.2 The male look (Everyone)</a>
+</li>
+<li><a href="#13-the-female-look-variant-female">1.3 The female look (Variant: Female)</a>
+</li>
+<li><a href="#14-ship-it-and-test">1.4 Ship it and test</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-2-a-sword">Part 2: A sword</a>
+<ul>
+<li><a href="#21-the-body-sockets-once-per-body-skip-if-done">2.1 The body sockets (once per body; skip if done)</a>
+</li>
+<li><a href="#22-build-the-sword-prefab-to-the-rule">2.2 Build the sword prefab to the rule</a>
+</li>
+<li><a href="#23-create-the-item">2.3 Create the item</a>
+</li>
+<li><a href="#24-fit-it">2.4 Fit it</a>
+</li>
+</ul>
+</li>
+<li><a href="#when-somethings-off">When something&#x27;s off</a>
+</li>
+<li><a href="#checklist">Checklist</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

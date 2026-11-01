@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gameplay Systems · Axiom Docs</title>
+<meta name="description" content="This covers the manager classes that make up the actual simulation: session tracking, spatial awareness, movement replication, and the interaction system. All of these live under Axiom.Server.World/Core/Managers/ (plus…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html" class="active" aria-current="page">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/05-GAMEPLAY-SYSTEMS.md</code></div>
+<h1 id="gameplay-systems">Gameplay Systems<a class="anchor" href="#gameplay-systems" title="Permanent link">#</a></h1>
+<p>This covers the manager classes that make up the actual simulation:
+session tracking, spatial awareness, movement replication, and the
+interaction system. All of these live under
+<code>Axiom.Server.World/Core/Managers/</code> (plus <code>Core/Interaction/</code>) and are
+coordinated by the thin <code>PlayerManager</code> facade.</p>
+<h2 id="playermanager--a-facade-not-a-god-object-anymore"><code>PlayerManager</code> — a facade, not a god object (anymore)<a class="anchor" href="#playermanager--a-facade-not-a-god-object-anymore" title="Permanent link">#</a></h2>
+<p>The class comment on <code>PlayerManager</code> is worth reading verbatim because it
+explains the shape of everything else in this doc: it used to be a
+448-line class doing session tracking, spawning, movement broadcast,
+character saving, and Lua event firing all at once, and has since been
+split into four owner classes plus a thin facade:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">PlayerManager</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">SessionManager</span><span class="w"> </span><span class="n">_sessions</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">InterestManager</span><span class="w"> </span><span class="n">_interest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PlayerMovementBroadcaster</span><span class="w"> </span><span class="n">_movement</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PlayerSpawnManager</span><span class="w"> </span><span class="n">_spawn</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">CharacterPersistence</span><span class="w"> </span><span class="n">_persistence</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// + the pending-action queue and the LuaEngine, kept here directly</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Every method that existed on the old god-object still exists on
+<code>PlayerManager</code> with the same signature — it just delegates. This matters
+if you're deciding where to add a new method: <strong>add it to the class that
+actually owns the relevant state</strong>, then expose it through <code>PlayerManager</code>
+only if a packet handler needs to call it (handlers only ever get
+<code>PlayerManager</code> injected, not the four inner classes directly — see
+<code>ServiceContainer</code> in
+<a href="02-NETWORKING-AND-PACKETS.html">02-NETWORKING-AND-PACKETS.md</a>).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Responsibility</th>
+<th>Owner class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"which peer is which player" (peer.Tag access)</td>
+<td><code>SessionManager</code></td>
+</tr>
+<tr>
+<td>connect → spawn → disconnect → cleanup lifecycle</td>
+<td><code>PlayerSpawnManager</code></td>
+</tr>
+<tr>
+<td>position updates, interest-list crossing broadcasts</td>
+<td><code>PlayerMovementBroadcaster</code></td>
+</tr>
+<tr>
+<td>asking the persistence server to save a character</td>
+<td><code>CharacterPersistence</code></td>
+</tr>
+<tr>
+<td>pending-action queue (tick-thread re-entry), Lua engine, interaction glue</td>
+<td><code>PlayerManager</code> itself</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sessions-playersession-lives-on-netpeertag">Sessions: <code>PlayerSession</code> lives on <code>NetPeer.Tag</code><a class="anchor" href="#sessions-playersession-lives-on-netpeertag" title="Permanent link">#</a></h2>
+<p><code>SessionManager</code> is the <strong>only</strong> class allowed to read/write <code>peer.Tag</code>
+directly — every other class goes through one of its methods instead of
+casting <code>Tag</code> itself. This is enforced by convention, not the compiler, so
+keep it that way when adding new code.</p>
+<p>A session has two states, distinguished by whether <code>NetworkId</code> is set:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// &quot;pending&quot; — authenticated, but hasn&#39;t picked/created a character yet</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">TrackPendingSelection</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">accountId</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">AccountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accountId</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// non-null only while pending (NetworkId is still null)</span>
+<span class="k">public</span><span class="w"> </span><span class="kt">int?</span><span class="w"> </span><span class="n">GetPendingAccountId</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">NetworkId</span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">AccountId</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+</code></pre></div>
+
+<p><code>PlayerSpawnManager.SpawnPlayer</code> is what turns "pending" into "in-world" —
+assigning <code>session.NetworkId</code> is the entire state transition, nothing else
+needs to explicitly clear the pending flag:</p>
+<div class="hl"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">AccountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accountId</span><span class="w"> </span><span class="p">};</span>
+<span class="n">session</span><span class="p">.</span><span class="n">NetworkId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkId</span><span class="p">;</span>
+<span class="n">session</span><span class="p">.</span><span class="n">CharacterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">character</span><span class="p">.</span><span class="n">CharacterId</span><span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Two reverse-index dictionaries live alongside the peer-keyed lookups,
+because you sometimes need to go the other direction:</p>
+<div class="hl"><pre><span></span><code><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_idToPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span><span class="w">      </span><span class="c1">// networkId -&gt; peer</span>
+<span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_accountToPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span><span class="w"> </span><span class="c1">// accountId -&gt; peer, for duplicate-login detection</span>
+</code></pre></div>
+
+<h2 id="spatial-awareness-spatialgrid--interestmanager">Spatial awareness: <code>SpatialGrid</code> + <code>InterestManager</code><a class="anchor" href="#spatial-awareness-spatialgrid--interestmanager" title="Permanent link">#</a></h2>
+<p>Two layers here, each with a distinct job:</p>
+<ul>
+<li><strong><code>SpatialGrid</code></strong> — pure bucketing. Divides the XZ plane into
+  <code>cellSize</code>-sized cells (default <code>50f</code>) and answers "who's near this
+  position" as a handful of dictionary lookups instead of an O(n) scan:</li>
+</ul>
+<p>```csharp
+  private (int, int) CellOf(Vector3 position) =&gt; (
+      (int)MathF.Floor(position.X / _cellSize),
+      (int)MathF.Floor(position.Z / _cellSize));</p>
+<p>public IEnumerable<int> GetNearby(int id, int radiusCells = 1)
+  {
+      // 3x3 neighborhood at radiusCells=1 -&gt; up to ~150 units of awareness
+      // range with the default 50-unit cell size
+  }
+  ```</p>
+<p>Explicitly <strong>not thread-safe</strong> — call it only from the tick thread /
+  wherever <code>PlayerManager</code>'s state is already being accessed, same
+  assumption the rest of the manager layer makes.</p>
+<ul>
+<li><strong><code>InterestManager</code></strong> — wraps <code>SpatialGrid</code> with the bookkeeping
+  <code>PlayerManager</code> actually needs: not just "who's nearby right now" but
+  "what changed since the last update", so the caller knows who needs a
+  fresh spawn packet versus a despawn/leave packet:</li>
+</ul>
+<p>```csharp
+  public (List<int> entered, List<int> left) UpdatePosition(int networkId, Vector3 position)
+  {
+      _grid.Update(networkId, position);
+      var nearby = new HashSet<int>(_grid.GetNearby(networkId));</p>
+<div class="hl"><pre><span></span><code>  _known.TryGetValue(networkId, out var previouslyKnown);
+  previouslyKnown ??= new HashSet&lt;int&gt;();
+
+  var entered = nearby.Except(previouslyKnown).ToList();
+  var left = previouslyKnown.Except(nearby).ToList();
+
+  _known[networkId] = nearby;
+  // ... also updates the OTHER side&#39;s _known set symmetrically,
+  // so if B enters A&#39;s awareness, A is added to B&#39;s too
+  return (entered, left);
+</code></pre></div>
+
+<p>}
+  ```</p>
+<p>The awareness relationship is kept symmetric deliberately — when <code>other</code>
+  enters <code>networkId</code>'s set, <code>networkId</code> is added to <code>other</code>'s set too, in
+  the same call. <code>GetKnownBy(networkId)</code> — "who currently knows about this
+  entity" — is what routes position-tick and leave packets; see
+  <code>PlayerMovementBroadcaster.BroadcastPosition</code> below for the consumer.</p>
+<h2 id="movement-replication-playermovementbroadcaster">Movement replication: <code>PlayerMovementBroadcaster</code><a class="anchor" href="#movement-replication-playermovementbroadcaster" title="Permanent link">#</a></h2>
+<p>Called from <code>C2WMovementHandler</code> on every position update the client
+sends. Does three things per call:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">BroadcastPosition</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">sender</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">position</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sender</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="n">senderSession</span><span class="p">)</span>
+<span class="w">        </span><span class="n">senderSession</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 1. update authoritative position</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="p">(</span><span class="n">entered</span><span class="p">,</span><span class="w"> </span><span class="n">left</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_interest</span><span class="p">.</span><span class="n">UpdatePosition</span><span class="p">(</span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">otherId</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">entered</span><span class="p">)</span><span class="w">                        </span><span class="c1">// 2. spawn packets both ways</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// sends otherId&#39;s existing position to sender, AND sender&#39;s new</span>
+<span class="w">        </span><span class="c1">// position to otherId — a fresh mutual introduction</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">otherId</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">left</span><span class="p">)</span><span class="w">                           </span><span class="c1">// 2b. leave packets both ways</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">W2CPlayerLeavePacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">_replication</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">otherPeer</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">networkId</span><span class="p">);</span>
+<span class="w">        </span><span class="n">W2CPlayerLeavePacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">_replication</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">sender</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">otherId</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">knownByPeers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_interest</span><span class="p">.</span><span class="n">GetKnownBy</span><span class="p">(</span><span class="n">networkId</span><span class="p">)...;</span>
+<span class="w">    </span><span class="n">W2CPlayerPositionPacketSender</span><span class="p">.</span><span class="n">SendUnreliable</span><span class="p">(</span><span class="w">       </span><span class="c1">// 3. routine position tick</span>
+<span class="w">        </span><span class="n">_replication</span><span class="p">,</span><span class="w"> </span><span class="n">knownByPeers</span><span class="p">,</span><span class="w"> </span><span class="n">sender</span><span class="p">,</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Note the delivery method split: entering/leaving the interest set uses
+reliable sends (<code>W2CSpawnPlayerPacketSender.Send</code>,
+<code>W2CPlayerLeavePacketSender.Send</code>) because missing a spawn/despawn is a
+correctness bug (a ghost or a permanently-missing player), while the
+routine per-tick position update uses
+<code>ReplicationManager.SendUnreliable</code> — dropping one position packet is
+harmless, the next tick supersedes it.</p>
+<h2 id="replicationmanager--the-only-class-that-calls-the-packet-sender-directly"><code>ReplicationManager</code> — the only class that calls the packet sender directly<a class="anchor" href="#replicationmanager--the-only-class-that-calls-the-packet-sender-directly" title="Permanent link">#</a></h2>
+<p>Thin on purpose:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ReplicationManager</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="n">Broadcast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Opcodes</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">peers</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="n">BroadcastExcept</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Opcodes</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">peers</span><span class="p">,</span><span class="w"> </span><span class="n">NetPeer</span><span class="w"> </span><span class="n">except</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="n">Send</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Opcodes</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="n">SendUnreliable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Opcodes</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">peers</span><span class="p">,</span><span class="w"> </span><span class="n">NetPeer</span><span class="w"> </span><span class="n">except</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Every <code>W2C*Sender</code> class takes a <code>ReplicationManager</code> and calls one of
+these rather than touching <code>WorldserverPacketSender</code>/LiteNetLib directly —
+if you're writing a new sender, follow that pattern rather than reaching
+for a lower-level API, so delivery-method choices stay centralized.</p>
+<h2 id="the-interaction-system">The interaction system<a class="anchor" href="#the-interaction-system" title="Permanent link">#</a></h2>
+<p>Three small pieces, deliberately kept generic so new interactable types
+don't require touching the handler:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// IInteractable.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IInteractable</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Vector3</span><span class="w"> </span><span class="n">Position</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">TemplateId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">InteractableKind</span><span class="w"> </span><span class="n">Kind</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">InteractRange</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">InteractableKind</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Npc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// Lootable = 2, QuestObject = 3, ResourceNode = 4, ... add as they&#39;re built</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// InteractionRegistry.cs — networkId -&gt; IInteractable lookup table</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InteractionRegistry</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Register</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">IInteractable</span><span class="w"> </span><span class="n">interactable</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Unregister</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">);</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">TryGet</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="n">IInteractable</span><span class="w"> </span><span class="n">interactable</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>NpcSpawner.SpawnFromTemplate</code> registers every spawned NPC here
+(<code>interactions.Register(networkId, npc)</code>), and <code>DespawnNpc</code> unregisters it
+— that's the entire lifecycle contract a new interactable type needs to
+honor to become a valid <code>C2WInteractPacket</code> target.</p>
+<p><code>C2WInteractHandler</code> is the single reader of this registry, and does a
+straightforward authoritative check before firing the Lua hook — existence,
+then range (server-side distance check against <code>InteractionConstants.MaxRange</code>
+= 5 units, independent of whatever range value the target itself reports),
+then delegates everything else to Lua:</p>
+<div class="hl"><pre><span></span><code><span class="na">[PacketOpcode(Opcodes.Interact)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WInteractHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WInteractPacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">playerManager</span><span class="p">.</span><span class="n">TryGetNetworkId</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">playerId</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">interactions</span><span class="p">.</span><span class="n">TryGet</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">TargetNetworkId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">target</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">W2CInteractDeniedPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;That&#39;s no longer there.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">playerManager</span><span class="p">.</span><span class="n">TryGetPosition</span><span class="p">(</span><span class="n">playerId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="n">Vector3</span><span class="w"> </span><span class="n">playerPos</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">playerPos</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="n">Position</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">distance</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="n">InteractRange</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">W2CInteractDeniedPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Too far away.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">luaPlayer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">playerManager</span><span class="p">.</span><span class="n">CreateLuaPlayer</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">luaPlayer</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">playerManager</span><span class="p">.</span><span class="n">FireInteractEvent</span><span class="p">(</span><span class="n">luaPlayer</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Everything past the range check is opaque to C# — what actually happens on
+interact (dialogue, a loot placeholder, eventually a shop window) is
+entirely a Lua concern, dispatched by <code>targetTemplateId</code>. See
+<a href="04-LUA-SCRIPTING.html">04-LUA-SCRIPTING.md</a> for the <code>npc_guard_example.lua</code>
+worked example, and note the client's raycast that decides <em>which</em>
+NetworkId to send in <code>C2WInteractPacket</code> is UX-only — the range check above
+is what actually matters, per <code>InteractionConstants.MaxRange</code>'s doc
+comment.</p>
+<h3 id="adding-a-new-interactable-kind-eg-a-lootable-resource-node-for-a-shop-system">Adding a new interactable kind (e.g. a lootable resource node for a shop system)<a class="anchor" href="#adding-a-new-interactable-kind-eg-a-lootable-resource-node-for-a-shop-system" title="Permanent link">#</a></h3>
+<ol>
+<li>Add a value to <code>InteractableKind</code> (<code>Lootable = 2</code>, per the existing
+   comment).</li>
+<li>Create an entity class implementing <code>IInteractable</code> (mirror
+   <code>NpcEntity</code> — <code>Core/Entities/NpcEntity.cs</code>).</li>
+<li>Register/unregister instances with <code>InteractionRegistry</code> at
+   spawn/despawn time (mirror <code>NpcSpawner</code>).</li>
+<li>Handle the new <code>targetKind</code> value in whichever <code>OnInteract</code> Lua scripts
+   should react to it — <code>C2WInteractHandler</code> needs <strong>no changes</strong> for a
+   new kind, that's the point of the interface.</li>
+</ol>
+<nav class="pager">
+<a class="prev" href="04-LUA-SCRIPTING.html"><span>Previous</span>Lua Scripting System</a>
+<a class="next" href="06-AUTH-AND-SESSION-FLOW.html"><span>Next</span>Auth &amp; Session Flow, End to End</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#playermanager--a-facade-not-a-god-object-anymore">PlayerManager — a facade, not a god object (anymore)</a>
+</li>
+<li><a href="#sessions-playersession-lives-on-netpeertag">Sessions: PlayerSession lives on NetPeer.Tag</a>
+</li>
+<li><a href="#spatial-awareness-spatialgrid--interestmanager">Spatial awareness: SpatialGrid + InterestManager</a>
+</li>
+<li><a href="#movement-replication-playermovementbroadcaster">Movement replication: PlayerMovementBroadcaster</a>
+</li>
+<li><a href="#replicationmanager--the-only-class-that-calls-the-packet-sender-directly">ReplicationManager — the only class that calls the packet sender directly</a>
+</li>
+<li><a href="#the-interaction-system">The interaction system</a>
+<ul>
+<li><a href="#adding-a-new-interactable-kind-eg-a-lootable-resource-node-for-a-shop-system">Adding a new interactable kind (e.g. a lootable resource node for a shop system)</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

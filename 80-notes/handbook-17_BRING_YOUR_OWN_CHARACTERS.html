@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17. Bringing Your Own Characters · Axiom Docs</title>
+<meta name="description" content="Axiom doesn&#x27;t care which character models, skeleton or naming you use. The rules the character tools and the game follow live in one settings asset, the Character Pipeline, so a project can adapt them without changing…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html" class="active" aria-current="page">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Content Handbook</div>
+
+<h1 id="17-bringing-your-own-characters">17. Bringing Your Own Characters<a class="anchor" href="#17-bringing-your-own-characters" title="Permanent link">#</a></h1>
+<p>Axiom doesn't care which character models, skeleton or naming you use. The
+rules the character tools and the game follow live in one settings asset,
+the <strong>Character Pipeline</strong>, so a project can adapt them without changing code.</p>
+<p><strong>Open it:</strong> Dev Tools &gt; Characters &amp; Races &gt; <strong>Pipeline</strong>. The first time,
+press <strong>Create Character Pipeline settings</strong>. It's saved at
+<code>Assets/AxiomMMOKit/Axiom.Client/Resources/Characters/CharacterPipeline.asset</code>, and
+without it the defaults apply, which are exactly how Axiom behaved before.</p>
+<hr>
+<h2 id="what-a-character-needs">What a character needs<a class="anchor" href="#what-a-character-needs" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Why</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rig: Humanoid</strong>, Avatar mapping all green</td>
+<td>sockets, body splitting and animation retargeting all find bones through it</td>
+<td>FBX Inspector &gt; Rig &gt; Humanoid &gt; Apply; <strong>Configure…</strong> to fix any bone it couldn't map</td>
+</tr>
+<tr>
+<td><strong>Skinned</strong> with real weights</td>
+<td>gear and the body split follow the weights</td>
+<td>Blender: Ctrl+P &gt; With Automatic Weights, then tidy borders (waist, shoulders, wrists, neck, ankles) in Weight Paint</td>
+</tr>
+<tr>
+<td>A body prefab: <strong>empty root, model as a child</strong></td>
+<td>the game moves the root; the child carries the model</td>
+<td>root 0/0/0, child 0/0/0, child turned 180° if the model faces −Z (guide 16, A2)</td>
+</tr>
+<tr>
+<td>The Animator: <code>AxiomCharacter</code> controller, <strong>Apply Root Motion off</strong></td>
+<td>movement is the server's, not the animation's</td>
+<td>on the child's Animator</td>
+</tr>
+<tr>
+<td>The same skeleton <strong>shape</strong> as its clothes</td>
+<td>skinned gear binds bone by bone</td>
+<td>one rig for every body in the project is easiest</td>
+</tr>
+</tbody>
+</table></div>
+<p>Names don't have to match: see <strong>Bone aliases</strong>.</p>
+<hr>
+<h2 id="the-four-sections-of-the-pipeline">The four sections of the Pipeline<a class="anchor" href="#the-four-sections-of-the-pipeline" title="Permanent link">#</a></h2>
+<h3 id="sockets">Sockets<a class="anchor" href="#sockets" title="Permanent link">#</a></h3>
+<p>The attachment points every body carries. Defaults: <strong>MainHand, OffHand,
+Back, BackOffHand, HipLeft, HipRight, Head</strong>.</p>
+<p>Add your own (a quiver on the back, a belt pouch, a tail tip, wing mounts):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>what gear and Weapon Sheaths refer to (<code>Quiver</code>)</td>
+</tr>
+<tr>
+<td><strong>Bone</strong></td>
+<td>the humanoid bone it hangs from (<code>UpperChest</code>)</td>
+</tr>
+<tr>
+<td><strong>Pose</strong></td>
+<td>where a new one starts: InHand, BackDiagonal, BackFlat, HipLeft, HipRight, OnTop, AtBone</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>shown in the tools</td>
+</tr>
+</tbody>
+</table></div>
+<p>New sockets appear straight away on <strong>Sockets</strong> (with <strong>Add missing
+sockets</strong> and <strong>Line up</strong>) and in the <strong>Gear Workshop</strong>'s socket lists. To
+carry a weapon kind there, put the name in <strong>Content Studio &gt; Weapon Sheaths</strong>.</p>
+<h3 id="part-rules">Part rules<a class="anchor" href="#part-rules" title="Permanent link">#</a></h3>
+<p>Which <strong>body part</strong> each humanoid bone's skin belongs to, for <strong>Split body
+into parts</strong>. Leave it empty for the defaults:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bones</th>
+<th>Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Neck, Head, Jaw, Eyes</td>
+<td>Head</td>
+</tr>
+<tr>
+<td>Spine, Chest, UpperChest, Shoulders</td>
+<td>Torso</td>
+</tr>
+<tr>
+<td><strong>Hips</strong></td>
+<td><strong>Legs</strong> (the pants cover the hips, not the top)</td>
+</tr>
+<tr>
+<td>UpperArm, LowerArm</td>
+<td>Arms</td>
+</tr>
+<tr>
+<td>Hand and fingers</td>
+<td>Hands</td>
+</tr>
+<tr>
+<td>UpperLeg, LowerLeg</td>
+<td>Legs</td>
+</tr>
+<tr>
+<td>Foot, Toes</td>
+<td>Feet</td>
+</tr>
+</tbody>
+</table></div>
+<p>Add a row to change one, e.g. <strong>Hips → Torso</strong> if your tops are long tunics
+that always cover the hips. Then <strong>Split again</strong> on each body.</p>
+<h3 id="name-rules">Name rules<a class="anchor" href="#name-rules" title="Permanent link">#</a></h3>
+<p>Text in a <strong>bone or mesh name</strong> that picks a part. Used two ways:</p>
+<ul>
+<li><strong>For bones the Avatar doesn't know.</strong> A rule <code>wing → Torso</code> makes the
+  skin moved by <code>wing_l</code>, <code>wing_r</code>… part of the Torso. (More parts such as
+  Wings and Tail arrive in Phase 2.)</li>
+<li><strong>For bodies split by hand in Blender.</strong> Name the pieces <code>Body_Head</code>,
+  <code>Body_Torso</code>, <code>Body_Arms</code>, <code>Body_Hands</code>, <code>Body_Legs</code>, <code>Body_Feet</code> (the
+  defaults match <code>_head</code>, <code>_torso</code>, <code>_arms</code>, <code>_hands</code>, <code>_legs</code>, <code>_feet</code>, and
+  <code>hair</code>). Then press <strong>List meshes by name</strong> on the Sockets page instead of
+  Split. Nothing is cut; each mesh is listed with its part.</li>
+</ul>
+<h3 id="bone-aliases-and-prefixes">Bone aliases and prefixes<a class="anchor" href="#bone-aliases-and-prefixes" title="Permanent link">#</a></h3>
+<p>Gear binds to the body <strong>by bone name</strong>. When a name doesn't match exactly,
+the game tries again:</p>
+<ol>
+<li><strong>Strip prefixes:</strong> <code>mixamorig:</code>, <code>Bip01</code>, <code>DEF-</code>, <code>ORG-</code>, <code>Armature|</code>…
+   (built in), plus any you add.</li>
+<li><strong>Aliases:</strong> built-in groups for the humanoid bones under <strong>Unity/Mixamo,
+   Unreal, Blender (Rigify) and 3ds Max Biped</strong> names, for example:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mixamo</th>
+<th>Unreal</th>
+<th>Blender</th>
+<th>3ds Max</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Hips</code></td>
+<td><code>pelvis</code></td>
+<td></td>
+<td><code>Bip01 Pelvis</code></td>
+</tr>
+<tr>
+<td><code>LeftArm</code></td>
+<td><code>upperarm_l</code></td>
+<td><code>upper_arm.L</code></td>
+<td><code>Bip01 L UpperArm</code></td>
+</tr>
+<tr>
+<td><code>LeftHandIndex1</code></td>
+<td><code>index_01_l</code></td>
+<td><code>f_index.01.L</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Add your own groups for anything else (twist bones, custom names).</p>
+<p>So <strong>armour made for a Mixamo body binds to an Unreal-named body</strong>, as long
+as the skeletons have the same shape. Aliases rename bones; they can't fix
+different proportions or rest poses. Armour still has to be modelled for the
+body's shape.</p>
+<p><strong>Test it:</strong> the <strong>Test: does this gear bind to this body?</strong> card at the
+bottom of the Pipeline page runs the game's own binding on any body and
+gear prefab, and logs ✓, or the bone it couldn't find.</p>
+<hr>
+<h2 id="bringing-in-a-new-character-start-to-finish">Bringing in a new character, start to finish<a class="anchor" href="#bringing-in-a-new-character-start-to-finish" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Import</strong> the FBX: Rig <strong>Humanoid</strong>, Avatar <strong>Create From This Model</strong>,
+   Apply; fix the mapping if it isn't all green.</li>
+<li><strong>Body prefab:</strong> empty root + model child, 0/0/0; turn the child 180° if
+   needed; Animator controller <code>AxiomCharacter</code>, Apply Root Motion off.</li>
+<li><strong>Characters &amp; Races &gt; Bodies:</strong> drag it into its race / gender slot.</li>
+<li><strong>Sockets page:</strong> <strong>Add missing sockets</strong>, then <strong>Line up</strong> each one with a
+   reference weapon (guide 11, Part A).</li>
+<li><strong>Body parts:</strong> <strong>Split body into parts</strong> (one mesh) or <strong>List meshes by
+   name</strong> (already split in Blender).</li>
+<li><strong>Pipeline &gt; Test binding</strong> with a piece of armour. If a bone is missing,
+   add an alias group, or fit the armour to this skeleton.</li>
+<li>Press Play: walk forward (he should run away from the camera), equip
+   gear, draw and sheathe a weapon.</li>
+</ol>
+<hr>
+<h2 id="races-and-body-types-are-data-phase-2">Races and body types are data (Phase 2)<a class="anchor" href="#races-and-body-types-are-data-phase-2" title="Permanent link">#</a></h2>
+<p>Races and body types live in the <strong>world database</strong>, not in code:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table (Content Studio)</th>
+<th>Columns</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Races</strong></td>
+<td>Id, Name, Description, FactionId, IsPlayable, SortOrder</td>
+<td>Name is one word: it's the art name (<code>Character_{Name}_{BodyType}</code>)</td>
+</tr>
+<tr>
+<td><strong>Body Types</strong></td>
+<td>Id, Name, Description, IsPlayable, SortOrder</td>
+<td>Male and Female by default; add <code>Large</code>, <code>Slim</code>, <code>Child</code>…</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>To add a race</strong> (e.g. Dwarf): Content Studio &gt; <strong>Races</strong> &gt; New: Id 4, Name
+<code>Dwarf</code>, a description, SortOrder 40. <code>Ctrl+S</code>. Restart the World server.
+It's on the creation screen at the next login, and gets a row on
+<strong>Characters &amp; Races &gt; Bodies</strong> for its body prefabs. No code, no DLL
+rebuild, no migration.</p>
+<p><strong>To add a body type</strong> (e.g. Large): Content Studio &gt; <strong>Body Types</strong> &gt; New.
+Bodies are then <code>Character_{Race}_Large</code>, and gear variants <code>{Prefab}_Large</code>.</p>
+<ul>
+<li><strong>Never change an Id</strong> once characters use it: it's saved on them.</li>
+<li><strong>IsPlayable = 0</strong> hides a race from the creation screen; existing
+  characters of that race keep it.</li>
+<li><strong>FactionId</strong> ties a race to one starting faction (0 = any).</li>
+<li>The World server reads the tables on start and sends them to every client
+  with the character list.</li>
+</ul>
+<h2 id="32-body-parts-phase-2">32 body parts (Phase 2)<a class="anchor" href="#32-body-parts-phase-2" title="Permanent link">#</a></h2>
+<p><strong>Hide body parts</strong> now has 32 flags. The original seven keep their values;
+the new ones:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hips</strong></td>
+<td>its own part only if a Part rule says <code>Hips → Hips</code> (by default the hips stay with Legs)</td>
+</tr>
+<tr>
+<td><strong>Shoulders</strong>, <strong>Neck</strong></td>
+<td>pauldrons, high collars</td>
+</tr>
+<tr>
+<td><strong>Ears</strong>, <strong>Beard</strong></td>
+<td>helmets that hide elf ears; masks</td>
+</tr>
+<tr>
+<td><strong>Wings</strong>, <strong>Tail</strong></td>
+<td>non-human races: name rules <code>wing → Wings</code>, <code>tail → Tail</code></td>
+</tr>
+<tr>
+<td><strong>Underwear</strong></td>
+<td>the body's always-on underwear meshes (below)</td>
+</tr>
+<tr>
+<td><strong>Custom1–Custom8</strong></td>
+<td>anything your project needs; write down what each means</td>
+</tr>
+</tbody>
+</table></div>
+<p>To use a new part: add a <strong>Part rule</strong> or <strong>Name rule</strong> that produces it,
+<strong>Split again</strong> (or <strong>List meshes by name</strong>), then tick it in <strong>Hide body
+parts</strong> on the gear that covers it.</p>
+<h3 id="the-underwear-layer">The underwear layer<a class="anchor" href="#the-underwear-layer" title="Permanent link">#</a></h3>
+<p>So a character wearing nothing isn't bare: model underwear as <strong>its own
+mesh</strong> on the body, named e.g. <code>Body_Underwear</code>. Add a name rule
+<code>underwear → Underwear</code> and press <strong>List meshes by name</strong> (or keep it out of
+the automatic split; it's a separate mesh already). It's always drawn,
+except under gear that hides <strong>Underwear</strong>: tick that on pants, robes,
+costumes and undergarment items.</p>
+<h2 id="new-equipment-slots-phase-2">New equipment slots (Phase 2)<a class="anchor" href="#new-equipment-slots-phase-2" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Id</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Shoulders</strong></td>
+<td>13</td>
+<td>pauldrons; Socket (rigid) or Skinned</td>
+</tr>
+<tr>
+<td><strong>Cloak</strong></td>
+<td>14</td>
+<td>usually Skinned; hide nothing, or Torso if it wraps</td>
+</tr>
+<tr>
+<td><strong>Belt</strong></td>
+<td>15</td>
+<td>Skinned or Socket on the hips</td>
+</tr>
+<tr>
+<td><strong>Wrists</strong></td>
+<td>16</td>
+<td>bracers</td>
+</tr>
+<tr>
+<td><strong>Costume</strong></td>
+<td>17</td>
+<td><strong>drawn over armour</strong>: while worn, Chest, Legs, Hands, Feet, Shoulders, Belt, Wrists and Undergarments aren't drawn (their stats still count). Head, Cloak and weapons still show, as in classic MMOs</td>
+</tr>
+<tr>
+<td><strong>Undergarments</strong></td>
+<td>18</td>
+<td>underwear as an item; usually hides the body's Underwear part</td>
+</tr>
+</tbody>
+</table></div>
+<p>Slot 12 stays unused: it was the removed Glider, and old saved gliders in
+it are skipped. Use the new slots like any other: an item's <strong>Gear stats &gt;
+EquipSlot</strong>, then the Gear Workshop. They appear in the Character window.</p>
+<h2 id="character-customisation-phase-3">Character customisation (Phase 3)<a class="anchor" href="#character-customisation-phase-3" title="Permanent link">#</a></h2>
+<p>Skin, hair and eye colours, hair styles, face presets, sliders and height:
+see <a href="handbook-19_CHARACTER_CUSTOMISATION.html">guide 19</a>.</p>
+<nav class="pager">
+<a class="prev" href="handbook-16_WALKTHROUGH_RANGER_GEAR.html"><span>Previous</span>16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a>
+<a class="next" href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html"><span>Next</span>18. Adding the Ranger Boots and a Sword (current setup)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#what-a-character-needs">What a character needs</a>
+</li>
+<li><a href="#the-four-sections-of-the-pipeline">The four sections of the Pipeline</a>
+<ul>
+<li><a href="#sockets">Sockets</a>
+</li>
+<li><a href="#part-rules">Part rules</a>
+</li>
+<li><a href="#name-rules">Name rules</a>
+</li>
+<li><a href="#bone-aliases-and-prefixes">Bone aliases and prefixes</a>
+</li>
+</ul>
+</li>
+<li><a href="#bringing-in-a-new-character-start-to-finish">Bringing in a new character, start to finish</a>
+</li>
+<li><a href="#races-and-body-types-are-data-phase-2">Races and body types are data (Phase 2)</a>
+</li>
+<li><a href="#32-body-parts-phase-2">32 body parts (Phase 2)</a>
+<ul>
+<li><a href="#the-underwear-layer">The underwear layer</a>
+</li>
+</ul>
+</li>
+<li><a href="#new-equipment-slots-phase-2">New equipment slots (Phase 2)</a>
+</li>
+<li><a href="#character-customisation-phase-3">Character customisation (Phase 3)</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

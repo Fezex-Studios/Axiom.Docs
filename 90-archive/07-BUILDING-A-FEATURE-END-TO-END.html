@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer · Axiom Docs</title>
+<meta name="description" content="The other docs describe each layer in isolation. This one is the missing piece: a complete trace of every file you&#x27;d touch and every packet that&#x27;d fly, in both directions, for a real feature — from a UI button press on…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html" class="active" aria-current="page">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/07-BUILDING-A-FEATURE-END-TO-END.md</code></div>
+<h1 id="building-a-feature-end-to-end-client--worldserver--persistenceserver">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer<a class="anchor" href="#building-a-feature-end-to-end-client--worldserver--persistenceserver" title="Permanent link">#</a></h1>
+<p>The other docs describe each layer in isolation. This one is the missing
+piece: a complete trace of <strong>every file you'd touch and every packet
+that'd fly</strong>, in both directions, for a real feature — from a
+UI button press on the client, through the WorldServer, down to the
+PersistenceServer's database, and all the way back. The running example is
+a <strong>shop system</strong> (buy an item from an NPC vendor), since that's a natural
+next step on top of the interaction system that already exists, and it
+needs all three processes and both opcode systems to do anything real.</p>
+<p>Read <a href="02-NETWORKING-AND-PACKETS.html">02-NETWORKING-AND-PACKETS.md</a> and
+<code>ADDING_PACKETSv2.md</code> first if you haven't — this doc assumes you know
+what a C2W/W2C/W2P/P2W packet is and just walks the <em>whole</em> round trip for
+one feature instead of one packet at a time.</p>
+<h2 id="the-two-directions-this-feature-needs">The two directions this feature needs<a class="anchor" href="#the-two-directions-this-feature-needs" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Client → WorldServer → back to Client</strong> (fast path, no persistence
+   involved): asking a vendor NPC what it sells, and getting a denial if
+   you're out of range or can't afford something.</li>
+<li><strong>Client → WorldServer → PersistenceServer → WorldServer → Client</strong>
+   (slow path): the actual purchase, which has to durably deduct currency
+   and grant an item — data that must survive a disconnect, so it can't
+   live only in server memory.</li>
+</ol>
+<h2 id="direction-1-what-does-this-vendor-sell-no-persistence-needed">Direction 1: "what does this vendor sell" (no persistence needed)<a class="anchor" href="#direction-1-what-does-this-vendor-sell-no-persistence-needed" title="Permanent link">#</a></h2>
+<p>This reuses the existing interaction system wholesale — a shop is just a
+new <code>IInteractable</code> kind whose <code>OnInteract</code> hook sends a new packet instead
+of dialogue text.</p>
+<h3 id="1-opcode--packet-class-shared-axiomnetwork">1. Opcode + packet class (shared, <code>Axiom.Network</code>)<a class="anchor" href="#1-opcode--packet-class-shared-axiomnetwork" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Shared/Opcodes.cs — append, never renumber existing values</span>
+<span class="n">ChatMessage</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span>
+<span class="n">W2CShopOpen</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w">   </span><span class="c1">// world server -&gt; client: here&#39;s what this vendor sells</span>
+<span class="n">C2WShopPurchase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">  </span><span class="c1">// client -&gt; world server: buy this item</span>
+<span class="n">W2CShopResult</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">   </span><span class="c1">// world server -&gt; client: purchase succeeded/failed</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Shared/Packets/W2C/W2CShopOpenPacket.cs</span>
+<span class="na">[MessagePackObject(true)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CShopOpenPacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">VendorNetworkId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ShopEntry</span><span class="p">[]</span><span class="w"> </span><span class="n">Items</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="na">[MessagePackObject(true)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ShopEntry</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ItemId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Price</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="2-new-interactablekind--entity-server-axiomserverworld">2. New <code>InteractableKind</code> + entity (server, <code>Axiom.Server.World</code>)<a class="anchor" href="#2-new-interactablekind--entity-server-axiomserverworld" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Core/Interaction/IInteractable.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">InteractableKind</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Npc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Vendor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">   </span><span class="c1">// new</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A <code>VendorEntity</code> mirrors <code>NpcEntity</code> — implements <code>IInteractable</code>, gets
+registered/unregistered with <code>InteractionRegistry</code> on spawn/despawn exactly
+like an NPC does (see
+<a href="05-GAMEPLAY-SYSTEMS.html#the-interaction-system">05-GAMEPLAY-SYSTEMS.md</a>).
+Notice <code>C2WInteractHandler</code> needs <strong>zero changes</strong> for this — that's the
+entire reason <code>IInteractable</code> exists as an interface instead of a type
+check.</p>
+<h3 id="3-lua-hook-reacts-to-the-new-kind">3. Lua hook reacts to the new kind<a class="anchor" href="#3-lua-hook-reacts-to-the-new-kind" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">-- shop_vendor_example.lua</span>
+<span class="c1">-- PlayerEvent.OnInteract = 6, targetKind now includes 2 = Vendor</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">RegisterPlayerEvent</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">targetTemplateId</span><span class="p">,</span><span class="w"> </span><span class="nv">targetKind</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">targetKind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">OpenShop</span><span class="p">(</span><span class="nv">targetTemplateId</span><span class="p">)</span><span class="w">   </span><span class="c1">-- new LuaPlayer method, see below</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Core/Lua/Bindings/LuaPlayer.cs — new method, same pattern as SendDialogue</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OpenShop</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">vendorTemplateId</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShopCatalog</span><span class="p">.</span><span class="n">GetItemsForVendor</span><span class="p">(</span><span class="n">vendorTemplateId</span><span class="p">);</span><span class="w">  </span><span class="c1">// wherever your shop data lives</span>
+<span class="w">    </span><span class="n">W2CShopOpenPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">vendorTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">items</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="4-sender--client-handler-the-return-trip">4. Sender + client handler (the return trip)<a class="anchor" href="#4-sender--client-handler-the-return-trip" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Core/Packets/W2CSenders/W2CShopOpenPacketSender.cs — server side, mirrors W2CInteractDialoguePacketSender</span>
+<span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CShopOpenPacketSender</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">vendorId</span><span class="p">,</span><span class="w"> </span><span class="n">ShopEntry</span><span class="p">[]</span><span class="w"> </span><span class="n">items</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">WorldserverPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CShopOpen</span><span class="p">,</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">W2CShopOpenPacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">VendorNetworkId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vendorId</span><span class="p">,</span><span class="w"> </span><span class="n">Items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Assets/AxiomMMOKit/Axiom.Client/Networking/W2CHandlers/W2CShopOpenHandler.cs — client side</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CShopOpenHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IClientPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">W2CShopOpenPacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+<span class="w">        </span><span class="n">ShopUI</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">VendorNetworkId</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Items</span><span class="p">);</span><span class="w">   </span><span class="c1">// your new UI class</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// ClientNetwork.RegisterHandlers() — REMEMBER THIS LINE</span>
+<span class="c1">// (see 02-NETWORKING-AND-PACKETS.md: client dispatch is manual today,</span>
+<span class="c1">// there&#39;s no attribute-based auto-registration on this side yet)</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CShopOpen</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">W2CShopOpenHandler</span><span class="p">());</span>
+</code></pre></div>
+
+<p>That last line is the one step that's easy to forget precisely <em>because</em>
+the server-side equivalent (<code>[PacketOpcode(...)]</code> + <code>AutoRegister</code>) doesn't
+need it — see
+<a href="08-CLIENT-ARCHITECTURE.html#the-dispatch-gotcha">08-CLIENT-ARCHITECTURE.md</a>
+and
+<a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">09-KNOWN-GAPS-AND-NEXT-STEPS.md</a> for why
+this asymmetry exists and how to close it.</p>
+<p>At this point, direction 1 is done: interact with a vendor, get a shop
+window, no database touched at all — the catalog can live in server memory
+or in <code>worldserver.db</code>'s existing <code>Items</code> table (<code>GameData/Items/ItemTable.cs</code>).</p>
+<h2 id="direction-2-the-actual-purchase-needs-the-persistenceserver">Direction 2: the actual purchase (needs the PersistenceServer)<a class="anchor" href="#direction-2-the-actual-purchase-needs-the-persistenceserver" title="Permanent link">#</a></h2>
+<p>Buying something has to durably change two things that outlive the current
+connection: the player's currency and their inventory/character row. That
+means this packet's handler needs a full C2W → W2P → (Node DB write) →
+P2W → W2C round trip, following the exact request/response + <code>TaskCompletionSource</code>
+pattern <code>W2PCharacterSender</code> already establishes for character load/create.</p>
+<h3 id="1-client-sends-the-purchase-request">1. Client sends the purchase request<a class="anchor" href="#1-client-sends-the-purchase-request" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Assets/AxiomMMOKit/Axiom.Client/Networking/C2WSenders/C2WShopPurchasePacketSender.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WShopPurchasePacketSender</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">vendorNetworkId</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">ClientPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">C2WShopPurchase</span><span class="p">,</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">C2WShopPurchasePacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">VendorNetworkId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vendorNetworkId</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="n">DeliveryMethod</span><span class="p">.</span><span class="n">ReliableOrdered</span><span class="p">);</span><span class="w">   </span><span class="c1">// a purchase must not be silently dropped</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="2-worldserver-handler-validates-then-asks-the-persistenceserver-to-do-the-transaction">2. WorldServer handler validates, then asks the PersistenceServer to do the transaction<a class="anchor" href="#2-worldserver-handler-validates-then-asks-the-persistenceserver-to-do-the-transaction" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="na">[PacketOpcode(Opcodes.C2WShopPurchase)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WShopPurchaseHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">InteractionRegistry</span><span class="w"> </span><span class="n">_interactions</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">_persistence</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">C2WShopPurchaseHandler</span><span class="p">(</span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">playerManager</span><span class="p">,</span><span class="w"> </span><span class="n">InteractionRegistry</span><span class="w"> </span><span class="n">interactions</span><span class="p">,</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">persistence</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_playerManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">playerManager</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_interactions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interactions</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_persistence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">persistence</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WShopPurchasePacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">        </span><span class="c1">// Same authoritative checks C2WInteractHandler already does —</span>
+<span class="w">        </span><span class="c1">// existence + range — reused here, not re-invented:</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_interactions</span><span class="p">.</span><span class="n">TryGet</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">VendorNetworkId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">vendor</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">            </span><span class="n">vendor</span><span class="p">.</span><span class="n">Kind</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">InteractableKind</span><span class="p">.</span><span class="n">Vendor</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">W2CShopResultPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">success</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="n">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Vendor not found.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_playerManager</span><span class="p">.</span><span class="n">TryGetNetworkId</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">playerId</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">            </span><span class="o">!</span><span class="n">_playerManager</span><span class="p">.</span><span class="n">TryGetPosition</span><span class="p">(</span><span class="n">playerId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">playerPos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">            </span><span class="n">Vector3</span><span class="p">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">playerPos</span><span class="p">,</span><span class="w"> </span><span class="n">vendor</span><span class="p">.</span><span class="n">Position</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">vendor</span><span class="p">.</span><span class="n">InteractRange</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">W2CShopResultPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">success</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="n">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Too far away.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">characterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">GetCharacterId</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProcessPurchase</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">characterId</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">ItemId</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ProcessPurchase</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">characterId</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// New method on W2PCharacterSender, same TCS-correlation shape as</span>
+<span class="w">        </span><span class="c1">// Load/Create/LoadList — see 02-NETWORKING-AND-PACKETS.md</span>
+<span class="w">        </span><span class="n">P2WPurchaseResponse</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_persistence</span><span class="p">.</span><span class="n">W2PCharacter</span><span class="p">.</span><span class="n">Purchase</span><span class="p">(</span><span class="n">characterId</span><span class="p">,</span><span class="w"> </span><span class="n">itemId</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">   </span><span class="c1">// mandatory: we&#39;re off the tick thread after this await</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">W2CShopResultPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Success</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Reason</span><span class="p">);</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Success</span><span class="p">)</span>
+<span class="w">                </span><span class="n">W2CInventoryUpdatePacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">UpdatedInventory</span><span class="p">);</span><span class="w">  </span><span class="c1">// new packet, not detailed here</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="3-new-w2pp2w-packets-shared-both-languages-need-matching-enum-values">3. New W2P/P2W packets (shared, both languages need matching enum values)<a class="anchor" href="#3-new-w2pp2w-packets-shared-both-languages-need-matching-enum-values" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Axiom.Network/Shared/PServerOpcodes.cs — C# side</span>
+<span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">PServerOpcodes</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">ushort</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...existing values...</span>
+<span class="w">    </span><span class="n">CharacterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">    </span><span class="n">P2WCharacterListResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Purchase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">             </span><span class="c1">// NEW</span>
+<span class="w">    </span><span class="n">P2WPurchaseResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">  </span><span class="c1">// NEW</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Axiom.Server.Persistence/src/Shared/protocol.persistence.ts — TS side</span>
+<span class="c1">// MUST use the same numbers as above, in the same commit</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="nx">ProtocolPersistence</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...existing values...</span>
+<span class="w">    </span><span class="nx">CharacterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WCharacterListResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">Purchase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">P2WPurchaseResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">11</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="4-sender-on-the-worldserver-side-mirrors-w2pcharactersendercreate">4. Sender on the WorldServer side (mirrors <code>W2PCharacterSender.Create</code>)<a class="anchor" href="#4-sender-on-the-worldserver-side-mirrors-w2pcharactersendercreate" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Add to W2PCharacterSender.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">P2WPurchaseResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Purchase</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">characterId</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">tcs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TaskCompletionSource</span><span class="o">&lt;</span><span class="n">P2WPurchaseResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="n">TaskCreationOptions</span><span class="p">.</span><span class="n">RunContinuationsAsynchronously</span><span class="p">);</span>
+<span class="w">    </span><span class="n">_client</span><span class="p">.</span><span class="n">pendingPurchases</span><span class="p">[</span><span class="n">characterId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tcs</span><span class="p">;</span><span class="w">   </span><span class="c1">// new ConcurrentDictionary on PersistenceClient,</span>
+<span class="w">                                                     </span><span class="c1">// same pattern as pendingLoads/pendingCreates/pendingLists</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">_client</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">Purchase</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">W2PPurchaseRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CharacterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">characterId</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">tcs</span><span class="p">.</span><span class="n">Task</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Remember <code>characterId</code> is a <code>long</code> on the C# side — if you key the pending
+dictionary by it instead of by <code>int accountId</code> (the existing convention),
+that's fine, but double check <code>PersistenceClient.ResolvePurchase</code> removes
+from the matching dictionary type. Also remember the <code>Guid</code>-vs-<code>string</code>
+caveat from <code>ADDING_PACKETSv2.md</code> if you ever move to a <code>Guid</code> correlation
+key instead — MessagePack for C# serializes <code>Guid</code> fine, <code>@msgpack/msgpack</code>
+on the Node side has no matching extension type for it, so use <code>string</code>
+across that boundary specifically.</p>
+<h3 id="5-node-handler-does-the-actual-transaction">5. Node handler does the actual transaction<a class="anchor" href="#5-node-handler-does-the-actual-transaction" title="Permanent link">#</a></h3>
+<p>This is the one step that's genuinely new territory versus what
+<code>persistence.db</code>'s schema supports today — see
+<a href="03-DATABASE-AND-PERSISTENCE.html#persistencedb--the-buntypescript-character-store">03-DATABASE-AND-PERSISTENCE.md</a>
+for why: right now <code>characters</code> has no currency or inventory columns at
+all. You'd add them (or a separate <code>inventory</code> table) the same
+unmigrated, <code>CREATE TABLE IF NOT EXISTS</code> way <code>Database.ts</code> already does it:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Database.ts — add alongside the existing characters table</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="sb">`</span>
+<span class="sb">    CREATE TABLE IF NOT EXISTS characters (</span>
+<span class="sb">        character_id INTEGER PRIMARY KEY AUTOINCREMENT,</span>
+<span class="sb">        account_id   INTEGER NOT NULL,</span>
+<span class="sb">        name         TEXT    NOT NULL,</span>
+<span class="sb">        level        INTEGER NOT NULL DEFAULT 1,</span>
+<span class="sb">        pos_x        REAL    NOT NULL DEFAULT 0,</span>
+<span class="sb">        pos_y        REAL    NOT NULL DEFAULT 2,</span>
+<span class="sb">        pos_z        REAL    NOT NULL DEFAULT 0,</span>
+<span class="sb">        gold         INTEGER NOT NULL DEFAULT 0      -- NEW</span>
+<span class="sb">    )</span>
+<span class="sb">`</span><span class="p">);</span>
+
+<span class="nx">db</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="sb">`</span>
+<span class="sb">    CREATE TABLE IF NOT EXISTS inventory (            -- NEW</span>
+<span class="sb">        character_id INTEGER NOT NULL,</span>
+<span class="sb">        item_id      INTEGER NOT NULL,</span>
+<span class="sb">        quantity     INTEGER NOT NULL DEFAULT 1,</span>
+<span class="sb">        PRIMARY KEY (character_id, item_id)</span>
+<span class="sb">    )</span>
+<span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Networking/W2P/W2PPurchaseHandler.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">db</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../Database/Database&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">W2PPurchaseRequest</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../Shared/Packets/Requests/W2PPurchaseRequest&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SendP2WPurchaseResponse</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../P2W/P2WPurchaseResponseSender&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">PRICES</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="kt">number</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">101</span><span class="o">:</span><span class="w"> </span><span class="kt">25</span><span class="p">,</span><span class="w"> </span><span class="nx">102</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="w"> </span><span class="p">};</span><span class="w">  </span><span class="c1">// or its own table — see note below</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">W2PPurchaseHandler</span><span class="p">(</span><span class="nx">socket</span><span class="o">:</span><span class="w"> </span><span class="kt">net.Socket</span><span class="p">,</span><span class="w"> </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="kt">Uint8Array</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">decode</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">W2PPurchaseRequest</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">PRICES</span><span class="p">[</span><span class="nx">request</span><span class="p">.</span><span class="nx">ItemId</span><span class="p">];</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">character</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="sb">`SELECT gold FROM characters WHERE character_id = ?`</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">CharacterId</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">gold</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">character</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">price</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">character</span><span class="p">.</span><span class="nx">gold</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">price</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">SendP2WPurchaseResponse</span><span class="p">(</span><span class="nx">socket</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">CharacterId</span><span class="o">:</span><span class="w"> </span><span class="kt">request.CharacterId</span><span class="p">,</span><span class="w"> </span><span class="nx">Success</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">Reason</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Insufficient gold.&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Two writes that must succeed or fail together — see the transaction</span>
+<span class="w">    </span><span class="c1">// note right below this snippet before shipping this as-is.</span>
+<span class="w">    </span><span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="sb">`UPDATE characters SET gold = gold - ? WHERE character_id = ?`</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">price</span><span class="p">,</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">CharacterId</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="sb">`</span>
+<span class="sb">        INSERT INTO inventory (character_id, item_id, quantity) VALUES (?, ?, 1)</span>
+<span class="sb">        ON CONFLICT(character_id, item_id) DO UPDATE SET quantity = quantity + 1</span>
+<span class="sb">    `</span><span class="p">).</span><span class="nx">run</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">CharacterId</span><span class="p">,</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">ItemId</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">SendP2WPurchaseResponse</span><span class="p">(</span><span class="nx">socket</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">CharacterId</span><span class="o">:</span><span class="w"> </span><span class="kt">request.CharacterId</span><span class="p">,</span><span class="w"> </span><span class="nx">Success</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">Reason</span><span class="o">:</span><span class="w"> </span><span class="kt">null</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// Networking/RegisterHandlers.ts — the manual registration this whole</span>
+<span class="c1">// side of the protocol requires (see 02-NETWORKING-AND-PACKETS.md)</span>
+<span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">Purchase</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PPurchaseHandler</span><span class="p">);</span>
+</code></pre></div>
+
+<p><strong>Do the gold-deduct and the inventory-insert in one <code>bun:sqlite</code>
+transaction</strong>, not as two independent <code>.run()</code> calls like the sketch
+above — <code>bun:sqlite</code> supports <code>db.transaction(fn)</code> for exactly this. As
+written, a crash between the two <code>.run()</code> calls would deduct gold without
+granting the item. This is the first place in the codebase where a
+multi-statement write actually needs atomicity — every existing handler
+(<code>W2PCharacterSaveHandler</code>, etc.) is a single statement, so there's no
+existing pattern to copy; reach for <code>bun:sqlite</code>'s transaction API rather
+than inventing manual rollback logic.</p>
+<h3 id="6-response-flows-back-exactly-like-loadcreatelist-does">6. Response flows back exactly like Load/Create/List does<a class="anchor" href="#6-response-flows-back-exactly-like-loadcreatelist-does" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">// Core/PersistenceServer/.../Networking/P2WHandlers/P2WPurchaseResponseHandler.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">P2WPurchaseResponseHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPersistencePacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">_client</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">P2WPurchaseResponseHandler</span><span class="p">(</span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">client</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">PersistencePacket</span><span class="w"> </span><span class="n">packet</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">P2WPurchaseResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">Payload</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_client</span><span class="p">.</span><span class="n">ResolvePurchase</span><span class="p">(</span><span class="n">response</span><span class="p">);</span><span class="w">   </span><span class="c1">// new method on PersistenceClient, mirrors ResolveLoad/ResolveCreate/ResolveList</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// PersistenceClient.cs — register alongside the existing four</span>
+<span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">P2WPurchaseResponse</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WPurchaseResponseHandler</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</code></pre></div>
+
+<p>That <code>Resolve</code> call completes the <code>TaskCompletionSource</code> sitting in
+<code>ProcessPurchase</code>'s <code>await</code>, which resumes inside
+<code>playerManager.EnqueueAction(...)</code> back on step 2, sends
+<code>W2CShopResultPacketSender</code>, and the client's <code>W2CShopResultHandler</code> (new,
+mirrors <code>W2CInteractDialogueHandler</code>) updates the shop UI.</p>
+<h2 id="the-complete-round-trip-both-directions-at-a-glance">The complete round trip, both directions, at a glance<a class="anchor" href="#the-complete-round-trip-both-directions-at-a-glance" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>Client                    WorldServer                      PersistenceServer
+------                    -----------                      -----------------
+[interact with vendor — reuses the EXISTING interaction system, no persistence]
+C2WInteractPacket    --&gt;  C2WInteractHandler
+                            -&gt; range/existence check (IInteractable)
+                            -&gt; LuaEngine.FireEvent(OnInteract, player, templateId, Vendor)
+                                 -&gt; shop_vendor_example.lua -&gt; player:OpenShop(id)
+                                      -&gt; W2CShopOpenPacketSender.Send
+W2CShopOpenPacket    &lt;--  ................................
+
+[buy an item — NEW round trip, needs persistence]
+C2WShopPurchasePacket --&gt;  C2WShopPurchaseHandler
+                             -&gt; re-check range/existence (same pattern as interact)
+                             -&gt; W2PCharacter.Purchase(characterId, itemId) --&gt; W2PPurchaseHandler
+                                                                                  transaction {
+                                                                                    UPDATE characters SET gold...
+                                                                                    INSERT INTO inventory...
+                                                                                  }
+                             &lt;----------------------------------------------- P2WPurchaseResponse
+                             EnqueueAction(() =&gt; send result)
+W2CShopResultPacket   &lt;--  ................................
+</code></pre></div>
+
+<h2 id="the-checklist-this-example-generalizes-to">The checklist this example generalizes to<a class="anchor" href="#the-checklist-this-example-generalizes-to" title="Permanent link">#</a></h2>
+<p>Whenever a new feature needs to reach the database, you're really building
+two independent things that happen to share a name:</p>
+<ol>
+<li><strong>A same-process round trip</strong> (client ↔ WorldServer only) for anything
+   that's pure gameplay logic and doesn't need to survive a disconnect —
+   follow the C2W/W2C steps in <code>ADDING_PACKETSv2.md</code>, reuse
+   <code>InteractionRegistry</code>/<code>IInteractable</code> if it's interact-triggered.</li>
+<li><strong>A cross-process round trip</strong> (WorldServer ↔ PersistenceServer) for
+   anything that must be durable — follow the <code>W2PCharacterSender</code>
+   pattern: new opcode value in <strong>both</strong> <code>PServerOpcodes</code> and
+   <code>ProtocolPersistence</code> in the same commit, a <code>TaskCompletionSource</code>
+   dictionary on <code>PersistenceClient</code> if it's request/response, a Node
+   handler registered in <code>RegisterHandlers.ts</code>, and — if it's more than one
+   SQL statement — an actual transaction, since nothing before the
+   shop-purchase example needed one.</li>
+</ol>
+<p>And regardless of which of those two you're building, don't forget the one
+step that has no compiler or attribute to catch it for you: <strong>the client-
+side <code>dispatcher.Register(...)</code> line in <code>ClientNetwork.RegisterHandlers()</code>
+for any new W2C packet.</strong> See
+<a href="08-CLIENT-ARCHITECTURE.html">08-CLIENT-ARCHITECTURE.md</a> for exactly why that
+one's on you today.</p>
+<nav class="pager">
+<a class="prev" href="06-AUTH-AND-SESSION-FLOW.html"><span>Previous</span>Auth &amp; Session Flow, End to End</a>
+<a class="next" href="08-CLIENT-ARCHITECTURE.html"><span>Next</span>Client Architecture (Unity)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-two-directions-this-feature-needs">The two directions this feature needs</a>
+</li>
+<li><a href="#direction-1-what-does-this-vendor-sell-no-persistence-needed">Direction 1: &quot;what does this vendor sell&quot; (no persistence needed)</a>
+<ul>
+<li><a href="#1-opcode--packet-class-shared-axiomnetwork">1. Opcode + packet class (shared, Axiom.Network)</a>
+</li>
+<li><a href="#2-new-interactablekind--entity-server-axiomserverworld">2. New InteractableKind + entity (server, Axiom.Server.World)</a>
+</li>
+<li><a href="#3-lua-hook-reacts-to-the-new-kind">3. Lua hook reacts to the new kind</a>
+</li>
+<li><a href="#4-sender--client-handler-the-return-trip">4. Sender + client handler (the return trip)</a>
+</li>
+</ul>
+</li>
+<li><a href="#direction-2-the-actual-purchase-needs-the-persistenceserver">Direction 2: the actual purchase (needs the PersistenceServer)</a>
+<ul>
+<li><a href="#1-client-sends-the-purchase-request">1. Client sends the purchase request</a>
+</li>
+<li><a href="#2-worldserver-handler-validates-then-asks-the-persistenceserver-to-do-the-transaction">2. WorldServer handler validates, then asks the PersistenceServer to do the transaction</a>
+</li>
+<li><a href="#3-new-w2pp2w-packets-shared-both-languages-need-matching-enum-values">3. New W2P/P2W packets (shared, both languages need matching enum values)</a>
+</li>
+<li><a href="#4-sender-on-the-worldserver-side-mirrors-w2pcharactersendercreate">4. Sender on the WorldServer side (mirrors W2PCharacterSender.Create)</a>
+</li>
+<li><a href="#5-node-handler-does-the-actual-transaction">5. Node handler does the actual transaction</a>
+</li>
+<li><a href="#6-response-flows-back-exactly-like-loadcreatelist-does">6. Response flows back exactly like Load/Create/List does</a>
+</li>
+</ul>
+</li>
+<li><a href="#the-complete-round-trip-both-directions-at-a-glance">The complete round trip, both directions, at a glance</a>
+</li>
+<li><a href="#the-checklist-this-example-generalizes-to">The checklist this example generalizes to</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

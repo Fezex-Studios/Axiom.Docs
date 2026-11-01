@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auth &amp; Session Flow, End to End · Axiom Docs</title>
+<meta name="description" content="This traces one player from clicking &quot;connect&quot; to standing in the world, across all four processes, with the actual packets and method calls at each step. Everything referenced here is expanded in more depth in…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html" class="active" aria-current="page">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/06-AUTH-AND-SESSION-FLOW.md</code></div>
+<h1 id="auth--session-flow-end-to-end">Auth &amp; Session Flow, End to End<a class="anchor" href="#auth--session-flow-end-to-end" title="Permanent link">#</a></h1>
+<p>This traces one player from clicking "connect" to standing in the world,
+across all four processes, with the actual packets and method calls at
+each step. Everything referenced here is expanded in more depth in
+<a href="02-NETWORKING-AND-PACKETS.html">02-NETWORKING-AND-PACKETS.md</a>,
+<a href="03-DATABASE-AND-PERSISTENCE.html">03-DATABASE-AND-PERSISTENCE.md</a>, and
+<a href="05-GAMEPLAY-SYSTEMS.html">05-GAMEPLAY-SYSTEMS.md</a>.</p>
+<h2 id="step-0--before-any-litenetlib-connection-exists">Step 0 — before any LiteNetLib connection exists<a class="anchor" href="#step-0--before-any-litenetlib-connection-exists" title="Permanent link">#</a></h2>
+<p>The Unity client logs in against the <strong>AuthServer</strong> over plain HTTP (not
+part of this snapshot, but its two contracts are used by name throughout
+the client and WorldServer config): it gets back a session token, and
+separately, <code>GameDataBootstrap</code> checks/downloads <code>gamedata.db</code> (see
+<a href="03-DATABASE-AND-PERSISTENCE.html">03-DATABASE-AND-PERSISTENCE.md</a>). The
+token is stashed in <code>SessionManager.Token</code> (the client-side static, not to
+be confused with the server's <code>Core/Managers/SessionManager</code>) before the
+LiteNetLib connection is ever opened.</p>
+<h2 id="step-1--litenetlib-connect">Step 1 — LiteNetLib connect<a class="anchor" href="#step-1--litenetlib-connect" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="c1">// ClientNetwork.Connect(ip) — client</span>
+<span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetManager</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="n">client</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+<span class="n">client</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span><span class="w"> </span><span class="mi">7777</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MMO&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// WorldServer.OnConnectionRequest — world server</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnectionRequest</span><span class="p">(</span><span class="n">ConnectionRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">request</span><span class="p">.</span><span class="n">AcceptIfKey</span><span class="p">(</span><span class="n">ConnectionKey</span><span class="p">);</span><span class="w">  </span><span class="c1">// ConnectionKey = &quot;MMO&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This is a shared-secret handshake at the transport level, not real
+authentication — anyone who knows the string <code>"MMO"</code> can open a connection.
+Real auth happens next, over that connection.</p>
+<h2 id="step-2--client-sends-authenticate-the-moment-the-peer-connects">Step 2 — client sends <code>Authenticate</code> the moment the peer connects<a class="anchor" href="#step-2--client-sends-authenticate-the-moment-the-peer-connects" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="c1">// ClientNetwork.OnPeerConnected — fires as soon as LiteNetLib accepts the connection</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPeerConnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ServerPeer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">C2WAuthenticatePacket</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">SessionManager</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// C2WAuthenticatePacket.Send — client-side sender</span>
+<span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">token</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ClientPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">C2WAuthenticateRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="step-3--worldserver-validates-the-token-against-the-authserver">Step 3 — WorldServer validates the token against the AuthServer<a class="anchor" href="#step-3--worldserver-validates-the-token-against-the-authserver" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="na">[PacketOpcode(Opcodes.Authenticate)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WAuthenticateHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WAuthenticateRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ValidateAndConnect</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span><span class="w">   </span><span class="c1">// fire-and-forget from the sync Handle() entrypoint</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ValidateAndConnect</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">token</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">accountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">authService</span><span class="p">.</span><span class="n">ValidateToken</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">accountId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">());</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// ...continues in Step 4</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>AuthService.ValidateToken</code> is a plain HTTP POST to the AuthServer:</p>
+<div class="hl"><pre><span></span><code><span class="kt">string</span><span class="w"> </span><span class="n">url</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;{_worldConfig.AuthServerUrl}/validate-session&quot;</span><span class="p">;</span><span class="w">   </span><span class="c1">// http://127.0.0.1:3000 by default</span>
+<span class="kt">string</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JsonConvert</span><span class="p">.</span><span class="n">SerializeObject</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="p">});</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HttpRequestMessage</span><span class="p">(</span><span class="n">HttpMethod</span><span class="p">.</span><span class="n">Post</span><span class="p">,</span><span class="w"> </span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StringContent</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="p">};</span>
+<span class="n">request</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;x-internal-secret&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_worldConfig</span><span class="p">.</span><span class="n">InternalSecret</span><span class="p">);</span><span class="w">  </span><span class="c1">// must match AuthServer&#39;s own INTERNAL_SECRET</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JsonConvert</span><span class="p">.</span><span class="n">DeserializeObject</span><span class="o">&lt;</span><span class="n">ValidateResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="n">json</span><span class="p">);</span><span class="w">  </span><span class="c1">// { Valid: bool, AccountId: int }</span>
+<span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Valid</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">AccountId</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div>
+
+<p>A <code>-1</code> account id (bad token, expired, or the HTTP call itself failing)
+disconnects the peer immediately.</p>
+<h2 id="step-4--worldserver-asks-the-persistenceserver-for-the-accounts-character-roster">Step 4 — WorldServer asks the PersistenceServer for the account's character roster<a class="anchor" href="#step-4--worldserver-asks-the-persistenceserver-for-the-accounts-character-roster" title="Permanent link">#</a></h2>
+<p>Still inside <code>ValidateAndConnect</code>, once <code>accountId</code> is known:</p>
+<div class="hl"><pre><span></span><code><span class="n">P2WCharacterListResponse</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">persistence</span><span class="p">.</span><span class="n">W2PCharacter</span><span class="p">.</span><span class="n">LoadList</span><span class="p">(</span><span class="n">accountId</span><span class="p">);</span>
+
+<span class="n">playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">playerManager</span><span class="p">.</span><span class="n">TrackPendingSelection</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">);</span><span class="w">   </span><span class="c1">// session exists, NetworkId still null = &quot;pending&quot;</span>
+
+<span class="w">    </span><span class="n">WorldserverPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CCharacterList</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">W2CCharacterListPacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Characters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">Characters</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="n">CharacterSummary</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p><code>W2PCharacter.LoadList</code> is a full round trip over the <em>second</em> protocol
+(WorldServer ↔ PersistenceServer, raw TCP, port 7778):</p>
+<div class="hl"><pre><span></span><code>WorldServer                                    PersistenceServer (Node)
+------------                                   ------------------------
+W2PCharacterSender.LoadList(accountId)
+  -&gt; pendingLists[accountId] = new TCS
+  -&gt; PersistenceClient.Send(PServerOpcodes.CharacterList,
+       new W2PCharacterListRequest { AccountId = accountId })
+        |
+        v  (4-byte length prefix + MessagePack PersistencePacket)
+                                                W2PCharacterListHandler(socket, payload)
+                                                  const rows = db.prepare(
+                                                    &quot;SELECT * FROM characters WHERE account_id = ?&quot;
+                                                  ).all(request.AccountId)
+                                                  SendP2WCharacterListResponse(socket, {
+                                                    AccountId, Characters: rows.map(...)
+                                                  })
+        |
+        v
+P2WCharacterListResponseHandler.Handle(response)
+  -&gt; client.ResolveList(response)
+       -&gt; pendingLists.TryRemove(accountId, out tcs)
+       -&gt; tcs.SetResult(response)
+  -&gt; the `await` in LoadList() above now returns
+</code></pre></div>
+
+<p>Notice the <code>EnqueueAction</code> wrap around everything after the <code>await</code> — this
+is the mandatory pattern any time a C2W handler awaits a persistence
+round-trip. The continuation after an <code>await</code> resumes on whatever thread
+the TCP <code>ReceiveLoop</code> happened to complete on, <strong>not</strong> the tick thread that
+owns <code>PlayerManager</code>'s state, so touching session/interest/replication
+state directly here would be a race condition. Every handler in this doc
+that awaits <code>persistence.*</code> follows the same shape:
+<code>await ...; playerManager.EnqueueAction(() =&gt; { /* touch shared state here */ });</code></p>
+<h2 id="step-5--client-shows-create-or-select-ui-sends-one-of-two-requests">Step 5 — client shows create-or-select UI, sends one of two requests<a class="anchor" href="#step-5--client-shows-create-or-select-ui-sends-one-of-two-requests" title="Permanent link">#</a></h2>
+<p>The client reacts to <code>W2CCharacterListPacket</code> via
+<code>PlayerUIEvents.RaiseCharacterListReceived(...)</code> (see
+<code>W2CCharacterListHandler.cs</code>), which the <code>CharacterSelectUI</code>/
+<code>CharacterCreateUI</code> MonoBehaviours listen for. Depending on whether the
+roster is empty, the player either creates a character:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// C2WCreateCharacterPacket.Send (client) -&gt; Opcodes.C2WCreateCharacterRequest</span>
+</code></pre></div>
+
+<p>or selects an existing one:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// C2WSelectCharacterPacket.Send (client) -&gt; Opcodes.C2WSelectCharacter</span>
+</code></pre></div>
+
+<h3 id="branch-a--c2wcreatecharacterhandler">Branch A — <code>C2WCreateCharacterHandler</code><a class="anchor" href="#branch-a--c2wcreatecharacterhandler" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="na">[PacketOpcode(Opcodes.C2WCreateCharacterRequest)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WCreateCharacterHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WCreateCharacterRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">accountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">GetPendingAccountId</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">accountId</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">();</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="c1">// never authenticated / already spawned</span>
+
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Name</span><span class="o">?.</span><span class="n">Trim</span><span class="p">()</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">();</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// only validation today</span>
+
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CreateAndSpawn</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">.</span><span class="n">Value</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">CreateAndSpawn</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">P2WCreateCharacterResponse</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_persistence</span><span class="p">.</span><span class="n">W2PCharacter</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">response</span><span class="p">.</span><span class="n">Success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">());</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Persistence only returns the new CharacterId/Name — the handler</span>
+<span class="w">        </span><span class="c1">// fabricates the rest of a P2WCharacterLoadResponse locally</span>
+<span class="w">        </span><span class="c1">// (Level 1, spawn at origin) rather than doing a second round trip</span>
+<span class="w">        </span><span class="c1">// to load what it just created.</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">characterData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">P2WCharacterLoadResponse</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span><span class="w"> </span><span class="n">AccountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">CharacterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">CharacterId</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">            </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">HandlePlayerConnected</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">characterData</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Name validation (<code>2 &lt;= length &lt;= 20</code>) happens <strong>only</strong> on the WorldServer
+side today — nothing in <code>W2PCharacterCreateHandler.ts</code> re-validates it, so
+a modified client bypassing the length check would still be caught here,
+but a bug in this specific check has no second line of defense. Worth
+keeping in mind if you add more create-time fields (a starting class or
+appearance choice, say) for a shop/character-customization feature.</p>
+<h3 id="branch-b--c2wselectcharacterhandler">Branch B — <code>C2WSelectCharacterHandler</code><a class="anchor" href="#branch-b--c2wselectcharacterhandler" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">LoadAndSpawn</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">characterId</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">P2WCharacterLoadResponse</span><span class="w"> </span><span class="n">character</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_persistence</span><span class="p">.</span><span class="n">W2PCharacter</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">characterId</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">character</span><span class="p">.</span><span class="n">Found</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Either the id doesn&#39;t exist, or belongs to a different account —</span>
+<span class="w">        </span><span class="c1">// the persistence query filters on both, so this also catches a</span>
+<span class="w">        </span><span class="c1">// tampered client trying to load someone else&#39;s character.</span>
+<span class="w">        </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">());</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">HandlePlayerConnected</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">character</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Both branches converge on the exact same call:
+<code>playerManager.HandlePlayerConnected(peer, accountId, characterData)</code>.
+Neither branch has an explicit "clear pending" step — the pending state
+disappears the moment <code>SpawnPlayer</code> (inside <code>HandlePlayerConnected</code>)
+assigns the peer a <code>NetworkId</code>.</p>
+<h2 id="step-6--spawning-into-the-world">Step 6 — spawning into the world<a class="anchor" href="#step-6--spawning-into-the-world" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="c1">// PlayerSpawnManager.HandlePlayerConnected</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HandlePlayerConnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">P2WCharacterLoadResponse</span><span class="w"> </span><span class="n">character</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_sessions</span><span class="p">.</span><span class="n">TryGetAccountPeer</span><span class="p">(</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">existingPeer</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Duplicate login — the account is already spawned on another peer.</span>
+<span class="w">        </span><span class="n">CleanupPeer</span><span class="p">(</span><span class="n">existingPeer</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span><span class="w">   </span><span class="c1">// saves + despawns the OLD connection</span>
+<span class="w">        </span><span class="n">existingPeer</span><span class="p">.</span><span class="n">Disconnect</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">_sessions</span><span class="p">.</span><span class="n">RegisterAccountPeer</span><span class="p">(</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">peer</span><span class="p">);</span>
+<span class="w">    </span><span class="n">W2CMOTDPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">_worldConfig</span><span class="p">.</span><span class="n">MOTD</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">newId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SpawnPlayer</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">character</span><span class="p">);</span><span class="w">   </span><span class="c1">// assigns NetworkId, sends W2CSpawnPlayerPacket,</span>
+<span class="w">                                                              </span><span class="c1">// runs InterestManager.UpdatePosition for the</span>
+<span class="w">                                                              </span><span class="c1">// initial mutual-introduction spawn packets</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">luaPlayer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LuaPlayer</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">newId</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">_replication</span><span class="p">);</span>
+<span class="w">    </span><span class="n">_luaEngine</span><span class="p">.</span><span class="n">FireEvent</span><span class="p">(</span><span class="n">PlayerEvent</span><span class="p">.</span><span class="n">OnConnect</span><span class="p">,</span><span class="w"> </span><span class="n">luaPlayer</span><span class="p">);</span><span class="w">   </span><span class="c1">// fires on_player_connect.lua etc.</span>
+
+<span class="w">    </span><span class="n">_worldSpawnManager</span><span class="p">.</span><span class="n">SendWorldToPeer</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span><span class="w">                 </span><span class="c1">// static world objects / NPCs</span>
+<span class="w">    </span><span class="n">_demoManager</span><span class="p">.</span><span class="n">OnPlayerJoin</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>At this point the player is fully in-world: <code>Opcodes.PlayerMove</code> /
+<code>Opcodes.PlayerPosition</code> traffic starts flowing (see
+<a href="05-GAMEPLAY-SYSTEMS.html">05-GAMEPLAY-SYSTEMS.md</a> for
+<code>PlayerMovementBroadcaster</code>), and <code>Opcodes.Interact</code> becomes valid for
+anything the <code>InteractionRegistry</code> knows about.</p>
+<h2 id="step-7--disconnect">Step 7 — disconnect<a class="anchor" href="#step-7--disconnect" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="c1">// WorldServer.OnPeerDisconnected</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPeerDisconnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">DisconnectInfo</span><span class="w"> </span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">HandlePlayerDisconnected</span><span class="p">(</span><span class="n">peer</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="c1">// PlayerSpawnManager.CleanupPeer(peer, save: true)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">NetworkId</span><span class="p">:</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">session</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// never spawned — nothing to do</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">save</span><span class="p">)</span>
+<span class="w">    </span><span class="n">_persistence</span><span class="p">.</span><span class="n">SaveCharacterAsync</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="n">CharacterId</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">AccountId</span><span class="p">,</span>
+<span class="w">        </span><span class="n">session</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">Level</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">Position</span><span class="p">);</span>
+
+<span class="n">_sessions</span><span class="p">.</span><span class="n">UnregisterAccountPeerIfCurrent</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="n">AccountId</span><span class="p">,</span><span class="w"> </span><span class="n">peer</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">knownByPeers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_interest</span><span class="p">.</span><span class="n">GetKnownBy</span><span class="p">(</span><span class="n">networkId</span><span class="p">)...;</span><span class="w">   </span><span class="c1">// snapshot BEFORE removing from InterestManager</span>
+<span class="n">_interest</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">networkId</span><span class="p">);</span>
+<span class="n">_sessions</span><span class="p">.</span><span class="n">UnregisterNetworkId</span><span class="p">(</span><span class="n">networkId</span><span class="p">);</span>
+<span class="n">peer</span><span class="p">.</span><span class="n">Tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+
+<span class="n">W2CPlayerLeavePacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">_replication</span><span class="p">,</span><span class="w"> </span><span class="n">knownByPeers</span><span class="p">,</span><span class="w"> </span><span class="n">networkId</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>SaveCharacterAsync</code> is fire-and-forget (<code>async void</code>) — sends
+<code>PServerOpcodes.CharacterSave</code> to the persistence server with no reply
+expected, which <code>W2PCharacterSaveHandler.ts</code> handles with a plain
+<code>INSERT OR REPLACE</code>. There's no confirmation path back to the WorldServer
+that the save actually succeeded before the peer object is discarded — if
+you need save-acknowledgment for something higher-stakes than position/
+level (say, a shop transaction that debited currency), that would need a
+request/response pair with a <code>TaskCompletionSource</code>, not this fire-and-
+forget send.</p>
+<h2 id="the-whole-thing-as-one-diagram">The whole thing as one diagram<a class="anchor" href="#the-whole-thing-as-one-diagram" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>Client                  WorldServer                         PersistenceServer
+------                  -----------                         -----------------
+connect (UDP, &quot;MMO&quot;) -&gt; OnConnectionRequest (accept)
+C2WAuthenticatePacket -&gt; C2WAuthenticateHandler
+                           -&gt; AuthService.ValidateToken (HTTP to AuthServer)
+                           -&gt; W2PCharacter.LoadList(accountId) ------------&gt; W2PCharacterListHandler
+                                                                               SELECT * FROM characters
+                           &lt;----------------------------------------------- P2WCharacterListResponse
+                         TrackPendingSelection(peer, accountId)
+W2CCharacterListPacket &lt;- SendPacket(...)
+
+[choose one:]
+C2WCreateCharacterRequest -&gt; C2WCreateCharacterHandler
+                                -&gt; W2PCharacter.Create(accountId, name) ---&gt; W2PCharacterCreateHandler
+                                                                                INSERT INTO characters
+                                &lt;------------------------------------------ P2WCreateCharacterResponse
+        or
+C2WSelectCharacterRequest -&gt; C2WSelectCharacterHandler
+                                -&gt; W2PCharacter.Load(accountId, id) -------&gt; W2PCharacterLoadHandler
+                                                                                SELECT ... WHERE id AND account_id
+                                &lt;------------------------------------------ P2WCharacterLoadResponse
+
+                         PlayerSpawnManager.HandlePlayerConnected
+                           -&gt; SpawnPlayer (assigns NetworkId, ends &quot;pending&quot;)
+                           -&gt; LuaEngine.FireEvent(OnConnect, luaPlayer)
+                           -&gt; SpawnManager.SendWorldToPeer
+W2CSpawnPlayerPacket   &lt;- ...
+W2CMOTDPacket          &lt;- ...
+[player is now in-world]
+
+...gameplay (PlayerMove / Interact / Chat / etc.)...
+
+disconnect             -&gt; OnPeerDisconnected -&gt; CleanupPeer
+                           -&gt; CharacterPersistence.SaveCharacterAsync ----&gt; W2PCharacterSaveHandler
+                                                                              INSERT OR REPLACE INTO characters
+W2CPlayerLeavePacket   &lt;- (to everyone who knew about this player)
+</code></pre></div>
+<nav class="pager">
+<a class="prev" href="05-GAMEPLAY-SYSTEMS.html"><span>Previous</span>Gameplay Systems</a>
+<a class="next" href="07-BUILDING-A-FEATURE-END-TO-END.html"><span>Next</span>Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#step-0--before-any-litenetlib-connection-exists">Step 0 — before any LiteNetLib connection exists</a>
+</li>
+<li><a href="#step-1--litenetlib-connect">Step 1 — LiteNetLib connect</a>
+</li>
+<li><a href="#step-2--client-sends-authenticate-the-moment-the-peer-connects">Step 2 — client sends Authenticate the moment the peer connects</a>
+</li>
+<li><a href="#step-3--worldserver-validates-the-token-against-the-authserver">Step 3 — WorldServer validates the token against the AuthServer</a>
+</li>
+<li><a href="#step-4--worldserver-asks-the-persistenceserver-for-the-accounts-character-roster">Step 4 — WorldServer asks the PersistenceServer for the account&#x27;s character roster</a>
+</li>
+<li><a href="#step-5--client-shows-create-or-select-ui-sends-one-of-two-requests">Step 5 — client shows create-or-select UI, sends one of two requests</a>
+<ul>
+<li><a href="#branch-a--c2wcreatecharacterhandler">Branch A — C2WCreateCharacterHandler</a>
+</li>
+<li><a href="#branch-b--c2wselectcharacterhandler">Branch B — C2WSelectCharacterHandler</a>
+</li>
+</ul>
+</li>
+<li><a href="#step-6--spawning-into-the-world">Step 6 — spawning into the world</a>
+</li>
+<li><a href="#step-7--disconnect">Step 7 — disconnect</a>
+</li>
+<li><a href="#the-whole-thing-as-one-diagram">The whole thing as one diagram</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding a new packet · Axiom Docs</title>
+<meta name="description" content="This is the one document describing how a packet gets from client to server and back in Axiom, and exactly what you need to do to add a new one. Before the auto-registration system (see below), this required editing…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="ADDING_PACKETSv2.html" class="active" aria-current="page">Adding a new packet</a></li>
+<li><a href="AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Archive (old notes)</div>
+<div class="archive-banner"><strong>Archived note.</strong> Kept for history: it may describe older behaviour (old names, removed systems, earlier protocol versions). The guide sections were written from the current code and win where they disagree. Source: <code>docs/archive/ADDING_PACKETSv2.md</code></div>
+<h1 id="adding-a-new-packet">Adding a new packet<a class="anchor" href="#adding-a-new-packet" title="Permanent link">#</a></h1>
+<p>This is the one document describing how a packet gets from client to
+server and back in Axiom, and exactly what you need to do to add a
+new one. Before the auto-registration system (see below), this required
+editing 3-4 separate files by hand with no compiler check that you did
+all of them — that's what caused both the "chat isn't working" bug
+(client dispatcher registration never added) and the NullReferenceException
+bug (wrong InterestManager instance passed to a handler) in one afternoon.
+Neither can happen anymore, structurally, if you follow this doc.</p>
+<p><strong>If you already know the pattern</strong>, jump to the <a href="#quick-reference">Quick Reference</a>
+below. If you're new to it, read from the top — the two worked examples
+after it walk through a real simple case and a real complicated one.</p>
+<h2 id="contents">Contents<a class="anchor" href="#contents" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="#quick-reference">Quick Reference</a></li>
+<li><a href="#prefix-glossary">Prefix glossary</a></li>
+<li><a href="#the-big-picture">The big picture</a></li>
+<li><a href="#opcode-numbering-rules">Opcode numbering rules</a></li>
+<li><a href="#adding-a-client--server-c2w-packet">Adding a client → server (C2W) packet</a></li>
+<li><a href="#adding-a-server--client-w2c-packet">Adding a server → client (W2C) packet</a></li>
+<li><a href="#verifying-a-new-packet-works">Verifying a new packet works</a></li>
+<li><a href="#worked-example-1-hello-world-client--world-server--client">Worked Example 1: Hello World</a></li>
+<li><a href="#worked-example-2-client--world-server--persistence-server--world-server--client">Worked Example 2: through the Persistence Server</a></li>
+<li><a href="#edge-cases-youll-hit">Edge cases you'll hit</a></li>
+<li><a href="#adding-a-new-ui-element-wired-to-a-packet">Adding a new UI element wired to a packet</a></li>
+<li><a href="#where-things-live-quick-index">Where things live</a></li>
+</ul>
+<hr>
+<h2 id="quick-reference">Quick reference<a class="anchor" href="#quick-reference" title="Permanent link">#</a></h2>
+<p><strong>Adding a C2W packet (client → world server):</strong>
+1. Add an explicit-numbered value to <code>Opcodes</code> (<code>Axiom.Network/Shared/Opcodes.cs</code>)
+2. Add a <code>[MessagePackObject(true)]</code> packet class in <code>Shared/Packets/C2W/</code>
+3. Add a static sender in <code>Axiom.Client/Networking/C2WSenders/</code>
+4. Add an <code>IPacketHandler</code> in <code>Axiom.Server.World/Core/Packets/C2WHandlers/</code>, tagged <code>[PacketOpcode(...)]</code>
+5. If the handler needs a dependency not already in <code>ServiceContainer</code>, add one line to <code>WorldServer.RegisterPackets</code>
+6. Done — <code>AutoRegister</code> finds the handler. No dispatcher edits, no registration list.</p>
+<p><strong>Adding a W2C packet (world server → client):</strong> mirror image — packet class in <code>Shared/Packets/W2C/</code>, sender in <code>Axiom.Server.World/Core/Packets/W2CSenders/</code>, <code>IClientPacketHandler</code> in <code>Axiom.Client/Networking/W2CHandlers/</code> tagged <code>[PacketOpcode(...)]</code>. Client <code>AutoRegister</code> only resolves <strong>parameterless</strong> constructors today — a handler needing a dependency needs an extension to <code>ClientPacketDispatcher.AutoRegister</code> first.</p>
+<p><strong>Adding anything that crosses into the Persistence Server:</strong> none of the above auto-registration applies. See <a href="#worked-example-2-client--world-server--persistence-server--world-server--client">Worked Example 2</a> and <a href="#edge-cases-youll-hit">edge case 4</a> — you're hand-editing enums and registration lists in two languages, and it's easy to miss one.</p>
+<p><strong>Before you ship any new packet:</strong> run through <a href="#verifying-a-new-packet-works">Verifying a new packet works</a>.</p>
+<hr>
+<h2 id="prefix-glossary">Prefix glossary<a class="anchor" href="#prefix-glossary" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Prefix / name</th>
+<th>Means</th>
+<th>Direction</th>
+<th>Where the enum lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C2W</code></td>
+<td>Client → World Server</td>
+<td>client sends, world server handles</td>
+<td><code>Opcodes</code> enum</td>
+</tr>
+<tr>
+<td><code>W2C</code></td>
+<td>World Server → Client</td>
+<td>world server sends, client handles</td>
+<td><code>Opcodes</code> enum</td>
+</tr>
+<tr>
+<td><code>W2P</code></td>
+<td>World Server → Persistence Server</td>
+<td>world server sends, Node handles</td>
+<td><code>PServerOpcodes</code> (C#) / <code>ProtocolPersistence</code> (TS)</td>
+</tr>
+<tr>
+<td><code>P2W</code></td>
+<td>Persistence Server → World Server</td>
+<td>Node sends, world server handles</td>
+<td><code>PServerOpcodes</code> (C#) / <code>ProtocolPersistence</code> (TS)</td>
+</tr>
+<tr>
+<td><code>Opcodes</code></td>
+<td>The client ↔ world-server opcode enum</td>
+<td>—</td>
+<td><code>Axiom.Network/Shared/Opcodes.cs</code></td>
+</tr>
+<tr>
+<td><code>PServerOpcodes</code></td>
+<td>The world-server ↔ persistence opcode enum, <strong>C# copy</strong></td>
+<td>—</td>
+<td><code>Axiom.Network/Shared/PServerOpcodes.cs</code></td>
+</tr>
+<tr>
+<td><code>ProtocolPersistence</code></td>
+<td>The world-server ↔ persistence opcode enum, <strong>canonical TS copy</strong></td>
+<td>—</td>
+<td><code>Axiom.Server.Persistence/src/Shared/protocol.persistence.ts</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>PServerOpcodes</code> and <code>ProtocolPersistence</code> must always have identical names mapped to identical numbers — see <a href="#edge-cases-youll-hit">edge case 5</a>. There's also a stale, unused <code>Shared/Opcodes.ts</code> on the TS side — see the warning in Worked Example 2, step 2.</p>
+<hr>
+<h2 id="the-big-picture">The big picture<a class="anchor" href="#the-big-picture" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>Client                                  Server
+------                                  ------
+YourFeature.cs
+  -&gt; C2WYourPacketSender.Send(peer,...)
+        |
+        v  (LiteNetLib, opcode-prefixed)
+                                         WorldServer.OnNetworkReceive
+                                           -&gt; PacketDispatcher.Handle
+                                                -&gt; C2WYourHandler.Handle(peer, reader)
+                                                     -&gt; does the thing, may send a reply
+
+                                         W2CYourReplySender.Send(peer, ...)
+        |
+        v
+ClientPacketDispatcher.Handle
+  -&gt; W2CYourHandler.Handle(reader)
+       -&gt; updates local game state / UI
+</code></pre></div>
+
+<p>Every packet has an <code>Opcodes</code> enum value (shared between client and
+server — <code>Axiom.Network/Shared/Opcodes.cs</code>), a MessagePack packet
+class (the wire payload), a sender (writes bytes to a peer), and a
+handler (reads bytes and does something). That's the whole shape, both
+directions.</p>
+<p>There is a <strong>second, separate</strong> dispatcher/opcode system between the
+World Server and the Persistence Server (<code>PServerOpcodes</code>,
+<code>PersistenceDispatcher</code>, <code>PersistenceClient</code>) — same idea, different
+transport (raw TCP instead of LiteNetLib) and, importantly, <strong>not</strong>
+covered by the C# auto-registration system, and the Persistence Server
+itself is a separate Node/TypeScript process with no attribute system at
+all. Worked Example 2 below walks through that path end to end, and the
+Edge Cases section calls out exactly what's different about it.</p>
+<hr>
+<h2 id="opcode-numbering-rules">Opcode numbering rules<a class="anchor" href="#opcode-numbering-rules" title="Permanent link">#</a></h2>
+<p>These apply to <strong>every</strong> opcode enum in the project (<code>Opcodes</code>,
+<code>PServerOpcodes</code>, <code>ProtocolPersistence</code>) and are worth internalizing
+before you touch any of them:</p>
+<ol>
+<li><strong>Always assign an explicit number</strong>, never let the enum
+   auto-increment (<code>ChatMessage = 22</code>, not just <code>ChatMessage,</code>). Both
+   worked examples below follow this. If you insert a new value in the
+   middle of an implicitly-numbered enum, every value after it silently
+   shifts — which changes what's actually on the wire without changing
+   any code that looks correct.</li>
+<li><strong>Append new values at the end</strong> of the enum. Don't renumber
+   existing values to "keep things tidy."</li>
+<li><strong>Never reuse a retired number.</strong> If a packet is deleted, retire its
+   number with it (a <code>// 26 retired - was OldFeaturePacket</code> comment is
+   fine) rather than letting a future packet silently take it over.</li>
+<li><strong>For anything crossing the Persistence Server boundary</strong>, the C#
+   (<code>PServerOpcodes</code>) and TypeScript (<code>ProtocolPersistence</code>) enums must
+   get the same name and number <strong>in the same commit</strong> — see
+   <a href="#edge-cases-youll-hit">edge case 5</a>.</li>
+</ol>
+<h2 id="adding-a-client--server-c2w-packet">Adding a client → server (C2W) packet<a class="anchor" href="#adding-a-client--server-c2w-packet" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Add the opcode.</strong> Add a new value to the <code>Opcodes</code> enum
+   (<code>Axiom.Network/Shared/Opcodes.cs</code>). Shared by both projects — one
+   edit, both sides see it. Follow the <a href="#opcode-numbering-rules">numbering rules</a>
+   above.</li>
+<li><strong>Add the packet class.</strong> A small MessagePack-serializable class in
+   <code>Axiom.Network/Shared/Packets/C2W/</code> with the fields the client
+   needs to send. Follow the existing convention:</li>
+</ol>
+<p>```csharp
+   using MessagePack;</p>
+<p>namespace Axiom.Network.Shared.Packets.C2W
+   {
+       [MessagePackObject(true)]
+       public class C2WYourPacket
+       {
+           public string SomeField;
+       }
+   }
+   ```</p>
+<ol start="3">
+<li><strong>Add the sender</strong>, in the client project
+   (<code>Axiom.Client/Networking/C2WSenders/</code>) — a static method that
+   writes the opcode + serialized packet to a <code>NetPeer</code> via
+   <code>ClientPacketSender.SendPacket(...)</code>.</li>
+<li><strong>Add the handler</strong>, in
+   <code>Axiom.Server.World/Core/Packets/C2WHandlers/</code>, implementing
+   <code>IPacketHandler</code>:</li>
+</ol>
+<p>```csharp
+   using Axiom.Network.Shared;
+   using Axiom.Library.Net.Worldserver;
+   using Axiom.Network.Worldserver;</p>
+<p>namespace Axiom.Server.World.Networking.C2W
+   {
+       [PacketOpcode(Opcodes.YourNewOpcode)]
+       public class C2WYourHandler : IPacketHandler
+       {
+           private readonly PlayerManager _playerManager;</p>
+<div class="hl"><pre><span></span><code>       public C2WYourHandler(PlayerManager playerManager)
+       {
+           _playerManager = playerManager;
+       }
+
+       public void Handle(NetPeer peer, NetPacketReader reader)
+       {
+           var packet = MessagePackSerializer
+               .Deserialize&lt;C2WYourPacket&gt;(reader.GetRemainingBytes());
+
+           // ... do the thing
+       }
+   }
+</code></pre></div>
+
+<p>}
+   ```</p>
+<p>The constructor can ask for any type already registered in
+   <code>WorldServer.RegisterPackets</code> (currently: <code>PlayerManager</code>,
+   <code>PersistenceClient</code>, <code>InterestManager</code>, <code>ReplicationManager</code>,
+   <code>AuthService</code>, <code>InteractionRegistry</code>). If you need something that
+   isn't registered yet, add one line to <code>RegisterPackets</code> — see below.</p>
+<blockquote>
+<p>If this handler needs to <code>await</code> anything (a Persistence Server
+call, for instance) before replying, read
+<a href="#edge-cases-youll-hit">edge cases 6 and 7</a> now, not after you've
+written the bug.</p>
+</blockquote>
+<ol start="5">
+<li><strong>That's it.</strong> You do <strong>not</strong> need to touch <code>WorldServer.cs</code>,
+   <code>PacketDispatcher</code>, or any registration list. <code>WorldServer.RegisterPackets</code>
+   calls <code>_packetDispatcher.AutoRegister(...)</code>, which scans the assembly at
+   startup for every <code>IPacketHandler</code> and reads its <code>[PacketOpcode]</code>
+   attribute. A handler that exists but was forgotten used to fail
+   silently (the exact chat bug); now it either gets picked up
+   automatically, or — if you forgot the attribute entirely — prints a
+   clear <code>WARNING: ... has no [PacketOpcode] attribute</code> at startup instead
+   of silently doing nothing at runtime.</li>
+</ol>
+<h3 id="if-your-handler-needs-a-new-dependency">If your handler needs a new dependency<a class="anchor" href="#if-your-handler-needs-a-new-dependency" title="Permanent link">#</a></h3>
+<p>If your handler's constructor needs something not already registered,
+add one line in <code>WorldServer.RegisterPackets</code>:</p>
+<div class="hl"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">_yourNewManager</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>ServiceContainer</code> guarantees there is exactly one instance of any
+registered type available to every handler — this is what makes it
+structurally impossible to accidentally wire a second, empty instance of
+a manager into a handler (the root cause of the InterestManager
+NullReferenceException bug).</p>
+<h2 id="adding-a-server--client-w2c-packet">Adding a server → client (W2C) packet<a class="anchor" href="#adding-a-server--client-w2c-packet" title="Permanent link">#</a></h2>
+<p>Mirror image of the above:</p>
+<ol>
+<li><strong>Add the opcode</strong> (same enum as above, if not already added).</li>
+<li><strong>Add the packet class</strong> in <code>Axiom.Network/Shared/Packets/W2C/</code>.</li>
+<li><strong>Add the sender</strong>, server-side, in
+   <code>Axiom.Server.World/Core/Packets/W2CSenders/</code> — writes the opcode +
+   payload to one or more peers via <code>WorldserverPacketSender.SendPacket(...)</code>.</li>
+<li><strong>Add the handler</strong>, client-side, in
+   <code>Axiom.Client/Networking/W2CHandlers/</code>, implementing
+   <code>IClientPacketHandler</code>:</li>
+</ol>
+<p>```csharp
+   using Axiom.Network.Shared;
+   using Axiom.Library.Net.Worldserver;
+   using Axiom.Network.Client;</p>
+<p>namespace Axiom.Client.Networking.W2C
+   {
+       [PacketOpcode(Opcodes.YourNewOpcode)]
+       public class W2CYourHandler : IClientPacketHandler
+       {
+           public void Handle(NetPacketReader reader)
+           {
+               var packet = MessagePackSerializer
+                   .Deserialize<W2CYourPacket>(reader.GetRemainingBytes());</p>
+<div class="hl"><pre><span></span><code>           // ... update local game state / UI
+       }
+   }
+</code></pre></div>
+
+<p>}
+   ```</p>
+<ol start="5">
+<li><strong>That's it.</strong> <code>ClientNetwork.RegisterHandlers</code> calls
+   <code>dispatcher.AutoRegister(typeof(ClientNetwork).Assembly)</code>, which finds
+   it the same way the server does. All client handlers today are
+   parameterless; if yours needs a dependency, give it a constructor —
+   <code>AutoRegister</code> on the client resolves parameterless constructors only
+   right now, so a parameterized client handler needs a small extension to
+   <code>ClientPacketDispatcher.AutoRegister</code> (mirroring the server's
+   <code>ServiceContainer</code> approach) before it'll work.</li>
+</ol>
+<hr>
+<h2 id="verifying-a-new-packet-works">Verifying a new packet works<a class="anchor" href="#verifying-a-new-packet-works" title="Permanent link">#</a></h2>
+<p>Before you consider a new packet done, whichever direction:</p>
+<ol>
+<li><strong>Start the world server and check the startup log for
+   <code>WARNING: ... has no [PacketOpcode] attribute</code>.</strong> If your handler
+   shows up there, the attribute is missing or malformed — fix it before
+   testing anything else.</li>
+<li><strong>Trigger the packet from the client</strong> (a debug keybind is the
+   fastest way, same as the Hello World example) and confirm the
+   server-side log line you added actually appears.</li>
+<li><strong>Confirm the reply lands client-side</strong> — a <code>Debug.Log</code> in the
+   handler is enough for a first pass.</li>
+<li><strong>If the packet touches the Persistence Server</strong>, also check the
+   Node console for <code>Unknown Opcode N</code> — that specific message means
+   one of the three manual steps in <a href="#edge-cases-youll-hit">edge case 4</a>
+   was missed (enum value, handler, or <code>RegisterHandler(...)</code> line).</li>
+<li><strong>If two clients are involved</strong> (anything broadcasting, like chat or
+   position), test with two actual client instances, not one — several
+   of the existing bugs this doc exists to prevent only show up with
+   more than one connected peer.</li>
+</ol>
+<hr>
+<h2 id="worked-example-1-hello-world-client--world-server--client">Worked Example 1: Hello World (Client → World Server → Client)<a class="anchor" href="#worked-example-1-hello-world-client--world-server--client" title="Permanent link">#</a></h2>
+<p>Goal: the client sends "Hello", the world server logs it and sends a
+reply back, the client logs the reply. This is the smallest possible
+round trip and reuses a packet you already have — <code>Opcodes.W2CTestPacket</code>
+/ <code>W2CTestPacketSender</code> / <code>W2CTestPacketHandler</code> already exist in the
+project and already do the "server → client" half. All that's missing is
+the "client → server" half that triggers it.</p>
+<p><strong>1. Add the opcode</strong> (<code>Axiom.Network/Shared/Opcodes.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">Opcodes</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">ushort</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...existing values...</span>
+<span class="w">    </span><span class="n">ChatMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span>
+<span class="w">    </span><span class="n">C2WHelloWorld</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w">   </span><span class="c1">// NEW</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>2. Add the packet class</strong> (new file,
+<code>Axiom.Network/Shared/Packets/C2W/C2WHelloWorldPacket.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.C2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[MessagePackObject(true)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WHelloWorldPacket</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>3. Add the client sender</strong> (new file,
+<code>Axiom.Client/Networking/C2WSenders/C2WHelloWorldPacketSender.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.C2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Client.Networking.C2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WHelloWorldPacketSender</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ClientPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span>
+<span class="w">                </span><span class="n">peer</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">C2WHelloWorld</span><span class="p">,</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">C2WHelloWorldPacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Call it from anywhere you already have <code>ClientNetwork.Instance.ServerPeer</code>
+— e.g. a debug key bind:</p>
+<div class="hl"><pre><span></span><code><span class="n">C2WHelloWorldPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ClientNetwork</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">ServerPeer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hello from the client!&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<p><strong>4. Add the server handler</strong> (new file,
+<code>Axiom.Server.World/Core/Packets/C2WHandlers/C2WHelloWorldHandler.cs</code>)
+— this is the only genuinely new logic; it replies using the
+<strong>already-existing</strong> <code>W2CTestPacketSender</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.C2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Networking.W2C</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">NLog</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.Networking.C2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[PacketOpcode(Opcodes.C2WHelloWorld)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WHelloWorldHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogManager</span><span class="p">.</span><span class="n">GetCurrentClassLogger</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WHelloWorldPacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">            </span><span class="n">Logger</span><span class="p">.</span><span class="n">Info</span><span class="p">(</span><span class="s">$&quot;[HelloWorld] Client said: {packet.Message}&quot;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// Reusing the test packet you already have for the reply -</span>
+<span class="w">            </span><span class="c1">// no new W2C plumbing needed for this example.</span>
+<span class="w">            </span><span class="n">W2CTestPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;World Server says: hello back!&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>No constructor, no dependencies — this handler needs nothing from
+<code>ServiceContainer</code>, which is fine; <code>AutoRegister</code> calls
+<code>Activator.CreateInstance(type, args)</code> with a zero-length <code>args</code> array
+when the constructor has no parameters, same as any other handler (see
+<a href="#edge-cases-youll-hit">edge case 8</a>).</p>
+<p><strong>5. Client already has the handler</strong> — <code>W2CTestPacketHandler</code> is already
+tagged <code>[PacketOpcode(Opcodes.W2CTestPacket)]</code> and already logs the
+message via <code>Debug.Log</code>. Nothing to add on that side.</p>
+<p>That's the whole example: 1 enum value, 1 packet class, 1 sender, 1
+handler — three of those four pieces were genuinely new, and the fourth
+(the reply) reused code you already had. This is the shape almost every
+simple request/response packet will take. Run it through the
+<a href="#verifying-a-new-packet-works">verification checklist</a> before you
+consider it done.</p>
+<hr>
+<h2 id="worked-example-2-client--world-server--persistence-server--world-server--client">Worked Example 2: Client → World Server → Persistence Server → World Server → Client<a class="anchor" href="#worked-example-2-client--world-server--persistence-server--world-server--client" title="Permanent link">#</a></h2>
+<p>Goal: the client asks the world server to "ping" the persistence server;
+the persistence server replies; the world server forwards that reply
+back to the originating client. This is the shape you'll actually use
+for anything that needs a database round trip before the client can be
+told the result (inventory purchases, guild lookups, leaderboard
+queries, etc.) — it's deliberately more involved than Example 1 because
+it exercises every edge case in the next section.</p>
+<h3 id="the-chain">The chain<a class="anchor" href="#the-chain" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>Client                  World Server                 Persistence Server (Node)
+------                  ------------                 --------------------------
+C2WPingPersistence
+  -&gt; sent to WS
+                         C2WPingPersistenceHandler
+                           -&gt; PersistenceClient
+                                .W2PTestPing.Ping(msg)
+                                   |
+                                   v  (TCP, PServerOpcodes.W2PTestPing)
+                                                      W2PTestPingHandler
+                                                        -&gt; does the thing
+                                                        -&gt; SendPacket back
+                                   ^  (TCP, PServerOpcodes.P2WTestPingResponse)
+                                   |
+                         P2WTestPingResponseHandler
+                           -&gt; persistenceClient.ResolvePing(...)
+                           -&gt; resumes the awaited Task in the C2W handler
+                         playerManager.EnqueueAction(() =&gt;
+                           W2CPingPersistenceResponseSender.Send(peer, reply))
+  &lt;- sent to client
+W2CPingPersistenceResponseHandler
+  -&gt; logs / updates UI
+</code></pre></div>
+
+<h3 id="1-world-server--client-opcodes-axiomnetworksharedopcodescs">1. World Server ↔ Client opcodes (<code>Axiom.Network/Shared/Opcodes.cs</code>)<a class="anchor" href="#1-world-server--client-opcodes-axiomnetworksharedopcodescs" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">Opcodes</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">ushort</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...existing values, including C2WHelloWorld = 23 from Example 1...</span>
+<span class="w">    </span><span class="n">C2WPingPersistence</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">   </span><span class="c1">// NEW</span>
+<span class="w">    </span><span class="n">W2CPingPersistenceResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">   </span><span class="c1">// NEW</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="2-world-server--persistence-server-opcodes--two-places-kept-in-sync-by-hand">2. World Server ↔ Persistence Server opcodes — <strong>two places, kept in sync by hand</strong><a class="anchor" href="#2-world-server--persistence-server-opcodes--two-places-kept-in-sync-by-hand" title="Permanent link">#</a></h3>
+<p>C# side (<code>Axiom.Network/Shared/PServerOpcodes.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Network.PersistenceServer</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">PServerOpcodes</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">ushort</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// ...existing values...</span>
+<span class="w">        </span><span class="n">P2WCharacterListResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">        </span><span class="n">W2PTestPing</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">  </span><span class="c1">// NEW</span>
+<span class="w">        </span><span class="n">P2WTestPingResponse</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">  </span><span class="c1">// NEW</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>TypeScript side (<code>Axiom.Server.Persistence/src/Shared/protocol.persistence.ts</code>)
+— <strong>this is the canonical one the Node process actually imports</strong>:</p>
+<div class="hl"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="nx">ProtocolPersistence</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...existing values...</span>
+<span class="w">    </span><span class="nx">P2WCharacterListResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">W2PTestPing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span><span class="w">          </span><span class="c1">// NEW</span>
+<span class="w">    </span><span class="nx">P2WTestPingResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">11</span><span class="p">,</span><span class="w">  </span><span class="c1">// NEW</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>⚠️ There is a second file, <code>Shared/Opcodes.ts</code>, with the same enum name
+but stale values (it's missing <code>HelloWorld</code> and everything after it).
+<code>RegisterHandlers.ts</code> imports from <code>protocol.persistence.ts</code>, not
+<code>Opcodes.ts</code> — so <code>Opcodes.ts</code> is dead weight today, but it's a landmine
+if anyone new starts importing from it out of habit. Worth deleting or
+merging in its own small cleanup pass; not required for this example to
+work, just flagged so you don't lose an hour to it later.</p>
+<h3 id="3-packet-classes-both-projects-both-directions">3. Packet classes (both projects, both directions)<a class="anchor" href="#3-packet-classes-both-projects-both-directions" title="Permanent link">#</a></h3>
+<p>C# request/response (<code>Axiom.Network/Shared/Packets/W2P/W2PTestPingRequest.cs</code>
+and <code>.../P2W/P2WTestPingResponse.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer.W2P</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[MessagePackObject(true)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2PTestPingRequest</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Guid as a string on the wire - see &quot;Edge Cases&quot; for why.</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">RequestId</span><span class="p">;</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer.P2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[MessagePackObject(true)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">P2WTestPingResponse</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">RequestId</span><span class="p">;</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Reply</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>TypeScript mirrors (<code>Shared/Packets/Requests/W2PTestPingRequest.ts</code> and
+<code>Shared/Packets/Response/P2WTestPingResponse.ts</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">W2PTestPingRequest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">RequestId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">Message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">P2WTestPingResponse</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">RequestId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">Reply</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="4-world-server--persistence-server-sender--correlation">4. World Server → Persistence Server sender + correlation<a class="anchor" href="#4-world-server--persistence-server-sender--correlation" title="Permanent link">#</a></h3>
+<p><code>PersistenceClient</code> already tracks in-flight requests for
+character load/create/list, keyed by <code>AccountId</code> (one request per
+account makes sense for those). A ping isn't tied to an account, so it's
+keyed by a fresh <code>Guid</code> instead (see <a href="#edge-cases-youll-hit">edge case 2</a>)
+— add this alongside the existing
+<code>pendingLoads</code> / <code>pendingCreates</code> / <code>pendingLists</code> dictionaries in
+<code>PersistenceClient.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">internal</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ConcurrentDictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">TaskCompletionSource</span><span class="o">&lt;</span><span class="n">P2WTestPingResponse</span><span class="o">&gt;&gt;</span>
+<span class="w">    </span><span class="n">pendingPings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="k">public</span><span class="w"> </span><span class="n">W2PTestPingSender</span><span class="w"> </span><span class="n">W2PTestPing</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>...instantiate it in <code>Start()</code> next to the other senders:</p>
+<div class="hl"><pre><span></span><code><span class="n">W2PTestPing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">W2PTestPingSender</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</code></pre></div>
+
+<p>...and add a resolve method next to <code>ResolveLoad</code> / <code>ResolveCreate</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ResolvePing</span><span class="p">(</span><span class="n">P2WTestPingResponse</span><span class="w"> </span><span class="n">response</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pendingPings</span><span class="p">.</span><span class="n">TryRemove</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">RequestId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">tcs</span><span class="p">))</span>
+<span class="w">        </span><span class="n">tcs</span><span class="p">.</span><span class="n">SetResult</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">Logger</span><span class="p">.</span><span class="n">Warn</span><span class="p">(</span><span class="s">$&quot;[PersistenceClient] No pending ping for RequestId={response.RequestId}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>New sender (<code>.../Networking/W2PSenders/W2PTestPingSender.cs</code>), following
+the same <code>TaskCompletionSource</code> pattern as <code>W2PCharacterSender.Load</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System.Threading.Tasks</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.PersistenceServer</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer.P2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer.W2P</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Worldserver.Axiom.Server.Persistence.Scripts</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.PersistenceServer.Senders</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2PTestPingSender</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">_client</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">W2PTestPingSender</span><span class="p">(</span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">client</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Ping</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">requestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">tcs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TaskCompletionSource</span><span class="o">&lt;</span><span class="n">P2WTestPingResponse</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">                </span><span class="n">TaskCreationOptions</span><span class="p">.</span><span class="n">RunContinuationsAsynchronously</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">_client</span><span class="p">.</span><span class="n">pendingPings</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tcs</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="n">_client</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span>
+<span class="w">                </span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">W2PTestPing</span><span class="p">,</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">W2PTestPingRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RequestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">requestId</span><span class="p">,</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">tcs</span><span class="p">.</span><span class="n">Task</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Reply</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="5-world-servers-p2w-response-handler">5. World Server's P2W response handler<a class="anchor" href="#5-world-servers-p2w-response-handler" title="Permanent link">#</a></h3>
+<p>New file, <code>.../Networking/P2WHandlers/P2WTestPingResponseHandler.cs</code>
+(follows the exact shape of <code>P2WCharacterLoadHandler</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.PersistenceServer.P2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Worldserver.Axiom.Server.Persistence.Scripts</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.PersistenceServer.Networking.P2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">P2WTestPingResponseHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPersistencePacketHandler</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">_persistenceClient</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">P2WTestPingResponseHandler</span><span class="p">(</span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">persistenceClient</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_persistenceClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">persistenceClient</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">PersistencePacket</span><span class="w"> </span><span class="n">persistencePacket</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">P2WTestPingResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="n">persistencePacket</span><span class="p">.</span><span class="n">Payload</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">_persistenceClient</span><span class="p">.</span><span class="n">ResolvePing</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Register it in <code>PersistenceClient.RegisterHandlers()</code> — <strong>this part is
+manual, on purpose; see <a href="#edge-cases-youll-hit">edge case 4</a></strong>:</p>
+<div class="hl"><pre><span></span><code><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span>
+<span class="w">    </span><span class="n">PServerOpcodes</span><span class="p">.</span><span class="n">P2WTestPingResponse</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">P2WTestPingResponseHandler</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</code></pre></div>
+
+<h3 id="6-persistence-server-node-handler">6. Persistence Server (Node) handler<a class="anchor" href="#6-persistence-server-node-handler" title="Permanent link">#</a></h3>
+<p>New file, <code>Networking/W2P/W2PTestPingHandler.ts</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">net</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;net&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decode</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@msgpack/msgpack&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SendPacket</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/PacketSender&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ProtocolPersistence</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../Shared/protocol.persistence&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">W2PTestPingRequest</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../Shared/Packets/Requests/W2PTestPingRequest&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">P2WTestPingResponse</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../Shared/Packets/Response/P2WTestPingResponse&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">W2PTestPingHandler</span><span class="p">(</span>
+<span class="w">    </span><span class="nx">socket</span><span class="o">:</span><span class="w"> </span><span class="kt">net.Socket</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="kt">Uint8Array</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">decode</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">W2PTestPingRequest</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`[Persistence] Ping received: </span><span class="si">${</span><span class="nx">request</span><span class="p">.</span><span class="nx">Message</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="o">:</span><span class="w"> </span><span class="kt">P2WTestPingResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">RequestId</span><span class="o">:</span><span class="w"> </span><span class="kt">request.RequestId</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Reply</span><span class="o">:</span><span class="w"> </span><span class="sb">`Persistence Server says: got &quot;</span><span class="si">${</span><span class="nx">request</span><span class="p">.</span><span class="nx">Message</span><span class="si">}</span><span class="sb">&quot;`</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="nx">SendPacket</span><span class="p">(</span><span class="nx">socket</span><span class="p">,</span><span class="w"> </span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">P2WTestPingResponse</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Register it in <code>Networking/RegisterHandlers.ts</code> — <strong>also manual, also
+not auto-discovered; see <a href="#edge-cases-youll-hit">edge case 4</a></strong>:</p>
+<div class="hl"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">W2PTestPingHandler</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./W2P/W2PTestPingHandler&quot;</span><span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nx">RegisterHandler</span><span class="p">(</span><span class="nx">ProtocolPersistence</span><span class="p">.</span><span class="nx">W2PTestPing</span><span class="p">,</span><span class="w"> </span><span class="nx">W2PTestPingHandler</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="7-world-servers-c2w-handler--ties-it-all-together">7. World Server's C2W handler — ties it all together<a class="anchor" href="#7-world-servers-c2w-handler--ties-it-all-together" title="Permanent link">#</a></h3>
+<p>New file, <code>.../C2WHandlers/C2WPingPersistenceHandler.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Threading.Tasks</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.C2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Managers</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Networking.W2C</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Worldserver.Axiom.Server.Persistence.Scripts</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.Networking.C2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[PacketOpcode(Opcodes.C2WPingPersistence)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WPingPersistenceHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">;</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">_persistence</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="nf">C2WPingPersistenceHandler</span><span class="p">(</span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">playerManager</span><span class="p">,</span><span class="w"> </span><span class="n">PersistenceClient</span><span class="w"> </span><span class="n">persistence</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_playerManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">playerManager</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_persistence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">persistence</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WPingPersistencePacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">            </span><span class="c1">// Capture the NetworkId now, on the tick thread, before the</span>
+<span class="w">            </span><span class="c1">// await below suspends this method - see edge cases 6 and 7.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_playerManager</span><span class="p">.</span><span class="n">TryGetNetworkId</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">))</span>
+<span class="w">                </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">            </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PingAndReply</span><span class="p">(</span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">PingAndReply</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">string</span><span class="w"> </span><span class="n">reply</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_persistence</span><span class="p">.</span><span class="n">W2PTestPing</span><span class="p">.</span><span class="n">Ping</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// We&#39;re resuming on a TCP receive thread here, not the game</span>
+<span class="w">            </span><span class="c1">// tick thread - every touch of shared state (including just</span>
+<span class="w">            </span><span class="c1">// looking the peer back up) goes through EnqueueAction.</span>
+<span class="w">            </span><span class="n">_playerManager</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_playerManager</span><span class="p">.</span><span class="n">TryGetPeer</span><span class="p">(</span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="p">))</span>
+<span class="w">                    </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// player disconnected while we were waiting</span>
+
+<span class="w">                </span><span class="n">W2CPingPersistenceResponseSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">reply</span><span class="p">);</span>
+<span class="w">            </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>New packet class (<code>Shared/Packets/C2W/C2WPingPersistencePacket.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="na">[MessagePackObject(true)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WPingPersistencePacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>New W2C sender (<code>.../W2CSenders/W2CPingPersistenceResponseSender.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.W2C</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.Networking.W2C</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CPingPersistenceResponseSender</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">reply</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">WorldserverPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span>
+<span class="w">                </span><span class="n">peer</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CPingPersistenceResponse</span><span class="p">,</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">W2CPingPersistenceResponsePacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Reply</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reply</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>New W2C packet class (<code>Shared/Packets/W2C/W2CPingPersistenceResponsePacket.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="na">[MessagePackObject(true)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CPingPersistenceResponsePacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Reply</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="8-client-sender--handler">8. Client sender + handler<a class="anchor" href="#8-client-sender--handler" title="Permanent link">#</a></h3>
+<p><code>.../C2WSenders/C2WPingPersistencePacketSender.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.C2W</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Client.Networking.C2W</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WPingPersistencePacketSender</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ClientPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span>
+<span class="w">                </span><span class="n">peer</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">C2WPingPersistence</span><span class="p">,</span>
+<span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">C2WPingPersistencePacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>.../W2CHandlers/W2CPingPersistenceResponseHandler.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Library.Net.Worldserver</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Client</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.W2C</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">MessagePack</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Client.Networking.W2C</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[PacketOpcode(Opcodes.W2CPingPersistenceResponse)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CPingPersistenceResponseHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IClientPacketHandler</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">W2CPingPersistenceResponsePacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytes</span><span class="p">());</span>
+
+<span class="w">            </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">Reply</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>That's the full chain: 2 new <code>Opcodes</code> values, 2 new <code>PServerOpcodes</code> /
+<code>ProtocolPersistence</code> values (kept in sync by hand across a C# enum and
+a TS enum), 4 new packet classes across two languages, a
+<code>Guid</code>-correlated request/response pair through <code>PersistenceClient</code>, one
+Node handler with manual registration, and a C# handler that has to
+marshal its continuation back through <code>EnqueueAction</code>. Every one of
+those steps is a real edge case — see below. Run it through the
+<a href="#verifying-a-new-packet-works">verification checklist</a>, specifically
+step 4 (checking the Node console).</p>
+<hr>
+<h2 id="edge-cases-youll-hit">Edge cases you'll hit<a class="anchor" href="#edge-cases-youll-hit" title="Permanent link">#</a></h2>
+<p>These are the ones both worked examples above were built to surface.
+Keep this list in mind any time a new packet isn't a simple
+one-hop request/response.</p>
+<p><strong>1. Fire-and-forget vs. request/response.</strong>
+<code>W2PHelloWorldSender.Send</code> and <code>W2CMOTDPacketSender.Send</code> are
+fire-and-forget — nothing waits for a reply, so no correlation is
+needed. The moment you need <em>this specific caller</em> to get <em>this specific
+reply</em> (character load, the ping example above), you need a correlation
+key and a <code>TaskCompletionSource</code>. Don't add the plumbing for requests
+that don't need it — it's pure overhead for a one-way notification.</p>
+<p><strong>2. Picking the correlation key.</strong>
+The existing character load/create/list requests are keyed by
+<code>AccountId</code>, which works because there's only ever one in-flight request
+per account for those operations. That assumption doesn't hold for
+something like the ping example, or anything a player could trigger
+multiple times in quick succession (spamming a "check price" button) —
+use a fresh <code>Guid</code> per request instead, generated where the request
+starts and echoed back unchanged in the response.</p>
+<p><strong>3. <code>Guid</code> doesn't cross the C#/TypeScript boundary as a <code>Guid</code>.</strong>
+MessagePack for C# will happily serialize a <code>System.Guid</code>, but
+<code>@msgpack/msgpack</code> on the Node side has no matching extension type for
+it out of the box, and you don't want to debug that mismatch at 1am. Use
+<code>string</code> (from <code>Guid.ToString()</code> / parsed back with <code>Guid.Parse(...)</code>)
+in every packet class that crosses that specific boundary. Everywhere
+that stays purely on the C# side (the <code>pendingPings</code> dictionary key, for
+example) can use whichever type is convenient — <code>string</code> is fine there
+too, and avoids a needless <code>Guid.Parse</code> round trip.</p>
+<p><strong>4. The Persistence Server is not auto-registered — three manual edits, in two languages.</strong>
+<code>PacketDispatcher.AutoRegister</code> and <code>ClientPacketDispatcher.AutoRegister</code>
+only scan C# assemblies for <code>[PacketOpcode]</code>. The Node process has none
+of that: adding a persistence-side packet means manually adding the enum
+value to <code>protocol.persistence.ts</code>, writing the handler, and adding one
+<code>RegisterHandler(...)</code> line in <code>RegisterHandlers.ts</code> — miss any of the
+three and you get <code>Unknown Opcode N</code> printed to the Node console with no
+further clue. If this becomes a recurring pain point, the same
+reflection trick doesn't port to TypeScript directly, but a lint rule or
+a startup assertion ("every enum value has a registered handler") would
+catch the same class of mistake.</p>
+<p><strong>5. Two opcode enums that must stay numerically identical, by hand, forever.</strong>
+<code>PServerOpcodes</code> (C#) and <code>ProtocolPersistence</code> (TypeScript) are two
+independently-typed enums that must have the same names mapped to the
+same numbers. Nothing enforces this except discipline (see the
+<a href="#opcode-numbering-rules">opcode numbering rules</a> above) — a mismatch
+means messages get silently misrouted to the wrong handler (or to no
+handler, printing <code>Unknown Opcode</code>) with no compiler or runtime error
+pointing at the actual cause. <strong>Always add the same value, with the same
+number, to both files in the same commit.</strong> The already-existing drift
+between <code>Shared/Opcodes.ts</code> and <code>Shared/protocol.persistence.ts</code>
+(flagged in the worked example above) is exactly what this looks like
+once it happens — worth a quick audit of every value in both files while
+you're in there.</p>
+<p><strong>6. Thread marshaling on the way back from an <code>await</code>.</strong>
+<code>C2WHandlers</code> run synchronously on the LiteNetLib receive path inside
+the game tick. The moment you <code>await</code> a <code>PersistenceClient</code> call, your
+continuation resumes on whatever thread the TCP <code>ReceiveLoop</code> completed
+on — <strong>not</strong> the tick thread. Every existing handler that does this
+(<code>C2WAuthenticateHandler</code>, <code>C2WCreateCharacterHandler</code>,
+<code>C2WSelectCharacterHandler</code>) wraps everything after the <code>await</code> in
+<code>playerManager.EnqueueAction(() =&gt; { ... })</code>, which queues the closure to
+run on the next tick instead of running it immediately on the TCP
+thread. Skipping this is a race condition waiting to happen, not a bug
+you'll see in local testing with one client connected.</p>
+<p><strong>7. The player may be gone by the time the reply comes back.</strong>
+Between sending the persistence request and getting the response, the
+player can disconnect. Capture the <code>NetworkId</code> before the <code>await</code> (not
+the <code>NetPeer</code> reference), and re-resolve the peer via
+<code>playerManager.TryGetPeer(networkId, out peer)</code> <em>inside</em> the enqueued
+action, bailing out silently if it's no longer there — see step 7 of the
+ping example. Holding onto the original <code>NetPeer</code> and sending to it
+regardless is usually harmless with LiteNetLib (it no-ops on a
+disconnected peer) but resolving fresh is one line and removes any doubt.</p>
+<p><strong>8. Handlers with zero constructor parameters still go through
+<code>Activator.CreateInstance</code>.</strong>
+<code>AutoRegister</code> builds every handler via reflection, including ones with
+no dependencies (Example 1's <code>C2WHelloWorldHandler</code>) — <code>ctor.GetParameters()</code>
+just returns an empty array and <code>Activator.CreateInstance(type, args)</code>
+works the same as <code>new HandlerType()</code>. Nothing special to do for a
+dependency-free handler; it's the same code path.</p>
+<h2 id="adding-a-new-ui-element-wired-to-a-packet">Adding a new UI element wired to a packet<a class="anchor" href="#adding-a-new-ui-element-wired-to-a-packet" title="Permanent link">#</a></h2>
+<p>The pattern is the same one used by chat, character list, and the
+interaction dialogue/loot popups:</p>
+<ol>
+<li>Build the UI (a prefab + a MonoBehaviour that shows/hides it and
+   exposes plain C# methods like <code>ShowDialogue(string text)</code> — no
+   networking code in this class).</li>
+<li>In the matching <code>W2CYourHandler.Handle</code>, deserialize the packet and
+   call into that UI class directly (see <code>W2CInteractDialogueHandler</code> or
+   <code>W2CChatMessageHandler</code> for the existing pattern — a static
+   <code>Instance</code>/event on the UI class that the handler calls or invokes).</li>
+<li>If the UI needs to send something back (a dialogue choice, a chat
+   message), that's a new C2W packet — follow the <a href="#adding-a-client--server-c2w-packet">C2W steps</a>
+   above, fired from a button's <code>OnClick</code> / an input field's submit
+   handler.</li>
+</ol>
+<p>Anything that broadcasts to <em>other</em> players (chat, position, someone
+else's dialogue state) should go through <code>ReplicationManager</code> /
+<code>InterestManager</code> rather than being sent ad hoc — see <code>C2WChatHandler</code>
+for the reference implementation of "who should receive this."</p>
+<h2 id="where-things-live-quick-index">Where things live (quick index)<a class="anchor" href="#where-things-live-quick-index" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Opcodes enum (client ↔ world server)</td>
+<td><code>Axiom.Network/Shared/Opcodes.cs</code></td>
+</tr>
+<tr>
+<td>PServerOpcodes enum (world server ↔ persistence, C# side)</td>
+<td><code>Axiom.Network/Shared/PServerOpcodes.cs</code></td>
+</tr>
+<tr>
+<td>ProtocolPersistence enum (world server ↔ persistence, TS side — the canonical one)</td>
+<td><code>Axiom.Server.Persistence/src/Shared/protocol.persistence.ts</code></td>
+</tr>
+<tr>
+<td>C2W / W2C packet classes</td>
+<td><code>Axiom.Network/Shared/Packets/{C2W,W2C}/</code></td>
+</tr>
+<tr>
+<td>W2P / P2W packet classes (C#)</td>
+<td><code>Axiom.Network/Shared/Packets/PersistenceServer/{W2P,P2W}/</code></td>
+</tr>
+<tr>
+<td>W2P / P2W packet interfaces (TS)</td>
+<td><code>Axiom.Server.Persistence/src/Shared/Packets/{Requests,Response}/</code></td>
+</tr>
+<tr>
+<td><code>[PacketOpcode]</code> attribute</td>
+<td><code>Axiom.Network/Shared/PacketOpcodeAttribute.cs</code></td>
+</tr>
+<tr>
+<td>Server packet handlers (C2W)</td>
+<td><code>Axiom.Server.World/Core/Packets/C2WHandlers/</code></td>
+</tr>
+<tr>
+<td>Server → client senders (W2C)</td>
+<td><code>Axiom.Server.World/Core/Packets/W2CSenders/</code></td>
+</tr>
+<tr>
+<td>Server dispatcher + auto-registration</td>
+<td><code>Axiom.Network/Utils/Worldserver/WSPacketDispatcher.cs</code></td>
+</tr>
+<tr>
+<td><code>ServiceContainer</code> (handler dependency resolution)</td>
+<td><code>Axiom.Server.World/Core/Services/ServiceContainer.cs</code></td>
+</tr>
+<tr>
+<td>Client packet handlers (W2C)</td>
+<td><code>Axiom.Client/Networking/W2CHandlers/</code></td>
+</tr>
+<tr>
+<td>Client → server senders (C2W)</td>
+<td><code>Axiom.Client/Networking/C2WSenders/</code></td>
+</tr>
+<tr>
+<td>Client dispatcher + auto-registration</td>
+<td><code>Axiom.Network/Utils/Client/ClientPacketDispatcher.cs</code></td>
+</tr>
+<tr>
+<td>World server ↔ persistence client, correlation dictionaries</td>
+<td><code>Axiom.Server.World/Core/PersistenceServer/.../PersistenceClient.cs</code></td>
+</tr>
+<tr>
+<td>World server's P2W handlers</td>
+<td><code>.../PersistenceServer/.../Networking/P2WHandlers/</code></td>
+</tr>
+<tr>
+<td>World server's W2P senders</td>
+<td><code>.../PersistenceServer/.../Networking/W2PSenders/</code></td>
+</tr>
+<tr>
+<td>Persistence server (Node) opcode dispatch</td>
+<td><code>Axiom.Server.Persistence/src/Networking/lib/PacketDispatcher.ts</code></td>
+</tr>
+<tr>
+<td>Persistence server (Node) handlers + registration</td>
+<td><code>Axiom.Server.Persistence/src/Networking/W2P/</code> + <code>RegisterHandlers.ts</code></td>
+</tr>
+<tr>
+<td>Player state (session, spawn, movement, saving)</td>
+<td><code>Axiom.Server.World/Core/Managers/</code> — <code>SessionManager</code>, <code>PlayerSpawnManager</code>, <code>PlayerMovementBroadcaster</code>, <code>CharacterPersistence</code>, coordinated by the thin <code>PlayerManager</code> facade</td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="09-KNOWN-GAPS-AND-NEXT-STEPS.html"><span>Previous</span>Known Gaps &amp; Next Steps</a>
+<a class="next" href="AUDIT_FIXES_2026-10-17.html"><span>Next</span>Audit fixes (17 Oct 2026)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#contents">Contents</a>
+</li>
+<li><a href="#quick-reference">Quick reference</a>
+</li>
+<li><a href="#prefix-glossary">Prefix glossary</a>
+</li>
+<li><a href="#the-big-picture">The big picture</a>
+</li>
+<li><a href="#opcode-numbering-rules">Opcode numbering rules</a>
+</li>
+<li><a href="#adding-a-client--server-c2w-packet">Adding a client → server (C2W) packet</a>
+<ul>
+<li><a href="#if-your-handler-needs-a-new-dependency">If your handler needs a new dependency</a>
+</li>
+</ul>
+</li>
+<li><a href="#adding-a-server--client-w2c-packet">Adding a server → client (W2C) packet</a>
+</li>
+<li><a href="#verifying-a-new-packet-works">Verifying a new packet works</a>
+</li>
+<li><a href="#worked-example-1-hello-world-client--world-server--client">Worked Example 1: Hello World (Client → World Server → Client)</a>
+</li>
+<li><a href="#worked-example-2-client--world-server--persistence-server--world-server--client">Worked Example 2: Client → World Server → Persistence Server → World Server → Client</a>
+<ul>
+<li><a href="#the-chain">The chain</a>
+</li>
+<li><a href="#1-world-server--client-opcodes-axiomnetworksharedopcodescs">1. World Server ↔ Client opcodes (Axiom.Network/Shared/Opcodes.cs)</a>
+</li>
+<li><a href="#2-world-server--persistence-server-opcodes--two-places-kept-in-sync-by-hand">2. World Server ↔ Persistence Server opcodes — two places, kept in sync by hand</a>
+</li>
+<li><a href="#3-packet-classes-both-projects-both-directions">3. Packet classes (both projects, both directions)</a>
+</li>
+<li><a href="#4-world-server--persistence-server-sender--correlation">4. World Server → Persistence Server sender + correlation</a>
+</li>
+<li><a href="#5-world-servers-p2w-response-handler">5. World Server&#x27;s P2W response handler</a>
+</li>
+<li><a href="#6-persistence-server-node-handler">6. Persistence Server (Node) handler</a>
+</li>
+<li><a href="#7-world-servers-c2w-handler--ties-it-all-together">7. World Server&#x27;s C2W handler — ties it all together</a>
+</li>
+<li><a href="#8-client-sender--handler">8. Client sender + handler</a>
+</li>
+</ul>
+</li>
+<li><a href="#edge-cases-youll-hit">Edge cases you&#x27;ll hit</a>
+</li>
+<li><a href="#adding-a-new-ui-element-wired-to-a-packet">Adding a new UI element wired to a packet</a>
+</li>
+<li><a href="#where-things-live-quick-index">Where things live (quick index)</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persistence Server · Axiom Docs</title>
+<meta name="description" content="Axiom.Server.Persistence internals - the secret gate, MessagePack routes, the full-save transaction, bulk inserts, item uid audits, migrations and their start-up checks - and a complete example of adding a route used by the World server.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html" class="active" aria-current="page">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="persistence-server">Persistence Server<a class="anchor" href="#persistence-server" title="Permanent link">#</a></h1>
+<p><code>Axiom.Server.Persistence</code> is an ASP.NET Core minimal-API app (port <strong>7778</strong>) that owns <code>axiom_persistence</code> (MySQL). Only World servers (and the Auction server, for mail) call it. Why it exists and how saves work is on <a href="../10-architecture/70-persistence-flow.html">Persistence flow</a>; tables are on <a href="../20-data/30-mysql.html#axiom_persistence">MySQL databases</a>.</p>
+<h2 id="layout">Layout<a class="anchor" href="#layout" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Program.cs</code></td>
+<td>start-up, the secret gate, <strong>every route</strong> (grouped by <code>// ── /route ──</code> banners), and the save helpers (<code>ApplyFullSaveAsync</code>, <code>ValidateFullSave</code>, load builders)</td>
+</tr>
+<tr>
+<td><code>Api/Data/PersistenceDbContext.cs</code></td>
+<td>EF model: every table and its column names</td>
+</tr>
+<tr>
+<td><code>Api/Models/*.cs</code></td>
+<td>entity classes (one per table)</td>
+</tr>
+<tr>
+<td><code>Api/Data/BulkInsert.cs</code></td>
+<td>multi-row <code>INSERT</code> for the full save (one statement per table instead of one per row)</td>
+</tr>
+<tr>
+<td><code>Api/Data/ItemUidAudit.cs</code></td>
+<td>records any gear uid found in two places (<code>item_uid_conflicts</code>), inside the save's transaction; never blocks a save</td>
+</tr>
+<tr>
+<td><code>Api/CommunityEndpoints.cs</code></td>
+<td><code>/community/command</code> (friends, blocks, families)</td>
+</tr>
+<tr>
+<td><code>Api/Extensions/Extensions.cs</code></td>
+<td><code>ReadMsgPackAsync&lt;T&gt;</code> (null on a malformed body) and <code>WriteMsgPackAsync&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><code>Api/AppearanceJson.cs</code></td>
+<td><code>characters.appearance</code> JSON</td>
+</tr>
+<tr>
+<td><code>Migrations/</code></td>
+<td>EF migrations (applied by <code>dotnet ef database update</code>, <strong>not</strong> automatically)</td>
+</tr>
+<tr>
+<td><code>SQL/</code></td>
+<td>hand-runnable equivalents of feature migrations, plus seeds (<code>cash_shop_seed.sql</code>, <code>admin_mail_examples.sql</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="start-up">Start-up<a class="anchor" href="#start-up" title="Permanent link">#</a></h2>
+<ol>
+<li><code>PacketSerialization.Configure()</code> (shared MessagePack options).</li>
+<li>Reads <code>appsettings.json</code>, <code>appsettings.Local.json</code>, environment.</li>
+<li>Refuses to start without a connection string or with a missing/placeholder/short <code>InternalSecret</code>.</li>
+<li><strong>Checks pending migrations</strong> without changing the database: refuses to start if the class-based characters, warehouse or world outbox migrations are missing; switches Patron off if <code>account_patron</code> is missing; warns about any other pending ones.</li>
+<li>Installs the <strong>secret gate</strong>: every request without the right <code>x-internal-secret</code> gets <strong>404</strong> (not 403, so a scanner learns nothing).</li>
+<li>Maps the routes and listens.</li>
+</ol>
+<h2 id="route-conventions">Route conventions<a class="anchor" href="#route-conventions" title="Permanent link">#</a></h2>
+<p>Every route follows the same shape:</p>
+<div class="hl"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/trade/demand/list&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">PersistenceDbContext</span><span class="w"> </span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">ReadMsgPackAsync</span><span class="o">&lt;</span><span class="n">W2PTradeDemandListRequest</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">shard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">Shard</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">TradeDemand</span><span class="p">.</span><span class="n">AsNoTracking</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">Shard</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">shard</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TradeDemandDto</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OutletId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">OutletId</span><span class="p">,</span><span class="w"> </span><span class="n">PackItemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">PackItemId</span><span class="p">,</span><span class="w"> </span><span class="n">DemandPct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">DemandPct</span><span class="p">,</span><span class="w"> </span><span class="n">UpdatedAtUnixMs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">UpdatedAtUnixMs</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ToArrayAsync</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteMsgPackAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">P2WTradeDemandListResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<ul>
+<li>Request/response types are <code>W2P*</code>/<code>P2W*</code> classes in <code>Axiom.Network</code> (shared with the World server).</li>
+<li><strong>Validate everything</strong> (counts, ranges, finite floats): the World server is trusted, but a bug there must not corrupt the database. A malformed request gets a definite answer (<code>Invalid</code> or 400), never a 500 the caller would retry forever.</li>
+<li><strong>Definite vs retryable</strong>: 200 with a result means "this is what happened"; 500 means "rolled back, safe to retry". Commit is the last thing in a <code>try</code>, so any exception means nothing was written.</li>
+<li><strong>Out-of-order safety</strong>: writes that can race carry a version or sequence and only replace older data (<code>save_seq</code>, doodad <code>version</code>, <code>updated_at_unix_ms</code> upserts like the one above).</li>
+<li><strong>Idempotency by key</strong>: deliveries (<code>mail_receipts</code>), outbox entries (<code>op_key</code>), placement keys.</li>
+</ul>
+<p>The full-save transaction (<code>/characters/save-full</code> → <code>ApplyFullSaveAsync</code>) is described step by step in <a href="../10-architecture/70-persistence-flow.html#a-save-step-by-step">Persistence flow</a>. <code>/characters/save-pair</code> runs it twice in one transaction (player trades).</p>
+<h2 id="example-a-new-route-end-to-end">Example: a new route end to end<a class="anchor" href="#example-a-new-route-end-to-end" title="Permanent link">#</a></h2>
+<p>Goal: a <strong>server-wide bounty board</strong>: the World server stores and lists bounties.</p>
+<p><strong>1. Shared types</strong> (<code>Axiom.Network/Shared/Packets/W2P/W2PBountyPackets.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="na">[MessagePackObject]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">BountyDto</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Key(0)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">TargetCharacterId</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Key(1)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">TargetName</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Key(2)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">RewardCopper</span><span class="p">;</span>
+<span class="w">    </span><span class="na">[Key(3)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">PostedAtUnixMs</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="na">[MessagePackObject]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2PBountyListRequest</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Shard</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="na">[MessagePackObject]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">P2WBountyListResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">BountyDto</span><span class="p">[]</span><span class="w"> </span><span class="n">Rows</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="na">[MessagePackObject]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2PBountyPostRequest</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Shard</span><span class="p">;</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">BountyDto</span><span class="w"> </span><span class="n">Bounty</span><span class="p">;</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Key</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="na">[MessagePackObject]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">P2WBountyPostResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Posted</span><span class="p">;</span><span class="w"> </span><span class="p">[</span><span class="n">Key</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Rebuild <code>Axiom.Network</code> (the World server and Persistence reference the project; the client only needs the DLL if it sees these types).</p>
+<p><strong>2. Table</strong> (<code>Api/Models/Bounty.cs</code> + <code>PersistenceDbContext</code> + migration):</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Bounty</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Key</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span><span class="w">              </span><span class="c1">// idempotency key from the World server (PK)</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Shard</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">TargetCharacterId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">TargetName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">RewardCopper</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">PostedAtUnixMs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// PersistenceDbContext.OnModelCreating:</span>
+<span class="n">modelBuilder</span><span class="p">.</span><span class="n">Entity</span><span class="o">&lt;</span><span class="n">Bounty</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">ToTable</span><span class="p">(</span><span class="s">&quot;bounties&quot;</span><span class="p">);</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">HasKey</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Key</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Key</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;op_key&quot;</span><span class="p">).</span><span class="n">HasMaxLength</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Shard</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;shard&quot;</span><span class="p">).</span><span class="n">HasMaxLength</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">TargetCharacterId</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;target_character_id&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">TargetName</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;target_name&quot;</span><span class="p">).</span><span class="n">HasMaxLength</span><span class="p">(</span><span class="mi">32</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">RewardCopper</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;reward_copper&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">PostedAtUnixMs</span><span class="p">).</span><span class="n">HasColumnName</span><span class="p">(</span><span class="s">&quot;posted_at_unix_ms&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">e</span><span class="p">.</span><span class="n">HasIndex</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">Shard</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">Bounty</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Bounties</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">Bounty</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>src/Servers/Axiom.Server.Persistence
+dotnet<span class="w"> </span>ef<span class="w"> </span>migrations<span class="w"> </span>add<span class="w"> </span>Bounties
+dotnet<span class="w"> </span>ef<span class="w"> </span>database<span class="w"> </span>update
+</code></pre></div>
+
+<p><strong>3. Routes</strong> (<code>Program.cs</code>, next to the others):</p>
+<div class="hl"><pre><span></span><code><span class="c1">// ── /bounties ─────────────────────────────────────────────────────────</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/bounties/list&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">PersistenceDbContext</span><span class="w"> </span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">ReadMsgPackAsync</span><span class="o">&lt;</span><span class="n">W2PBountyListRequest</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">req</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">400</span><span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">Bounties</span><span class="p">.</span><span class="n">AsNoTracking</span><span class="p">().</span><span class="n">Where</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">Shard</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="n">req</span><span class="p">.</span><span class="n">Shard</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">OrderByDescending</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">RewardCopper</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BountyDto</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">TargetCharacterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TargetCharacterId</span><span class="p">,</span><span class="w"> </span><span class="n">TargetName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">TargetName</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">RewardCopper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">RewardCopper</span><span class="p">,</span><span class="w"> </span><span class="n">PostedAtUnixMs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">PostedAtUnixMs</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ToArrayAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteMsgPackAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">P2WBountyListResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/bounties/post&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">PersistenceDbContext</span><span class="w"> </span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">ReadMsgPackAsync</span><span class="o">&lt;</span><span class="n">W2PBountyPostRequest</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">req</span><span class="o">?.</span><span class="n">Bounty</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">req</span><span class="p">.</span><span class="n">Key</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Key</span><span class="p">.</span><span class="n">Length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="n">req</span><span class="p">.</span><span class="n">Bounty</span><span class="p">.</span><span class="n">RewardCopper</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Bounty</span><span class="p">.</span><span class="n">TargetCharacterId</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteMsgPackAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">P2WBountyPostResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Invalid bounty.&quot;</span><span class="w"> </span><span class="p">});</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Idempotent: the same key posted twice is one bounty.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">Bounties</span><span class="p">.</span><span class="n">AnyAsync</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">Key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Key</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteMsgPackAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">P2WBountyPostResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Posted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">});</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">db</span><span class="p">.</span><span class="n">Bounties</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Bounty</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span><span class="w"> </span><span class="n">Shard</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Shard</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">TargetCharacterId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Bounty</span><span class="p">.</span><span class="n">TargetCharacterId</span><span class="p">,</span>
+<span class="w">        </span><span class="n">TargetName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Bounty</span><span class="p">.</span><span class="n">TargetName</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">RewardCopper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">Bounty</span><span class="p">.</span><span class="n">RewardCopper</span><span class="p">,</span>
+<span class="w">        </span><span class="n">PostedAtUnixMs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">ToUnixTimeMilliseconds</span><span class="p">()</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteMsgPackAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">P2WBountyPostResponse</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Posted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p><strong>4. World side</strong>: a small store class like <code>TradeDemandStore</code>, calling <code>_persistence.PostAsync&lt;W2PBountyPostRequest, P2WBountyPostResponse&gt;("/bounties/post", …)</code> from an async method and hopping back with <code>EnqueueAction</code> (<a href="../10-architecture/30-world-server.html#the-threading-rule">threading rule</a>). Because posting a bounty <strong>takes gold from the player</strong>, use the economy pattern: take the gold, <code>SaveNowAsync(session, outboxAdd)</code> with the bounty as an outbox entry, then post with the same key; delete the outbox entry when it's posted (<a href="100-economy.html#the-pattern-for-new-economy-features">Economy</a>).</p>
+<p>The new routes appear in the generated <a href="../70-reference/services.html">Service endpoints</a> next time the docs are built.</p>
+<nav class="pager">
+<a class="prev" href="210-auth-server.html"><span>Previous</span>Auth Server</a>
+<a class="next" href="230-auction-server.html"><span>Next</span>Auction Server</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#layout">Layout</a>
+</li>
+<li><a href="#start-up">Start-up</a>
+</li>
+<li><a href="#route-conventions">Route conventions</a>
+</li>
+<li><a href="#example-a-new-route-end-to-end">Example: a new route end to end</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

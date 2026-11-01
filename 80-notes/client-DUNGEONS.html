@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeons: end to end · Axiom Docs</title>
+<meta name="description" content="How to make an instanced dungeon in Axiom, from an empty patch of world to a run with mobs, a boss, a way out, a time limit and a daily entry limit. Everything about a dungeon is data, so a dungeon you can run forever…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html" class="active" aria-current="page">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/DUNGEONS.md</code></div>
+<h1 id="dungeons-end-to-end">Dungeons: end to end<a class="anchor" href="#dungeons-end-to-end" title="Permanent link">#</a></h1>
+<p>How to make an instanced dungeon in Axiom, from an empty patch of world to
+a run with mobs, a boss, a way out, a time limit and a daily entry limit.
+Everything about a dungeon is data, so a dungeon you can run forever is
+the same dungeon with two numbers set to 0.</p>
+<p>Read section 1 once. Then use <strong>section 2</strong> (the Create wizard: about ten
+minutes) or <strong>section 3</strong> (the same thing by hand, if you want to know
+what every row is).</p>
+<hr>
+<h2 id="contents">Contents<a class="anchor" href="#contents" title="Permanent link">#</a></h2>
+<ol>
+<li><a href="#1-how-dungeons-work">How dungeons work</a></li>
+<li><a href="#2-quick-start-the-dungeon-wizard">Quick start: the Dungeon wizard</a></li>
+<li><a href="#3-step-by-step-by-hand">Step by step, by hand</a></li>
+<li><a href="#4-run-rules-limits-timer-clearing">Run rules: limits, timer, clearing</a></li>
+<li><a href="#5-recipes">Recipes</a></li>
+<li><a href="#6-testing-checklist">Testing checklist</a></li>
+<li><a href="#7-troubleshooting">Troubleshooting</a></li>
+<li><a href="#8-reference">Reference: every column and rule</a></li>
+</ol>
+<hr>
+<h2 id="1-how-dungeons-work">1. How dungeons work<a class="anchor" href="#1-how-dungeons-work" title="Permanent link">#</a></h2>
+<p><strong>A dungeon is a place, built once.</strong> Its rooms are ordinary world space:
+a region far away from the open world that nobody can walk to. The two
+that ship with Axiom are at tile 32,32 (The Warrens) and 33,32 (The
+Sunken Crypt), about 16 km from the open world.</p>
+<p><strong>Every group gets its own copy of what's in it.</strong> When a party goes in,
+the server spawns the dungeon's mobs, boss and objects into a private
+<em>instance</em>: an interest layer only that group can see. Another party
+walking in at the same moment gets a different instance with its own mobs.
+This is what lets a dungeon be "cleared": mobs killed in your instance
+never come back in it.</p>
+<div class="hl"><pre><span></span><code> open world                                dungeon region (far away)
+ ┌──────────────────────┐                 ┌───────────────────────────────┐
+ │  [Entrance portal] ──┼── Enter ──────► │ Entry point                   │
+ │         ▲            │                 │   mobs ... mobs ... BOSS      │
+ │       Exit point ◄───┼── Leave ─────── │ [Exit portal]  (or the        │
+ └──────────────────────┘                 │  tracker&#39;s Leave button)      │
+                                          └───────────────────────────────┘
+                                   party A sees instance #1, party B #2 ...
+</code></pre></div>
+
+<p><strong>The pieces, and the table each lives in:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Where it lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The dungeon: name, level, party size, region, entry/exit points, run rules</td>
+<td><strong>Dungeons</strong> (one row)</td>
+</tr>
+<tr>
+<td>Its mobs and boss</td>
+<td><strong>NpcSpawners</strong> rows with <code>DungeonId</code> = the dungeon</td>
+</tr>
+<tr>
+<td>Which of those is a boss</td>
+<td>the NPC's <strong>Rank</strong> = Boss (NpcTemplates)</td>
+</tr>
+<tr>
+<td>Chests, the exit portal, anything else inside</td>
+<td><strong>DoodadSpawns</strong> rows with <code>DungeonId</code> = the dungeon</td>
+</tr>
+<tr>
+<td>The entrance</td>
+<td>a portal doodad in the open world (DoodadSpawns, <code>DungeonId</code> 0) whose action has an <strong>Enter Dungeon</strong> effect pointing at the dungeon</td>
+</tr>
+<tr>
+<td>What players stand on</td>
+<td>tile scenes for the region, or a prefab (<code>ClientKey</code>), or nothing (a plain floor at <code>FloorY</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>A run, from the player's side:</strong></p>
+<ol>
+<li>Walk up to the entrance portal and press <strong>F</strong> (Enter).</li>
+<li>The server checks level, party size and entry limit, then puts you in
+   your party's instance (or a new one) at the <strong>entry point</strong>.</li>
+<li>A tracker at the top of the screen shows the dungeon's name, <em>Bosses
+   0/1</em>, the clock if there's a time limit, and <em>2 of 3 runs left</em> if
+   runs are limited.</li>
+<li>Kill the boss (every boss, if there are several): <strong>"… cleared!"</strong>.</li>
+<li>Leave through the exit portal or the tracker's <strong>Leave dungeon</strong>
+   button, or get sent out automatically (<code>CompleteExitSeconds</code>), or run
+   out of time (the run fails and you're sent out).</li>
+<li>You come out at the dungeon's <strong>exit point</strong> in the open world.</li>
+</ol>
+<p>Dying inside brings you back at the entry point, inside. Logging out
+inside and back in puts you back in your instance if it's still open,
+otherwise at the exit. An instance with nobody in it closes after
+<code>EmptySeconds</code> (5 minutes by default).</p>
+<p>Your <strong>mount</strong> stays outside (ground mounts can be allowed with
+<code>AllowMounts</code>; flying is never allowed inside). Your <strong>pet</strong> comes with
+you.</p>
+<hr>
+<h2 id="2-quick-start-the-dungeon-wizard">2. Quick start: the Dungeon wizard<a class="anchor" href="#2-quick-start-the-dungeon-wizard" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Create &gt; Dungeon…</strong> (or Hub &gt; Create &gt; Dungeon).</p>
+<ol>
+<li><strong>Start.</strong> Copy <em>The Warrens</em> (suggested). The copy gets the same rules
+   and region size, and is moved to the <strong>next free region</strong> automatically
+   (two dungeons can't share space). Its mobs and portals are <em>not</em>
+   copied: every dungeon places its own.</li>
+<li><strong>Details.</strong> Name, description, minimum level, party size, and the run
+   rules: runs per day, time limit, how long to loot after clearing, mounts
+   (section 4 explains each; hover a field for a tooltip).</li>
+<li><strong>Where it is.</strong> The region (<code>MinX</code>…<code>MaxZ</code>), the floor height, and an
+   optional <code>ClientKey</code> prefab. Leave them as the wizard set them for a
+   first dungeon.</li>
+<li><strong>Entry and exit.</strong>
+   - <em>Entry</em>: where players appear inside. The wizard puts it near the
+     region's corner; fine for now.
+   - <em>Exit</em>: where players come out in the open world. Fly the Scene view
+     to where your entrance will be (e.g. a cave mouth) and press
+     <strong>Exit = where the Scene view is looking</strong>.</li>
+<li><strong>Mobs and bosses.</strong> Press <strong>Add a spawner near the entry</strong> a few times.
+   Each row is a spawner: set its <strong>TemplateId</strong> to the NPC (click the
+   field and type a name), <strong>Count</strong> to how many, <strong>Radius</strong> to how far
+   apart. Add one spawner whose NPC is a <strong>boss</strong> (an NPC with Rank =
+   Boss, e.g. <em>Warren Chieftain</em>). The card says <em>"1 boss spawner(s)"</em> when
+   you've got one.</li>
+<li><strong>The way in and the way out.</strong>
+   - Fly the Scene view to the cave mouth again and press <strong>Make an
+     entrance portal and place it where the Scene view is looking</strong>. This
+     copies an existing entrance, gives the copy its own action and points
+     it at <em>this</em> dungeon.
+   - Press <strong>Add an exit … near the entry</strong> for the exit portal inside.</li>
+<li><strong>Check</strong>, then <strong>Create</strong>. One patch, written to the database.</li>
+<li><strong>Restart the World server.</strong> Walk to your entrance, press F.</li>
+</ol>
+<p>That's a working dungeon. It has no art yet: you stand on a plain dark
+floor. Section 3.2 is how to build the real thing.</p>
+<hr>
+<h2 id="3-step-by-step-by-hand">3. Step by step, by hand<a class="anchor" href="#3-step-by-step-by-hand" title="Permanent link">#</a></h2>
+<p>Everything the wizard does, as rows, so you can edit an existing dungeon
+in Content Studio (Ctrl+Alt+E) or understand what the wizard made.</p>
+<h3 id="31-the-dungeons-row">3.1 The Dungeons row<a class="anchor" href="#31-the-dungeons-row" title="Permanent link">#</a></h3>
+<p>Content Studio &gt; <strong>World</strong> &gt; <strong>Dungeons</strong> &gt; new row (or Duplicate one).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>The Hollow Mine</td>
+<td>Shown on entering and on the tracker</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Abandoned tunnels...</td>
+<td></td>
+</tr>
+<tr>
+<td>MinLevel</td>
+<td>10</td>
+<td>Lower levels are refused at the door</td>
+</tr>
+<tr>
+<td>MaxPlayers</td>
+<td>5</td>
+<td>Players inside one instance at once</td>
+</tr>
+<tr>
+<td>MinX, MinZ, MaxX, MaxZ</td>
+<td>17408, 16384, 17920, 16896</td>
+<td>The region. <strong>Must not overlap another dungeon's.</strong> Tile-aligned (multiples of 512) keeps it simple</td>
+</tr>
+<tr>
+<td>FloorY</td>
+<td>0</td>
+<td>Height of the placeholder floor (when there's no geometry)</td>
+</tr>
+<tr>
+<td>ClientKey</td>
+<td><em>(empty)</em></td>
+<td>A prefab key for the dungeon's geometry, if it's one prefab</td>
+</tr>
+<tr>
+<td>EntryX, EntryY, EntryZ, EntryYaw</td>
+<td>17424, 0, 16400, 0</td>
+<td>Inside the region</td>
+</tr>
+<tr>
+<td>ExitX, ExitY, ExitZ</td>
+<td>-640, 12, 760</td>
+<td>In the <strong>open world</strong>, outside every region</td>
+</tr>
+<tr>
+<td><em>Run rules</em></td>
+<td></td>
+<td>Section 4</td>
+</tr>
+</tbody>
+</table></div>
+<p>The server checks every row when it starts. A row with a problem (entry
+outside the region, exit inside it, overlapping another dungeon…) is
+<strong>skipped</strong> with a warning in the World server's log naming the problem.</p>
+<h3 id="32-the-geometry-what-players-stand-on">3.2 The geometry: what players stand on<a class="anchor" href="#32-the-geometry-what-players-stand-on" title="Permanent link">#</a></h3>
+<p>Three options, in the order the client tries them:</p>
+<ol>
+<li><strong>Tile scenes</strong> (the real way). The region is ordinary 512 m tiles, so
+   <strong>Dev Tools &gt; World Tiles</strong> creates them like any other: create the
+   tile(s) covering the region (e.g. 34,32), build the dungeon in them
+   (terrain, or a modelled floor from <code>Art/Dungeons/</code> kit pieces with mesh
+   colliders), export the server collision (<strong>Dev Tools &gt; World Tiles &gt; Server
+   collision</strong>) and add them to Build Settings. The
+   client streams them like the open world. <code>WORLD_BUILDING_GUIDE.md</code> has
+   the details.</li>
+<li><strong>One prefab</strong>: put its key in <code>ClientKey</code>. It's placed with its pivot
+   at the region's min corner (<code>MinX</code>, <code>FloorY</code>, <code>MinZ</code>).</li>
+<li><strong>Nothing</strong>: a plain dark slab across the whole region, its top at
+   <code>FloorY</code>. Enough to test mobs, bosses and rules before there's any art.</li>
+</ol>
+<blockquote>
+<p>The server only knows heights from exported heightmaps. A dungeon floor
+at one height (<code>FloorY</code>, and spawners at that Y) is the simplest thing
+that works everywhere.</p>
+</blockquote>
+<h3 id="33-mobs">3.3 Mobs<a class="anchor" href="#33-mobs" title="Permanent link">#</a></h3>
+<p><strong>NpcSpawners</strong> rows with <code>DungeonId</code> = your dungeon:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TemplateId</td>
+<td>The NPC (NpcTemplates)</td>
+</tr>
+<tr>
+<td>X, Y, Z</td>
+<td>Where, inside the region. Y = the floor height</td>
+</tr>
+<tr>
+<td>Count</td>
+<td>How many of that NPC, every run</td>
+</tr>
+<tr>
+<td>Radius</td>
+<td>How far from X/Z they're spread</td>
+</tr>
+<tr>
+<td>DungeonId</td>
+<td>This dungeon. <strong>0 would put them in the open world</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Inside an instance, killed NPCs <strong>never respawn</strong>: cleared stays cleared.
+Use <strong>Dev Tools &gt; World Map</strong> to place spawners visually in the
+dungeon's tile scene, then set their <code>DungeonId</code> in Content Studio, or use
+the wizard's buttons.</p>
+<h3 id="34-the-boss">3.4 The boss<a class="anchor" href="#34-the-boss" title="Permanent link">#</a></h3>
+<p>A boss is any NPC whose <strong>Rank</strong> is <strong>Boss</strong> (NpcTemplates.Rank = 2).
+Make one with <strong>Tools &gt; Axiom &gt; Create &gt; NPC…</strong>: copy <em>Warren Chieftain</em> and change
+it, or set <code>Rank</code> on your own NPC. Then a spawner for it inside the
+dungeon (3.3).</p>
+<ul>
+<li><strong>Every boss in a run must die</strong> for it to be <em>cleared</em>. Two boss
+  spawners = two bosses = <em>Bosses 0/2</em> on the tracker.</li>
+<li>Bosses ignore stuns, roots and silences (CombatRules
+  <code>BossCrowdControlImmune</code>).</li>
+<li><strong>Boss phases</strong> (NpcPhases): at a health %, it yells, summons adds
+  (<code>SummonTemplateId</code>), switches abilities. Content Studio &gt; NPC &gt;
+  <em>Boss phases</em>.</li>
+<li><strong>Loot</strong>: give the boss a loot table (<code>LootTableId</code>), and/or put a chest
+  next to it (a DoodadSpawns row with <code>DungeonId</code>, like <em>Chieftain's
+  Hoard</em>).</li>
+</ul>
+<p>A dungeon with <strong>no</strong> boss works, but can never be <em>cleared</em> (no "cleared"
+message, no <code>CompleteExitSeconds</code>, and <code>CountEntryOn = 1</code> never counts).</p>
+<h3 id="35-the-entrance-open-world">3.5 The entrance (open world)<a class="anchor" href="#35-the-entrance-open-world" title="Permanent link">#</a></h3>
+<p>A portal doodad in the open world whose F action has an <strong>Enter Dungeon</strong>
+effect with <strong>RefId = the dungeon's Id</strong>. Each dungeon needs its own
+entrance template, because the dungeon id is part of it:</p>
+<ol>
+<li>Content Studio &gt; <strong>Doodads</strong> &gt; <em>Warren Entrance</em> &gt; <strong>Duplicate</strong> (with
+   children). Rename it.</li>
+<li>Open its phase &gt; its action (DoodadFuncs) &gt; its function
+   (<code>FuncId</code>). If that function is shared with the original, Duplicate the
+   function too and point the action at the copy.</li>
+<li>In the function's <strong>Effects</strong>, the row with Kind <strong>Enter Dungeon</strong>: set
+   <strong>RefId</strong> to your dungeon's Id.</li>
+<li>Place it: <strong>Dev Tools &gt; Doodads</strong>, pick your entrance, click the ground
+   by your exit point. (<code>DungeonId</code> 0: it's in the open world.)</li>
+</ol>
+<p>The wizard's <strong>Make an entrance portal…</strong> button does all four.</p>
+<h3 id="36-the-exit-inside">3.6 The exit (inside)<a class="anchor" href="#36-the-exit-inside" title="Permanent link">#</a></h3>
+<p>Any doodad whose action has a <strong>Leave Dungeon</strong> effect. It needs no
+dungeon id, so <strong>one exit template works for every dungeon</strong>: <em>Way Out</em>.
+Place a DoodadSpawns row for it inside your region with <code>DungeonId</code> = your
+dungeon (Dev Tools &gt; Doodads in the dungeon's tile, then set DungeonId;
+or the wizard's button).</p>
+<p>Players can also always leave with the tracker's <strong>Leave dungeon</strong> button
+(click twice), which does the same as the exit portal.</p>
+<h3 id="37-commit-and-restart">3.7 Commit and restart<a class="anchor" href="#37-commit-and-restart" title="Permanent link">#</a></h3>
+<p>Commit (Ctrl+S in Content Studio, or Create in the wizard), then
+<strong>restart the World server</strong>: it reads dungeons, spawners and doodads once,
+at startup.</p>
+<hr>
+<h2 id="4-run-rules-limits-timer-clearing">4. Run rules: limits, timer, clearing<a class="anchor" href="#4-run-rules-limits-timer-clearing" title="Permanent link">#</a></h2>
+<p>All on the Dungeons row (Content Studio &gt; Dungeons &gt; <em>Runs</em> group).</p>
+<h3 id="entry-limit-runs-per-day-or-week">Entry limit: runs per day (or week)<a class="anchor" href="#entry-limit-runs-per-day-or-week" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EntryLimit</strong></td>
+<td>Runs one character may start per period. <strong>0 = unlimited</strong></td>
+</tr>
+<tr>
+<td><strong>EntryLimitPeriodHours</strong></td>
+<td>The period: <strong>24</strong> = daily, <strong>168</strong> = weekly (0 = 24)</td>
+</tr>
+<tr>
+<td><strong>CountEntryOn</strong></td>
+<td><strong>0</strong> = a run counts when you <strong>enter</strong> it. <strong>1</strong> = when you <strong>clear</strong> it (every boss dead): walking in and out is free</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rules:</p>
+<ul>
+<li>Going back into <strong>your own</strong> run (you left, died, logged out) never
+  counts again. Only starting a new run, or joining a party member's run
+  you weren't part of, does.</li>
+<li>Counts are <strong>per character</strong> and saved with the character, so logging
+  out or restarting the server doesn't reset them.</li>
+<li>Every character's counts reset <strong>at the same moment</strong>: daily at
+  CombatRules <code>DungeonResetHourUtc</code> (0 = midnight UTC), weekly on <strong>Monday</strong>
+  at that hour. Not 24 hours after your own first run.</li>
+<li>At the limit, the entrance refuses: <em>"You've used all 3 runs of The
+  Warrens - more in 5h 12m."</em> The tracker shows <em>"2 of 3 runs left -
+  resets Tue 00:00"</em> while you're inside.</li>
+</ul>
+<h3 id="time-limit">Time limit<a class="anchor" href="#time-limit" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TimeLimitSeconds</strong></td>
+<td>Clear it within this long. <strong>0 = no time limit</strong></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>The clock starts when the run <strong>opens</strong> (the first player in), not per
+  player.</li>
+<li>A warning banner comes CombatRules <code>DungeonTimeWarningSeconds</code> before
+  the end (60 by default; 0 = none). The tracker's clock turns red in the
+  last minute.</li>
+<li>Time up, not cleared: the run <strong>fails</strong>. Everyone inside is sent to the
+  exit and the instance closes. Going back in starts a <strong>new</strong> run (and
+  counts against the limit).</li>
+<li>Clearing it stops the clock.</li>
+</ul>
+<h3 id="when-its-cleared">When it's cleared<a class="anchor" href="#when-its-cleared" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CompleteExitSeconds</strong></td>
+<td>After the last boss dies, everyone still inside is sent out after this long (time to loot), and the run closes. <strong>0 = stay until you leave</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="other">Other<a class="anchor" href="#other" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AllowMounts</strong></td>
+<td>Ground mounts may be summoned inside. Flying is never allowed in a dungeon</td>
+</tr>
+<tr>
+<td><strong>EmptySeconds</strong></td>
+<td>An instance with nobody inside closes after this long (0 = CombatRules <code>DungeonEmptySeconds</code>, 300). Members can come back to it until then</td>
+</tr>
+<tr>
+<td><strong>MaxPlayers</strong></td>
+<td>Players inside one instance at once</td>
+</tr>
+<tr>
+<td><strong>MinLevel</strong></td>
+<td>Level needed to enter</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="5-recipes">5. Recipes<a class="anchor" href="#5-recipes" title="Permanent link">#</a></h2>
+<p><strong>A dungeon you can run forever</strong> (practice, farming, testing):
+<code>EntryLimit 0</code>, <code>TimeLimitSeconds 0</code>. That's it.</p>
+<p><strong>Three runs a day, like a classic MMO daily</strong>:
+<code>EntryLimit 3</code>, <code>EntryLimitPeriodHours 24</code>, <code>CountEntryOn 0</code>.</p>
+<p><strong>One clear a week, but you can wipe and retry freely</strong> (raid lockout):
+<code>EntryLimit 1</code>, <code>EntryLimitPeriodHours 168</code>, <code>CountEntryOn 1</code>.</p>
+<p><strong>Time trial</strong>: <code>TimeLimitSeconds 900</code> (15 minutes), <code>CompleteExitSeconds
+30</code>. Clear it in time or be sent out.</p>
+<p><strong>Kick everyone out a minute after the boss dies</strong> (loot, then go):
+<code>CompleteExitSeconds 60</code>.</p>
+<p><strong>Ride through a big open cavern</strong>: <code>AllowMounts 1</code>.</p>
+<p><strong>Reset at 6 am server time (UTC+0)</strong>: CombatRules <code>DungeonResetHourUtc 6</code>.</p>
+<p>What ships in patch 058:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dungeon</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The Warrens</td>
+<td>3 runs a day, counted on entering; sent out 60 s after the Chieftain dies</td>
+</tr>
+<tr>
+<td>The Sunken Crypt</td>
+<td>Unlimited runs; 20-minute time limit</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="6-testing-checklist">6. Testing checklist<a class="anchor" href="#6-testing-checklist" title="Permanent link">#</a></h2>
+<ul>
+<li>[ ] The World server's log has no <code>[Instances] Dungeon N ... skipped</code>
+      line for your dungeon.</li>
+<li>[ ] The entrance is in the open world and <strong>F</strong> says Enter.</li>
+<li>[ ] Entering puts you at the entry point, on a floor (tiles, prefab or
+      the placeholder slab), and the tracker shows the name.</li>
+<li>[ ] <em>Bosses 0/N</em> on the tracker matches the boss spawners you placed.</li>
+<li>[ ] Killing the boss shows <em>"… cleared!"</em>.</li>
+<li>[ ] The exit portal and the tracker's Leave button both put you at the
+      exit point.</li>
+<li>[ ] Entry limit: run it <code>EntryLimit</code> times; the next try is refused with
+      the reset time.</li>
+<li>[ ] Time limit: set <code>TimeLimitSeconds 60</code> to test, wait it out: warning,
+      then <em>"Time's up"</em> and you're outside.</li>
+<li>[ ] Two parties entering at once see different mobs.</li>
+</ul>
+<p>To test quickly, set the limit and timer low, restart, test, then set them
+back. Your own counts are in the persistence database
+(<code>character_dungeon_entries</code>); delete your rows there to reset them.</p>
+<hr>
+<h2 id="7-troubleshooting">7. Troubleshooting<a class="anchor" href="#7-troubleshooting" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause / fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"That leads nowhere." at the entrance</td>
+<td>The entrance's Enter Dungeon effect's RefId isn't a loaded dungeon: wrong id, or the dungeon row was skipped (check the World server's log)</td>
+</tr>
+<tr>
+<td>Log: <em>"the entry point is outside its region"</em></td>
+<td>Entry X/Z must be between Min and Max</td>
+</tr>
+<tr>
+<td>Log: <em>"the exit point is inside its region"</em></td>
+<td>The exit must be in the open world</td>
+</tr>
+<tr>
+<td>Log: <em>"its region overlaps dungeon N's"</em></td>
+<td>Move it: every dungeon needs its own region</td>
+</tr>
+<tr>
+<td>I fall forever after entering</td>
+<td>No floor at the entry: build the tile scene, or check <code>FloorY</code> and EntryY match (placeholder floor's top is at FloorY)</td>
+</tr>
+<tr>
+<td>No mobs inside</td>
+<td>Their spawners' <code>DungeonId</code> isn't the dungeon's Id (0 = open world), or they're outside the region</td>
+</tr>
+<tr>
+<td>Tracker shows no "Bosses"</td>
+<td>No NPC with Rank = Boss in its spawners</td>
+</tr>
+<tr>
+<td>"You've used all N runs" but I haven't</td>
+<td>Joining a party member's run you weren't in counts as a run. Counts reset at DungeonResetHourUtc</td>
+</tr>
+<tr>
+<td>Counts reset when the server restarts</td>
+<td>The persistence server is missing the <code>character_dungeon_entries</code> table: run its migration (see the update notes)</td>
+</tr>
+<tr>
+<td>My pet didn't come in</td>
+<td>Pets follow on entering; if it was dismissed by dying, summon it again</td>
+</tr>
+<tr>
+<td>Can't summon my mount inside</td>
+<td><code>AllowMounts</code> is off (the default). Flying mounts never fly inside</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="8-reference">8. Reference<a class="anchor" href="#8-reference" title="Permanent link">#</a></h2>
+<h3 id="dungeons-columns">Dungeons columns<a class="anchor" href="#dungeons-columns" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>int</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Name, Description</td>
+<td>text</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MinLevel</td>
+<td>int</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>MaxPlayers</td>
+<td>int</td>
+<td>5</td>
+<td>1-100</td>
+</tr>
+<tr>
+<td>EntryX/Y/Z, EntryYaw</td>
+<td>real</td>
+<td></td>
+<td>Arrival inside</td>
+</tr>
+<tr>
+<td>ExitX/Y/Z</td>
+<td>real</td>
+<td></td>
+<td>Arrival in the open world</td>
+</tr>
+<tr>
+<td>MinX, MinZ, MaxX, MaxZ</td>
+<td>real</td>
+<td></td>
+<td>Region</td>
+</tr>
+<tr>
+<td>ClientKey</td>
+<td>text</td>
+<td>""</td>
+<td>Geometry prefab key</td>
+</tr>
+<tr>
+<td>FloorY</td>
+<td>real</td>
+<td>0</td>
+<td>Placeholder floor height</td>
+</tr>
+<tr>
+<td>EmptySeconds</td>
+<td>int</td>
+<td>0</td>
+<td>0 = rule DungeonEmptySeconds</td>
+</tr>
+<tr>
+<td>EntryLimit</td>
+<td>int</td>
+<td>0</td>
+<td>0 = unlimited</td>
+</tr>
+<tr>
+<td>EntryLimitPeriodHours</td>
+<td>int</td>
+<td>0</td>
+<td>0 = 24</td>
+</tr>
+<tr>
+<td>CountEntryOn</td>
+<td>int</td>
+<td>0</td>
+<td>0 enter, 1 clear</td>
+</tr>
+<tr>
+<td>TimeLimitSeconds</td>
+<td>int</td>
+<td>0</td>
+<td>0 = none</td>
+</tr>
+<tr>
+<td>AllowMounts</td>
+<td>bool</td>
+<td>0</td>
+<td>Ground mounts inside</td>
+</tr>
+<tr>
+<td>CompleteExitSeconds</td>
+<td>int</td>
+<td>0</td>
+<td>0 = stay</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="combatrules-keys">CombatRules keys<a class="anchor" href="#combatrules-keys" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DungeonEmptySeconds</td>
+<td>300</td>
+<td>Empty instance closes after this</td>
+</tr>
+<tr>
+<td>DungeonMaxInstances</td>
+<td>200</td>
+<td>Open instances on the shard, all dungeons</td>
+</tr>
+<tr>
+<td>DungeonResetHourUtc</td>
+<td>0</td>
+<td>Entry limits reset at this hour, UTC</td>
+</tr>
+<tr>
+<td>DungeonTimeWarningSeconds</td>
+<td>60</td>
+<td>Warning before a timed run fails</td>
+</tr>
+<tr>
+<td>BossCrowdControlImmune</td>
+<td>1</td>
+<td>Bosses ignore stun / root / silence</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="effects-used-by-portals">Effects used by portals<a class="anchor" href="#effects-used-by-portals" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Number</th>
+<th>RefId</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enter Dungeon</td>
+<td>14</td>
+<td>the dungeon's Id</td>
+</tr>
+<tr>
+<td>Leave Dungeon</td>
+<td>15</td>
+<td>(none)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="for-programmers">For programmers<a class="anchor" href="#for-programmers" title="Permanent link">#</a></h3>
+<ul>
+<li>Server: <code>Core/Instances/InstanceManager.cs</code> (runs, limits, timer,
+  bosses via <code>CombatManager.NpcDied</code>), entry counts in
+  <code>DungeonEntryComponent</code>, saved in the character's full save
+  (<code>DungeonEntries</code>), persistence table <code>character_dungeon_entries</code>.</li>
+<li>Packets (protocol 26): <code>W2CInstance</code> carries the run's state on entering;
+  <code>W2CDungeonProgress</code> (156) on every change; <code>C2WLeaveDungeon</code> (157) is
+  the Leave button.</li>
+<li>Client: <code>InstanceState</code> (state), <code>DungeonTrackerUI</code> (the tracker),
+  <code>InstanceFloor</code> (the placeholder floor / prefab).</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="client-DUNGEON_SCRIPTS.html"><span>Previous</span>Dungeon scripts</a>
+<a class="next" href="client-EDITOR_ARCHITECTURE_PLAN.html"><span>Next</span>Axiom Editor Architecture: Assessment and Plan</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#contents">Contents</a>
+</li>
+<li><a href="#1-how-dungeons-work">1. How dungeons work</a>
+</li>
+<li><a href="#2-quick-start-the-dungeon-wizard">2. Quick start: the Dungeon wizard</a>
+</li>
+<li><a href="#3-step-by-step-by-hand">3. Step by step, by hand</a>
+<ul>
+<li><a href="#31-the-dungeons-row">3.1 The Dungeons row</a>
+</li>
+<li><a href="#32-the-geometry-what-players-stand-on">3.2 The geometry: what players stand on</a>
+</li>
+<li><a href="#33-mobs">3.3 Mobs</a>
+</li>
+<li><a href="#34-the-boss">3.4 The boss</a>
+</li>
+<li><a href="#35-the-entrance-open-world">3.5 The entrance (open world)</a>
+</li>
+<li><a href="#36-the-exit-inside">3.6 The exit (inside)</a>
+</li>
+<li><a href="#37-commit-and-restart">3.7 Commit and restart</a>
+</li>
+</ul>
+</li>
+<li><a href="#4-run-rules-limits-timer-clearing">4. Run rules: limits, timer, clearing</a>
+<ul>
+<li><a href="#entry-limit-runs-per-day-or-week">Entry limit: runs per day (or week)</a>
+</li>
+<li><a href="#time-limit">Time limit</a>
+</li>
+<li><a href="#when-its-cleared">When it&#x27;s cleared</a>
+</li>
+<li><a href="#other">Other</a>
+</li>
+</ul>
+</li>
+<li><a href="#5-recipes">5. Recipes</a>
+</li>
+<li><a href="#6-testing-checklist">6. Testing checklist</a>
+</li>
+<li><a href="#7-troubleshooting">7. Troubleshooting</a>
+</li>
+<li><a href="#8-reference">8. Reference</a>
+<ul>
+<li><a href="#dungeons-columns">Dungeons columns</a>
+</li>
+<li><a href="#combatrules-keys">CombatRules keys</a>
+</li>
+<li><a href="#effects-used-by-portals">Effects used by portals</a>
+</li>
+<li><a href="#for-programmers">For programmers</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

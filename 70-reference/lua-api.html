@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lua API Reference · Axiom Docs</title>
+<meta name="description" content="Every Lua function of the server and client SDKs (124) and every server event.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="packets.html">Packet Reference</a></li>
+<li><a href="services.html">Service Endpoints</a></li>
+<li><a href="worlddb.html">worldserver.db Reference</a></li>
+<li><a href="mysql.html">MySQL Reference</a></li>
+<li><a href="enums.html">Shared Enums</a></li>
+<li><a href="config.html">Configuration Reference</a></li>
+<li><a href="lua-api.html" class="active" aria-current="page">Lua API Reference</a></li>
+<li><a href="gm-commands.html">GM Command Reference</a></li>
+<li><a href="editor.html">Editor Menu Reference</a></li>
+<li><a href="codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Reference (generated)</div>
+<div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
+<h1 id="lua-api-reference">Lua API Reference<a class="anchor" href="#lua-api-reference" title="Permanent link">#</a></h1>
+<p>Generated from the SDK definition files that editors (VS Code + LuaLS) read for autocomplete. Guide: <a href="../30-server/200-lua.html">Lua scripting</a>.</p>
+<h2 id="server-api-axiom_serverlua">Server API (axiom_server.lua)<a class="anchor" href="#server-api-axiom_serverlua" title="Permanent link">#</a></h2>
+<p><code>Servers/Axiom.Server.World/LuaSDK/Server/library/axiom_server.lua</code>. Server scripts live in <code>Lua/Server/*.lua</code> next to the World server.</p>
+<h3 id="player">Player<a class="anchor" href="#player" title="Permanent link">#</a></h3>
+<p>A player who is (or was) online. Safe to keep: once they leave, IsOnline() is false and the getters return 0 / "" / false.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NetworkId</code></td>
+<td><code>integer</code></td>
+<td>This login's id (changes every login - use GetCharacterId() to remember someone).</td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>integer</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="playerisonline--boolean">Player:IsOnline() → boolean<a class="anchor" href="#playerisonline--boolean" title="Permanent link">#</a></h4>
+<h4 id="playergetname--string">Player:GetName() → string<a class="anchor" href="#playergetname--string" title="Permanent link">#</a></h4>
+<h4 id="playergetcharacterid--integer">Player:GetCharacterId() → integer<a class="anchor" href="#playergetcharacterid--integer" title="Permanent link">#</a></h4>
+<p>The character's permanent id - use it to remember someone between logins.</p>
+<h4 id="playergetlevel--integer">Player:GetLevel() → integer<a class="anchor" href="#playergetlevel--integer" title="Permanent link">#</a></h4>
+<h4 id="playergetzoneid--integer">Player:GetZoneId() → integer<a class="anchor" href="#playergetzoneid--integer" title="Permanent link">#</a></h4>
+<h4 id="playergetposition--number-x-number-y-number-z">Player:GetPosition() → number x, number y, number z<a class="anchor" href="#playergetposition--number-x-number-y-number-z" title="Permanent link">#</a></h4>
+<h4 id="playerdistancetox-z--number">Player:DistanceTo(x, z) → number<a class="anchor" href="#playerdistancetox-z--number" title="Permanent link">#</a></h4>
+<p>Flat distance in metres to a point.</p>
+<ul>
+<li><code>x</code> <em>number</em></li>
+<li><code>z</code> <em>number</em></li>
+</ul>
+<h4 id="playergethealth--integer">Player:GetHealth() → integer<a class="anchor" href="#playergethealth--integer" title="Permanent link">#</a></h4>
+<h4 id="playergetmaxhealth--integer">Player:GetMaxHealth() → integer<a class="anchor" href="#playergetmaxhealth--integer" title="Permanent link">#</a></h4>
+<h4 id="playerisdead--boolean">Player:IsDead() → boolean<a class="anchor" href="#playerisdead--boolean" title="Permanent link">#</a></h4>
+<h4 id="playersendmessagetext">Player:SendMessage(text)<a class="anchor" href="#playersendmessagetext" title="Permanent link">#</a></h4>
+<p>A line in their chat (System channel). &lt;color=#hex&gt;, &lt;b&gt; and &lt;i&gt; work.</p>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="playersendannouncementmessagemessage">Player:SendAnnouncementMessage(message)<a class="anchor" href="#playersendannouncementmessagemessage" title="Permanent link">#</a></h4>
+<p>A big centre-screen message to this player only.</p>
+<ul>
+<li><code>message</code> <em>string</em></li>
+</ul>
+<h4 id="playersenddialoguespeakername-text">Player:SendDialogue(speakerName, text)<a class="anchor" href="#playersenddialoguespeakername-text" title="Permanent link">#</a></h4>
+<p>Shows a dialogue box from a speaker (use from OnInteract).</p>
+<ul>
+<li><code>speakerName</code> <em>string</em></li>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="playersendlootmessageitemname">Player:SendLootMessage(itemName)<a class="anchor" href="#playersendlootmessageitemname" title="Permanent link">#</a></h4>
+<p>Shows a "you looted" message only - it does NOT give an item (use GiveItem).</p>
+<ul>
+<li><code>itemName</code> <em>string</em></li>
+</ul>
+<h4 id="playergetgold--integer">Player:GetGold() → integer<a class="anchor" href="#playergetgold--integer" title="Permanent link">#</a></h4>
+<p>Their gold, in copper (10000 = 1g).</p>
+<h4 id="playergivegoldcopper--boolean">Player:GiveGold(copper) → boolean<a class="anchor" href="#playergivegoldcopper--boolean" title="Permanent link">#</a></h4>
+<p>Adds copper. False if they're offline or it would pass the gold cap.</p>
+<ul>
+<li><code>copper</code> <em>integer</em></li>
+</ul>
+<h4 id="playertakegoldcopper--boolean">Player:TakeGold(copper) → boolean<a class="anchor" href="#playertakegoldcopper--boolean" title="Permanent link">#</a></h4>
+<p>Takes copper. False (nothing taken) if they haven't got it.</p>
+<ul>
+<li><code>copper</code> <em>integer</em></li>
+</ul>
+<h4 id="playergiveitemitemid-count--boolean">Player:GiveItem(itemId, count) → boolean<a class="anchor" href="#playergiveitemitemid-count--boolean" title="Permanent link">#</a></h4>
+<p>Puts items in their bag. False (nothing given) if the item doesn't exist or doesn't fit.</p>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+<li><code>count?</code> <em>integer</em> - default 1</li>
+</ul>
+<h4 id="playertakeitemitemid-count--boolean">Player:TakeItem(itemId, count) → boolean<a class="anchor" href="#playertakeitemitemid-count--boolean" title="Permanent link">#</a></h4>
+<p>Takes items from their bag. False (nothing taken) if they haven't got that many.</p>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+<li><code>count?</code> <em>integer</em> - default 1</li>
+</ul>
+<h4 id="playercountitemitemid--integer">Player:CountItem(itemId) → integer<a class="anchor" href="#playercountitemitemid--integer" title="Permanent link">#</a></h4>
+<p>How many of an item are in their bag.</p>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+</ul>
+<h4 id="playerhasitemitemid-count--boolean">Player:HasItem(itemId, count) → boolean<a class="anchor" href="#playerhasitemitemid-count--boolean" title="Permanent link">#</a></h4>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+<li><code>count?</code> <em>integer</em> - default 1</li>
+</ul>
+<h4 id="playerteleportx-y-z--boolean">Player:Teleport(x, y, z) → boolean<a class="anchor" href="#playerteleportx-y-z--boolean" title="Permanent link">#</a></h4>
+<p>Moves them. y = 0 uses the ground height where there's terrain.</p>
+<ul>
+<li><code>x</code> <em>number</em></li>
+<li><code>y</code> <em>number</em></li>
+<li><code>z</code> <em>number</em></li>
+</ul>
+<h4 id="playerkickreason">Player:Kick(reason)<a class="anchor" href="#playerkickreason" title="Permanent link">#</a></h4>
+<p>Disconnects them.</p>
+<ul>
+<li><code>reason</code> <em>string</em></li>
+</ul>
+<h4 id="playergetdatakey--stringnumberbooleannil">Player:GetData(key) → string|number|boolean|nil<a class="anchor" href="#playergetdatakey--stringnumberbooleannil" title="Permanent link">#</a></h4>
+<p>A value saved for this character (survives logout and restart), or nil.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+</ul>
+<h4 id="playersetdatakey-value--boolean-ok">Player:SetData(key, value) → boolean ok<a class="anchor" href="#playersetdatakey-value--boolean-ok" title="Permanent link">#</a></h4>
+<p>Saves a string, number or boolean for this character; nil removes it.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+<li><code>value</code> <em>string|number|boolean|nil</em></li>
+</ul>
+<h3 id="npc">Npc<a class="anchor" href="#npc" title="Permanent link">#</a></h3>
+<p>An NPC. Holds only its id: safe to keep; once it's gone Exists() is false.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NetworkId</code></td>
+<td><code>integer</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="npcexists--boolean">Npc:Exists() → boolean<a class="anchor" href="#npcexists--boolean" title="Permanent link">#</a></h4>
+<h4 id="npcisalive--boolean">Npc:IsAlive() → boolean<a class="anchor" href="#npcisalive--boolean" title="Permanent link">#</a></h4>
+<h4 id="npcgettemplateid--integer">Npc:GetTemplateId() → integer<a class="anchor" href="#npcgettemplateid--integer" title="Permanent link">#</a></h4>
+<h4 id="npcgetname--string">Npc:GetName() → string<a class="anchor" href="#npcgetname--string" title="Permanent link">#</a></h4>
+<h4 id="npcgethealth--integer">Npc:GetHealth() → integer<a class="anchor" href="#npcgethealth--integer" title="Permanent link">#</a></h4>
+<h4 id="npcgetmaxhealth--integer">Npc:GetMaxHealth() → integer<a class="anchor" href="#npcgetmaxhealth--integer" title="Permanent link">#</a></h4>
+<h4 id="npcgetposition--number-x-number-y-number-z">Npc:GetPosition() → number x, number y, number z<a class="anchor" href="#npcgetposition--number-x-number-y-number-z" title="Permanent link">#</a></h4>
+<h4 id="npcdespawn--boolean">Npc:Despawn() → boolean<a class="anchor" href="#npcdespawn--boolean" title="Permanent link">#</a></h4>
+<p>Removes an NPC a script spawned. Spawner NPCs are refused (their spawner would bring them back).</p>
+<h3 id="server">Server<a class="anchor" href="#server" title="Permanent link">#</a></h3>
+<p>The server.</p>
+<h4 id="serverlogmessage">Server:Log(message)<a class="anchor" href="#serverlogmessage" title="Permanent link">#</a></h4>
+<ul>
+<li><code>message</code> <em>string</em></li>
+</ul>
+<h4 id="serverwarnmessage">Server:Warn(message)<a class="anchor" href="#serverwarnmessage" title="Permanent link">#</a></h4>
+<ul>
+<li><code>message</code> <em>string</em></li>
+</ul>
+<h4 id="servererrormessage">Server:Error(message)<a class="anchor" href="#servererrormessage" title="Permanent link">#</a></h4>
+<ul>
+<li><code>message</code> <em>string</em></li>
+</ul>
+<h4 id="servergettime--string">Server:GetTime() → string<a class="anchor" href="#servergettime--string" title="Permanent link">#</a></h4>
+<p>"HH:mm:ss" server time.</p>
+<h4 id="servergetdatetime--string">Server:GetDateTime() → string<a class="anchor" href="#servergetdatetime--string" title="Permanent link">#</a></h4>
+<p>"yyyy-MM-dd HH:mm:ss" server time.</p>
+<h4 id="servernow--number">Server:Now() → number<a class="anchor" href="#servernow--number" title="Permanent link">#</a></h4>
+<p>Milliseconds on the server clock - for measuring time between events.</p>
+<h4 id="serverafterms-fn--integer-timerid">Server:After(ms, fn) → integer timerId<a class="anchor" href="#serverafterms-fn--integer-timerid" title="Permanent link">#</a></h4>
+<p>Runs fn once after <code>ms</code> milliseconds. Returns a timer id.</p>
+<ul>
+<li><code>ms</code> <em>number</em></li>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h4 id="servereveryms-fn--integer-timerid">Server:Every(ms, fn) → integer timerId<a class="anchor" href="#servereveryms-fn--integer-timerid" title="Permanent link">#</a></h4>
+<p>Runs fn every <code>ms</code> milliseconds (at least 100). Returns a timer id.</p>
+<ul>
+<li><code>ms</code> <em>number</em></li>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h4 id="servercanceltimertimerid--boolean">Server:CancelTimer(timerId) → boolean<a class="anchor" href="#servercanceltimertimerid--boolean" title="Permanent link">#</a></h4>
+<ul>
+<li><code>timerId</code> <em>integer</em></li>
+</ul>
+<h4 id="serverregistercommandname-fn">Server:RegisterCommand(name, fn)<a class="anchor" href="#serverregistercommandname-fn" title="Permanent link">#</a></h4>
+<p>".name args" in chat runs fn(player, args); the message isn't shown to anyone.</p>
+<ul>
+<li><code>name</code> <em>string</em> - without the dot, no spaces</li>
+<li><code>fn</code> <em>fun(player:</em> - Player, args: string)</li>
+</ul>
+<h4 id="serverplayers--player">Server:Players() → Player[]<a class="anchor" href="#serverplayers--player" title="Permanent link">#</a></h4>
+<p>Everyone online.</p>
+<h4 id="serverplayercount--integer">Server:PlayerCount() → integer<a class="anchor" href="#serverplayercount--integer" title="Permanent link">#</a></h4>
+<h4 id="serverfindplayername--playernil">Server:FindPlayer(name) → Player|nil<a class="anchor" href="#serverfindplayername--playernil" title="Permanent link">#</a></h4>
+<p>An online player by name, or nil.</p>
+<ul>
+<li><code>name</code> <em>string</em></li>
+</ul>
+<h4 id="servergetplayernetworkid--playernil">Server:GetPlayer(networkId) → Player|nil<a class="anchor" href="#servergetplayernetworkid--playernil" title="Permanent link">#</a></h4>
+<p>An online player by network id, or nil.</p>
+<ul>
+<li><code>networkId</code> <em>integer</em></li>
+</ul>
+<h4 id="serverbroadcasttext">Server:Broadcast(text)<a class="anchor" href="#serverbroadcasttext" title="Permanent link">#</a></h4>
+<p>A chat line (System channel) to everyone online.</p>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="serverannouncetext">Server:Announce(text)<a class="anchor" href="#serverannouncetext" title="Permanent link">#</a></h4>
+<p>A big centre-screen announcement to everyone online.</p>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="serverspawnnpctemplateid-x-y-z--npcnil">Server:SpawnNpc(templateId, x, y, z) → Npc|nil<a class="anchor" href="#serverspawnnpctemplateid-x-y-z--npcnil" title="Permanent link">#</a></h4>
+<p>Spawns an NPC (y = 0: ground height). It fights, wanders and drops loot, but never respawns. Nil if the template doesn't exist.</p>
+<ul>
+<li><code>templateId</code> <em>integer</em></li>
+<li><code>x</code> <em>number</em></li>
+<li><code>y</code> <em>number</em></li>
+<li><code>z</code> <em>number</em></li>
+</ul>
+<h4 id="servergetnpcnetworkid--npcnil">Server:GetNpc(networkId) → Npc|nil<a class="anchor" href="#servergetnpcnetworkid--npcnil" title="Permanent link">#</a></h4>
+<p>A live NPC by network id, or nil.</p>
+<ul>
+<li><code>networkId</code> <em>integer</em></li>
+</ul>
+<h4 id="servernpcsnearx-z-radius--npc">Server:NpcsNear(x, z, radius) → Npc[]<a class="anchor" href="#servernpcsnearx-z-radius--npc" title="Permanent link">#</a></h4>
+<p>Live NPCs within <code>radius</code> metres of (x, z), nearest first (at most 100).</p>
+<ul>
+<li><code>x</code> <em>number</em></li>
+<li><code>z</code> <em>number</em></li>
+<li><code>radius</code> <em>number</em></li>
+</ul>
+<h4 id="serveritemnameitemid--string">Server:ItemName(itemId) → string<a class="anchor" href="#serveritemnameitemid--string" title="Permanent link">#</a></h4>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+</ul>
+<h4 id="servernpcnametemplateid--string">Server:NpcName(templateId) → string<a class="anchor" href="#servernpcnametemplateid--string" title="Permanent link">#</a></h4>
+<ul>
+<li><code>templateId</code> <em>integer</em></li>
+</ul>
+<h4 id="servergetdatakey--stringnumberbooleannil">Server:GetData(key) → string|number|boolean|nil<a class="anchor" href="#servergetdatakey--stringnumberbooleannil" title="Permanent link">#</a></h4>
+<p>A value shared by all scripts (survives a restart), or nil.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+</ul>
+<h4 id="serversetdatakey-value--boolean-ok">Server:SetData(key, value) → boolean ok<a class="anchor" href="#serversetdatakey-value--boolean-ok" title="Permanent link">#</a></h4>
+<p>Saves a string, number or boolean; nil removes it. Written to Data/lua_data.json within 5 s.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+<li><code>value</code> <em>string|number|boolean|nil</em></li>
+</ul>
+<h4 id="serverregisterplayereventeventid-handler">Server:RegisterPlayerEvent(eventId, handler)<a class="anchor" href="#serverregisterplayereventeventid-handler" title="Permanent link">#</a></h4>
+<p>Hook an event by id (use the Events table: Events.OnKill).</p>
+<ul>
+<li><code>eventId</code> <em>integer</em></li>
+<li><code>handler</code> <em>function</em></li>
+</ul>
+<h4 id="serveroneventname-handler">Server:On(eventName, handler)<a class="anchor" href="#serveroneventname-handler" title="Permanent link">#</a></h4>
+<p>Hook an event by name: Server:On("OnKill", function(player, npcTemplateId) ... end).</p>
+<ul>
+<li><code>eventName</code> <em>AxiomEvent</em></li>
+<li><code>handler</code> <em>function</em></li>
+</ul>
+<h2 id="events">Events<a class="anchor" href="#events" title="Permanent link">#</a></h2>
+<p>Register with <code>Server:On("OnKill", function(player, npcTemplateId) ... end)</code> (or <code>Server:RegisterPlayerEvent(9, fn)</code>). The arguments after the event name are what your handler gets. From <code>Core/Lua/PlayerEvent.cs</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Id</th>
+<th>Handler arguments and meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnConnect</code></td>
+<td>1</td>
+<td>(player) - entered the world, see PlayerSpawnManager</td>
+</tr>
+<tr>
+<td><code>OnDisconnect</code></td>
+<td>2</td>
+<td>(player) - leaving; the player's getters still work during the hook, see PlayerManager.HandlePlayerDisconnected</td>
+</tr>
+<tr>
+<td><code>OnLevelUp</code></td>
+<td>3</td>
+<td>(player, newLevel)</td>
+</tr>
+<tr>
+<td><code>OnChat</code></td>
+<td>4</td>
+<td>(player, channel, message) - return false to stop the message being sent; see LuaEngine.FireChat</td>
+</tr>
+<tr>
+<td><code>OnDeath</code></td>
+<td>5</td>
+<td>(player, killerNpcTemplateId) - the player was killed, see CombatManager.KillPlayer</td>
+</tr>
+<tr>
+<td><code>OnInteract</code></td>
+<td>6</td>
+<td>(player, targetTemplateId, targetKind) - used an NPC or doodad</td>
+</tr>
+<tr>
+<td><code>OnItemUse</code></td>
+<td>7</td>
+<td>(player, itemTemplateId, slot) - fired AFTER a successful use, see PlayerManager.TryUseItem</td>
+</tr>
+<tr>
+<td><code>OnHarvest</code></td>
+<td>8</td>
+<td>(player, doodadTemplateId, itemTemplateId, quantity) - per item a doodad action gave (harvest, chest, crop), see DoodadManager</td>
+</tr>
+<tr>
+<td><code>OnKill</code></td>
+<td>9</td>
+<td>(player, npcTemplateId) - after an NPC the player attacked dies, see CombatManager</td>
+</tr>
+<tr>
+<td><code>OnEnterZone</code></td>
+<td>10</td>
+<td>(player, zoneId, zoneKey, previousZoneId) - crossed into a zone (0 = no zone), incl. on spawn, see PlayerManager.UpdateZone</td>
+</tr>
+<tr>
+<td><code>OnDoodadUse</code></td>
+<td>11</td>
+<td>(player, doodadTemplateId, funcId, actionType) - after any doodad action succeeded, see DoodadManager</td>
+</tr>
+<tr>
+<td><code>OnCraft</code></td>
+<td>12</td>
+<td>(player, recipeId, itemTemplateId, quantity) - after a craft finished, see CraftingManager (Phase 7)</td>
+</tr>
+<tr>
+<td><code>OnTheft</code></td>
+<td>13</td>
+<td>(player, doodadTemplateId, ownerCharacterId) - took someone else's overripe crop (8.3), trade pack or cargo (Phase 9)</td>
+</tr>
+<tr>
+<td><code>OnTradePackSold</code></td>
+<td>14</td>
+<td>(player, packItemId, outletId, gold) - delivered a trade pack (Phase 9)</td>
+</tr>
+<tr>
+<td><code>OnTrade</code></td>
+<td>15</td>
+<td>(player, partnerName, itemsGiven, itemsReceived, goldGiven, goldReceived) - a player trade went through (Phase 9)</td>
+</tr>
+<tr>
+<td><code>OnPvpKill</code></td>
+<td>16</td>
+<td>(player, victimName, victimFactionId, wasCrime) - killed another player (Phase 10)</td>
+</tr>
+<tr>
+<td><code>OnCrime</code></td>
+<td>17</td>
+<td>(player, points, charge) - committed a crime (Phase 10)</td>
+</tr>
+<tr>
+<td><code>OnSentenced</code></td>
+<td>18</td>
+<td>(player, guilty, jailSeconds, outlawed) - a trial's verdict (Phase 10)</td>
+</tr>
+<tr>
+<td><code>OnTerritoryCaptured</code></td>
+<td>19</td>
+<td>(player, territoryId) - claimed a territory's seal in a siege (Phase 10)</td>
+</tr>
+<tr>
+<td><code>OnWorldEvent</code></td>
+<td>21</td>
+<td>20 was OnShipSunk - ships are removed for now. Ids are stable for Lua; don't reuse it.</td>
+</tr>
+<tr>
+<td><code>OnTreasure</code></td>
+<td>22</td>
+<td>(player, mapItemId) - dug up a treasure (Phase 11)</td>
+</tr>
+<tr>
+<td><code>OnClimb</code></td>
+<td>23</td>
+<td>(player, doodadTemplateId) - climbed something (Phase 11)</td>
+</tr>
+<tr>
+<td><code>OnItemObtained</code></td>
+<td>24</td>
+<td>(player, itemTemplateId, quantity) - an item went into the bag (Phase 11: collections)</td>
+</tr>
+<tr>
+<td><code>OnJuryVote</code></td>
+<td>25</td>
+<td>(player, trialId) - served on a jury (Phase 11 achievements)</td>
+</tr>
+<tr>
+<td><code>OnAchievement</code></td>
+<td>26</td>
+<td>(player, achievementId) - completed an achievement (Phase 11)</td>
+</tr>
+<tr>
+<td><code>OnSkillUse</code></td>
+<td>27</td>
+<td>(player, skillId, targetNpcTemplateId) - an ability went off (0 = no NPC target); quests count it (Docs/QUESTS.md)</td>
+</tr>
+<tr>
+<td><code>OnQuestComplete</code></td>
+<td>28</td>
+<td>(player, questId) - turned a quest in, see QuestManager (missions count it, Docs/MISSIONS.md)</td>
+</tr>
+<tr>
+<td><code>OnXpGained</code></td>
+<td>29</td>
+<td>(player, amount, source) - XP actually awarded (after bonuses; XpSource as a number), see ProgressionService</td>
+</tr>
+<tr>
+<td><code>OnLaborSpent</code></td>
+<td>30</td>
+<td>(player, amount) - labor points spent, see ProfessionService</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="client-ui-api-axiom_uilua">Client UI API (axiom_ui.lua)<a class="anchor" href="#client-ui-api-axiom_uilua" title="Permanent link">#</a></h2>
+<p><code>Assets/AxiomMMOKit/Axiom.Client/Lua/LuaSDK/Client/library/axiom_ui.lua</code>. UI mods: read game state and show things; they can't send packets.</p>
+<h3 id="timer">Timer<a class="anchor" href="#timer" title="Permanent link">#</a></h3>
+<p>A timer from UI.Every / UI.After.</p>
+<h4 id="timerstop">Timer:Stop()<a class="anchor" href="#timerstop" title="Permanent link">#</a></h4>
+<h3 id="element">Element<a class="anchor" href="#element" title="Permanent link">#</a></h3>
+<p>Any UI element. Builders add a child and return it; changers return the element so calls chain: <code>row:Label("Gold", "ac-muted"):Grow(1)</code>. <code>classes</code> is a space-separated list of USS classes.</p>
+<h4 id="elementlabeltext-classes--element">Element:Label(text, classes) → Element<a class="anchor" href="#elementlabeltext-classes--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>text</code> <em>string</em></li>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementbuttontext-fn-classes--element">Element:Button(text, fn, classes) → Element<a class="anchor" href="#elementbuttontext-fn-classes--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>text</code> <em>string</em></li>
+<li><code>fn</code> <em>fun()</em></li>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementinputlabel-value-changed--element">Element:Input(label, value, changed) → Element<a class="anchor" href="#elementinputlabel-value-changed--element" title="Permanent link">#</a></h4>
+<p>A text box. <code>changed(text)</code> runs as the player types.</p>
+<ul>
+<li><code>label</code> <em>string</em></li>
+<li><code>value?</code> <em>string</em></li>
+<li><code>changed?</code> <em>fun(text:</em> - string)</li>
+</ul>
+<h4 id="elementrowclasses--element">Element:Row(classes) → Element<a class="anchor" href="#elementrowclasses--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementcolumnclasses--element">Element:Column(classes) → Element<a class="anchor" href="#elementcolumnclasses--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementboxclasses--element">Element:Box(classes) → Element<a class="anchor" href="#elementboxclasses--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementscrollclasses--element">Element:Scroll(classes) → Element<a class="anchor" href="#elementscrollclasses--element" title="Permanent link">#</a></h4>
+<p>A scrolling area; returns its content.</p>
+<ul>
+<li><code>classes?</code> <em>string</em></li>
+</ul>
+<h4 id="elementdivider--element">Element:Divider() → Element<a class="anchor" href="#elementdivider--element" title="Permanent link">#</a></h4>
+<h4 id="elementbarcolor--element">Element:Bar(color) → Element<a class="anchor" href="#elementbarcolor--element" title="Permanent link">#</a></h4>
+<p>A bar (health style). Fill with SetValue(0..1), label with SetText.</p>
+<ul>
+<li><code>color?</code> <em>string</em> - "#RRGGBB"</li>
+</ul>
+<h4 id="elementslotitemid-count--element">Element:Slot(itemId, count) → Element<a class="anchor" href="#elementslotitemid-count--element" title="Permanent link">#</a></h4>
+<p>An item icon with a count.</p>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+<li><code>count?</code> <em>integer</em></li>
+</ul>
+<h4 id="elementsettexttext--element">Element:SetText(text) → Element<a class="anchor" href="#elementsettexttext--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="elementgettext--string">Element:GetText() → string<a class="anchor" href="#elementgettext--string" title="Permanent link">#</a></h4>
+<p>The text of a label, or what's typed in an Input.</p>
+<h4 id="elementsetvaluevalue--element">Element:SetValue(value) → Element<a class="anchor" href="#elementsetvaluevalue--element" title="Permanent link">#</a></h4>
+<p>A bar's fill, 0..1.</p>
+<ul>
+<li><code>value</code> <em>number</em></li>
+</ul>
+<h4 id="elementsetitemitemid-count--element">Element:SetItem(itemId, count) → Element<a class="anchor" href="#elementsetitemitemid-count--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+<li><code>count?</code> <em>integer</em></li>
+</ul>
+<h4 id="elementsetcolorcolor--element">Element:SetColor(color) → Element<a class="anchor" href="#elementsetcolorcolor--element" title="Permanent link">#</a></h4>
+<p>Text colour (or a bar's fill colour).</p>
+<ul>
+<li><code>color</code> <em>string</em> - "#RRGGBB"</li>
+</ul>
+<h4 id="elementaddclassclasses--element">Element:AddClass(classes) → Element<a class="anchor" href="#elementaddclassclasses--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>classes</code> <em>string</em></li>
+</ul>
+<h4 id="elementremoveclassclasses--element">Element:RemoveClass(classes) → Element<a class="anchor" href="#elementremoveclassclasses--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>classes</code> <em>string</em></li>
+</ul>
+<h4 id="elementshow--element">Element:Show() → Element<a class="anchor" href="#elementshow--element" title="Permanent link">#</a></h4>
+<h4 id="elementhide--element">Element:Hide() → Element<a class="anchor" href="#elementhide--element" title="Permanent link">#</a></h4>
+<h4 id="elementclear--element">Element:Clear() → Element<a class="anchor" href="#elementclear--element" title="Permanent link">#</a></h4>
+<p>Removes all children.</p>
+<h4 id="elementenabledenabled--element">Element:Enabled(enabled) → Element<a class="anchor" href="#elementenabledenabled--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>enabled</code> <em>boolean</em></li>
+</ul>
+<h4 id="elementwidthpx--element">Element:Width(px) → Element<a class="anchor" href="#elementwidthpx--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>px</code> <em>number</em></li>
+</ul>
+<h4 id="elementheightpx--element">Element:Height(px) → Element<a class="anchor" href="#elementheightpx--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>px</code> <em>number</em></li>
+</ul>
+<h4 id="elementgrown--element">Element:Grow(n) → Element<a class="anchor" href="#elementgrown--element" title="Permanent link">#</a></h4>
+<p>Share of leftover space (1 = take the rest of the row).</p>
+<ul>
+<li><code>n</code> <em>number</em></li>
+</ul>
+<h4 id="elementonclickfn--element">Element:OnClick(fn) → Element<a class="anchor" href="#elementonclickfn--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h4 id="elementtooltiptext--element">Element:Tooltip(text) → Element<a class="anchor" href="#elementtooltiptext--element" title="Permanent link">#</a></h4>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h3 id="window">Window<a class="anchor" href="#window" title="Permanent link">#</a></h3>
+<p>A window: everything an Element has, plus opening and closing.</p>
+<h4 id="windowopen">Window:Open()<a class="anchor" href="#windowopen" title="Permanent link">#</a></h4>
+<h4 id="windowclose">Window:Close()<a class="anchor" href="#windowclose" title="Permanent link">#</a></h4>
+<h4 id="windowtoggle">Window:Toggle()<a class="anchor" href="#windowtoggle" title="Permanent link">#</a></h4>
+<h4 id="windowisopen--boolean">Window:IsOpen() → boolean<a class="anchor" href="#windowisopen--boolean" title="Permanent link">#</a></h4>
+<h4 id="windowsettitletitle">Window:SetTitle(title)<a class="anchor" href="#windowsettitletitle" title="Permanent link">#</a></h4>
+<ul>
+<li><code>title</code> <em>string</em></li>
+</ul>
+<h4 id="windowonclosefn">Window:OnClose(fn)<a class="anchor" href="#windowonclosefn" title="Permanent link">#</a></h4>
+<ul>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h3 id="ui">UI<a class="anchor" href="#ui" title="Permanent link">#</a></h3>
+<p>Building UI, commands, timers, chat output and saved settings.</p>
+<h4 id="uiwindowid-title-width-height--window">UI.Window(id, title, width, height) → Window<a class="anchor" href="#uiwindowid-title-width-height--window" title="Permanent link">#</a></h4>
+<p>A window. height 0 = fit its content. Starts closed: open it with w:Open() or a command.</p>
+<ul>
+<li><code>id</code> <em>string</em> - unique per script</li>
+<li><code>title</code> <em>string</em></li>
+<li><code>width</code> <em>number</em></li>
+<li><code>height</code> <em>number</em></li>
+</ul>
+<h4 id="uiopenid">UI.Open(id)<a class="anchor" href="#uiopenid" title="Permanent link">#</a></h4>
+<p>Open / close / toggle any window by id (built-in ones too).</p>
+<ul>
+<li><code>id</code> <em>string</em></li>
+</ul>
+<h4 id="uicloseid">UI.Close(id)<a class="anchor" href="#uicloseid" title="Permanent link">#</a></h4>
+<ul>
+<li><code>id</code> <em>string</em></li>
+</ul>
+<h4 id="uitoggleid">UI.Toggle(id)<a class="anchor" href="#uitoggleid" title="Permanent link">#</a></h4>
+<ul>
+<li><code>id</code> <em>string</em></li>
+</ul>
+<h4 id="uicommandname-fn">UI.Command(name, fn)<a class="anchor" href="#uicommandname-fn" title="Permanent link">#</a></h4>
+<p>"/name args" in chat calls fn(args).</p>
+<ul>
+<li><code>name</code> <em>string</em> - without the slash</li>
+<li><code>fn</code> <em>fun(args:</em> - string)</li>
+</ul>
+<h4 id="uieveryseconds-fn--timer">UI.Every(seconds, fn) → Timer<a class="anchor" href="#uieveryseconds-fn--timer" title="Permanent link">#</a></h4>
+<p>Run fn every <code>seconds</code>.</p>
+<ul>
+<li><code>seconds</code> <em>number</em></li>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h4 id="uiafterseconds-fn--timer">UI.After(seconds, fn) → Timer<a class="anchor" href="#uiafterseconds-fn--timer" title="Permanent link">#</a></h4>
+<p>Run fn once after <code>seconds</code>.</p>
+<ul>
+<li><code>seconds</code> <em>number</em></li>
+<li><code>fn</code> <em>fun()</em></li>
+</ul>
+<h4 id="uisetscalescale">UI.SetScale(scale)<a class="anchor" href="#uisetscalescale" title="Permanent link">#</a></h4>
+<p>The whole UI's scale, 0.75 .. 1.5.</p>
+<ul>
+<li><code>scale</code> <em>number</em></li>
+</ul>
+<h4 id="uiprinttext">UI.Print(text)<a class="anchor" href="#uiprinttext" title="Permanent link">#</a></h4>
+<p>A line in your own chat (only you see it). Colour, bold and italic tags work.</p>
+<ul>
+<li><code>text</code> <em>string</em></li>
+</ul>
+<h4 id="uisavevarkey-value--boolean-ok">UI.SaveVar(key, value) → boolean ok<a class="anchor" href="#uisavevarkey-value--boolean-ok" title="Permanent link">#</a></h4>
+<p>Save a string, number or boolean for this character on this computer; nil removes it.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+<li><code>value</code> <em>string|number|boolean|nil</em></li>
+</ul>
+<h4 id="uiloadvarkey--stringnumberbooleannil">UI.LoadVar(key) → string|number|boolean|nil<a class="anchor" href="#uiloadvarkey--stringnumberbooleannil" title="Permanent link">#</a></h4>
+<p>A value saved with UI.SaveVar, or nil.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+</ul>
+<h3 id="game">Game<a class="anchor" href="#game" title="Permanent link">#</a></h3>
+<p>Read-only facts about your character and target.</p>
+<h4 id="gamename--string">Game.Name() → string<a class="anchor" href="#gamename--string" title="Permanent link">#</a></h4>
+<h4 id="gamelevel--integer">Game.Level() → integer<a class="anchor" href="#gamelevel--integer" title="Permanent link">#</a></h4>
+<h4 id="gamegold--integer">Game.Gold() → integer<a class="anchor" href="#gamegold--integer" title="Permanent link">#</a></h4>
+<p>Copper (10000 = 1g). SDK.FormatGold makes it readable.</p>
+<h4 id="gamehealth--integer">Game.Health() → integer<a class="anchor" href="#gamehealth--integer" title="Permanent link">#</a></h4>
+<h4 id="gamemaxhealth--integer">Game.MaxHealth() → integer<a class="anchor" href="#gamemaxhealth--integer" title="Permanent link">#</a></h4>
+<h4 id="gamemana--integer">Game.Mana() → integer<a class="anchor" href="#gamemana--integer" title="Permanent link">#</a></h4>
+<h4 id="gamemaxmana--integer">Game.MaxMana() → integer<a class="anchor" href="#gamemaxmana--integer" title="Permanent link">#</a></h4>
+<h4 id="gamelabor--integer">Game.Labor() → integer<a class="anchor" href="#gamelabor--integer" title="Permanent link">#</a></h4>
+<h4 id="gamelabormax--integer">Game.LaborMax() → integer<a class="anchor" href="#gamelabormax--integer" title="Permanent link">#</a></h4>
+<h4 id="gamecountitemid--integer">Game.Count(itemId) → integer<a class="anchor" href="#gamecountitemid--integer" title="Permanent link">#</a></h4>
+<p>How many of an item are in your bag.</p>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+</ul>
+<h4 id="gameitemnameitemid--string">Game.ItemName(itemId) → string<a class="anchor" href="#gameitemnameitemid--string" title="Permanent link">#</a></h4>
+<ul>
+<li><code>itemId</code> <em>integer</em></li>
+</ul>
+<h4 id="gametargetid--integer-id-0--no-target">Game.TargetId() → integer id 0 = no target<a class="anchor" href="#gametargetid--integer-id-0--no-target" title="Permanent link">#</a></h4>
+<h4 id="gamehastarget--boolean">Game.HasTarget() → boolean<a class="anchor" href="#gamehastarget--boolean" title="Permanent link">#</a></h4>
+<h4 id="gametargetname--string">Game.TargetName() → string<a class="anchor" href="#gametargetname--string" title="Permanent link">#</a></h4>
+<h4 id="gametargethealth--integer">Game.TargetHealth() → integer<a class="anchor" href="#gametargethealth--integer" title="Permanent link">#</a></h4>
+<h4 id="gametargetmaxhealth--integer">Game.TargetMaxHealth() → integer<a class="anchor" href="#gametargetmaxhealth--integer" title="Permanent link">#</a></h4>
+<h3 id="sdk">SDK<a class="anchor" href="#sdk" title="Permanent link">#</a></h3>
+<p>Helpers from DesignerScripts/UI/000_axiom_sdk.lua (loads first).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Version</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="sdkformatgoldcopper--string">SDK.FormatGold(copper) → string<a class="anchor" href="#sdkformatgoldcopper--string" title="Permanent link">#</a></h4>
+<p>Copper as "1g 2s 3c".</p>
+<ul>
+<li><code>copper</code> <em>integer</em></li>
+</ul>
+<h4 id="sdkratioa-b--number">SDK.Ratio(a, b) → number<a class="anchor" href="#sdkratioa-b--number" title="Permanent link">#</a></h4>
+<p>a / b, or 0 when b is 0.</p>
+<ul>
+<li><code>a</code> <em>number</em></li>
+<li><code>b</code> <em>number</em></li>
+</ul>
+<h4 id="sdkclampv-lo-hi--number">SDK.Clamp(v, lo, hi) → number<a class="anchor" href="#sdkclampv-lo-hi--number" title="Permanent link">#</a></h4>
+<ul>
+<li><code>v</code> <em>number</em></li>
+<li><code>lo</code> <em>number</em></li>
+<li><code>hi</code> <em>number</em></li>
+</ul>
+<h4 id="sdkloadkey-default--any">SDK.Load(key, default) → any<a class="anchor" href="#sdkloadkey-default--any" title="Permanent link">#</a></h4>
+<p>A saved value, or <code>default</code> if none.</p>
+<ul>
+<li><code>key</code> <em>string</em></li>
+<li><code>default</code> <em>any</em></li>
+</ul>
+<h4 id="sdkonevent-fn--function">SDK.On(event, fn) → function<a class="anchor" href="#sdkonevent-fn--function" title="Permanent link">#</a></h4>
+<p>Call fn when a value changes (checked 5 times a second). Returns fn, for SDK.Off.</p>
+<ul>
+<li><code>event</code> <em>SdkEvent</em></li>
+<li><code>fn</code> <em>function</em></li>
+</ul>
+<h4 id="sdkoffevent-fn">SDK.Off(event, fn)<a class="anchor" href="#sdkoffevent-fn" title="Permanent link">#</a></h4>
+<ul>
+<li><code>event</code> <em>SdkEvent</em></li>
+<li><code>fn</code> <em>function</em></li>
+</ul>
+<nav class="pager">
+<a class="prev" href="config.html"><span>Previous</span>Configuration Reference</a>
+<a class="next" href="gm-commands.html"><span>Next</span>GM Command Reference</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#server-api-axiom_serverlua">Server API (axiom_server.lua)</a>
+<ul>
+<li><a href="#player">Player</a>
+
+</li>
+<li><a href="#npc">Npc</a>
+
+</li>
+<li><a href="#server">Server</a>
+
+</li>
+</ul>
+</li>
+<li><a href="#events">Events</a>
+</li>
+<li><a href="#client-ui-api-axiom_uilua">Client UI API (axiom_ui.lua)</a>
+<ul>
+<li><a href="#timer">Timer</a>
+
+</li>
+<li><a href="#element">Element</a>
+
+</li>
+<li><a href="#window">Window</a>
+
+</li>
+<li><a href="#ui">UI</a>
+
+</li>
+<li><a href="#game">Game</a>
+
+</li>
+<li><a href="#sdk">SDK</a>
+
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

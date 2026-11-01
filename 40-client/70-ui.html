@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Interface (UI Toolkit) · Axiom Docs</title>
+<meta name="description" content="The client&#x27;s UI framework - UiRoot and its layers, ToolkitWindow, HUD components, the Ui builder helpers and widgets, the theme stylesheets, the game menu, Escape order, tooltips and dialogs, the legacy uGUI shutdown, and Lua UI addons - with a complete window example.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="10-overview.html">Client Overview</a></li>
+<li><a href="20-networking.html">Client Networking</a></li>
+<li><a href="30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="70-ui.html" class="active" aria-current="page">User Interface (UI Toolkit)</a></li>
+<li><a href="80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Unity Client</div>
+
+<h1 id="user-interface">User Interface<a class="anchor" href="#user-interface" title="Permanent link">#</a></h1>
+<p>All new UI is <strong>UI Toolkit</strong>, built in C# (no UXML), styled by USS. The older uGUI screens were migrated; <code>UiBootstrap</code> disables any legacy uGUI controller still sitting in a scene. Design notes: <a href="../80-notes/client-UI.html">UI (note)</a>.</p>
+<p>Code: <code>Assets/AxiomMMOKit/Axiom.Client/Scripts/UI/Toolkit</code> (framework, windows, maps, shops, Lua) and the rest of <code>Scripts/UI</code> (HUD pieces, chat, inventory, character select...).</p>
+<h2 id="the-building-blocks">The building blocks<a class="anchor" href="#the-building-blocks" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UiRoot</code></td>
+<td>The <strong>one</strong> UI Toolkit panel (<code>UIDocument</code>), created on first use, <code>DontDestroyOnLoad</code>. Layers bottom→top: <strong>Screens</strong> (login, character select), <strong>Nameplates</strong>, <strong>Hud</strong>, <strong>Windows</strong>, <strong>Modal</strong>, <strong>Tooltip</strong>, <strong>Drag</strong>. UI scale is <code>Axiom.UI.Scale</code> in PlayerPrefs; the root gets <code>axiom-compact</code> (&lt; 1200 px wide), <code>axiom-hud-narrow</code> (&lt; 760) and <code>axiom-hud-short</code> (&lt; 600 tall) classes for responsive USS. Empty space ignores the mouse so clicks reach the world. Runs per-frame tickers; <code>IsTypingInField</code>.</td>
+</tr>
+<tr>
+<td><code>ToolkitWindow</code></td>
+<td>Base class for a window: a plain C# singleton, no GameObject or prefab. <code>Build</code> once, <code>OnOpened</code>, <code>OnClosed</code>, <code>Tick</code> while open.</td>
+</tr>
+<tr>
+<td><code>UiHudComponent</code></td>
+<td>Base <code>MonoBehaviour</code> for always-on HUD pieces (health bar, cast bar, target frame, chat, quest tracker, party/raid frames, zone banner...). <code>Build()</code> into <code>Root</code> on the Hud layer.</td>
+</tr>
+<tr>
+<td><code>WorldUIManager</code></td>
+<td>Window stack: Escape closes the topmost, <code>CloseAll</code> on death/logout, hotkeys, "is any blocking window open".</td>
+</tr>
+<tr>
+<td><code>UiGameMenu</code></td>
+<td>The bottom menu bar and <code>UiGameMenu.Dispatch("bag" / "quests" / "map" / ...)</code>.</td>
+</tr>
+<tr>
+<td><code>UiBootstrap</code></td>
+<td>On <code>server_select</code> / <code>main_world</code> load: shuts down the previous session's UI, disables legacy uGUI, ensures an <code>EventSystem</code> with the Input System module, and creates the screen's UI (login screens, or the full HUD).</td>
+</tr>
+<tr>
+<td><code>UiSession</code></td>
+<td><code>UiSession.Get&lt;T&gt;()</code>: one controller <code>MonoBehaviour</code> per session on a shared object, disposed on scene change.</td>
+</tr>
+<tr>
+<td><code>UiTooltip</code>, <code>UiDialog.Confirm</code></td>
+<td>Tooltips and confirm dialogs (modal layer).</td>
+</tr>
+<tr>
+<td><code>RichText.Safe(text)</code></td>
+<td>Escapes <code>&lt;</code> so player-typed text can't inject rich-text tags. <strong>Use it for every name, chat line or description you display.</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="theme">Theme<a class="anchor" href="#theme" title="Permanent link">#</a></h3>
+<p><code>UiRoot</code> loads <code>Resources/UI/AxiomPanelSettings</code> if present (scaling), else fixed pixels × the player's UI scale preference, and the theme <code>Resources/UI/AxiomTheme.tss</code> = Unity's default runtime theme + <code>AxiomBase.uss</code> (layout primitives, <code>ac-*</code> classes) + <code>AxiomSkin.uss</code> (the look). Feature sheets (<code>UI/Chat/ChatPolish.uss</code>, <code>UI/Selection/SelectionScreens.uss</code>...) are added per window. Art: <code>Resources/UI/Art</code>, <code>UI/Classic</code> (9-slice frames, bars, coins, buttons). Common classes: <code>ac-row</code>, <code>ac-column</code>, <code>ac-grow</code>, <code>ac-muted</code>, <code>ac-gold</code>, <code>ac-bad</code>, <code>ac-section-title</code>, <code>ac-text-wrap</code>, <code>ac-divider</code>.</p>
+<h2 id="builder-helpers-ui">Builder helpers (<code>Ui</code>)<a class="anchor" href="#builder-helpers-ui" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="n">Ui</span><span class="p">.</span><span class="n">Box</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span><span class="w">        </span><span class="n">Ui</span><span class="p">.</span><span class="n">Row</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span><span class="w">       </span><span class="n">Ui</span><span class="p">.</span><span class="n">Column</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span>
+<span class="n">Ui</span><span class="p">.</span><span class="n">Label</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Button</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">onClick</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span>
+<span class="n">Ui</span><span class="p">.</span><span class="n">Image</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">sprite</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Scroll</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classes</span><span class="p">...)</span><span class="w">  </span><span class="n">Ui</span><span class="p">.</span><span class="n">Divider</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+<span class="n">Ui</span><span class="p">.</span><span class="n">SetShown</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w">        </span><span class="n">Ui</span><span class="p">.</span><span class="n">IsShown</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="w">              </span><span class="n">Ui</span><span class="p">.</span><span class="n">Colored</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Widgets: <code>UiItemSlot</code> (icon, count, cooldown, bound, tooltip, <code>Clicked</code>), <code>UiBar</code> (health/mana/xp bar with text), <code>UiTabs</code>, <code>UiPager</code>, <code>UiSearchField</code>, <code>UiPrice</code> / <code>UiMoneyDisplay</code> / <code>UiMoneyField</code> (gold/silver/copper), <code>UiDrag</code> (drag and drop between slots and the hotbar).</p>
+<h2 id="a-complete-window">A complete window<a class="anchor" href="#a-complete-window" title="Permanent link">#</a></h2>
+<p>An "Inspect" window that shows another player's name, level and gear. The packets (<code>C2WInspectRequestPacket</code> → <code>W2CInspectResultPacket</code>) are built in <a href="../60-cookbook/10-add-packet.html">Add a packet</a>; this is the UI half.</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Scripts/UI/Toolkit/Windows/InspectWindow.cs</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Client.Axiom.Client.Networking</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared.Packets.W2C</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine.UIElements</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Client.Axiom.Client.Scripts.UI.Toolkit.Windows</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InspectWindow</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ToolkitWindow</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">InspectWindow</span><span class="w"> </span><span class="n">Instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InspectWindow</span><span class="p">();</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="n">Label</span><span class="w"> </span><span class="n">_name</span><span class="p">,</span><span class="w"> </span><span class="n">_level</span><span class="p">;</span>
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="n">VisualElement</span><span class="w"> </span><span class="n">_gear</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">private</span><span class="w"> </span><span class="nf">InspectWindow</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">&quot;inspect&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Inspect&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">340</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// id (position saved per id), title, width, height (0 = fit)</span>
+
+<span class="w">        </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Build</span><span class="p">(</span><span class="n">VisualElement</span><span class="w"> </span><span class="n">content</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">_name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Label</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ac-section-title&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Label</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ac-muted&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Ui</span><span class="p">.</span><span class="n">Divider</span><span class="p">(</span><span class="n">content</span><span class="p">);</span>
+<span class="w">            </span><span class="n">_gear</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Row</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ac-wrap&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">/// Called by W2CInspectResultHandler (main thread).</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Present</span><span class="p">(</span><span class="n">W2CInspectResultPacket</span><span class="w"> </span><span class="n">result</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Ensure</span><span class="p">();</span><span class="w">                                         </span><span class="c1">// build if never opened</span>
+<span class="w">            </span><span class="n">_name</span><span class="p">.</span><span class="n">text</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">RichText</span><span class="p">.</span><span class="n">Safe</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span><span class="w">         </span><span class="c1">// player text: always escape</span>
+<span class="w">            </span><span class="n">_level</span><span class="p">.</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Level &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Level</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_gear</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">            </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Gear</span><span class="p">)</span><span class="w">               </span><span class="c1">// item ids by EquipSlot, 0 = nothing</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">itemId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">                </span><span class="kt">var</span><span class="w"> </span><span class="n">slot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UiItemSlot</span><span class="p">();</span>
+<span class="w">                </span><span class="n">slot</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">itemId</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">                          </span><span class="c1">// icon + tooltip from gamedata.bin</span>
+<span class="w">                </span><span class="n">_gear</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">slot</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">Open</span><span class="p">();</span><span class="w">                                           </span><span class="c1">// through WorldUIManager: Escape closes it</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Opening it from somewhere else: <code>InspectWindow.Instance.Toggle()</code>. To add it to the game menu, add a <code>case "inspect":</code> to <code>UiGameMenu.Dispatch</code> (and a button/key if wanted).</p>
+<p>Rules that keep windows well-behaved:</p>
+<ul>
+<li><strong>Subscribe in <code>OnOpened</code>, unsubscribe in <code>OnClosed</code></strong> (see <code>QuestLogWindow</code>: <code>QuestState.Changed += Render</code>). A closed window should cost nothing.</li>
+<li>Read current values from the <strong>state class</strong> when opening; don't rely on having received the last event.</li>
+<li>Never change authoritative state locally - send the request and redraw when the server's packet updates the state.</li>
+<li><code>Tick()</code> runs every frame while open; throttle (<code>QuestLogWindow</code> redraws timers once a second).</li>
+<li>Dangerous actions go through <code>UiDialog.Confirm(title, message, onConfirm)</code>.</li>
+</ul>
+<h2 id="hud-components">HUD components<a class="anchor" href="#hud-components" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">PingDisplay</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">UiHudComponent</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Label</span><span class="w"> </span><span class="n">_label</span><span class="p">;</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ClassName</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;axiom-ping&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Build</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Ui</span><span class="p">.</span><span class="n">Label</span><span class="p">(</span><span class="n">Root</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ac-muted&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClientNetwork</span><span class="p">.</span><span class="n">Instance</span><span class="o">?.</span><span class="n">ServerPeer</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_label</span><span class="p">.</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">peer</span><span class="p">.</span><span class="n">Ping</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; ms&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Create it with the rest of the HUD in <code>UiBootstrap.Loaded</code> (<code>UiSession.Get&lt;PingDisplay&gt;();</code>). Position it in USS on <code>.axiom-ping</code> (absolute position on the Hud layer).</p>
+<p>Existing HUD components: <code>PlayerHealthBarUI</code>, <code>PlayerStatusRowUI</code>, <code>CastBarUI</code>, <code>TargetFrameUI</code>, <code>XpBarUI</code>, <code>LaborUI</code>, <code>ChatUI</code>, <code>QuestTrackerUI</code>, <code>PartyFrameUI</code>, <code>RaidFrameUI</code>, <code>LootRollUI</code>, <code>HarvestProgressUI</code>, <code>HudMessageDisplay</code>, <code>ActionPromptUI</code>, <code>ZoneBannerUI</code>, <code>DungeonTrackerUI</code>, <code>SiegeHudUI</code>, <code>PatronClaimUI</code>, <code>UiGameMenu</code>. Nameplates (<code>NameplateUI</code>) and hover tooltips are session controllers too.</p>
+<p>Existing windows include <code>QuestLogWindow</code>, <code>AchievementWindow</code>, <code>CommunityWindow</code>, <code>WorldMapWindow</code>, <code>ShopWindow</code>, <code>TradeWindow</code>, <code>ItemUpgradeWindow</code>, <code>RepairWindow</code>, <code>PvpWindow</code>, <code>SiegeWindow</code>, <code>HousingMenuWindow</code>, <code>MailWindow</code>, <code>InterfaceWindow</code> (options), <code>PauseMenuWindow</code>, <code>GmPanelWindow</code>, <code>RaidInfoWindow</code>. Read any of them as a template.</p>
+<h2 id="lua-ui-addons">Lua UI addons<a class="anchor" href="#lua-ui-addons" title="Permanent link">#</a></h2>
+<p>Designers can write UI in Lua without a C# build:</p>
+<ul>
+<li>Source: <code>Assets/AxiomMMOKit/Axiom.Client/Lua/DesignerScripts/UI/*.lua</code> (<code>000_axiom_sdk.lua</code> first, then yours in name order).</li>
+<li><strong>Tools ▸ Axiom ▸ UI ▸ Lua ▸ Pack Scripts</strong> packs them into <code>Resources/UI/LuaUiScripts</code> - <strong>players only run the packed library</strong>. The editor reads the folder directly.</li>
+<li>MoonSharp sandbox with budgets: 5 000 000 instructions to load, 200 000 per call (a runaway function is dropped).</li>
+<li><code>/lua reload</code> in chat reloads; <code>UI.Command("name", fn)</code> adds a chat command.</li>
+<li>Annotations for VS Code (LuaLS): <code>Lua/LuaSDK/Client/library/axiom_ui.lua</code>, with examples (<code>gold_tracker</code>, <code>low_health_warning</code>, <code>target_frame</code>, <code>notes</code>) and <code>TEMPLATE.lua</code>.</li>
+</ul>
+<div class="hl"><pre><span></span><code><span class="c1">-- /gold: gold earned this session</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">UI</span><span class="p">.</span><span class="nf">Window</span><span class="p">(</span><span class="s2">&quot;goldtracker&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Gold Tracker&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">260</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Row</span><span class="p">();</span><span class="w"> </span><span class="nv">row</span><span class="p">:</span><span class="nf">Label</span><span class="p">(</span><span class="s2">&quot;This session&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ac-muted&quot;</span><span class="p">):</span><span class="nf">Grow</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">row</span><span class="p">:</span><span class="nf">Label</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ac-gold&quot;</span><span class="p">)</span>
+
+<span class="nv">SDK</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;GoldChanged&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">gold</span><span class="p">,</span><span class="w"> </span><span class="nv">previous</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="nv">gold</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">previous</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="nv">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">session</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nv">gold</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">previous</span><span class="p">)</span><span class="w"> </span><span class="kr">end</span>
+<span class="w">  </span><span class="nv">value</span><span class="p">:</span><span class="nf">SetText</span><span class="p">(</span><span class="nv">SDK</span><span class="p">.</span><span class="nf">FormatGold</span><span class="p">(</span><span class="nv">session</span><span class="p">))</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="nv">UI</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Toggle</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>API</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UI</code></td>
+<td><code>Window(id,title,w,h)</code>, <code>Open/Close/Toggle(id)</code>, <code>Command(name,fn)</code>, <code>Every(s,fn)</code>, <code>After(s,fn)</code>, <code>Print(text)</code>, <code>SaveVar(key,v)</code>, <code>LoadVar(key)</code>, <code>SetScale(s)</code></td>
+</tr>
+<tr>
+<td><code>Element</code></td>
+<td><code>Label</code>, <code>Button</code>, <code>Input</code>, <code>Row</code>, <code>Column</code>, <code>Box</code>, <code>Scroll</code>, <code>Divider</code>, <code>Bar</code>, <code>Slot</code>, <code>SetText</code>, <code>SetValue</code>, <code>SetItem</code>, <code>SetColor</code>, <code>AddClass</code>, <code>Show/Hide</code>, <code>Clear</code>, <code>Enabled</code>, <code>Width/Height/Grow</code>, <code>OnClick</code>, <code>Tooltip</code></td>
+</tr>
+<tr>
+<td><code>Game</code> (read-only)</td>
+<td><code>Name</code>, <code>Level</code>, <code>Gold</code>, <code>Health/MaxHealth</code>, <code>Mana/MaxMana</code>, <code>Labor/LaborMax</code>, <code>Count(itemId)</code>, <code>ItemName(id)</code>, <code>TargetId/HasTarget/TargetName/TargetHealth/TargetMaxHealth</code></td>
+</tr>
+<tr>
+<td><code>SDK</code></td>
+<td><code>On/Off(event, fn)</code> for <code>HealthChanged</code>, <code>ManaChanged</code>, <code>LaborChanged</code>, <code>GoldChanged</code>, <code>LevelChanged</code>, <code>TargetChanged</code>; <code>FormatGold</code>, <code>Ratio</code>, <code>Clamp</code>, <code>Load(key, default)</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Lua UI can <strong>read</strong> game state and <strong>show</strong> things. It cannot send packets - anything that changes the game goes through C# and the server. Full reference: <a href="../80-notes/client-LUASDK.html">Client Lua SDK</a>.</p>
+<h2 id="validation-tools">Validation tools<a class="anchor" href="#validation-tools" title="Permanent link">#</a></h2>
+<p><strong>Tools ▸ Axiom ▸ Validation ▸ UI</strong> has checks for window geometry, HUD navigation, the Toolkit audit (finds uGUI left in open scenes), chat, coins, crafting and auction views; <strong>Tools ▸ Axiom ▸ UI ▸ Reference UI Preview</strong> shows windows outside Play mode. See <a href="../50-tools/70-validation.html">Validation</a>.</p>
+<nav class="pager">
+<a class="prev" href="60-gamedata.html"><span>Previous</span>Client Data &amp; State</a>
+<a class="next" href="80-gameplay.html"><span>Next</span>Client Gameplay Systems</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-building-blocks">The building blocks</a>
+<ul>
+<li><a href="#theme">Theme</a>
+</li>
+</ul>
+</li>
+<li><a href="#builder-helpers-ui">Builder helpers (Ui)</a>
+</li>
+<li><a href="#a-complete-window">A complete window</a>
+</li>
+<li><a href="#hud-components">HUD components</a>
+</li>
+<li><a href="#lua-ui-addons">Lua UI addons</a>
+</li>
+<li><a href="#validation-tools">Validation tools</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

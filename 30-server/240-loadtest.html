@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Load Testing (Axiom.LoadTest) · Axiom Docs</title>
+<meta name="description" content="Headless protocol bots that log in, walk with the real movement code, talk to NPCs and reconnect: the console, presets, fleets and capacity ladders, the live dashboard, the offline HTML report and the server-side telemetry.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html" class="active" aria-current="page">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="load-testing">Load Testing<a class="anchor" href="#load-testing" title="Permanent link">#</a></h1>
+<p><code>src/Tools/Axiom.LoadTest</code> runs <strong>headless bots speaking the real protocol</strong>. They log in (through Auth or a bypass), select or create characters, run the shared <code>CharacterMotor</code> against the same exported collision as the server, walk to homes spread over the zones, jump, visit NPCs and reconnect. It measures what players would feel (entry time, RTT, movement gaps, corrections) and, by following the World server's log, what the server spent on each tick.</p>
+<blockquote>
+<p>Bots walk, jump, talk, reconnect and can fight or form parties. They don't craft, trade or render. A pass is evidence about that workload on that machine, not a capacity certificate.</p>
+</blockquote>
+<h2 id="starting-it">Starting it<a class="anchor" href="#starting-it" title="Permanent link">#</a></h2>
+<p>Run <code>Start_Axiom_LoadTest.cmd</code> (it builds, runs the self-tests and opens the console), or:</p>
+<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>src/Tools/Axiom.LoadTest
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w">            </span><span class="c1"># the console</span>
+</code></pre></div>
+
+<h3 id="the-console">The console<a class="anchor" href="#the-console" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>What you do there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run a test</strong></td>
+<td>Pick a preset, see it at a glance (target, players or ladder, fidelity, timing and total duration, whether the World server log is found, the pass limits), run it. The plan is shown first; fleets run a preflight check before starting.</td>
+</tr>
+<tr>
+<td><strong>Presets &amp; settings</strong></td>
+<td>Every setting in groups (Fleet, Server, Bots, Scenario, Timing, World, Launch behaviour, Gameplay, Pass / fail, Settle), each with its value, a <strong>•</strong> when it differs from the default, what it means and what is allowed. <strong>/</strong> searches all settings; you can list only changed ones or show advanced ones. Input is checked as you type and the whole preset is re-validated after each change (fleets with the same checks a run makes). Save, save as a copy, delete.</td>
+</tr>
+<tr>
+<td><strong>New preset (guided)</strong></td>
+<td>Capacity ladder, fleet at one size or single generator, then sizes, fidelity, bypass or login, host, hold time and the World server log (found automatically from the repo layout).</td>
+</tr>
+<tr>
+<td><strong>Results &amp; reports</strong></td>
+<td>Every past run with its steps (<code>1k✔ 2k✔ 4k✖</code>). Open or build its HTML report, rebuild it with a World server log, diagnose, show the text report, compare two runs step by step, delete.</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td>Self-tests, network self-test, build a report or diagnose any folder, zones preview, forget the session password.</td>
+</tr>
+<tr>
+<td><strong>Options</strong></td>
+<td>Automatic report, open it after runs, confirm before running, live dashboard, colours, results folder, World log and its time zone for old reports. Saved per PC in <code>loadtest.preferences.json</code> (git-ignored).</td>
+</tr>
+</tbody>
+</table></div>
+<p>Keys: <strong>↑↓</strong> move, <strong>Enter</strong> choose, <strong>Esc</strong> back, a <strong>letter or number</strong> jumps to an item, <strong>/</strong> filters long lists, <strong>Ctrl+C</strong> stops a run cleanly (reports are still written). With piped input the menus fall back to typing the key.</p>
+<h3 id="commands-scripts-and-ci">Commands (scripts and CI)<a class="anchor" href="#commands-scripts-and-ci" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>fleet<span class="w"> </span>presets/20-ladder-1k-2k-4k-5k-mixed.json<span class="w">    </span><span class="c1"># preflight, then the ladder; HTML report at the end</span>
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>run<span class="w"> </span>presets/08-launch-day-500.json<span class="w">               </span><span class="c1"># one generator</span>
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>report<span class="w"> </span>results/ladder-20261101-054924<span class="w"> </span>--open<span class="w">     </span><span class="c1"># (re)build the HTML report</span>
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>report<span class="w"> </span>&lt;folder&gt;<span class="w"> </span>--server-log<span class="w"> </span>&lt;log<span class="w"> </span>file<span class="w"> </span>or<span class="w"> </span>logs<span class="w"> </span>folder&gt;<span class="w"> </span>--log-tz<span class="w"> </span>America/New_York
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>preflight<span class="w"> </span>presets/20-ladder-1k-2k-4k-5k-mixed.json
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>plan<span class="w"> </span><span class="p">|</span><span class="w"> </span>fleet-plan<span class="w"> </span><span class="p">|</span><span class="w"> </span>zones<span class="w"> </span>&lt;preset&gt;<span class="w">                </span><span class="c1"># what would happen, no connections</span>
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>validate<span class="w"> </span><span class="p">|</span><span class="w"> </span>register<span class="w"> </span><span class="p">|</span><span class="w"> </span>settle<span class="w"> </span><span class="p">|</span><span class="w"> </span>fleet-settle<span class="w"> </span>&lt;preset&gt;
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>diagnose<span class="w"> </span>&lt;results<span class="w"> </span>folder&gt;
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>compare<span class="w"> </span>a/summary.json<span class="w"> </span>b/summary.json
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>aggregate<span class="w"> </span>m1/summary.json<span class="w"> </span>m2/summary.json
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>selftest<span class="w">            </span><span class="c1"># offline checks</span>
+dotnet<span class="w"> </span>run<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>selftest-network<span class="w">    </span><span class="c1"># loopback UDP test</span>
+</code></pre></div>
+
+<p>Exit codes: 0 pass, 1 fail or review, 2 review required (single run), 130 cancelled.</p>
+<h2 id="one-time-server-setup">One-time server setup<a class="anchor" href="#one-time-server-setup" title="Permanent link">#</a></h2>
+<ol>
+<li>Merge <code>Servers/Axiom.Server.World/appsettings.Local.loadtest.example.json</code> into your <code>appsettings.Local.json</code> (don't replace it; it holds your secrets). It raises <code>World:MaxPlayers</code> 500 → 12000 and <code>Performance:MaximumConnections</code> 2048 → 12000, turns on <code>AllowLoadTestBypass</code> (remove it afterwards) and raises the login queue limits. Without it a 1,000-bot run stops at about 500: the server answers "The world is full".</li>
+<li>Run the servers as <strong>Release</strong>. A Debug World server is 2–4x slower on the tick.</li>
+<li>Point <code>ServerLogPath</code> in your presets at the World server's <code>bin/Release/net10.0/logs</code> folder.</li>
+</ol>
+<p>After changing terrain, re-export the heightmap and <strong>Movement Collision</strong>, rebake the navmesh and restart the World server; bots read the server's own <code>Data/world_collision</code>. Preflight says which of collision, navmesh and <code>zones.aczmap</code> is stale.</p>
+<h2 id="authentication">Authentication<a class="anchor" href="#authentication" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>AuthMode</code></th>
+<th>How bots get a token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>login</code></td>
+<td>real <code>/login</code> against <code>AuthUrl</code> with accounts <code>AccountPrefix</code> + index, password from the <code>AXIOM_LOADTEST_PASSWORD</code> environment variable (8+ characters). <code>register</code> creates them first.</td>
+</tr>
+<tr>
+<td><code>bypass</code></td>
+<td>token <code>loadtest:{n}</code>, accepted only when the World server has <code>World:AllowLoadTestBypass = true</code> (<strong>never in production</strong>). No Auth or MySQL accounts needed.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="bot-fidelity">Bot fidelity<a class="anchor" href="#bot-fidelity" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>Fidelity</code></th>
+<th>What a bot does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>full</code></td>
+<td>Everything a client does: local prediction, replay after corrections. Correction is measured. About 4x the CPU. At most 512 per generator.</td>
+</tr>
+<tr>
+<td><code>lite</code></td>
+<td>The same inputs at the same rate, dead-reckoned, no physics or replay.</td>
+</tr>
+<tr>
+<td><code>mixed</code></td>
+<td><code>FullFidelityFraction</code> (10%) full "probe" bots, the rest lite. One PC can drive thousands.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>SkipSnapshotDecode</code> with <code>BlindFraction</code> lets lite bots count snapshot bytes without decoding them (the server still sends them). Lite bots skip client work only; at 1k a full-fidelity run once showed a higher server tick than mixed, so compare both when it matters.</p>
+<h2 id="fleets-and-ladders">Fleets and ladders<a class="anchor" href="#fleets-and-ladders" title="Permanent link">#</a></h2>
+<p>One generator process runs up to 512 full or 1024 lite bots. A <strong>fleet</strong> preset (<code>{ "Settings": {...}, "TotalBots": … }</code>) starts many generators, gives each a slice of accounts, starts them together and combines their results. A <strong>ladder</strong> (<code>"Ladder": [1000, 2000, 4000]</code>) runs several sizes one after another with a cooldown, so you see where the server stops keeping up.</p>
+<p><code>BotsPerGenerator: 0</code> sizes generators from this PC's cores minus <code>ReservedCores</code> (5) and the fidelity, and re-sizes after each ladder step from the CPU it measured. On several machines, run the same fleet with different <code>OnlyGenerators</code> and the same <code>StartAtUtc</code>, then <code>aggregate</code>. Only generator 0 follows the server log.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>23-smoke-500-full</code></td>
+<td>First run after any change.</td>
+</tr>
+<tr>
+<td><code>20-ladder-1k-2k-4k-5k-mixed</code></td>
+<td><strong>The main test.</strong></td>
+</tr>
+<tr>
+<td><code>21-ladder-1k-2k-4k-5k-full</code></td>
+<td>Same ladder, every bot runs client physics.</td>
+</tr>
+<tr>
+<td><code>24-ladder-500-to-10k-mixed</code></td>
+<td>Finer steps up to 10,000.</td>
+</tr>
+<tr>
+<td><code>22-stress-10000-mixed</code></td>
+<td>One 10k run (needs a second PC for the generators).</td>
+</tr>
+<tr>
+<td><code>01</code>–<code>10</code></td>
+<td>Single-generator checks: real login, wander, crowd, route, reconnect, launch-day 10/100/500, login surge, hotspot. <code>EDIT-…</code> presets need coordinates.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="live-dashboard">Live dashboard<a class="anchor" href="#live-dashboard" title="Permanent link">#</a></h3>
+<p>While a fleet step runs the console shows one frame redrawn every second: phase and hold countdown, players ready against the total, failures, <strong>tick p99 per zone host</strong> with a sparkline, players per zone, GC pause, the PC's CPU split between servers, bots and database, free RAM, network, each generator's state and recent events. Turn it off in Options for the old one-line status every 5 s.</p>
+<h2 id="the-html-report">The HTML report<a class="anchor" href="#the-html-report" title="Permanent link">#</a></h2>
+<p>Every ladder, fleet and run folder gets <strong><code>load-test-report.html</code></strong> when it finishes (it opens by itself). It is one self-contained file that works offline, with dark and light themes and Print / PDF.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Summary</td>
+<td>Verdict, highest passing CCU, worst and typical server tick, ready share, RTT, movement gap, failures, PC CPU, traffic</td>
+</tr>
+<tr>
+<td>Capacity (ladders)</td>
+<td>Tick time vs players against the 40 ms limit and 50 ms budget, player experience vs players, where the busiest zone's tick goes per step, PC CPU, the step table</td>
+</tr>
+<tr>
+<td>Server performance</td>
+<td>Tick p99 and p50 per zone host over time, start gap, players per zone host (the server's count), host table with the busiest stage</td>
+</tr>
+<tr>
+<td>Tick stages</td>
+<td>Stacked average ms per stage (= the average tick) or the slowest tick per stage; hold averages with KiB/tick</td>
+</tr>
+<tr>
+<td>Runtime, GC &amp; replication</td>
+<td>GC pause, collections, heap, AoI work and known links, snapshot entities, bytes and candidates, queued actions</td>
+</tr>
+<tr>
+<td>Population, Player experience, Latency</td>
+<td>Bots by state and zone, login pipeline; RTT, movement gap, correction and crowding over time with phase bands; a p50/p95/p99/max table (worst generator)</td>
+</tr>
+<tr>
+<td>Test PC, Network, Events</td>
+<td>CPU by owner, free RAM, generator loop and cores, throughput, bot events and failures by cause</td>
+</tr>
+<tr>
+<td>World map</td>
+<td>Heat map of bot positions during the hold, final positions by zone</td>
+</tr>
+<tr>
+<td>Generators, Zones, Configuration</td>
+<td>Per-generator limits, per-zone numbers, every setting that ran, the machine</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="server-telemetry">Server telemetry<a class="anchor" href="#server-telemetry" title="Permanent link">#</a></h3>
+<p>Generator 0 follows the World server's log and keeps <strong>only the numbers</strong> from its diagnostic lines, in <code>server-stages.csv</code>: <code>[TickHealth]</code> (tick p50/p99/max, start gap, GC, <code>gcPause</code>, heap), <code>[TickStages]</code>, <code>[TickAlloc]</code>, <code>[AoI]</code>, <code>[CrowdWork]</code> and <code>[ZoneThreads]</code> (see <a href="../10-architecture/30-world-server.html#what-the-health-report-means">what the health report means</a>). No log text reaches a report.</p>
+<p>For older runs, or runs without <code>ServerLogPath</code>, the report imports the same lines from a log afterwards (<code>--server-log</code>). The log is stamped in the server PC's local time; the importer handles the hour that repeats when clocks go back, and <code>--log-tz</code> (or Options) sets the zone when the report is built on another PC.</p>
+<h2 id="reading-results">Reading results<a class="anchor" href="#reading-results" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PASS</code></td>
+<td>Every configured check passed.</td>
+</tr>
+<tr>
+<td><code>SERVER AT LIMIT</code></td>
+<td>Tick work p99 or start gap p99 over the limit (<code>MaxServerWorkP99Ms</code> 40, <code>MaxServerStartGapP99Ms</code> 75, of a 50 ms tick). The number you came for.</td>
+</tr>
+<tr>
+<td><code>GENERATOR LIMITED</code></td>
+<td>A test process fell behind (late loop, pegged core). Its latencies describe the test PC. Use lite or mixed, more generators or another PC.</td>
+</tr>
+<tr>
+<td><code>SERVER REFUSED BOTS</code></td>
+<td>World full, connection limit or login busy. Raise the limit; says nothing about capacity. The ladder stops.</td>
+</tr>
+<tr>
+<td><code>ENDED EARLY</code></td>
+<td><code>AbortFailureFraction</code> of the bots failed.</td>
+</tr>
+<tr>
+<td><code>CANCELLED</code></td>
+<td>Stopped by hand; partial numbers.</td>
+</tr>
+<tr>
+<td><code>REVIEW</code></td>
+<td>A configured check failed; the Diagnosis says which.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every step ends with a <strong>Diagnosis</strong> naming what limited it. In the report, the stage that grows with player count is what to optimise; compare two ladder steps, then tune the matching <code>World:Performance</code> budgets (<a href="../10-architecture/60-interest-replication.html#tuning-for-crowds">Interest &amp; replication</a>, which also lists the capacity measured so far). Percentiles are never averaged across generators or windows; the worst is shown.</p>
+<p><code>Program.SupportedProtocol</code> is the protocol the bots were last checked against; bump it (after checking the bot adapters in <code>Bot.cs</code>) when you change packets they use. The tool's own <code>src/Tools/Axiom.LoadTest/LOADTEST.md</code> has the full file list of a results folder; <a href="../80-notes/server-LOADTEST_FLEET.html">Fleet (archive)</a> and <a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation (archive)</a> are older notes.</p>
+<nav class="pager">
+<a class="prev" href="230-auction-server.html"><span>Previous</span>Auction Server</a>
+<a class="next" href="250-navigation.html"><span>Next</span>NPC Navigation (Navmesh)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#starting-it">Starting it</a>
+<ul>
+<li><a href="#the-console">The console</a>
+</li>
+<li><a href="#commands-scripts-and-ci">Commands (scripts and CI)</a>
+</li>
+</ul>
+</li>
+<li><a href="#one-time-server-setup">One-time server setup</a>
+</li>
+<li><a href="#authentication">Authentication</a>
+</li>
+<li><a href="#bot-fidelity">Bot fidelity</a>
+</li>
+<li><a href="#fleets-and-ladders">Fleets and ladders</a>
+<ul>
+<li><a href="#live-dashboard">Live dashboard</a>
+</li>
+</ul>
+</li>
+<li><a href="#the-html-report">The HTML report</a>
+<ul>
+<li><a href="#server-telemetry">Server telemetry</a>
+</li>
+</ul>
+</li>
+<li><a href="#reading-results">Reading results</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Networking &amp; Packets · Axiom Docs</title>
+<meta name="description" content="The client-to-world wire protocol - LiteNetLib, opcodes, MessagePack packets, channels, limits, protocol versions - and how dispatch works on both ends.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="10-overview.html">Architecture Overview</a></li>
+<li><a href="20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="30-world-server.html">The World Server</a></li>
+<li><a href="40-networking.html" class="active" aria-current="page">Networking &amp; Packets</a></li>
+<li><a href="50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Architecture</div>
+
+<h1 id="networking--packets">Networking &amp; Packets<a class="anchor" href="#networking--packets" title="Permanent link">#</a></h1>
+<p>The game client and the World server talk over <strong>LiteNetLib</strong> (reliable UDP). Every other link in Axiom is HTTP (see <a href="10-overview.html">Architecture overview</a>). This page covers the game protocol: what a packet is, how it travels, how it's dispatched, and the rules that keep both ends compatible.</p>
+<h2 id="the-shared-library-axiomnetwork">The shared library: Axiom.Network<a class="anchor" href="#the-shared-library-axiomnetwork" title="Permanent link">#</a></h2>
+<p>Both ends compile against the <strong>same</strong> packet definitions: <code>src/Shared/Axiom.Network</code>, a <code>netstandard2.1</code> class library.</p>
+<ul>
+<li>The servers reference the project directly.</li>
+<li>The Unity client uses the <strong>built DLL</strong>: <code>Axiom.Network.dll</code> (and <code>Axiom.Movement.dll</code>) copied into <code>Assets/AxiomMMOKit/Plugins</code>.</li>
+</ul>
+<blockquote class="callout"><p><strong>Every time you change anything in Axiom.Network or Axiom.Movement, rebuild and copy both DLLs into <code>Assets/AxiomMMOKit/Plugins</code>.</strong> A client with an old DLL either gets refused at connect (if you bumped the protocol version) or fails to read packets with <code>Could not read X packet (Axiom.Network.dll out of date?)</code>.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Shared/Opcodes.cs</code></td>
+<td><code>enum Opcodes : ushort</code>: every client↔world message number</td>
+</tr>
+<tr>
+<td><code>Shared/Packets/C2W</code>, <code>W2C</code></td>
+<td>Client→World and World→Client packet classes</td>
+</tr>
+<tr>
+<td><code>Shared/Packets/W2P</code>, <code>P2W</code></td>
+<td>World→Persistence and Persistence→World request/response classes (HTTP bodies)</td>
+</tr>
+<tr>
+<td><code>Shared/Packets/*.cs</code></td>
+<td>DTOs shared by several packets (<code>InventorySlotDto</code>, <code>GuildDto</code>, <code>MarketDtos</code>, ...)</td>
+</tr>
+<tr>
+<td><code>Shared/{Combat,Housing,Items,...}</code></td>
+<td>Shared enums and rules both ends must agree on (<code>EquipSlot</code>, <code>CharacterNameRules</code>, housing layouts...)</td>
+</tr>
+<tr>
+<td><code>Shared/PacketChannels.cs</code></td>
+<td>Which LiteNetLib channel each opcode uses</td>
+</tr>
+<tr>
+<td><code>Shared/PacketSerialization.cs</code></td>
+<td>MessagePack options, client payload limits, pooled writers</td>
+</tr>
+<tr>
+<td><code>Shared/ProtocolVersion.cs</code></td>
+<td>The protocol number and its full history</td>
+</tr>
+<tr>
+<td><code>Shared/MovementInputCodec.cs</code>, <code>VelocityCodec.cs</code></td>
+<td>Hand-packed binary formats for movement</td>
+</tr>
+<tr>
+<td><code>Worldserver/</code></td>
+<td>Server dispatcher (<code>PacketDispatcher</code>), <code>IPacketHandler</code>, <code>WorldserverPacketSender</code></td>
+</tr>
+<tr>
+<td><code>Client/</code></td>
+<td>Client dispatcher (<code>ClientPacketDispatcher</code>), <code>IClientPacketHandler</code>, <code>ClientPacketSender</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The full list of opcodes and packet fields is generated from the code: see the <a href="../70-reference/packets.html">Packet reference</a>.</p>
+<h2 id="what-a-packet-is-on-the-wire">What a packet is on the wire<a class="anchor" href="#what-a-packet-is-on-the-wire" title="Permanent link">#</a></h2>
+<p>Every message is:</p>
+<div class="hl"><pre><span></span><code>┌────────────┬───────────────────────────────────────────┐
+│ ushort     │ MessagePack payload (array of [Key(n)])   │
+│ opcode LE  │                                           │
+└────────────┴───────────────────────────────────────────┘
+</code></pre></div>
+
+<p>LiteNetLib frames the message, so there's no length prefix. The payload is the packet class serialised by <strong>MessagePack-CSharp 3.1.12</strong> with integer keys:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Axiom.Network/Shared/Packets/C2W/...</span>
+<span class="na">[MessagePackObject]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WUseItemPacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[Key(0)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Slot</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Keyed by integer, a packet is a MessagePack <strong>array</strong>: field names never travel. That has two consequences:</p>
+<ul>
+<li><strong>Never renumber or reuse a key.</strong> Key 3 means "Health" forever. To retire a field, leave its number unused.</li>
+<li><strong>Adding a field at the end is cheap.</strong> An older reader ignores extra array entries; a newer reader sees a missing trailing key as the default. That's the only change that is safe without a protocol bump, and you should still bump it if the field matters.</li>
+</ul>
+<p>Two packets skip MessagePack because they're sent constantly:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Opcode</th>
+<th>Format</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C2WMovementInputs</code> (167)</td>
+<td><code>MovementInputCodec</code>: <code>uint epoch</code>, <code>byte count</code>, then <code>count × 22</code> bytes: <code>uint sequence</code>, <code>float wishX</code>, <code>float wishZ</code>, <code>float yaw</code>, <code>float pitch</code>, <code>ushort buttons</code>. At most 16 commands per packet.</td>
+<td>Sent every client frame batch; must be tiny and allocation-free.</td>
+</tr>
+<tr>
+<td><code>W2CWorldSnapshot</code> (30)</td>
+<td><code>SnapshotWriter</code> / <code>SnapshotReader</code>: header <code>opcode(2) tick(4) origin(12) count(2)</code>, then per entity <code>id(4) flags(1) pos(6, 1/64 m) yaw(1) state(1)</code>, optionally <code>velocity(3)</code> and <code>tilt(2)</code> (flags say which).</td>
+<td>200 000 packets/s at target load; MessagePack's per-field overhead and allocations would dominate.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Snapshots are <strong>unreliable</strong> and may arrive out of order: the client keeps the highest tick per entity and drops older ones. An entity missing from a snapshot has <strong>not</strong> despawned (it's on a slower level-of-detail tier, or past the packet cap). Despawns only ever arrive reliably (<code>PlayerLeave</code>, <code>NpcDespawn</code>).</p>
+<h2 id="channels">Channels<a class="anchor" href="#channels" title="Permanent link">#</a></h2>
+<p>LiteNetLib orders reliable messages <strong>per channel</strong>. With everything on one channel, a big auction page that needed a resend would hold up every combat hit behind it. So <code>PacketChannels.For(opcode)</code> puts each opcode on one of four channels:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Number</th>
+<th>Carries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>World</code></td>
+<td>0</td>
+<td>Everything not listed below: spawns, despawns, combat, gold, inventory, enter-world. Order matters here. <strong>New opcodes land here by default.</strong></td>
+</tr>
+<tr>
+<td><code>Bulk</code></td>
+<td>1</td>
+<td>Windows and lists: auction, mail, cash shop, shop catalogues, quest catalogue/log, gear/status/skill catalogues, character list, guild state, crafting, storage, achievements.</td>
+</tr>
+<tr>
+<td><code>Chat</code></td>
+<td>2</td>
+<td>Chat, MOTD, announcements.</td>
+</tr>
+<tr>
+<td><code>Control</code></td>
+<td>3</td>
+<td>Movement inputs, movement state and config, spawn acks, NPC collision frames, focus target.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both <code>NetManager</code>s must be created with <code>ChannelsCount = PacketChannels.Count</code> (4), or messages on the extra channels are dropped. <code>WorldserverPacketSender.SendPacket</code> and <code>ClientPacketSender.SendPacket</code> pick the channel for you.</p>
+<p>If your new packet is a large list that should never delay gameplay, add it to the <code>Bulk</code> case in <code>PacketChannels.For</code>.</p>
+<h2 id="sending">Sending<a class="anchor" href="#sending" title="Permanent link">#</a></h2>
+<p><strong>Server → client.</strong> Each outbound packet has a static sender in <code>Axiom.Server.World/Core/Packets/W2CSenders</code>. It's a one-liner over <code>WorldserverPacketSender</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CItemCooldownPacketSender</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">[]</span><span class="w"> </span><span class="n">itemIds</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">durationMs</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">WorldserverPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CItemCooldown</span><span class="p">,</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">W2CItemCooldownPacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ItemIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">itemIds</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">durationMs</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>WorldserverPacketSender</code> has <code>SendPacket</code> (one peer), <code>SendToAll</code> (serialises <strong>once</strong>, then sends the same bytes to every peer; use it for broadcasts), <code>Encode</code> + <code>SendEncoded</code> (serialise once, send later). Writers come from a thread-static pool (<code>PacketSerialization.Rent</code>), so sending doesn't allocate. Outgoing packets are capped at 4 MiB.</p>
+<p><strong>Client → server.</strong> Each outbound packet has a static sender in <code>Assets/AxiomMMOKit/Axiom.Client/Networking/C2WSenders</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WAuthenticatePacket</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">token</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">ClientPacketSender</span><span class="p">.</span><span class="n">SendPacket</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">Opcodes</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">,</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">C2WAuthenticateRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c1">// Anywhere in the client:</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClientNetwork</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">ServerPeer</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">peer</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="n">C2WAuthenticatePacket</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Default delivery is <code>ReliableOrdered</code>. Use <code>DeliveryMethod.Unreliable</code> or <code>Sequenced</code> only for data that's replaced by the next send anyway.</p>
+<h2 id="receiving-and-dispatch">Receiving and dispatch<a class="anchor" href="#receiving-and-dispatch" title="Permanent link">#</a></h2>
+<h3 id="on-the-server-attribute--reflection">On the server: attribute + reflection<a class="anchor" href="#on-the-server-attribute--reflection" title="Permanent link">#</a></h3>
+<p>A handler is a class with <code>[PacketOpcode]</code> that implements <code>IPacketHandler</code>:</p>
+<div class="hl"><pre><span></span><code><span class="na">[PacketOpcode(Opcodes.C2WUseItem)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">C2WUseItemHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">_playerManager</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ItemManager</span><span class="w"> </span><span class="n">_items</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Exactly ONE public constructor. Every parameter is resolved from the ServiceContainer.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">C2WUseItemHandler</span><span class="p">(</span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">playerManager</span><span class="p">,</span><span class="w"> </span><span class="n">ItemManager</span><span class="w"> </span><span class="n">items</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_playerManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">playerManager</span><span class="p">;</span>
+<span class="w">        </span><span class="n">_items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WUseItemPacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesMemory</span><span class="p">());</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_playerManager</span><span class="p">.</span><span class="n">TryGetSession</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">session</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">CharacterId</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// ... validate EVERYTHING, then act</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>At boot, <code>PacketDispatcher.AutoRegister</code> scans the World assembly for every non-abstract <code>IPacketHandler</code>, reads the attribute, resolves the constructor parameters from the <code>ServiceContainer</code> and registers one instance. A handler without the attribute is skipped with a warning; a handler with two constructors or an unregistered dependency <strong>fails start-up</strong>. Several handlers may live in one file (<code>C2WSocialHandlers.cs</code>, <code>C2WMarketHandlers.cs</code>...).</p>
+<p>Handlers run on the tick thread, one at a time. The <a href="30-world-server.html#network-events">World server page</a> lists the nine checks every packet passes before its handler runs (size, rate limits, known opcode, session, payload complexity).</p>
+<h3 id="on-the-client-manual-registration">On the client: manual registration<a class="anchor" href="#on-the-client-manual-registration" title="Permanent link">#</a></h3>
+<p>Client handlers implement <code>IClientPacketHandler</code> and are <strong>registered by hand</strong> in <code>ClientNetwork.RegisterHandlers()</code>:</p>
+<div class="hl"><pre><span></span><code><span class="n">dispatcher</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CItemCooldown</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">W2CItemCooldownHandler</span><span class="p">());</span>
+</code></pre></div>
+
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">W2CItemCooldownHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IClientPacketHandler</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">W2CItemCooldownPacket</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesMemory</span><span class="p">());</span>
+<span class="w">        </span><span class="c1">// Runs on Unity&#39;s main thread (ClientNetwork.Update -&gt; PollEvents). Safe to touch GameObjects.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>ClientPacketDispatcher.AutoRegister</code> exists and works, but the client doesn't call it. <strong>Forget the <code>Register</code> line and the packet is silently dropped</strong>, apart from <code>[ClientPacketDispatcher] Unhandled packet: X</code> in the console.</p>
+<p>Handlers that touch world objects (spawning players, NPCs, doodads) must not act directly while <code>main_world</code> is still loading. They call <code>WorldLoader.RunWhenReady(() =&gt; ...)</code>, which queues work in arrival order until the scene and its registries exist. See <a href="../40-client/20-networking.html">Client networking</a>.</p>
+<p>The client also filters by state: while in character selection it only accepts the character list, create-failed, selection-return, MOTD, announcements, account access and movement configuration; everything else is ignored.</p>
+<h2 id="limits-and-protection">Limits and protection<a class="anchor" href="#limits-and-protection" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Max client packet</td>
+<td>16 KiB</td>
+<td><code>PacketSerialization.MaxClientPayload</code></td>
+</tr>
+<tr>
+<td>MessagePack depth / nodes</td>
+<td>32 / 4096</td>
+<td><code>ValidateClientPayload</code></td>
+</tr>
+<tr>
+<td>Array / map length</td>
+<td>1024 / 512</td>
+<td><code>ValidateClientPayload</code></td>
+</tr>
+<tr>
+<td>Max outgoing packet</td>
+<td>4 MiB</td>
+<td><code>PacketSerialization.Writer</code></td>
+</tr>
+<tr>
+<td>Connection request payload</td>
+<td>512 bytes</td>
+<td><code>OnConnectionRequest</code></td>
+</tr>
+<tr>
+<td>Per-opcode rate</td>
+<td>token bucket</td>
+<td><code>Core/Security/PacketRateLimiter.cs</code>, configured from <code>World:Performance</code></td>
+</tr>
+<tr>
+<td>Gameplay packets per tick</td>
+<td><code>Performance.GameplayPacketsPerTick</code></td>
+<td>busy gate in <code>OnNetworkReceive</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The server deserialises untrusted data with <code>MessagePackSecurity.UntrustedData</code>. <strong>Treat every field as hostile</strong>: check slot indices are in range, counts are positive, ids exist, the player is close enough, owns the item, isn't dead, isn't trading. The handlers in <code>C2WHandlers</code> show the pattern: look the session up, validate, then call a manager that validates again.</p>
+<h2 id="protocol-versions">Protocol versions<a class="anchor" href="#protocol-versions" title="Permanent link">#</a></h2>
+<p><code>ProtocolVersion.Current</code> is part of the LiteNetLib <strong>connection key</strong>: the client connects with <code>"Axiom/45"</code>. The server compares the key exactly. An older or newer client is refused at connect with a message the player can read ("Your client is out of date (protocol 43, server 44). Update the game.") instead of connecting and failing on its first packet.</p>
+<p><strong>Bump <code>Current</code> and <code>ConnectionKey</code> together</strong> whenever opcodes, packet fields, channels or encodings change in a way the other side can't read, and add a line to the history comment above it. Then rebuild <code>Axiom.Network.dll</code> and copy it to the client.</p>
+<p>The history, kept in <code>ProtocolVersion.cs</code>, is also a changelog of the whole project:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>everything up to 2026-09-24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2026-09-25: packet channels, velocity codec, create-failed packet</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2026-09-26: Phase 3 - stats, equipment, status effects, skills,</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2026-09-26: Phase 4 - abilities, casting, crowd control, hotbar</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2026-09-27: Phase 5 - experience (opcode 98, Experience on</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2026-09-27: doodads - opcodes 100-104 replace the harvest-node</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2026-09-27: Phase 6 - party, raid and guilds (opcodes 105-113),</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2026-09-27: Phase 7 - labor, proficiency and crafting (opcodes</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2026-09-27: Phase 8.1 - dungeon instances (opcode 121), the Enter</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2026-09-28: Phase 8.2-8.4 - coffers and fishing (opcodes 122-124),</td>
+</tr>
+<tr>
+<td>11</td>
+<td>2026-10-03: Phase 9 - trade packs, vehicles, player trade</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2026-10-04: Phase 10 - factions, PvP rules, crime and justice,</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2026-10-04: Phase 11 - naval, exploration and the long tail</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2026-10-06: inventory currency vendor tabs, atomic cart checkout and</td>
+</tr>
+<tr>
+<td>15</td>
+<td>2026-10-07: authenticated character return and world switching (153-154).</td>
+</tr>
+<tr>
+<td>16</td>
+<td>2026-10-09: bound housing parts and server-driven climb frames (202/203).</td>
+</tr>
+<tr>
+<td>17</td>
+<td>2026-10-09: placard housing menu and explicit permission selection (204/205).</td>
+</tr>
+<tr>
+<td>18</td>
+<td>2026-10-09: Trade chat, structured chat links and whisper recipient labels.</td>
+</tr>
+<tr>
+<td>19</td>
+<td>2026-10-09: furniture action requests, occupancy frames and viewer-specific furniture actions (206/207).</td>
+</tr>
+<tr>
+<td>20</td>
+<td>2026-10-09: direct furniture prompts and persistent property pickup protection.</td>
+</tr>
+<tr>
+<td>21</td>
+<td>2026-10-09: skill-bound world actions, furniture skill ids and correlated interaction casts.</td>
+</tr>
+<tr>
+<td>22</td>
+<td>2026-10-09: hybrid functions, stable function identities and doodad combat targeting.</td>
+</tr>
+<tr>
+<td>23</td>
+<td>2026-10-10: gliders removed (EquipSlot.Glider and EquipSlots.Count 13 -&gt; 12, the</td>
+</tr>
+<tr>
+<td>24</td>
+<td>2026-10-10: fixed Warrior/Healer/Mage identity on creation, roster,</td>
+</tr>
+<tr>
+<td>25</td>
+<td>2026-10-10: ships, naval combat and the sea removed for now. W2CShipHit (143)</td>
+</tr>
+<tr>
+<td>26</td>
+<td>2026-10-10: flying mounts (LocomotionMode.Flying 8, MovementState.Flying</td>
+</tr>
+<tr>
+<td>27</td>
+<td>2026-10-11: siege v2 - bidding, rosters, lockdown, weapons, camps, waves,</td>
+</tr>
+<tr>
+<td>28</td>
+<td>2026-10-12: item instances - grade, durability and gem sockets on every</td>
+</tr>
+<tr>
+<td>29</td>
+<td>2026-10-13: personal warehouse action 22, request/frame 210-211;</td>
+</tr>
+<tr>
+<td>30</td>
+<td>2026-10-13: classic MMO-style systems, phases 2-6 (Docs/DATA_PHASES.md):</td>
+</tr>
+<tr>
+<td>31</td>
+<td>2026-10-13: quest prerequisite ids on QuestDefinitionData for</td>
+</tr>
+<tr>
+<td>34</td>
+<td>2026-10-15: ordered world-entry release (173), entry loading flag on movement configuration.</td>
+</tr>
+<tr>
+<td>35</td>
+<td>2026-10-17: party/raid UI - member roles (PartyMemberData.Role, PartyAction.SetRole),</td>
+</tr>
+<tr>
+<td>36</td>
+<td>2026-10-17: auction bidding (C2WAuctionBid 176; start bid, current bid and bid</td>
+</tr>
+<tr>
+<td>37</td>
+<td>2026-10-18: NPC collision box bodies and pet pass-through (NpcBodyData Shape, Hx/Hy/Hz,</td>
+</tr>
+<tr>
+<td>38</td>
+<td>2026-10-18: Patron and Loyalty Tokens (C2WPatronClaim 180, W2CPatronState 181, PatronDto in</td>
+</tr>
+<tr>
+<td>39</td>
+<td>2026-10-19: loot belongs to a CHARACTER, not a login. W2CSpawnCorpse drops OwnerId (7) and Looters (9),</td>
+</tr>
+<tr>
+<td>40</td>
+<td>2026-10-20: item boxes. W2CCastStart gains Label (5): the text on the cast bar for a timed action</td>
+</tr>
+<tr>
+<td>41</td>
+<td>2026-10-23: races and genders (CharacterRaceRules). RaceId/GenderId on C2WCreateCharacterRequest (3-4),</td>
+</tr>
+<tr>
+<td>42</td>
+<td>2026-10-25: races and body types are data (world database Races / BodyTypes): Races and BodyTypes</td>
+</tr>
+<tr>
+<td>43</td>
+<td>2026-10-26: character appearance. AppearanceData on C2WCreateCharacterRequest (5), W2PCreateCharacterRequest (7),</td>
+</tr>
+<tr>
+<td>44</td>
+<td>2026-10-26: project renamed to Axiom everywhere. The connection key is now "Axiom/44"; no packet changed.</td>
+</tr>
+<tr>
+<td>45</td>
+<td>2026-10-30: mounts swim at the surface. <code>MotorProfileData</code> gains <code>SurfaceSwimOnly</code> (26), set while riding: Swim Down does nothing. Rebuild both DLLs.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Current version: <strong>45</strong> (connection key <code>"Axiom/45"</code>).</p>
+<h2 id="the-other-protocols">The other protocols<a class="anchor" href="#the-other-protocols" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Transport</th>
+<th>Format</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client → Auth</td>
+<td>HTTPS/HTTP (port 3000)</td>
+<td>JSON</td>
+<td>login → access + refresh tokens</td>
+</tr>
+<tr>
+<td>Client → Auth <code>/gamedata/*</code></td>
+<td>HTTP</td>
+<td>binary file</td>
+<td>none</td>
+</tr>
+<tr>
+<td>World → Auth</td>
+<td>HTTP</td>
+<td>JSON</td>
+<td><code>x-internal-secret</code> header</td>
+</tr>
+<tr>
+<td>World → Persistence</td>
+<td>HTTP (port 7778)</td>
+<td><strong>MessagePack</strong> bodies (<code>W2P*</code> / <code>P2W*</code> classes)</td>
+<td><code>x-internal-secret</code></td>
+</tr>
+<tr>
+<td>World → Auction</td>
+<td>HTTP (port 5090)</td>
+<td>MessagePack</td>
+<td><code>x-internal-secret</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Every route is listed with its request and response types in <a href="../70-reference/services.html">Service endpoints</a>. How the World server uses them is on <a href="70-persistence-flow.html">Persistence flow</a>.</p>
+<h2 id="checklist-adding-a-packet">Checklist: adding a packet<a class="anchor" href="#checklist-adding-a-packet" title="Permanent link">#</a></h2>
+<p>The <a href="../60-cookbook/10-add-packet.html">Add a packet</a> recipe walks through a complete example. In short:</p>
+<ol>
+<li>Opcode in <code>Opcodes.cs</code>, the next free number, with a comment.</li>
+<li>Packet class in <code>Shared/Packets/C2W</code> or <code>W2C</code>: <code>[MessagePackObject]</code>, <code>[Key(n)]</code> fields.</li>
+<li>Channel in <code>PacketChannels.For</code> if it isn't <code>World</code>.</li>
+<li>Server: handler (<code>[PacketOpcode]</code>, one constructor) or sender (<code>W2CSenders</code>).</li>
+<li>Client: sender (<code>C2WSenders</code>) or handler, <strong>plus its <code>dispatcher.Register</code> line</strong>.</li>
+<li>Bump <code>ProtocolVersion</code>, rebuild <code>Axiom.Network.dll</code>, copy it to <code>Assets/AxiomMMOKit/Plugins</code>.</li>
+</ol>
+<nav class="pager">
+<a class="prev" href="30-world-server.html"><span>Previous</span>The World Server</a>
+<a class="next" href="50-movement.html"><span>Next</span>Movement &amp; Netcode</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-shared-library-axiomnetwork">The shared library: Axiom.Network</a>
+</li>
+<li><a href="#what-a-packet-is-on-the-wire">What a packet is on the wire</a>
+</li>
+<li><a href="#channels">Channels</a>
+</li>
+<li><a href="#sending">Sending</a>
+</li>
+<li><a href="#receiving-and-dispatch">Receiving and dispatch</a>
+<ul>
+<li><a href="#on-the-server-attribute--reflection">On the server: attribute + reflection</a>
+</li>
+<li><a href="#on-the-client-manual-registration">On the client: manual registration</a>
+</li>
+</ul>
+</li>
+<li><a href="#limits-and-protection">Limits and protection</a>
+</li>
+<li><a href="#protocol-versions">Protocol versions</a>
+</li>
+<li><a href="#the-other-protocols">The other protocols</a>
+</li>
+<li><a href="#checklist-adding-a-packet">Checklist: adding a packet</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

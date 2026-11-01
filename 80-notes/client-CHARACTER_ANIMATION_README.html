@@ -1,0 +1,1578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animation guide: players, NPCs, gear and actions · Axiom Docs</title>
+<meta name="description" content="This guide is for someone new to Unity animation. It uses Unity 6.3, HDRP and the free Quaternius packs. By the end, players and NPCs move, fight, cast, flinch, die, gather and sit with real animations, and wear…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html" class="active" aria-current="page">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/CHARACTER_ANIMATION_README.md</code></div>
+<h1 id="animation-guide-players-npcs-gear-and-actions">Animation guide: players, NPCs, gear and actions<a class="anchor" href="#animation-guide-players-npcs-gear-and-actions" title="Permanent link">#</a></h1>
+<p>This guide is for someone new to Unity animation. It uses Unity 6.3, HDRP
+and the free Quaternius packs. By the end, players and NPCs move, fight,
+cast, flinch, die, gather and sit with real animations, and wear visible
+gear.</p>
+<p>It's long because it explains <em>why</em> as well as <em>what</em>. Do it in order the
+first time. After that, the tables are the quick reference.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>How animation works in Axiom (read once)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Unity's animation tools in 15 minutes</td>
+</tr>
+<tr>
+<td>3</td>
+<td>The player character, start to finish</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Which clip goes in which state (exact Quaternius clip names)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ability animations</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Gathering, building, sitting (interaction animations)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>NPCs: humanoids, monsters, vendors</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Gear: armour and weapons</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Test checklist, troubleshooting, what isn't wired yet</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Guides and videos</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="part-1-how-animation-works-in-axiom">Part 1: How animation works in Axiom<a class="anchor" href="#part-1-how-animation-works-in-axiom" title="Permanent link">#</a></h2>
+<p><strong>The server decides, the client shows.</strong> The server says where everyone
+is, who hit whom and when a cast starts or ends. The client never decides
+anything about animation. It only plays the matching clips.</p>
+<div class="hl"><pre><span></span><code>  server packets                          client
+  ──────────────                          ──────
+  movement (position, velocity, bits) ─┐
+  W2CCastStart / W2CCastEnd           ─┼─&gt; CharacterAnimator ──&gt; Animator parameters
+  W2CCombatEvent (hit, crit, miss,    ─┤     (one per player     ──&gt; Animator Controller
+                  killed)              │      and NPC)                (states play clips)
+  W2CDoodadUseStarted / Ended         ─┘──&gt; InteractionSkillPresentation (gathering)
+</code></pre></div>
+
+<p><code>CharacterAnimator</code> sets <strong>parameters</strong>, the values your Animator Controller
+reacts to. You never write code. You build a controller whose states react
+to these names:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Set when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Speed</code></td>
+<td>float</td>
+<td>Every frame: ground speed in m/s (0 standing, 2.5 walking, 5 running; more with speed buffs)</td>
+</tr>
+<tr>
+<td><code>MoveX</code>, <code>MoveZ</code></td>
+<td>float</td>
+<td>Every frame: sideways and forward speed relative to facing, ÷ 5. Only for a 2D blend tree</td>
+</tr>
+<tr>
+<td><code>LocomotionDirection</code></td>
+<td>float</td>
+<td>Every frame: 1, or -1 while backpedalling (plays the run cycle backwards)</td>
+</tr>
+<tr>
+<td><code>VerticalSpeed</code></td>
+<td>float</td>
+<td>Every frame: rising (+) or falling (-)</td>
+</tr>
+<tr>
+<td><code>Grounded</code></td>
+<td>bool</td>
+<td>On the ground</td>
+</tr>
+<tr>
+<td><code>Swimming</code></td>
+<td>bool</td>
+<td>In water</td>
+</tr>
+<tr>
+<td><code>Mounted</code></td>
+<td>bool</td>
+<td>Riding a mount</td>
+</tr>
+<tr>
+<td><code>Seated</code></td>
+<td>bool</td>
+<td>Passenger in a cart</td>
+</tr>
+<tr>
+<td><code>Dead</code></td>
+<td>bool</td>
+<td>Dead, until revived</td>
+</tr>
+<tr>
+<td><code>InCombat</code></td>
+<td>bool</td>
+<td>6 s after any hit given or taken, or while casting. Also draws weapons</td>
+</tr>
+<tr>
+<td><code>Casting</code></td>
+<td>bool</td>
+<td>During a cast that has a cast bar</td>
+</tr>
+<tr>
+<td><code>SkillId</code></td>
+<td>int</td>
+<td>The ability that's playing</td>
+</tr>
+<tr>
+<td><code>Jump</code>, <code>Land</code></td>
+<td>trigger</td>
+<td>Left the ground going up / touched down</td>
+</tr>
+<tr>
+<td><code>Attack</code></td>
+<td>trigger</td>
+<td>A weapon ability went off, or an NPC swung</td>
+</tr>
+<tr>
+<td><code>CastRelease</code></td>
+<td>trigger</td>
+<td>A spell went off (an instant, or the end of a cast bar)</td>
+</tr>
+<tr>
+<td><code>CastInterrupted</code></td>
+<td>trigger</td>
+<td>Your cast was interrupted</td>
+</tr>
+<tr>
+<td><code>Hit</code>, <code>Crit</code>, <code>Miss</code></td>
+<td>trigger</td>
+<td>You were hit, critically hit, or dodged (at most 4 a second)</td>
+</tr>
+<tr>
+<td><code>Die</code>, <code>Revive</code></td>
+<td>trigger</td>
+<td>Killed / back on your feet</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every parameter is <strong>optional</strong>. If your controller doesn't have one, it's
+skipped, so you can start with a controller that only knows <code>Speed</code>.</p>
+<p><strong>Players and NPCs use the same system.</strong> An NPC gets a <code>CharacterAnimator</code>
+too, so the same parameter names animate an orc's attacks, flinches and
+death.</p>
+<p><strong>The model is looked up by a key.</strong> The database never names a prefab. It
+says <code>Character_Default</code> (the player body) or <code>NPC_ORC</code> (an NPC's
+ModelType). The <strong>WorldObjectPrefabs</strong> catalog maps each key to a prefab,
+and <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Asset Audit</strong> shows every key and which have no
+prefab yet.</p>
+<hr>
+<h2 id="part-2-unitys-animation-tools-in-15-minutes">Part 2: Unity's animation tools in 15 minutes<a class="anchor" href="#part-2-unitys-animation-tools-in-15-minutes" title="Permanent link">#</a></h2>
+<p>Open these windows (top menu <strong>Window</strong>) and dock them somewhere you can
+see them:</p>
+<ul>
+<li><strong>Window &gt; Animation &gt; Animator</strong>: the controller graph.</li>
+<li><strong>Window &gt; Animation &gt; Animation</strong>: previews or edits clips. You'll
+  rarely need it.</li>
+</ul>
+<h3 id="fbx-files-hold-models-and-clips">FBX files hold models and clips<a class="anchor" href="#fbx-files-hold-models-and-clips" title="Permanent link">#</a></h3>
+<p>An <code>.fbx</code> file can hold a mesh, a skeleton and many <strong>clips</strong>. In the
+<strong>Project</strong> window, click the small arrow on an FBX to see what's inside.
+Clips have a triangle-shaped icon. Click the FBX itself, and the
+<strong>Inspector</strong> shows four import tabs:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>What you set there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Model</strong></td>
+<td>Scale (Quaternius is already in metres: leave Scale Factor at 1)</td>
+</tr>
+<tr>
+<td><strong>Rig</strong></td>
+<td><strong>Animation Type: Humanoid</strong> for people, <strong>Generic</strong> for animals and monsters. <strong>Avatar Definition: Create From This Model</strong></td>
+</tr>
+<tr>
+<td><strong>Animation</strong></td>
+<td>One entry per clip: <strong>Loop Time</strong>, <strong>Root Transform</strong> baking, Mirror</td>
+</tr>
+<tr>
+<td><strong>Materials</strong></td>
+<td><strong>Extract Materials...</strong> so you can convert them to HDRP</td>
+</tr>
+</tbody>
+</table></div>
+<p>Press <strong>Apply</strong> at the bottom after changing anything.</p>
+<h3 id="humanoid-why-one-animation-fits-every-body">Humanoid: why one animation fits every body<a class="anchor" href="#humanoid-why-one-animation-fits-every-body" title="Permanent link">#</a></h3>
+<p>When a rig is <strong>Humanoid</strong>, Unity maps its bones onto one standard body
+(hips, spine, arms, head and so on). Any Humanoid clip then plays on any
+Humanoid character, a technique called retargeting. That's why the
+Quaternius animation library plays on the Quaternius bodies, and on
+Mixamo characters too. It's also how gear finds your hands and head.</p>
+<p>Check a rig: select the FBX, open <strong>Rig</strong>, click <strong>Configure...</strong>. Every
+bone circle should be green. Press <strong>Done</strong> to leave.</p>
+<p>Monsters (wolves, spiders, dragons) aren't human-shaped. They use
+<strong>Generic</strong> rigs, and their clips only play on that same model.</p>
+<h3 id="clip-import-settings-that-matter">Clip import settings that matter<a class="anchor" href="#clip-import-settings-that-matter" title="Permanent link">#</a></h3>
+<p>Select the animation FBX, open the <strong>Animation</strong> tab, click a clip in the
+list, and check:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Axiom wants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Loop Time</strong></td>
+<td>The clip repeats</td>
+<td>On for idles, walks, runs, swims, sitting, gathering loops. Off for jumps, attacks, hits, death</td>
+</tr>
+<tr>
+<td><strong>Root Transform Rotation &gt; Bake Into Pose</strong></td>
+<td>The clip can't turn the character</td>
+<td>On</td>
+</tr>
+<tr>
+<td><strong>Root Transform Position (Y) &gt; Bake Into Pose</strong></td>
+<td>The clip can't lift or drop the character</td>
+<td>On</td>
+</tr>
+<tr>
+<td><strong>Root Transform Position (XZ) &gt; Bake Into Pose</strong></td>
+<td>The clip can't move the character</td>
+<td>On</td>
+</tr>
+<tr>
+<td><strong>Mirror</strong></td>
+<td>Flips left and right</td>
+<td>Off (handy to make a left-handed swing from a right-handed one)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Root motion is always off in Axiom because <strong>the server owns where you
+stand</strong>. A clip that tries to move the body fights the network and
+rubber-bands. Our importer bakes root motion for everything in
+<code>Assets/AxiomMMOKit/Axiom.Client/Art/Animations/</code> on the first import, but check older files.</p>
+<h3 id="the-animator-controller">The Animator Controller<a class="anchor" href="#the-animator-controller" title="Permanent link">#</a></h3>
+<p>An <strong>Animator Controller</strong> (<code>.controller</code>) is a flowchart. Open it by
+double-clicking. The Animator window shows:</p>
+<ul>
+<li><strong>States</strong> (grey boxes): each plays one clip, called its <strong>Motion</strong>, or a
+  blend tree. Click a state to see its Motion in the Inspector.</li>
+<li><strong>Entry</strong> (green): where it starts. It goes to the <strong>default state</strong>,
+  shown in orange.</li>
+<li><strong>Any State</strong> (teal): "from wherever we are". A transition from Any State
+  can interrupt everything. We use it for jump, death, hits and attacks.</li>
+<li><strong>Transitions</strong> (arrows): when to move from one state to another. Click
+  an arrow to see its settings.</li>
+<li><strong>Parameters</strong> tab (top-left): the values from Part 1.</li>
+<li><strong>Layers</strong> tab (top-left): stacked graphs (see below).</li>
+</ul>
+<p>Transition settings, in plain words:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Has Exit Time</strong></td>
+<td>Wait until the clip reaches <strong>Exit Time</strong> before leaving. On for "play once, then go back" (an attack finishing). Off for "leave the moment the condition is true"</td>
+</tr>
+<tr>
+<td><strong>Exit Time</strong></td>
+<td>0.9 = leave at 90% of the clip</td>
+</tr>
+<tr>
+<td><strong>Transition Duration</strong></td>
+<td>Seconds of crossfade (0.1-0.25 feels natural)</td>
+</tr>
+<tr>
+<td><strong>Conditions</strong></td>
+<td>Parameter tests, all of which must be true: <code>Speed &gt; 0.1</code>, <code>Dead == true</code>, a trigger firing</td>
+</tr>
+<tr>
+<td><strong>Can Transition To Self</strong> (Any State only)</td>
+<td>Leave <strong>off</strong>, or a held bool restarts its state every frame</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="blend-trees">Blend trees<a class="anchor" href="#blend-trees" title="Permanent link">#</a></h3>
+<p>A <strong>blend tree</strong> is a state that mixes several clips by a number. Our
+<strong>Locomotion</strong> state is a 1D blend tree on <code>Speed</code>. At 0 it plays Idle, at
+1.6 Walk, at 5 Jog (normal running) and at 8 Sprint, and in between it mixes the two
+neighbours, so speeding up looks smooth. Double-click the state to open
+the tree, and click <strong>Base Layer</strong> in the breadcrumb at the top to go back.</p>
+<h3 id="layers-and-avatar-masks">Layers and Avatar Masks<a class="anchor" href="#layers-and-avatar-masks" title="Permanent link">#</a></h3>
+<p>The controller has two <strong>layers</strong>:</p>
+<ul>
+<li><strong>Base Layer</strong>: the whole body. Locomotion, jump, swim, ride, sit, die.</li>
+<li><strong>Actions</strong>: on top. Attacks, casts, hits. Its <strong>Avatar Mask</strong> limits it
+  to the upper body, so you can swing a sword while your legs keep running.</li>
+</ul>
+<p>An <strong>Avatar Mask</strong> is an asset where you click body parts green (affected)
+or red (ignored).</p>
+<h3 id="animator-override-controllers-reuse-a-controller-with-other-clips">Animator Override Controllers: reuse a controller with other clips<a class="anchor" href="#animator-override-controllers-reuse-a-controller-with-other-clips" title="Permanent link">#</a></h3>
+<p>An <strong>Animator Override Controller</strong> (Create &gt; Animator Override Controller)
+copies another controller's whole graph and lets you swap only the clips.
+That's how you give orcs a heavier swing without rebuilding anything: same
+states, different clips. Part 7 uses it.</p>
+<hr>
+<h2 id="part-3-the-player-character-start-to-finish">Part 3: The player character, start to finish<a class="anchor" href="#part-3-the-player-character-start-to-finish" title="Permanent link">#</a></h2>
+<p>You may have done some of this already. Go through each step anyway and
+check it.</p>
+<h3 id="31-folders-and-import">3.1 Folders and import<a class="anchor" href="#31-folders-and-import" title="Permanent link">#</a></h3>
+<p>The folder decides how a file imports (<code>AxiomArtImporter</code>). Put files in
+place <strong>before</strong> Unity imports them:</p>
+<div class="hl"><pre><span></span><code>Assets/AxiomMMOKit/Axiom.Client/Art/Characters/Quaternius/      body FBX files and hair    -&gt; Humanoid
+Assets/AxiomMMOKit/Axiom.Client/Art/Animations/Quaternius/      UAL1_Standard.fbx          -&gt; Humanoid, in place, loops by name
+Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Skinned/Quaternius/    outfit parts               -&gt; rig kept
+Assets/AxiomMMOKit/Axiom.Client/Art/Gear/Weapons/               swords, shields            -&gt; static
+Assets/AxiomMMOKit/Axiom.Client/Art/Creatures/                  monsters (Generic)
+Assets/AxiomMMOKit/Axiom.Client/Art/Creatures/Humanoid/         humanoid NPCs (Humanoid)
+</code></pre></div>
+
+<p>The import rules only run the <strong>first</strong> time Unity sees a file. A file
+imported elsewhere and then moved keeps its old settings, so set the
+<strong>Rig</strong> tab by hand.</p>
+<p><strong>Use <code>UAL1_Standard.fbx</code> only.</strong> Delete <code>UAL1_Standard_RM.fbx</code>. "RM" means
+root motion: those clips move the body, which fights the server. The clip
+names are identical, so it's easy to drag the wrong one.</p>
+<h3 id="32-hdrp-materials">3.2 HDRP materials<a class="anchor" href="#32-hdrp-materials" title="Permanent link">#</a></h3>
+<p>Quaternius materials show <strong>pink</strong> or <strong>white</strong> in HDRP. For each pack:</p>
+<ol>
+<li>Select the FBX files, open the <strong>Materials</strong> tab, click <strong>Extract
+   Materials...</strong> and pick a <code>Materials</code> folder.</li>
+<li>Select the extracted materials and run <strong>Edit &gt; Rendering &gt; Materials &gt;
+   Convert Selected Built-in Materials to HDRP</strong>. If that menu isn't there,
+   open <strong>Window &gt; Rendering &gt; HDRP Wizard</strong> and use the material upgrade
+   button.</li>
+<li>Still pink? Select the material, set <strong>Shader</strong> to <strong>HDRP/Lit</strong>, and
+   drag its texture into <strong>Base Map</strong>.</li>
+</ol>
+<h3 id="33-make-the-body-prefab">3.3 Make the body prefab<a class="anchor" href="#33-make-the-body-prefab" title="Permanent link">#</a></h3>
+<ol>
+<li>Select a body FBX in <code>Art/Characters/Quaternius</code>.</li>
+<li>Run <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Make World Prefab From Selected Model</strong>.
+   It writes <code>Assets/AxiomMMOKit/Axiom.Client/Prefabs/World/Characters/&lt;name&gt;.prefab</code>,
+   with the feet at the pivot and a <code>CharacterSockets</code> component on the
+   root.</li>
+<li>Double-click the prefab to open it. In the Hierarchy you'll see the root
+   (<code>CharacterSockets</code>) and under it the model child (it has the
+   <strong>Animator</strong>).</li>
+<li><strong>Check the facing.</strong> Select the root. The blue arrow (Z) must come out
+   of the character's <strong>chest</strong>. If it comes out of the back, select the
+   <strong>model child</strong> and set <strong>Rotation Y = 180</strong>. Rotate the child, never the
+   root, because the game resets the root.</li>
+<li>Optional hair: expand the skeleton to the <strong>Head</strong> bone. Drag a hair FBX
+   onto it, set Position and Rotation to 0, and nudge it into place.</li>
+</ol>
+<h3 id="34-make-it-the-player-body">3.4 Make it the player body<a class="anchor" href="#34-make-it-the-player-body" title="Permanent link">#</a></h3>
+<p>Run <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Asset Audit</strong>. Find the row <strong><code>Character_Default</code></strong>
+and drag your prefab into its box.</p>
+<ul>
+<li>One body per faction is optional: <code>Character_Faction1</code> (Westmark),
+  <code>Character_Faction2</code> (Eastreach), <code>Character_Faction3</code> (Pirates). Anything
+  without its own prefab uses Default.</li>
+<li>The prefab maker also registered the prefab under its file name
+  (<code>Superhero_Male_FullBody</code>). That extra key shows as <em>Unused</em> and is
+  harmless.</li>
+</ul>
+<h3 id="35-the-controller">3.5 The controller<a class="anchor" href="#35-the-controller" title="Permanent link">#</a></h3>
+<ol>
+<li>Run <strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Animation &gt; Create Character Animator Controller</strong>.
+   It creates <code>Assets/AxiomMMOKit/Axiom.Client/Art/Animations/Controllers/AxiomCharacter.controller</code>,
+   with every parameter from Part 1 and every state wired, but no clips yet.
+   - <strong>Already made one before 10 Oct?</strong> Select it and run <strong>Tools &gt; Axiom &gt; Asset
+     Pipeline &gt; Upgrade Selected Animator Controller</strong>. It adds
+     <code>LocomotionDirection</code> (needed for backpedalling) without touching your
+     clips.</li>
+<li>Open the body prefab and select the <strong>model child</strong> with the Animator.
+   Drag the controller into <strong>Controller</strong>, and untick <strong>Apply Root
+   Motion</strong>.</li>
+<li><strong>Upper-body mask.</strong> In the Project window, right-click and choose
+   <strong>Create &gt; Animation &gt; Avatar Mask</strong> (in some versions it's directly
+   under Create). Name it <code>UpperBody</code>.
+   - Select it and expand <strong>Humanoid</strong>.
+   - Click both <strong>legs</strong>, both <strong>feet</strong> and the small <strong>root</strong> circle under
+     the feet so they turn <strong>red</strong>. Leave the body, head and arms green.
+   - In the Animator window, open the <strong>Layers</strong> tab. Click the gear on
+     <strong>Actions</strong> and drag <code>UpperBody</code> into <strong>Mask</strong>. Leave <strong>Weight 1</strong> and
+     <strong>Blending Override</strong>.</li>
+</ol>
+<h3 id="36-fill-the-states">3.6 Fill the states<a class="anchor" href="#36-fill-the-states" title="Permanent link">#</a></h3>
+<p>Part 4 lists every state and the exact clip for it. To put a clip into a
+state:</p>
+<ol>
+<li>Click the state in the Animator window.</li>
+<li>In the Project window, expand <code>UAL1_Standard.fbx</code>.</li>
+<li>Drag the clip onto the state's <strong>Motion</strong> field in the Inspector.</li>
+</ol>
+<p>Start small: <strong>Locomotion</strong>, <strong>Die</strong>, <strong>Dead</strong> and <strong>Attack</strong>. Press Play,
+check it, then fill the rest. Empty states are simply skipped.</p>
+<hr>
+<h2 id="part-4-which-clip-goes-in-which-state">Part 4: Which clip goes in which state<a class="anchor" href="#part-4-which-clip-goes-in-which-state" title="Permanent link">#</a></h2>
+<p>These are the exact clip names in <strong>Universal Animation Library Standard</strong>
+(<code>UAL1_Standard.fbx</code>). Unity shows them as <code>Armature|Idle_Loop</code> and so on.</p>
+<h3 id="base-layer">Base Layer<a class="anchor" href="#base-layer" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Clip</th>
+<th>Loop Time</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Locomotion</strong> (blend tree)</td>
+<td>Idle_Loop / Walk_Loop / Jog_Fwd_Loop / Sprint_Loop</td>
+<td>on</td>
+<td>Thresholds <strong>0 / 1.6 / 5 / 8</strong>, in that order (Jog at 5, Sprint at 8)</td>
+</tr>
+<tr>
+<td><strong>Jump</strong></td>
+<td>Jump_Start</td>
+<td>off</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Fall</strong></td>
+<td>Jump_Loop</td>
+<td>on</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Swim</strong></td>
+<td>Swim_Fwd_Loop</td>
+<td>on</td>
+<td>Swim_Idle_Loop is the treading-water version</td>
+</tr>
+<tr>
+<td><strong>Ride</strong></td>
+<td>Sitting_Idle_Loop</td>
+<td>on</td>
+<td>Until there's a riding clip</td>
+</tr>
+<tr>
+<td><strong>Seated</strong></td>
+<td>Sitting_Idle_Loop</td>
+<td>on</td>
+<td>Cart passenger</td>
+</tr>
+<tr>
+<td><strong>Die</strong></td>
+<td>Death01</td>
+<td><strong>off</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Dead</strong></td>
+<td>Death01</td>
+<td><strong>off</strong></td>
+<td>Holds the last frame (lying down)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Locomotion step by step:</strong> double-click <strong>Locomotion</strong>. In the Inspector
+you'll see four <strong>Motion</strong> rows with a <strong>Threshold</strong> column. Drag
+Idle_Loop into the first, Walk_Loop the second, Jog_Fwd_Loop the third and
+Sprint_Loop the fourth. Make sure <strong>Automate Thresholds</strong> is off and the
+numbers read 0, 1.6, 5, 8. Click <strong>Base Layer</strong> to go back.</p>
+<p>There's no sprint key (as in classic MMOs, you walk or run). Normal
+running is 5 m/s, so Jog_Fwd_Loop is your run. The Sprint_Loop slot at 8
+only plays when a speed buff or haste pushes you past normal speed, so a
+hasted character visibly runs harder.</p>
+<p><strong>The backpedal and strafe trick.</strong> The Standard library has no strafe or
+backward clips. With the Modern control scheme you strafe and backpedal, so
+the game turns the visible body toward the way you're moving and plays the
+run cycle backwards when you back up. That needs the Locomotion state's
+<strong>Multiplier</strong> set to the <code>LocomotionDirection</code> parameter, which the
+generator or the Upgrade menu does for you. (Click Locomotion: in the
+Inspector, <strong>Speed &gt; Multiplier</strong> is ticked and set to
+<code>LocomotionDirection</code>.)</p>
+<h3 id="actions-layer-upper-body">Actions layer (upper body)<a class="anchor" href="#actions-layer-upper-body" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Clip</th>
+<th>Loop Time</th>
+<th>Plays when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Empty</strong></td>
+<td><em>(leave empty)</em></td>
+<td></td>
+<td>Nothing on top, so the Base Layer shows. <strong>Never put a clip here</strong></td>
+</tr>
+<tr>
+<td><strong>Attack</strong></td>
+<td>Sword_Attack (or Punch_Jab when unarmed)</td>
+<td>off</td>
+<td>Strike, Cleave, Shield Bash and any weapon ability; NPC swings</td>
+</tr>
+<tr>
+<td><strong>Cast</strong></td>
+<td>Spell_Simple_Idle_Loop</td>
+<td>on</td>
+<td>Held while a cast bar runs</td>
+</tr>
+<tr>
+<td><strong>CastRelease</strong></td>
+<td>Spell_Simple_Shoot</td>
+<td>off</td>
+<td>A spell goes off (Mend, Fireball, the end of a cast)</td>
+</tr>
+<tr>
+<td><strong>CastInterrupted</strong></td>
+<td>Hit_Chest</td>
+<td>off</td>
+<td>Your cast was interrupted</td>
+</tr>
+<tr>
+<td><strong>Hit</strong></td>
+<td>Hit_Chest</td>
+<td>off</td>
+<td>You took damage</td>
+</tr>
+<tr>
+<td><strong>Crit</strong></td>
+<td>Hit_Head</td>
+<td>off</td>
+<td>A critical hit on you</td>
+</tr>
+<tr>
+<td><strong>Miss</strong></td>
+<td>Roll</td>
+<td>off</td>
+<td>You dodged. Roll is whole-body; it reads fine masked too</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="optional-extras-from-the-same-library">Optional extras from the same library<a class="anchor" href="#optional-extras-from-the-same-library" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Clip</th>
+<th>Good for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jump_Land</td>
+<td>A <strong>Land</strong> state between Fall and Locomotion (trigger <code>Land</code>, exit time 0.8)</td>
+</tr>
+<tr>
+<td>Sword_Idle</td>
+<td>A combat idle: a second Locomotion tree used while <code>InCombat</code> is true</td>
+</tr>
+<tr>
+<td>Crouch_Idle_Loop, Crouch_Fwd_Loop</td>
+<td>Stealth, later</td>
+</tr>
+<tr>
+<td>Driving_Loop</td>
+<td>Driving a cart (needs a <code>Driving</code> bool; not wired yet)</td>
+</tr>
+<tr>
+<td>Idle_Talking_Loop</td>
+<td>Vendors and quest givers (Part 7)</td>
+</tr>
+<tr>
+<td>Interact, PickUp_Table, Fixing_Kneeling, Push_Loop</td>
+<td>Gathering and building (Part 6)</td>
+</tr>
+<tr>
+<td>Dance_Loop</td>
+<td>Emotes, later</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="real-strafe-clips-later">Real strafe clips (later)<a class="anchor" href="#real-strafe-clips-later" title="Permanent link">#</a></h3>
+<p>If you get a pack with strafe and backpedal clips (UAL's paid tier,
+Mixamo, Synty and others), replace the Locomotion tree with a 2D one:</p>
+<ol>
+<li>Double-click Locomotion and set <strong>Blend Type</strong> to <strong>2D Freeform
+   Directional</strong>, with parameters <strong>MoveX</strong> and <strong>MoveZ</strong>.</li>
+<li>Add the clips at these positions:
+   - Idle at (0, 0)
+   - Run forward at (0, 1)
+   - Run back at (0, -1)
+   - Strafe right at (1, 0)
+   - Strafe left at (-1, 0)
+   - Diagonals at (±0.7, ±0.7) if you have them
+   - Optionally, sprint at (0, 1.6)</li>
+<li>On the Locomotion state, untick <strong>Speed &gt; Multiplier</strong>.</li>
+<li>On the <strong>Parameters</strong> tab, add a <strong>Bool</strong> named <code>HasStrafeClips</code>. Its
+   value doesn't matter. Having it tells the game to stop turning the body
+   and reversing the clip.</li>
+</ol>
+<hr>
+<h2 id="part-5-ability-animations">Part 5: Ability animations<a class="anchor" href="#part-5-ability-animations" title="Permanent link">#</a></h2>
+<h3 id="how-the-game-picks-an-abilitys-animation">How the game picks an ability's animation<a class="anchor" href="#how-the-game-picks-an-abilitys-animation" title="Permanent link">#</a></h3>
+<p>When an ability goes off, the game looks at that ability's row in the
+<strong>Skills</strong> table:</p>
+<ul>
+<li><strong>AnimationParameter is set</strong> (for example <code>Strike</code>): it fires the
+  Animator parameter with that name, so the state you made for it plays.</li>
+<li><strong>AnimationParameter is empty</strong>: a weapon ability fires <strong>Attack</strong>, a
+  spell fires <strong>CastRelease</strong>. Every ability starts out like this.</li>
+</ul>
+<p>So "giving an ability its own animation" means two things that must match
+exactly, capitals included: the name in the Skills row, and a parameter
+plus state in the Animator.</p>
+<h3 id="what-fires-the-parameter-you-never-do">What fires the parameter (you never do)<a class="anchor" href="#what-fires-the-parameter-you-never-do" title="Permanent link">#</a></h3>
+<p>You don't call the parameter yourself. The game's code fires it:</p>
+<ol>
+<li><strong>At login</strong> the World server sends every client the skill list, each
+   skill's <strong>AnimationParameter</strong> included. This is why you restart the
+   server after changing a Skills row: the client only learns the name
+   from that list.</li>
+<li><strong>Someone uses the ability.</strong> The server checks it and tells every
+   client that can see the caster ("this character used skill 1").</li>
+<li><strong><code>CharacterAnimator</code></strong> (<code>Scripts/Gameplay/Characters/CharacterAnimator.cs</code>)
+   on that character gets the message, looks the skill up, and calls
+   <code>SetTrigger("Strike")</code>. If the controller has no parameter with that
+   name, it fires <code>Attack</code> or <code>CastRelease</code> instead. Abilities with a cast
+   bar fire when the bar completes; instant ones fire straight away.</li>
+<li><strong>The Animator</strong> sees the condition on your <strong>Any State</strong> arrow come
+   true and plays the state. Unity clears the trigger by itself.</li>
+</ol>
+<p>Because every client does step 3 for the caster, <strong>other players see your
+ability animation too</strong>, not just you.</p>
+<p>The name has to match in three places:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Studio &gt; Skills &gt; the ability &gt; <strong>AnimationParameter</strong></td>
+<td><code>Strike</code></td>
+</tr>
+<tr>
+<td>Animator &gt; <strong>Parameters</strong> tab</td>
+<td>a Trigger called <code>Strike</code></td>
+</tr>
+<tr>
+<td>The <strong>Any State → state</strong> arrow &gt; <strong>Conditions</strong></td>
+<td><code>Strike</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The <strong>state's</strong> own name doesn't matter to the code (only the parameter's
+does), but naming it the same keeps things readable.</p>
+<h3 id="classes-shared-skills-and-class-skills">Classes, shared skills and class skills<a class="anchor" href="#classes-shared-skills-and-class-skills" title="Permanent link">#</a></h3>
+<p>All player classes use the same Animator Controller (<code>AxiomCharacter</code>).
+What makes classes look different in combat is their <strong>skills</strong>:</p>
+<ul>
+<li><strong>Shared skills</strong> (Skills rows with SkillsetId 0, like <strong>Strike</strong>) are
+  one row used by every class, so they get one animation for everyone.</li>
+<li><strong>Class skills</strong> (Punishing Strike, Fireball, ...) are their own rows,
+  so each one gets its own parameter and its own state.</li>
+</ul>
+<p>The Animator doesn't know a character's class. Making a shared skill look
+different per class or per weapon needs code (a <code>WeaponType</code> parameter
+set from the equipped weapon is the planned way). Until then, one shared
+skill = one animation.</p>
+<h3 id="walkthrough-give-strike-its-own-animation">Walkthrough: give Strike its own animation<a class="anchor" href="#walkthrough-give-strike-its-own-animation" title="Permanent link">#</a></h3>
+<p><strong>1. The Skills row</strong> (do this first, or the game keeps firing Attack)</p>
+<p>Open <strong>Content Studio</strong> (Ctrl+Alt+E) &gt; table <strong>Skills</strong> &gt; <strong>Strike</strong>. Set
+<strong>AnimationParameter</strong> to <code>Strike</code>. Commit (Ctrl+S). Restart the World
+server.</p>
+<p><strong>2. The clip</strong></p>
+<p>Pick the clip in the Project window (for example <code>Sword_Attack</code> from
+UAL1_Standard). On its <strong>Animation</strong> tab in the Inspector, make sure
+<strong>Loop Time is off</strong> (an attack plays once), then <strong>Apply</strong>.</p>
+<p><strong>3. The parameter</strong></p>
+<p>Open the controller (<code>Art/Animations/Controllers/AxiomCharacter.controller</code>)
+in the <strong>Animator</strong> window (Window &gt; Animation &gt; Animator). <strong>Parameters</strong>
+tab &gt; <strong>+</strong> &gt; <strong>Trigger</strong>. Name it <code>Strike</code>.</p>
+<p><strong>4. The state</strong></p>
+<p>Click the <strong>Actions</strong> layer in the Layers list (upper body, so you can
+swing while running; use the Base Layer instead for a whole-body move like
+a spin). Right-click an empty spot &gt; <strong>Create State &gt; Empty</strong>. Name it
+<code>Strike</code>. In the Inspector, drag your clip into <strong>Motion</strong>. A state with
+Motion <code>None</code> plays nothing.</p>
+<p><strong>5. The way in</strong></p>
+<p>Right-click <strong>Any State</strong> &gt; <strong>Make Transition</strong> &gt; click <code>Strike</code>. Click the
+new arrow and set:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Has Exit Time</td>
+<td>off</td>
+<td>Start the moment the ability fires</td>
+</tr>
+<tr>
+<td>Transition Duration</td>
+<td>0.05</td>
+<td>Snappy, almost no blend</td>
+</tr>
+<tr>
+<td>Can Transition To Self</td>
+<td>off</td>
+<td>Otherwise it restarts every frame while the trigger is set</td>
+</tr>
+<tr>
+<td>Conditions</td>
+<td><code>Strike</code></td>
+<td>Without a condition it never plays (or always plays)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>6. The way out</strong></p>
+<p>Right-click <code>Strike</code> &gt; <strong>Make Transition</strong> &gt; click <strong>Empty</strong> (or
+<strong>Locomotion</strong> if you put it in the Base Layer). Click the arrow:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Has Exit Time</td>
+<td>on</td>
+</tr>
+<tr>
+<td>Exit Time</td>
+<td>0.9</td>
+</tr>
+<tr>
+<td>Transition Duration</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>Conditions</td>
+<td>none</td>
+</tr>
+</tbody>
+</table></div>
+<p>Without this arrow the character freezes in the end pose.</p>
+<p>When you're done, the graph shows one arrow from <strong>Any State</strong> down to
+<code>Strike</code> and one from <code>Strike</code> back up to <strong>Empty</strong>.</p>
+<p><strong>7. Test it</strong></p>
+<p>Press Play, log in, target something and use Strike. Keep the Animator
+window open and select your character in the Hierarchy: the <code>Strike</code> box
+flashes blue when it plays.</p>
+<h3 id="if-it-doesnt-play">If it doesn't play<a class="anchor" href="#if-it-doesnt-play" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>You see</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The normal Attack swing instead</td>
+<td>The Skills row's AnimationParameter is empty, the server wasn't restarted after the commit, or the controller has no parameter with exactly that name (the game falls back to Attack when it can't find it)</td>
+</tr>
+<tr>
+<td>Nothing at all, box never lights</td>
+<td>The Any State arrow has no <code>Strike</code> condition, or the parameter isn't a <strong>Trigger</strong></td>
+</tr>
+<tr>
+<td>The box lights but nothing moves</td>
+<td>Motion is <code>None</code>, or the <strong>Actions</strong> layer's Weight is 0 (gear icon next to the layer)</td>
+</tr>
+<tr>
+<td>Stuck in the last frame</td>
+<td>No <code>Strike</code> → Empty arrow, or the clip has Loop Time on</td>
+</tr>
+<tr>
+<td>Only the arms move</td>
+<td>Normal for the Actions layer (it's masked to the upper body). Put the state in the Base Layer for a full-body move</td>
+</tr>
+<tr>
+<td>It plays twice</td>
+<td>Can Transition To Self is on</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="channelled-spells">Channelled spells<a class="anchor" href="#channelled-spells" title="Permanent link">#</a></h3>
+<p>A spell held for the whole cast bar (a heal over a few seconds): make the
+parameter a <strong>Bool</strong>, not a Trigger. Its way out needs the condition
+<code>&lt;name&gt; == false</code>, with Has Exit Time off. The game holds the bool true
+for the length of the bar.</p>
+<h3 id="branching-on-ability-ids">Branching on ability ids<a class="anchor" href="#branching-on-ability-ids" title="Permanent link">#</a></h3>
+<p>The <code>SkillId</code> int is also set every time an ability plays, if you'd rather
+branch on ability ids in a sub-state machine than add one parameter per
+ability.</p>
+<hr>
+<h2 id="part-6-gathering-building-sitting-interaction-animations">Part 6: Gathering, building, sitting (interaction animations)<a class="anchor" href="#part-6-gathering-building-sitting-interaction-animations" title="Permanent link">#</a></h2>
+<p>World actions (mine, chop, gather, build, open, climb) are <strong>interaction
+skills</strong>: rows in <strong>Skills</strong> whose names start with <code>Interaction:</code>. Each
+has an <strong>AnimationParameter</strong>. The game sets that parameter for as long as
+the action's progress bar runs.</p>
+<p><strong>1. Name the actions in Content Studio</strong> (table <strong>Skills</strong>; find them by
+name, since ids can change):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Skill name contains</th>
+<th>AnimationParameter</th>
+<th>Clip from UAL1 Standard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Interaction: Gather</code>, <code>Harvest</code></td>
+<td><code>Gathering</code></td>
+<td>PickUp_Table (or Interact)</td>
+</tr>
+<tr>
+<td><code>Interaction: Mine</code></td>
+<td><code>Mining</code></td>
+<td>Fixing_Kneeling as a stand-in, until you have a pickaxe clip</td>
+</tr>
+<tr>
+<td><code>Interaction: Chop</code></td>
+<td><code>Chopping</code></td>
+<td>Sword_Attack with Loop Time on, as a stand-in</td>
+</tr>
+<tr>
+<td><code>Interaction: Build</code>, <code>Repair</code>, <code>Batter</code></td>
+<td><code>Building</code></td>
+<td>Fixing_Kneeling</td>
+</tr>
+<tr>
+<td><code>Interaction: Open</code>, <code>Pick up</code>, <code>Claim</code></td>
+<td><code>Interacting</code></td>
+<td>Interact</td>
+</tr>
+<tr>
+<td><code>Interaction: Climb</code></td>
+<td><code>Climbing</code></td>
+<td>Push_Loop as a stand-in</td>
+</tr>
+<tr>
+<td><code>Interaction: Sell trade pack</code></td>
+<td><code>Interacting</code></td>
+<td>Interact</td>
+</tr>
+</tbody>
+</table></div>
+<p>Several skills can share one parameter. Commit, then restart the World
+server.</p>
+<p><strong>2. Add the parameters.</strong> In the Animator window, open the <strong>Parameters</strong>
+tab and add each as a <strong>Bool</strong>: <code>Gathering</code>, <code>Mining</code>, <code>Chopping</code>,
+<code>Building</code>, <code>Interacting</code>, <code>Climbing</code>.</p>
+<p><strong>3. Add a state per parameter, in the Base Layer</strong> (they're whole-body and
+often kneeling):</p>
+<ol>
+<li>Right-click &gt; <strong>Create State &gt; Empty</strong>, name it <code>Gathering</code>, and set its
+   Motion. Turn <strong>Loop Time</strong> on for that clip.</li>
+<li><strong>Any State &gt; Make Transition</strong> to it: Has Exit Time off, Duration 0.2,
+   Can Transition To Self off, condition <code>Gathering == true</code>.</li>
+<li>From it, <strong>Make Transition</strong> to <strong>Locomotion</strong>: Has Exit Time off,
+   condition <code>Gathering == false</code>.</li>
+</ol>
+<p><strong>Bool or Trigger?</strong> Use a Bool when there's a progress bar (mining for
+3 s). Use a Trigger for an instant action (opening a door). The game checks
+which kind you made.</p>
+<p><strong>Sitting on furniture:</strong> add Bools <strong><code>FurnitureSitting</code></strong> and
+<strong><code>FurniturePlaying</code></strong>, with states and transitions set up exactly as
+above. Use Sitting_Idle_Loop and Sitting_Talking_Loop. Without them, the
+game uses a simple procedural sitting pose.</p>
+<hr>
+<h2 id="part-7-npcs">Part 7: NPCs<a class="anchor" href="#part-7-npcs" title="Permanent link">#</a></h2>
+<p>NPCs get the same <code>CharacterAnimator</code> as players, so <code>Speed</code>, <code>Grounded</code>,
+<code>InCombat</code>, <code>Attack</code>, <code>CastRelease</code>, <code>Hit</code>, <code>Crit</code>, <code>Miss</code>, <code>Die</code> and
+<code>Dead</code> all work for them. (NPCs don't swim, ride or jump, so those are
+never set.)</p>
+<p>An NPC's look is its template's <strong>ModelType</strong> in Content Studio (table
+<strong>NpcTemplates</strong>). That key maps to a prefab in the catalog. Today most
+NPCs use <code>NPC_ORC</code>.</p>
+<p>There are three kinds.</p>
+<h3 id="71-a-humanoid-npc-guards-townsfolk-bandits-orcs-on-a-human-rig">7.1 A humanoid NPC (guards, townsfolk, bandits, orcs on a human rig)<a class="anchor" href="#71-a-humanoid-npc-guards-townsfolk-bandits-orcs-on-a-human-rig" title="Permanent link">#</a></h3>
+<ol>
+<li>Put the model FBX in <strong><code>Assets/AxiomMMOKit/Axiom.Client/Art/Creatures/Humanoid/</code></strong>. (Another
+   Quaternius body or outfit works. Mixamo characters work too.)</li>
+<li>Check its <strong>Rig</strong> tab: <strong>Humanoid</strong>, then Apply.</li>
+<li>Select it and run <strong>Make World Prefab From Selected Model</strong>. Anything
+   under <code>Creatures/</code> gets:
+   - a capsule collider you can click and Tab to;
+   - the same layer as the Orc prefab, which is the layer clicks hit;
+   - root motion turned off.
+   The prefab goes to <code>Prefabs/World/Creatures/</code>.</li>
+<li>Open the prefab and check the facing (blue arrow out of the chest;
+   otherwise rotate the <strong>child</strong> 180°, as in 3.3).</li>
+<li><strong>Give it a controller.</strong> Either:
+   - <strong>The same one as players</strong>: drag <code>AxiomCharacter.controller</code> onto
+     the model child's Animator. The Humanoid clips just work.
+   - <strong>Its own clips with an Override Controller</strong>: in the Project window,
+     <strong>Create &gt; Animation &gt; Animator Override Controller</strong>, name it
+     <code>Guard</code>, and set its <strong>Controller</strong> to <code>AxiomCharacter</code>. It lists
+     every clip. Replace only the ones you want different (a heavier
+     attack, a different idle), and leave the rest empty to inherit. Put
+     <code>Guard</code> on the NPC's Animator.</li>
+<li><strong>Give it a key.</strong> The prefab maker registered it under its file name.
+   In <strong>Content Studio &gt; NpcTemplates</strong>, set the NPC's <strong>ModelType</strong> to
+   that name and commit. Or rename the key in <strong>Audit</strong>, for example to
+   <code>NPC_GUARD</code>, and use that.</li>
+<li>Restart the World server, so it reloads templates and sends the new
+   ModelType.</li>
+</ol>
+<h3 id="72-a-monster-wolf-spider-golem-non-human-shape">7.2 A monster (wolf, spider, golem: non-human shape)<a class="anchor" href="#72-a-monster-wolf-spider-golem-non-human-shape" title="Permanent link">#</a></h3>
+<p>These use <strong>Generic</strong> rigs. Their clips only play on their own model,
+usually the clips that came in the same FBX.</p>
+<ol>
+<li>Put the FBX in <strong><code>Assets/AxiomMMOKit/Axiom.Client/Art/Creatures/</code></strong>. The importer sets
+   <strong>Generic</strong> and keeps its clips.</li>
+<li><strong>Make World Prefab From Selected Model.</strong></li>
+<li>Make a controller for it. The simplest way is to run <strong>Create Character
+   Animator Controller</strong> again, which gives you <code>AxiomCharacter 1</code>. Rename
+   it <code>Wolf</code>, then:
+   - Fill <strong>Locomotion</strong> with the wolf's idle, walk, run and run again
+     (thresholds 0 / 1.6 / 5 / 8; wolves often use only three).
+   - Fill <strong>Die</strong> and <strong>Dead</strong> with its death.
+   - In <strong>Actions</strong>, fill <strong>Attack</strong> (its bite) and <strong>Hit</strong>.
+   - <strong>Remove the Avatar Mask from the Actions layer</strong> (Layers tab &gt; gear &gt;
+     Mask: None). Humanoid masks don't apply to Generic rigs. The attack
+     will be full-body, which is right for animals.
+   - Delete the states you'll never use (Swim, Ride, Seated, Cast...), or
+     just leave them empty.</li>
+<li>Put <code>Wolf</code> on the prefab's Animator, untick Apply Root Motion, and set
+   the NPC's <strong>ModelType</strong> as in 7.1.</li>
+</ol>
+<h3 id="73-vendors-and-quest-givers-they-just-stand-there">7.3 Vendors and quest givers (they just stand there)<a class="anchor" href="#73-vendors-and-quest-givers-they-just-stand-there" title="Permanent link">#</a></h3>
+<p>Any humanoid prefab with a controller whose <strong>Locomotion</strong> first slot is
+<strong>Idle_Talking_Loop</strong> (an Override Controller is perfect for this). They
+never attack, so nothing else is needed.</p>
+<h3 id="npc-checklist">NPC checklist<a class="anchor" href="#npc-checklist" title="Permanent link">#</a></h3>
+<ul>
+<li>[ ] The model faces +Z (blue arrow out of the chest) and its feet are on
+      the ground.</li>
+<li>[ ] It has a collider on the same layer as <code>Orc.prefab</code>, or you can't
+      click it or Tab to it. The prefab maker does this for <code>Creatures/</code>.</li>
+<li>[ ] Its Animator has a controller, with Apply Root Motion off.</li>
+<li>[ ] The NPC template's ModelType equals the catalog key exactly
+      (capitals count).</li>
+<li>[ ] The World server was restarted after changing templates.</li>
+</ul>
+<p>When an NPC dies, its model stays for 2.5 s to play <strong>Die</strong>, then the
+corpse takes over.</p>
+<hr>
+<h2 id="part-8-gear-armour-and-weapons">Part 8: Gear (armour and weapons)<a class="anchor" href="#part-8-gear-armour-and-weapons" title="Permanent link">#</a></h2>
+<p>Gear comes from the <strong>Gear Visual Catalog</strong>: rows saying "item X looks like
+this model".</p>
+<ol>
+<li>Run <strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Gear Visuals (Database)</strong>. It makes
+   <code>Assets/AxiomMMOKit/Axiom.Client/Resources/World/GearVisuals.asset</code>.</li>
+<li>Add rows to <strong>Entries</strong> with <strong>+</strong>. Each row has:
+   - <strong>ItemId</strong>: the item's id. <strong>0 means "the default for this slot"</strong>,
+     used by every item in that slot without its own row.
+   - <strong>Slot</strong>: Head, Chest, Legs, Hands, Feet, MainHand or OffHand.
+   - <strong>Prefab</strong>: the FBX or prefab.
+   - <strong>Attach</strong>: <strong>Skinned</strong> for clothes and armour that bend with the
+     body; <strong>Socket</strong> for rigid things (weapons, shields, rigid helmets).</li>
+</ol>
+<h3 id="armour-skinned-from-modular-character-outfits---fantasy">Armour (Skinned), from Modular Character Outfits - Fantasy<a class="anchor" href="#armour-skinned-from-modular-character-outfits---fantasy" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Outfit part</th>
+<th>First row</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chest</td>
+<td>Top / torso</td>
+<td>ItemId 0, or 21 Leather Jerkin</td>
+</tr>
+<tr>
+<td>Legs</td>
+<td>Pants</td>
+<td>ItemId 0, or 22 Leather Leggings</td>
+</tr>
+<tr>
+<td>Feet</td>
+<td>Boots</td>
+<td>ItemId 0, or 24 Leather Boots</td>
+</tr>
+<tr>
+<td>Hands</td>
+<td>Gloves</td>
+<td>ItemId 0, or 23 Leather Gloves</td>
+</tr>
+<tr>
+<td>Head</td>
+<td>Helmet / hood</td>
+<td>ItemId 0, or 20 Leather Cap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Skinned gear must share the body's skeleton. If it doesn't, the Console
+says <em>"bone 'X' isn't on the body's skeleton"</em>. Quaternius outfits and
+bodies match.</p>
+<p>If an outfit part comes with a whole body attached, open it, disable the
+body mesh, and save it as a prefab under <code>Art/Gear/Skinned/Prefabs/</code>.</p>
+<h3 id="weapons-and-shields-socket">Weapons and shields (Socket)<a class="anchor" href="#weapons-and-shields-socket" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>First row</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MainHand</td>
+<td>ItemId <strong>0</strong>, a sword. Every weapon shows it until it has its own row</td>
+</tr>
+<tr>
+<td>OffHand</td>
+<td>ItemId <strong>0</strong>, or 25 Wooden Buckler, a shield</td>
+</tr>
+</tbody>
+</table></div>
+<p>Weapons sit in your hands in combat and on your back out of it.
+<strong>SheathSocket</strong> changes the out-of-combat spot: <code>HipRight</code> puts it on the
+hip, and <code>-</code> keeps it in your hand.</p>
+<p><strong>Lining up a weapon (once per weapon):</strong></p>
+<ol>
+<li>Press Play, equip the weapon and attack something so it's drawn.</li>
+<li>In the Hierarchy, find your player &gt; body &gt; hand bone &gt;
+   <code>Gear_MainHand_&lt;id&gt;</code>.</li>
+<li>Move and rotate it until it sits right, and note the Position and
+   Rotation.</li>
+<li>Stop Play and type those numbers into that row's <strong>PositionOffset</strong> and
+   <strong>RotationOffset</strong>.</li>
+</ol>
+<p><strong>Audit &gt; Gear tab</strong> shows every wearable item and whether it has its own
+look, the slot default, or nothing.</p>
+<hr>
+<h2 id="part-9-test-troubleshoot-whats-next">Part 9: Test, troubleshoot, what's next<a class="anchor" href="#part-9-test-troubleshoot-whats-next" title="Permanent link">#</a></h2>
+<h3 id="two-client-test-parrelsync">Two-client test (ParrelSync)<a class="anchor" href="#two-client-test-parrelsync" title="Permanent link">#</a></h3>
+<ul>
+<li>[ ] Both screens show the Quaternius body, not the capsule.</li>
+<li>[ ] Idle, walk, jog and sprint blend smoothly. Jump and fall play.</li>
+<li>[ ] <strong>Modern scheme:</strong></li>
+<li>A/D strafes, and the body turns toward the sidestep.</li>
+<li>S backs off slowly, with the legs walking backwards.</li>
+<li>The other client sees the same.</li>
+<li>[ ] Strike swings; Mend casts; getting hit flinches; death plays and
+      holds; respawn stands you up.</li>
+<li>[ ] Your gear shows on the other client too.</li>
+<li>[ ] Gathering plays its loop for the length of the bar.</li>
+<li>[ ] An NPC walks, attacks, flinches and dies with animation.</li>
+</ul>
+<h3 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pink or white character</td>
+<td>Convert the materials to HDRP (3.2)</td>
+</tr>
+<tr>
+<td>T-pose, sliding along</td>
+<td>The Animator has no controller, or the rig isn't Humanoid (Rig tab)</td>
+</tr>
+<tr>
+<td>Runs backwards / moonwalks</td>
+<td>The model faces -Z: rotate the <strong>child</strong> 180° (3.3)</td>
+</tr>
+<tr>
+<td>Runs sideways with the forward animation</td>
+<td>The controller is missing <code>LocomotionDirection</code>: run <strong>Upgrade Selected Animator Controller</strong></td>
+</tr>
+<tr>
+<td>Legs look wrong at normal running speed</td>
+<td>Locomotion thresholds out of order: Idle 0, Walk 1.6, <strong>Jog 5, Sprint 8</strong></td>
+</tr>
+<tr>
+<td>Walks off, then snaps back</td>
+<td>A clip has root motion. Tick all three <strong>Bake Into Pose</strong> boxes on that clip, and use UAL1_Standard, not _RM</td>
+</tr>
+<tr>
+<td>Plays once, then freezes</td>
+<td>Tick <strong>Loop Time</strong> on the clip</td>
+</tr>
+<tr>
+<td>Attacking freezes the legs</td>
+<td>The Actions layer has no <code>UpperBody</code> mask (3.5)</td>
+</tr>
+<tr>
+<td>A creature's attack does nothing</td>
+<td>A Humanoid mask on a Generic rig: set the Actions layer Mask to None (7.2)</td>
+</tr>
+<tr>
+<td>Can't click or Tab to an NPC</td>
+<td>Its collider isn't on the Orc's layer (7.1, checklist)</td>
+</tr>
+<tr>
+<td>Gathering never animates</td>
+<td>The AnimationParameter spelling doesn't match the Animator parameter (capitals count), or the server wasn't restarted</td>
+</tr>
+<tr>
+<td>Player is still a capsule</td>
+<td><code>Character_Default</code> has no prefab in Audit</td>
+</tr>
+<tr>
+<td>"bone 'X' isn't on the body's skeleton"</td>
+<td>That armour was made for a different rig</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="not-wired-yet-ask-when-you-want-them">Not wired yet (ask when you want them)<a class="anchor" href="#not-wired-yet-ask-when-you-want-them" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What</th>
+<th>Today</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Others seeing your gathering</td>
+<td>Interaction animations play only on your own screen; the server sends "use started" to you alone</td>
+</tr>
+<tr>
+<td>Mount gaits</td>
+<td>The horse model doesn't animate yet (it's drawn, but nothing drives its Animator)</td>
+</tr>
+<tr>
+<td>Cart driving pose</td>
+<td>No <code>Driving</code> parameter yet</td>
+</tr>
+<tr>
+<td>Crafting, fishing, emotes</td>
+<td>No animation hooks yet</td>
+</tr>
+<tr>
+<td>Races and genders</td>
+<td>One body per faction</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="part-10-guides-and-videos">Part 10: Guides and videos<a class="anchor" href="#part-10-guides-and-videos" title="Permanent link">#</a></h2>
+<p><strong>Unity's own documentation (Unity 6):</strong>
+- <a href="https://docs.unity3d.com/Manual/AnimationOverview.html">Animation overview</a>: the whole system, start here
+- <a href="https://docs.unity3d.com/Manual/animation-animator-controller.html">Animator Controller</a>: states, transitions, parameters
+- <a href="https://docs.unity3d.com/Manual/animation-blend-trees.html">Blend trees</a> and <a href="https://docs.unity3d.com/Manual/BlendTree-2DBlending.html">2D blending</a>: Locomotion, and strafing later
+- <a href="https://docs.unity3d.com/Manual/class-AvatarMask.html">Avatar Mask</a>: the UpperBody mask</p>
+<p><strong>Unity Learn (free, step-by-step, with video):</strong>
+- <a href="https://learn.unity.com/course/the-animator">The Animator</a>: a short course on exactly the window you'll live in
+- <a href="https://learn.unity.com/project/fundamentals-of-3d-animation-in-unity">Fundamentals of 3D Animation in Unity</a></p>
+<p><strong>Free assets (all free to use in a commercial game):</strong>
+- <a href="https://quaternius.com">Quaternius</a>: characters, animations, outfits, monsters, weapons, props (CC0)
+- <a href="https://www.mixamo.com">Mixamo</a>: free humanoid animations and characters, including strafes and backpedals. Needs a free Adobe account. Download as FBX for Unity, "Without Skin" for animations, then set the Rig to Humanoid
+- <a href="https://kenney.nl/assets">Kenney</a>: props and stylised models (CC0)</p>
+<nav class="pager">
+<a class="prev" href="client-ASSET_PIPELINE.html"><span>Previous</span>Asset pipeline</a>
+<a class="next" href="client-CLIENT_CHARACTERS.html"><span>Next</span>Characters: models, gear, animation, camera</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#part-1-how-animation-works-in-axiom">Part 1: How animation works in Axiom</a>
+</li>
+<li><a href="#part-2-unitys-animation-tools-in-15-minutes">Part 2: Unity&#x27;s animation tools in 15 minutes</a>
+<ul>
+<li><a href="#fbx-files-hold-models-and-clips">FBX files hold models and clips</a>
+</li>
+<li><a href="#humanoid-why-one-animation-fits-every-body">Humanoid: why one animation fits every body</a>
+</li>
+<li><a href="#clip-import-settings-that-matter">Clip import settings that matter</a>
+</li>
+<li><a href="#the-animator-controller">The Animator Controller</a>
+</li>
+<li><a href="#blend-trees">Blend trees</a>
+</li>
+<li><a href="#layers-and-avatar-masks">Layers and Avatar Masks</a>
+</li>
+<li><a href="#animator-override-controllers-reuse-a-controller-with-other-clips">Animator Override Controllers: reuse a controller with other clips</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-3-the-player-character-start-to-finish">Part 3: The player character, start to finish</a>
+<ul>
+<li><a href="#31-folders-and-import">3.1 Folders and import</a>
+</li>
+<li><a href="#32-hdrp-materials">3.2 HDRP materials</a>
+</li>
+<li><a href="#33-make-the-body-prefab">3.3 Make the body prefab</a>
+</li>
+<li><a href="#34-make-it-the-player-body">3.4 Make it the player body</a>
+</li>
+<li><a href="#35-the-controller">3.5 The controller</a>
+</li>
+<li><a href="#36-fill-the-states">3.6 Fill the states</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-4-which-clip-goes-in-which-state">Part 4: Which clip goes in which state</a>
+<ul>
+<li><a href="#base-layer">Base Layer</a>
+</li>
+<li><a href="#actions-layer-upper-body">Actions layer (upper body)</a>
+</li>
+<li><a href="#optional-extras-from-the-same-library">Optional extras from the same library</a>
+</li>
+<li><a href="#real-strafe-clips-later">Real strafe clips (later)</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-5-ability-animations">Part 5: Ability animations</a>
+<ul>
+<li><a href="#how-the-game-picks-an-abilitys-animation">How the game picks an ability&#x27;s animation</a>
+</li>
+<li><a href="#what-fires-the-parameter-you-never-do">What fires the parameter (you never do)</a>
+</li>
+<li><a href="#classes-shared-skills-and-class-skills">Classes, shared skills and class skills</a>
+</li>
+<li><a href="#walkthrough-give-strike-its-own-animation">Walkthrough: give Strike its own animation</a>
+</li>
+<li><a href="#if-it-doesnt-play">If it doesn&#x27;t play</a>
+</li>
+<li><a href="#channelled-spells">Channelled spells</a>
+</li>
+<li><a href="#branching-on-ability-ids">Branching on ability ids</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-6-gathering-building-sitting-interaction-animations">Part 6: Gathering, building, sitting (interaction animations)</a>
+</li>
+<li><a href="#part-7-npcs">Part 7: NPCs</a>
+<ul>
+<li><a href="#71-a-humanoid-npc-guards-townsfolk-bandits-orcs-on-a-human-rig">7.1 A humanoid NPC (guards, townsfolk, bandits, orcs on a human rig)</a>
+</li>
+<li><a href="#72-a-monster-wolf-spider-golem-non-human-shape">7.2 A monster (wolf, spider, golem: non-human shape)</a>
+</li>
+<li><a href="#73-vendors-and-quest-givers-they-just-stand-there">7.3 Vendors and quest givers (they just stand there)</a>
+</li>
+<li><a href="#npc-checklist">NPC checklist</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-8-gear-armour-and-weapons">Part 8: Gear (armour and weapons)</a>
+<ul>
+<li><a href="#armour-skinned-from-modular-character-outfits---fantasy">Armour (Skinned), from Modular Character Outfits - Fantasy</a>
+</li>
+<li><a href="#weapons-and-shields-socket">Weapons and shields (Socket)</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-9-test-troubleshoot-whats-next">Part 9: Test, troubleshoot, what&#x27;s next</a>
+<ul>
+<li><a href="#two-client-test-parrelsync">Two-client test (ParrelSync)</a>
+</li>
+<li><a href="#troubleshooting">Troubleshooting</a>
+</li>
+<li><a href="#not-wired-yet-ask-when-you-want-them">Not wired yet (ask when you want them)</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-10-guides-and-videos">Part 10: Guides and videos</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

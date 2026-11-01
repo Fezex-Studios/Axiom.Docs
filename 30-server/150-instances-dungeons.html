@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instances &amp; Dungeons · Axiom Docs</title>
+<meta name="description" content="How instanced dungeons work - interest layers, entering and leaving, run limits and timers, bosses, the event-script tables (rooms, triggers, action chains), instance zone threads - with a complete dungeon script example.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html" class="active" aria-current="page">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="instances--dungeons">Instances &amp; Dungeons<a class="anchor" href="#instances--dungeons" title="Permanent link">#</a></h1>
+<p>A dungeon's rooms are <strong>ordinary world space</strong>: tile scenes, collision and heightmaps built once in a region of the map nobody can walk to (around x/z 16 384 in the shipped data). An <strong>instance</strong> is one group's copy of what's <em>in</em> it: its NPCs and doodads, spawned into an interest <strong>layer</strong> of its own. Because every system sees the world through <code>InterestManager</code>, and a layer only sees itself, NPC AI, combat, threat, loot, parties and doodads all just work inside, with no instance-specific code.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InstanceManager</code></td>
+<td><code>Core/Instances/InstanceManager.cs</code></td>
+<td>Opening, entering, leaving, closing instances; entry limits; login inside.</td>
+</tr>
+<tr>
+<td><code>InstanceManager.Scripts</code></td>
+<td><code>Core/Instances/InstanceManager.Scripts.cs</code></td>
+<td>Applies the commands scripts produce (spawn tags, gates, teleports, chests).</td>
+</tr>
+<tr>
+<td><code>InstanceZone</code></td>
+<td><code>Core/Instances/Zones/InstanceZone.cs</code></td>
+<td>One run's own state and logic: bosses, clock, script, outcome.</td>
+</tr>
+<tr>
+<td><code>ZoneThread</code>, <code>ZoneProtocol</code></td>
+<td><code>Core/Instances/Zones</code></td>
+<td>Each run ticks on its own thread; it talks to the world only by messages.</td>
+</tr>
+<tr>
+<td><code>InstanceRotation</code></td>
+<td><code>Core/Instances</code></td>
+<td>Fair share of the per-tick dungeon AI budget.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="entering-and-leaving">Entering and leaving<a class="anchor" href="#entering-and-leaving" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Enter</strong>: a portal doodad with an <strong>Enter Dungeon</strong> effect (<code>RefId</code> = dungeon). You go to the instance you already belong to; else one a party member is in; else a new one. Refused up front if full (<code>MaxPlayers</code>), too low (<code>MinLevel</code>), already in a dungeon, or out of runs.</li>
+<li><strong>Inside</strong>: dying respawns you at the entrance, inside. Mounts only if <code>AllowMounts</code>.</li>
+<li><strong>Leave</strong>: the exit portal (<strong>Leave Dungeon</strong> effect), or <code>C2WLeaveDungeon</code> (the tracker's Leave button): you appear at the dungeon's exit (<code>ExitX/Y/Z</code>) in the open world.</li>
+<li><strong>Log out inside</strong>: on login you're put back into the instance if it's still open, otherwise at the exit.</li>
+<li>An empty instance closes after <code>EmptySeconds</code>.</li>
+</ul>
+<p><code>W2CInstance</code> tells the client it entered/left (its floor, region, client key for the scene), and <code>W2CDungeonProgress</code> drives the tracker (bosses, timer, cleared/failed).</p>
+<h2 id="dungeons"><code>Dungeons</code><a class="anchor" href="#dungeons" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code>, <code>Description</code>, <code>ClientKey</code></td>
+<td>display; <code>ClientKey</code> names the client scene/region</td>
+</tr>
+<tr>
+<td><code>MinLevel</code>, <code>MaxPlayers</code></td>
+<td>entry rules</td>
+</tr>
+<tr>
+<td><code>EntryX/Y/Z/Yaw</code>, <code>ExitX/Y/Z</code></td>
+<td>where you appear inside, and outside when you leave</td>
+</tr>
+<tr>
+<td><code>MinX/MinZ/MaxX/MaxZ</code>, <code>FloorY</code></td>
+<td>the dungeon's region</td>
+</tr>
+<tr>
+<td><code>EntryLimit</code>, <code>EntryLimitPeriodHours</code>, <code>CountEntryOn</code></td>
+<td>runs per period (saved per character in <code>character_dungeon_entries</code>)</td>
+</tr>
+<tr>
+<td><code>TimeLimitSeconds</code></td>
+<td>a timed run fails when it runs out</td>
+</tr>
+<tr>
+<td><code>CompleteExitSeconds</code></td>
+<td>after clearing, everyone is moved out after this long</td>
+</tr>
+<tr>
+<td><code>EmptySeconds</code>, <code>AllowMounts</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Contents: <code>NpcSpawners</code> and <code>DoodadSpawns</code> rows with <code>DungeonId</code> = the dungeon are spawned <strong>once per instance</strong> and never respawn (a cleared room stays cleared). Rows with <code>Dormant = 1</code> wait for a script.</p>
+<h2 id="scripts-rooms-events-actions">Scripts: rooms, events, actions<a class="anchor" href="#scripts-rooms-events-actions" title="Permanent link">#</a></h2>
+<p>A dungeon says "when <strong>this</strong> happens, do <strong>these</strong> things" in three tables:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DungeonRooms</code></td>
+<td>named circles (<code>X</code>, <code>Z</code>, <code>Radius</code>) for Enter Room / Room Wiped and the tracker</td>
+</tr>
+<tr>
+<td><code>DungeonEvents</code></td>
+<td>a <strong>trigger</strong> and the first action of the chain it starts: <code>Trigger</code>, <code>TriggerRef</code> (NPC template, doodad...), <code>TriggerKey</code> (a tag, room or timer name), <code>Count</code>, <code>Param</code> (e.g. health %), <code>Once</code>, <code>FirstActionId</code></td>
+</tr>
+<tr>
+<td><code>DungeonActions</code></td>
+<td>one step each: <code>Kind</code>, <code>RefId</code>, <code>Param</code>, <code>Key</code>, <code>Text</code>, <code>X/Y/Z</code>, then <code>NextActionId</code> after <code>DelayMs</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Triggers</strong>: 1 Run Started, 2 NPC Killed, 3 Tag Cleared, 4 NPC Health Below, 5 NPC Combat Started, 6 NPC Combat Ended, 7 Enter Room, 8 Room Wiped, 9 Doodad Used, 10 Timer Elapsed, 11 Bosses Cleared.</p>
+<p><strong>Actions</strong>: 1 Spawn Tag (wake dormant spawners with that tag), 2 Despawn Tag, 3 Change Doodad Phase (open a gate), 4 Banner (text on everyone's screen), 5 Start Timer, 6 Stop Timer, 7 Apply Status, 8 Teleport, 9 Set Room Cleared, 10 Reset Room, 11 Spawn Chest, 12 Complete Run, 13 Fail Run, 14 Run Lua.</p>
+<p><strong>Tags</strong> (<code>NpcSpawners.Tag</code>, <code>DoodadSpawns.Tag</code>) group things for the script. Bosses (<code>Rank = 2</code>), dormant ones included, count toward the run's total; when the last dies, a <code>Bosses Cleared</code> event decides what happens (otherwise the run completes).</p>
+<h3 id="instance-zones-and-threads">Instance zones and threads<a class="anchor" href="#instance-zones-and-threads" title="Permanent link">#</a></h3>
+<p>Each run's <code>InstanceZone</code> ticks on its <strong>own thread</strong> (<code>ZoneThread</code>, at <code>World:InstanceTickRate</code>) and wakes immediately when the world posts an event (a boss died). It never touches sessions, entities or the grid: it reads events and a periodic view from the world and answers with <strong>commands</strong> the world applies on its tick (within <code>InstanceCommandBudgetMs</code>). A slow script delays only its own run. With <code>World:InstanceThreads = false</code> zones run inline on the world tick with the same results. Dungeon NPC AI shares <code>InstanceAiBudgetMs</code> per world tick, rotated fairly across dungeons.</p>
+<h2 id="example-a-two-room-dungeon-script">Example: a two-room dungeon script<a class="anchor" href="#example-a-two-room-dungeon-script" title="Permanent link">#</a></h2>
+<p>The shipped <strong>The Warrens</strong> (dungeon 1) is a complete example. This is its whole script, exactly as in <code>worldserver.db</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- events: trigger -&gt; first action</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">DungeonEvents</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">DungeonId</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">Trigger</span><span class="p">,</span><span class="w"> </span><span class="n">TriggerRef</span><span class="p">,</span><span class="w"> </span><span class="n">TriggerKey</span><span class="p">,</span><span class="w"> </span><span class="k">Count</span><span class="p">,</span><span class="w"> </span><span class="n">Param</span><span class="p">,</span><span class="w"> </span><span class="n">Once</span><span class="p">,</span><span class="w"> </span><span class="n">FirstActionId</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Intro&#39;</span><span class="p">,</span><span class="w">             </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w">    </span><span class="c1">-- run started</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sentries down&#39;</span><span class="p">,</span><span class="w">     </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;sentries&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w">    </span><span class="c1">-- every NPC tagged &quot;sentries&quot; dead</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Chieftain at half&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">),</span><span class="w">    </span><span class="c1">-- NPC template 20 below 50 %</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Chieftain dead&#39;</span><span class="p">,</span><span class="w">    </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">),</span><span class="w">    </span><span class="c1">-- all bosses dead</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Into the den&#39;</span><span class="p">,</span><span class="w">      </span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">),</span><span class="w">   </span><span class="c1">-- someone entered room 2</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Wiped in the den&#39;</span><span class="p">,</span><span class="w">  </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">);</span><span class="w">   </span><span class="c1">-- everyone in room 2 died</span>
+
+<span class="c1">-- actions: one step each, then NextActionId after DelayMs</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">DungeonActions</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">DungeonId</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">Param</span><span class="p">,</span><span class="w"> </span><span class="k">Key</span><span class="p">,</span><span class="w"> </span><span class="nb">Text</span><span class="p">,</span><span class="w"> </span><span class="n">DelayMs</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="p">,</span><span class="w"> </span><span class="n">NextActionId</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;The Warrens stir. Cut down the sentries to reach the den.&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">   </span><span class="c1">-- Banner</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="mi">1262</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;den_gate&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">),</span><span class="w">    </span><span class="c1">-- gate (tag den_gate) -&gt; phase 1262 (open)</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;The den gate grinds open...&#39;</span><span class="p">,</span><span class="w">          </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">    </span><span class="c1">-- room 1 cleared</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;The Chieftain bellows for his guard!&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;den_adds&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">500</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">    </span><span class="c1">-- wake the dormant &quot;den_adds&quot;</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;den_adds&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">),</span><span class="w">    </span><span class="c1">-- boss dead: remove adds</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">),</span><span class="w">    </span><span class="c1">-- room 2 cleared</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;Warren Chieftain&#39;</span><span class="p">,</span><span class="w">                     </span><span class="mi">1500</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">    </span><span class="c1">-- Complete Run</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;Chieftain&#39;&#39;s Den&#39;</span><span class="p">,</span><span class="w">                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;The Chieftain gloats over the fallen. The den resets.&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;den_adds&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">3000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">),</span><span class="w">   </span><span class="c1">-- despawn adds</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">                                     </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">    </span><span class="c1">-- Reset Room 2</span>
+</code></pre></div>
+
+<p>Its contents: <code>NpcSpawners</code> 100–101 (tag <code>sentries</code>), 102 (the chieftain, template 20, a boss), 103 (tag <code>den_adds</code>, <code>Dormant = 1</code>); <code>DoodadSpawns</code> 126 (the gate, tag <code>den_gate</code>: closed phase blocks, open phase 1262 doesn't) and the <code>den_wall</code> pieces. Rooms 1 and 2 are <code>DungeonRooms</code> rows.</p>
+<p>The easiest way to start: <strong>Tools ▸ Axiom ▸ Create ▸ Dungeon…</strong> (run limits, timer, mobs, boss, entrance portal and exit), then add events in Content Studio. Build the rooms as tile scenes in the dungeon region, export collision and navmesh like any other area. See <a href="../80-notes/client-DUNGEONS.html">Dungeons (note)</a>, <a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts (note)</a>, <a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones (note)</a>.</p>
+<h2 id="extending-scripts-code">Extending scripts (code)<a class="anchor" href="#extending-scripts-code" title="Permanent link">#</a></h2>
+<p>To add an action kind (e.g. "Play Sound"): add the value to <code>DungeonActionKind</code> (<code>GameData/Instances/DungeonScripts.cs</code>) and <code>ContentEnums.cs</code>; in <code>InstanceZone</code>, emit a zone command for it; in <code>InstanceManager.Scripts</code>, apply the command on the world tick (send a packet to everyone in the instance's layer). Triggers work the same way in reverse: the world posts a new <code>ZoneEvent</code> (<code>ZoneProtocol.cs</code>) and <code>InstanceZone</code> matches it against events. Keep the boundary: the zone never touches world objects directly.</p>
+<nav class="pager">
+<a class="prev" href="140-pvp-sieges.html"><span>Previous</span>Factions, PvP, Justice &amp; Sieges</a>
+<a class="next" href="160-exploration-events.html"><span>Next</span>World Events, Exploration &amp; Achievements</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#entering-and-leaving">Entering and leaving</a>
+</li>
+<li><a href="#dungeons">Dungeons</a>
+</li>
+<li><a href="#scripts-rooms-events-actions">Scripts: rooms, events, actions</a>
+<ul>
+<li><a href="#instance-zones-and-threads">Instance zones and threads</a>
+</li>
+</ul>
+</li>
+<li><a href="#example-a-two-room-dungeon-script">Example: a two-room dungeon script</a>
+</li>
+<li><a href="#extending-scripts-code">Extending scripts (code)</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

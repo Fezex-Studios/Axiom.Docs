@@ -1,0 +1,2805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MySQL Reference · Axiom Docs</title>
+<meta name="description" content="All 39 tables of axiom_auth, axiom_persistence and axiom_auction with columns, keys and indexes.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="packets.html">Packet Reference</a></li>
+<li><a href="services.html">Service Endpoints</a></li>
+<li><a href="worlddb.html">worldserver.db Reference</a></li>
+<li><a href="mysql.html" class="active" aria-current="page">MySQL Reference</a></li>
+<li><a href="enums.html">Shared Enums</a></li>
+<li><a href="config.html">Configuration Reference</a></li>
+<li><a href="lua-api.html">Lua API Reference</a></li>
+<li><a href="gm-commands.html">GM Command Reference</a></li>
+<li><a href="editor.html">Editor Menu Reference</a></li>
+<li><a href="codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Reference (generated)</div>
+<div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
+<h1 id="mysql-reference">MySQL Reference<a class="anchor" href="#mysql-reference" title="Permanent link">#</a></h1>
+<p>Every table of the three MySQL databases, from the EF Core models (the migration snapshots) and the raw SQL each service runs. Concepts and admin tasks: <a href="../20-data/30-mysql.html">MySQL databases</a>.</p>
+<h2 id="axiom_auth">axiom_auth<a class="anchor" href="#axiom_auth" title="Permanent link">#</a></h2>
+<p>Owned by <code>Axiom.Server.Auth</code>. 4 tables. Created and updated by EF Core migrations (<code>dotnet ef database update</code>).</p>
+<h3 id="accounts">accounts<a class="anchor" href="#accounts" title="Permanent link">#</a></h3>
+<p>from EF model (<code>Account</code>)</p>
+<p>One row of <code>accounts</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>access_level</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>1</code></td>
+<td>auto-increment · 1 Player, 2 Ingame Helper, 3 Community Manager, 4 Game Master, 5 Developer.</td>
+</tr>
+<tr>
+<td><code>ban_reason</code></td>
+<td><code>varchar(200)</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>banned_by</code></td>
+<td><code>varchar(40)</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>banned_until</code></td>
+<td><code>datetime(6)</code></td>
+<td></td>
+<td></td>
+<td>Protocol 36 (GM panel): banned until then (UTC); null = not banned. 9999-12-31 = permanently.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>datetime(6)</code></td>
+<td>yes</td>
+<td><code>"CURRENT_TIMESTAMP(6)"</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>password_hash</code></td>
+<td><code>varchar(100)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td><code>varchar(20)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: unique (Username)</p>
+<h3 id="failed_logins">failed_logins<a class="anchor" href="#failed_logins" title="Permanent link">#</a></h3>
+<p>from EF model (<code>FailedLogin</code>)</p>
+<p>One row of <code>failed_logins</code>. LockedUntil is null when not locked.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td><code>varchar(20)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>attempts</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>locked_until</code></td>
+<td><code>datetime(6)</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="refresh_tokens">refresh_tokens<a class="anchor" href="#refresh_tokens" title="Permanent link">#</a></h3>
+<p>from EF model (<code>RefreshToken</code>)</p>
+<p>One row of <code>refresh_tokens</code> (launcher L2). What "Remember me" and a logged-in launcher hold INSTEAD of the password: a long-lived, revocable credential that can only be traded for one-shot launch tokens (/session/launch-token). Only the SHA-256 of the token is stored, so a copy of this table can't be used to log in.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_hash</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>datetime(6)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>datetime(6)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (AccountId); (ExpiresAt)</p>
+<h3 id="sessions">sessions<a class="anchor" href="#sessions" title="Permanent link">#</a></h3>
+<p>from EF model (<code>Session</code>)</p>
+<p>One row of <code>sessions</code>. At most one per account, enforced by a unique index, same as the old schema.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>datetime(6)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: unique (AccountId); (ExpiresAt)</p>
+<h4 id="migrations-axiom_auth">Migrations (axiom_auth)<a class="anchor" href="#migrations-axiom_auth" title="Permanent link">#</a></h4>
+<p><code>20260919024637_InitialCreate</code>, <code>20260925200000_AddRefreshTokens</code>, <code>20261012090000_AccountAccessLevels</code>, <code>20261017130000_AccountBans</code></p>
+<h2 id="axiom_persistence">axiom_persistence<a class="anchor" href="#axiom_persistence" title="Permanent link">#</a></h2>
+<p>Owned by <code>Axiom.Server.Persistence</code>. 31 tables. Created and updated by EF Core migrations (<code>dotnet ef database update</code>).</p>
+<h3 id="account_credits">account_credits<a class="anchor" href="#account_credits" title="Permanent link">#</a></h3>
+<p>from EF model (<code>AccountCredits</code>)</p>
+<p>An account's credit balance. Per ACCOUNT, not per character: credits are bought by a person, and every character they own spends the same purse.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>balance</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="account_labor">account_labor<a class="anchor" href="#account_labor" title="Permanent link">#</a></h3>
+<p>from EF model (<code>AccountLabor</code>)</p>
+<p>An ACCOUNT's labor pool (shared by every character on the account). Written in the same transaction as the character save that spent it. AccruedAtUnixMs = how far regeneration has been counted.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>accrued_at_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>points</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Checks: <code>CK_account_labor_points</code>: <code>points &gt;= 0</code></p>
+<h3 id="account_patron">account_patron<a class="anchor" href="#account_patron" title="Permanent link">#</a></h3>
+<p>from 20261018120000_AccountPatron.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>expires_at_unix_ms</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>loyalty_tokens</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>claim_progress_ms</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>claim_day</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>claims_today</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="cash_shop_items">cash_shop_items<a class="anchor" href="#cash_shop_items" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CashShopItem</code>)</p>
+<p>Something the cash shop sells. A row here is the whole definition: what it's called, what item it hands over, how many, and what it costs in CREDITS. Credits are bought with real money and are deliberately not gold. Keeping the two apart is why the cash shop is a separate system from the auction house rather than a tab on it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>Id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td><code>varchar(128)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_enabled</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td>Off the shelf without deleting the row (and its history).</td>
+</tr>
+<tr>
+<td><code>is_giftable</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td>Can a player buy this FOR someone else? Decided per item. It defaults to false on purpose: forgetting to set it should mean the Gift button doesn't appear, never that something you meant to keep personal can be sent to anyone.</td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Items.item_id on the world server - what the buyer actually receives.</td>
+</tr>
+<tr>
+<td><code>price_credits</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_abilities">character_abilities<a class="anchor" href="#character_abilities" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterAbility</code>)</p>
+<p>An ability learned, at its rank (world data Skills.Id). Basic abilities everyone knows only have a row once ranked up.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>skill_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>rank</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Checks: <code>CK_character_abilities_rank_positive</code>: <code>`rank</code> &gt; 0`</p>
+<h3 id="character_achievements">character_achievements<a class="anchor" href="#character_achievements" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterAchievement</code>)</p>
+<p>Phase 11: a character's progress on one achievement (a count, or a collection's bitmask).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>achievement_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>completed_at_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_dungeon_entries">character_dungeon_entries<a class="anchor" href="#character_dungeon_entries" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterDungeonEntry</code>)</p>
+<p>How many runs of one dungeon a character has used in a limit period (the world's Dungeons.EntryLimit). The world server owns the rules; this only remembers the count and which period it belongs to.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>dungeon_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>period_start_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_equipment">character_equipment<a class="anchor" href="#character_equipment" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterEquipmentItem</code>)</p>
+<p>What a character is wearing (roadmap 3.2): one row per occupied equipment slot, same shape and reasoning as CharacterInventoryItem. Slot is the EquipSlot number (1 head ... 10 trinket).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>bound</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td>Soulbound to this character.</td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Protocol 28: this copy's grade, wear and gems (ItemInstanceColumns).</td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (ItemUid)</p>
+<p>Checks: <code>CK_character_equipment_item_positive</code>: <code>item_template_id &gt; 0</code></p>
+<h3 id="character_hotbar">character_hotbar<a class="anchor" href="#character_hotbar" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterHotbarSlot</code>)</p>
+<p>One occupied hotbar slot: Kind 1 = ability (RefId = Skills.Id), 2 = item (RefId = item template id).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ref_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Checks: <code>CK_character_hotbar_kind</code>: <code>kind IN (1, 2)</code>; <code>CK_character_hotbar_ref_positive</code>: <code>ref_id &gt; 0</code></p>
+<h3 id="character_inventory">character_inventory<a class="anchor" href="#character_inventory" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterInventoryItem</code>)</p>
+<p>One row per occupied slot. There is no row for an empty slot - "empty" is the absence of a row, not a row with ItemTemplateId 0, so the table never needs to store 20 rows per character, only the ones actually in use. Composite key (CharacterId, Slot) is the thing that makes the upsert in /characters/inventory/save an ON DUPLICATE KEY UPDATE instead of a manual exists-check.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>bound</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td>Soulbound to this character (roadmap 3.2): can't be auctioned.</td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Protocol 28: this copy's grade, wear and gems (ItemInstanceColumns).</td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (ItemUid)</p>
+<p>Checks: <code>CK_character_inventory_item_positive</code>: <code>item_template_id &gt; 0 AND quantity &gt; 0</code></p>
+<h3 id="character_proficiency">character_proficiency<a class="anchor" href="#character_proficiency" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterProficiency</code>)</p>
+<p>A character's proficiency in one profession (world data Professions.Id). Replaced whole by /characters/save-full, like the inventory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>profession_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>points</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Checks: <code>CK_character_proficiency_points</code>: <code>points &gt; 0</code></p>
+<h3 id="character_profile">character_profile<a class="anchor" href="#character_profile" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterProfile</code>)</p>
+<p>Phase 11: what a character shows the world - the title they wear.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>active_title_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_pvp">character_pvp<a class="anchor" href="#character_pvp" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterPvp</code>)</p>
+<p>Phase 10: a character's side and record. One row per character, created with the character (or on its first save after Phase 10); written in the character's full save.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>crime_points</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>faction_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>honor</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>infamy</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>jail_until_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_quests">character_quests<a class="anchor" href="#character_quests" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterQuest</code>)</p>
+<p>One row per quest a character has touched. A quest they've never seen has no row, the same way an empty inventory slot has none, so the table only holds what actually happened. Progress is a comma-separated count per objective ("3,1"). Unlike inventory slots - which change one at a time and are read one at a time - a quest's objectives are always read and written together, so a row each would buy nothing and cost a join. Composite key (CharacterId, QuestId) is what makes the save an upsert instead of an exists-check, same as inventory's (CharacterId, Slot).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>quest_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td><code>varchar(128)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td></td>
+<td>1 = active, 2 = objectives met, 3 = handed in.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (CharacterId)</p>
+<h3 id="character_skillsets">character_skillsets<a class="anchor" href="#character_skillsets" title="Permanent link">#</a></h3>
+<p>from character_abilities.sql</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>skillset_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>skill_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>rank</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>TINYINT UNSIGNED</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ref_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="character_warehouse_items">character_warehouse_items<a class="anchor" href="#character_warehouse_items" title="Permanent link">#</a></h3>
+<p>from EF model (<code>CharacterWarehouseItem</code>)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bound</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (ItemUid)</p>
+<p>Checks: <code>CK_warehouse_instance</code>: <code>grade &gt;= 0 AND wear &gt;= 0 AND gem1 &gt;= 0 AND gem2 &gt;= 0 AND gem3 &gt;= 0</code>; <code>CK_warehouse_slot</code>: <code>slot &gt;= 0 AND slot &lt; 500</code>; <code>CK_warehouse_quantity</code>: <code>quantity &gt; 0 AND item_template_id &gt; 0</code></p>
+<h3 id="characters">characters<a class="anchor" href="#characters" title="Permanent link">#</a></h3>
+<p>from EF model (<code>Character</code>)</p>
+<p>Mirrors the original <code>characters</code> SQLite table 1:1 — same columns, same defaults (Level=1, PosY=2 on create).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>CharacterId</code></td>
+<td><code>long</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>account_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>experience</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td><code>0L</code></td>
+<td>auto-increment · Experience into the current level (roadmap Phase 5).</td>
+</tr>
+<tr>
+<td><code>gold</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td>auto-increment · First stateful field beyond position/level. Everything that follows it -- inventory, quest state -- copies this exact shape: a column here, a field in P2W/W2P, a field on PlayerSession.</td>
+</tr>
+<tr>
+<td><code>inventory_capacity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>50</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>class_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>1</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>appearance</code></td>
+<td><code>text</code></td>
+<td></td>
+<td></td>
+<td>Protocol 43: the look as JSON (AppearanceJson). Null = defaults.</td>
+</tr>
+<tr>
+<td><code>gender_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>1</code></td>
+<td>auto-increment · CharacterGender: 1 male, 2 female. Characters from before genders are Male (1).</td>
+</tr>
+<tr>
+<td><code>race_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>1</code></td>
+<td>auto-increment · CharacterRace (CharacterRaceRules). Characters from before races are Human (1).</td>
+</tr>
+<tr>
+<td><code>level</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>1</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pos_x</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td><code>0f</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>pos_y</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td><code>2f</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>pos_z</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td><code>0f</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>save_seq</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td><code>0L</code></td>
+<td>auto-increment · Sequence number of the last save written (see /characters/save-full). A save is only applied if its SaveSeq is higher than this, so a late or repeated save can never overwrite newer data.</td>
+</tr>
+<tr>
+<td><code>warehouse_gold</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td>auto-increment</td>
+</tr>
+<tr>
+<td><code>warehouse_capacity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td><code>50</code></td>
+<td>auto-increment</td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (AccountId); unique (Name)</p>
+<p>Checks: <code>CK_characters_gold_nonnegative</code>: <code>gold &gt;= 0</code>; <code>CK_characters_warehouse_gold</code>: <code>warehouse_gold &gt;= 0</code>; <code>CK_characters_warehouse_capacity</code>: <code>warehouse_capacity BETWEEN 50 AND 500</code>; <code>CK_characters_class</code>: <code>class_id BETWEEN 1 AND 3</code>; <code>CK_characters_race</code>: <code>race_id &gt; 0</code>; <code>CK_characters_gender</code>: <code>gender_id &gt; 0</code></p>
+<h3 id="community_contacts">community_contacts<a class="anchor" href="#community_contacts" title="Permanent link">#</a></h3>
+<p>from 20261006075000_CommunityContactsFamilies.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>owner_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>friendship</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="community_families">community_families<a class="anchor" href="#community_families" title="Permanent link">#</a></h3>
+<p>from 20261006075000_CommunityContactsFamilies.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>family_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="community_family_members">community_family_members<a class="anchor" href="#community_family_members" title="Permanent link">#</a></h3>
+<p>from 20261006075000_CommunityContactsFamilies.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="doodad_storage">doodad_storage<a class="anchor" href="#doodad_storage" title="Permanent link">#</a></h3>
+<p>from EF model (<code>DoodadStorageSlot</code>)</p>
+<p>Phase 8.2: one occupied slot of a coffer (a storage doodad). Written only inside a character save-full (StorageWrite), so an item moving between a bag and a coffer is one transaction. Deleting the doodad (picked up, or its house demolished) mails these to its owner.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>doodad_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>slot</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>bound</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Protocol 28: this copy's grade, wear and gems (ItemInstanceColumns).</td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (ItemUid)</p>
+<p>Checks: <code>CK_doodad_storage_quantity</code>: <code>quantity &gt; 0</code></p>
+<h3 id="doodads">doodads<a class="anchor" href="#doodads" title="Permanent link">#</a></h3>
+<p>from EF model (<code>WorldDoodad</code>)</p>
+<p>A player-placed, persistent doodad (a crop, a crate; furniture and placed trade packs later) - the world server restores these on start. World doodads from DoodadSpawns are never stored. Version makes writes safe to arrive out of order: an update only replaces the row if it carries a HIGHER version. PlacementKey makes create safe to repeat: a retry after a lost answer finds the row it already made.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>doodad_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>DoodadId</code></td>
+<td><code>long</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>access</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Phase 8.2: a house's access (0 private, 1 guild, 2 public) and the guild it lets in.</td>
+</tr>
+<tr>
+<td><code>access_guild_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>attach_point</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>furniture_pickup_locked</code></td>
+<td><code>tinyint(1)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>held_item_count</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>held_item_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>owner_character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>owner_name</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>parent_doodad_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>phase_ends_at_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>phase_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>placement_key</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>scale</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>shard</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>storage_seq</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td>Phase 8.2: bumped by every write of this coffer's contents (save-full's StorageWrite).</td>
+</tr>
+<tr>
+<td><code>template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>yaw</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>z</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (OwnerCharacterId); (ParentDoodadId); unique (PlacementKey); (Shard)</p>
+<h3 id="guild_members">guild_members<a class="anchor" href="#guild_members" title="Permanent link">#</a></h3>
+<p>from EF model (<code>GuildMember</code>)</p>
+<p>One character's membership. The primary key is the character: one guild each.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>guild_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>joined_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>rank</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (GuildId)</p>
+<p>Checks: <code>CK_guild_members_rank</code>: <code>`rank</code> &lt;= 4`</p>
+<h3 id="guild_ranks">guild_ranks<a class="anchor" href="#guild_ranks" title="Permanent link">#</a></h3>
+<p>from EF model (<code>GuildRank</code>)</p>
+<p>A guild's rank: 0 is the leader, then 1-4. Names and permissions (GuildPermission flags) are the guild's to change.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guild_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>rank</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>varchar(20)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Checks: <code>CK_guild_ranks_rank</code>: <code>`rank</code> &lt;= 4`</p>
+<h3 id="guilds">guilds<a class="anchor" href="#guilds" title="Permanent link">#</a></h3>
+<p>from EF model (<code>Guild</code>)</p>
+<p>A guild (roadmap Phase 6). Its members and ranks are separate tables; a character is in at most one guild (guild_members is keyed by character). World servers cache guilds and write through /guilds/command, whose answer is always the guild as it now is.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guild_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>GuildId</code></td>
+<td><code>long</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>motd</code></td>
+<td><code>varchar(200)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>varchar(24)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: unique (Name)</p>
+<h3 id="item_uid_conflicts">item_uid_conflicts<a class="anchor" href="#item_uid_conflicts" title="Permanent link">#</a></h3>
+<p>from 20261019120000_ItemUids.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>other_owner</code></td>
+<td><code>VARCHAR(32)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>other_table</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>seen_at_unix_ms</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="mail">mail<a class="anchor" href="#mail" title="Permanent link">#</a></h3>
+<p>from EF model (<code>Mail</code>)</p>
+<p>One persisted delivery waiting for a character. EVERYTHING that gives a player something goes through here - the auction house (sale proceeds, purchases, unsold and cancelled listings), the cash shop, refunds, and admins handing out gifts. The Mailbox routes ordinary mail and marketplace deliveries to separate windows. Mail can carry gold, one item stack, or both, plus a subject. Claiming deletes the row and returns it in one transaction.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>Id</code></td>
+<td><code>long</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>character_id</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gold</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_quantity</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>mailbox</code></td>
+<td><code>tinyint unsigned</code></td>
+<td>yes</td>
+<td><code>(byte)0</code></td>
+<td>auto-increment · 0 world, 1 marketplace</td>
+</tr>
+<tr>
+<td><code>sender</code></td>
+<td><code>varchar(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td><code>varchar(128)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_uid</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td>Protocol 28: this copy's grade, wear and gems (ItemInstanceColumns).</td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Indexes: (ItemUid); (CharacterId)</p>
+<h3 id="mail_receipts">mail_receipts<a class="anchor" href="#mail_receipts" title="Permanent link">#</a></h3>
+<p>from EF model (<code>MailReceipt</code>)</p>
+<p>A note that a delivery key has already been posted. Other services (the auction house) send mail through an outbox that retries until it's told "yes". If their last attempt actually landed but the reply was lost - or they crashed before forgetting it - the retry carries the same key, and this table is how we recognise it and say "already done" instead of delivering twice. It has to be its own table rather than a column on Mail, because a player may have claimed (and so deleted) the mail before a late retry arrives. Receipts are tiny and only matter for as long as a retry can still be in flight; anything older than a few days can be deleted.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delivery_key</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="shard_state">shard_state<a class="anchor" href="#shard_state" title="Permanent link">#</a></h3>
+<p>from EF model (<code>ShardState</code>)</p>
+<p>Phase 10: a shard's world state that has to outlive a restart - zone conflict stages, territory owners and treasuries, declared sieges. The world server owns the meaning (Json); this only keeps the newest.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shard</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>varchar(32)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>state_key</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>json</code></td>
+<td><code>text</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="trade_demand">trade_demand<a class="anchor" href="#trade_demand" title="Permanent link">#</a></h3>
+<p>from EF model (<code>TradeDemand</code>)</p>
+<p>Phase 9: what one trade outlet pays for one kind of trade pack, per shard - its demand (percent of the full price) as of UpdatedAtUnixMs. Each delivery lowers it; the world server works out how much it has recovered since. Kept here so a restart doesn't reset every route to full price.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shard</code></td>
+<td><code>varchar(64)</code></td>
+<td></td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>outlet_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>pack_item_id</code></td>
+<td><code>int</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>demand_pct</code></td>
+<td><code>float</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at_unix_ms</code></td>
+<td><code>bigint</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="world_outbox">world_outbox<a class="anchor" href="#world_outbox" title="Permanent link">#</a></h3>
+<p>from 20261017120000_WorldOutbox.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>op_key</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>VARCHAR(32)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>MEDIUMTEXT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="migrations-axiom_persistence">Migrations (axiom_persistence)<a class="anchor" href="#migrations-axiom_persistence" title="Permanent link">#</a></h4>
+<p><code>20260909061856_InitialCreate</code>, <code>20260920043618_AddCharacterGold</code>, <code>20260920143405_AddCharacterInventory</code>, <code>20260923015523_AddCharacterQuests</code>, <code>20260924030623_AddCashShop</code>, <code>20260924181832_GeneralMailbox</code>, <code>20260925120000_AddCharacterSaveSeq</code>, <code>20260925180000_UniqueCharacterNames</code>, <code>20260926120000_CharacterEquipment</code>, <code>20260927120000_CharacterAbilities</code>, <code>20260928120000_CharacterExperience</code>, <code>20260929120000_WorldDoodads</code>, <code>20260930120000_Guilds</code>, <code>20261001120000_Professions</code>, <code>20261002120000_Housing</code>, <code>20261003120000_TradeDemand</code>, <code>20261004120000_Phase10Pvp</code>, <code>20261005120000_Phase11Achievements</code>, <code>20261006053000_SeparateMarketplaceMail</code>, <code>20261006075000_CommunityContactsFamilies</code>, <code>20261008001000_AddInventoryCapacity</code>, <code>20261009120000_FurniturePickupProtection</code>, <code>20261010180000_ClassBasedCharacters</code>, <code>20261010200000_DungeonEntries</code>, <code>20261012100000_CharacterWarehouse</code>, <code>20261012120000_ItemInstances</code>, <code>20261013030000_WarehouseItemInstances</code>, <code>20261017120000_WorldOutbox</code>, <code>20261018120000_AccountPatron</code>, <code>20261019120000_ItemUids</code>, <code>20261023180000_CharacterRaceGender</code>, <code>20261024120000_ThreeRacesOneFaction</code>, <code>20261025100000_DataDrivenRaces</code>, <code>20261026100000_CharacterAppearance</code></p>
+<h2 id="axiom_auction">axiom_auction<a class="anchor" href="#axiom_auction" title="Permanent link">#</a></h2>
+<p>Owned by <code>Axiom.Server.Auction</code>. 4 tables. Tables are created at start-up.</p>
+<h3 id="auction_bids">auction_bids<a class="anchor" href="#auction_bids" title="Permanent link">#</a></h3>
+<p>from Program.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bid_key</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>auction_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bidder_character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>TINYINT UNSIGNED</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>final_bid</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_name</code></td>
+<td><code>VARCHAR(128)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>seller_name</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="auction_create_receipts">auction_create_receipts<a class="anchor" href="#auction_create_receipts" title="Permanent link">#</a></h3>
+<p>from Program.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>create_key</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>auction_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="auction_purchases">auction_purchases<a class="anchor" href="#auction_purchases" title="Permanent link">#</a></h3>
+<p>from Program.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>purchase_key</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong></td>
+</tr>
+<tr>
+<td><code>auction_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buyer_character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>seller_character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>price</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="mail_outbox">mail_outbox<a class="anchor" href="#mail_outbox" title="Permanent link">#</a></h3>
+<p>from Program.cs</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td><strong>PK</strong> · auto-increment</td>
+</tr>
+<tr>
+<td><code>delivery_key</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>character_id</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sender</code></td>
+<td><code>VARCHAR(64)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td><code>VARCHAR(128)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gold</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_template_id</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_quantity</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at_ticks</code></td>
+<td><code>BIGINT</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td><code>TINYINT(1)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>failure_reason</code></td>
+<td><code>VARCHAR(256)</code></td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>wear</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem1</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem2</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gem3</code></td>
+<td><code>INT</code></td>
+<td>yes</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="worlddb.html"><span>Previous</span>worldserver.db Reference</a>
+<a class="next" href="enums.html"><span>Next</span>Shared Enums</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#axiom_auth">axiom_auth</a>
+<ul>
+<li><a href="#accounts">accounts</a>
+</li>
+<li><a href="#failed_logins">failed_logins</a>
+</li>
+<li><a href="#refresh_tokens">refresh_tokens</a>
+</li>
+<li><a href="#sessions">sessions</a>
+
+</li>
+</ul>
+</li>
+<li><a href="#axiom_persistence">axiom_persistence</a>
+<ul>
+<li><a href="#account_credits">account_credits</a>
+</li>
+<li><a href="#account_labor">account_labor</a>
+</li>
+<li><a href="#account_patron">account_patron</a>
+</li>
+<li><a href="#cash_shop_items">cash_shop_items</a>
+</li>
+<li><a href="#character_abilities">character_abilities</a>
+</li>
+<li><a href="#character_achievements">character_achievements</a>
+</li>
+<li><a href="#character_dungeon_entries">character_dungeon_entries</a>
+</li>
+<li><a href="#character_equipment">character_equipment</a>
+</li>
+<li><a href="#character_hotbar">character_hotbar</a>
+</li>
+<li><a href="#character_inventory">character_inventory</a>
+</li>
+<li><a href="#character_proficiency">character_proficiency</a>
+</li>
+<li><a href="#character_profile">character_profile</a>
+</li>
+<li><a href="#character_pvp">character_pvp</a>
+</li>
+<li><a href="#character_quests">character_quests</a>
+</li>
+<li><a href="#character_skillsets">character_skillsets</a>
+</li>
+<li><a href="#character_warehouse_items">character_warehouse_items</a>
+</li>
+<li><a href="#characters">characters</a>
+</li>
+<li><a href="#community_contacts">community_contacts</a>
+</li>
+<li><a href="#community_families">community_families</a>
+</li>
+<li><a href="#community_family_members">community_family_members</a>
+</li>
+<li><a href="#doodad_storage">doodad_storage</a>
+</li>
+<li><a href="#doodads">doodads</a>
+</li>
+<li><a href="#guild_members">guild_members</a>
+</li>
+<li><a href="#guild_ranks">guild_ranks</a>
+</li>
+<li><a href="#guilds">guilds</a>
+</li>
+<li><a href="#item_uid_conflicts">item_uid_conflicts</a>
+</li>
+<li><a href="#mail">mail</a>
+</li>
+<li><a href="#mail_receipts">mail_receipts</a>
+</li>
+<li><a href="#shard_state">shard_state</a>
+</li>
+<li><a href="#trade_demand">trade_demand</a>
+</li>
+<li><a href="#world_outbox">world_outbox</a>
+
+</li>
+</ul>
+</li>
+<li><a href="#axiom_auction">axiom_auction</a>
+<ul>
+<li><a href="#auction_bids">auction_bids</a>
+</li>
+<li><a href="#auction_create_receipts">auction_create_receipts</a>
+</li>
+<li><a href="#auction_purchases">auction_purchases</a>
+</li>
+<li><a href="#mail_outbox">mail_outbox</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

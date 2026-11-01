@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World building guide · Axiom Docs</title>
+<meta name="description" content="This guide takes you from an empty flat map to a zone you can walk around: terrain, textures, trees, props, sky and light, then NPCs, spawn points, gatherables and the map, all wired into the server. It&#x27;s for Unity 6.3…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html" class="active" aria-current="page">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/WORLD_BUILDING_GUIDE.md</code></div>
+<h1 id="world-building-guide">World building guide<a class="anchor" href="#world-building-guide" title="Permanent link">#</a></h1>
+<p>This guide takes you from an empty flat map to a zone you can walk around:
+terrain, textures, trees, props, sky and light, then NPCs, spawn points,
+gatherables and the map, all wired into the server. It's for Unity 6.3 with
+HDRP, and assumes you're new to Unity.</p>
+<p>Do Part 1 once. After that, Part 2 is the loop you'll repeat for every new
+area.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Unity basics you'll use constantly</td>
+</tr>
+<tr>
+<td>1</td>
+<td>One-time setup: sky, light, settings, packages</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Build a zone, step by step</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Props, buildings and art</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Putting gameplay in the world (NPCs, spawns, gatherables, zones, map)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Dungeons</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Performance</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Checklist, troubleshooting, links</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="how-axioms-world-is-built-read-once">How Axiom's world is built (read once)<a class="anchor" href="#how-axioms-world-is-built-read-once" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>One persistent scene, many tiles.</strong> <code>Assets/AxiomMMOKit/Axiom.Client/World/main_world.unity</code>
+  is always loaded. It holds the camera, sun, sky, UI and the registries.
+  The ground is split into <strong>tiles</strong>: 512 m × 512 m squares, each its own
+  scene named <code>tile_&lt;x&gt;_&lt;z&gt;</code> (for example <code>tile_-1_0</code>).</li>
+<li>Tile scenes live in <code>Assets/AxiomMMOKit/Axiom.Client/World/Tiles/&lt;zone&gt;/</code>.</li>
+<li>Tile (0,0) covers world X 0-512 and Z 0-512. Tile (-1,0) covers X -512 to 0.</li>
+<li><strong>Streaming.</strong> In play, <code>WorldStreamer</code> loads the 3×3 block of tiles
+  around you and unloads tiles further away. There are no loading screens:
+  that's the seamless world. A tile scene that isn't in <strong>Build Settings</strong>
+  is treated as empty, so new tiles must be added there (Part 2, step 9).</li>
+<li><strong>The server knows the ground from the collision export.</strong> The server has
+  no Unity. It walks players and NPCs on the <strong>movement collision</strong> you
+  export (terrain heightmaps plus static colliders, in
+  <code>Axiom.Server.World/Data/world_collision</code>). Client and server must hold
+  identical files.</li>
+<li><strong>Re-export after every sculpt or scenery move</strong>, or the server's
+    ground and yours disagree and players rubber-band (or are refused with
+    "collision data mismatch").</li>
+<li><strong>Gameplay things are data, not scene objects.</strong> NPCs, player spawn
+  points, gatherable nodes and chests live in the world database. Dev Tools
+  lets you place some of them in the Scene view and write them to the
+  database (Part 4).</li>
+<li><strong>Floating origin.</strong> Far from (0,0) the world shifts under you to keep
+  numbers precise. You don't need to do anything, but <strong>Static Batching
+  must stay off</strong> (Part 1).</li>
+</ul>
+<hr>
+<h2 id="part-0-unity-basics-youll-use-constantly">Part 0: Unity basics you'll use constantly<a class="anchor" href="#part-0-unity-basics-youll-use-constantly" title="Permanent link">#</a></h2>
+<p><strong>Windows</strong> (all under the <strong>Window</strong> menu if one goes missing):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Window</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scene</strong></td>
+<td>Where you build. Fly around and place things</td>
+</tr>
+<tr>
+<td><strong>Game</strong></td>
+<td>What the player sees in Play mode</td>
+</tr>
+<tr>
+<td><strong>Hierarchy</strong></td>
+<td>Every object in the open scenes, as a tree. Scenes appear as bold headers when several are open</td>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>Your files (<code>Assets/...</code>)</td>
+</tr>
+<tr>
+<td><strong>Inspector</strong></td>
+<td>Settings of whatever is selected</td>
+</tr>
+<tr>
+<td><strong>Console</strong></td>
+<td>Errors (red), warnings (yellow), logs</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Moving around the Scene view:</strong>
+- <strong>Hold right mouse + WASD</strong> flies, like a game. <strong>Q/E</strong> go down/up.
+  Scroll while flying changes speed.
+- <strong>F</strong> frames the selected object. Double-click an object in the
+  Hierarchy does the same.
+- <strong>Alt + left drag</strong> orbits, <strong>middle drag</strong> pans, <strong>scroll</strong> zooms.</p>
+<p><strong>Tools</strong> (top-left of the Scene view, or the keys):
+- <strong>W</strong> move, <strong>E</strong> rotate, <strong>R</strong> scale.
+- Hold <strong>V</strong> while moving to snap a corner to another object's corner.
+- <strong>Ctrl + Shift + drag</strong> the move handle to drop the object onto the
+  surface under the mouse. This is the fastest way to place props on
+  terrain.</p>
+<p><strong>Prefabs:</strong> a saved, reusable object (a house, a tree). Drag one from
+Project into the Scene to place a copy. Double-click a prefab to edit the
+original; every copy updates.</p>
+<p><strong>Several scenes at once:</strong> drag a scene file from Project into the
+<strong>Hierarchy</strong> and it opens alongside the others (additively). That's how
+you edit tiles: <code>main_world</code> plus the tiles you're working on. Right-click
+a scene header in the Hierarchy for <strong>Save Scene</strong> and <strong>Unload Scene</strong>.
+<strong>Ctrl+S</strong> saves all open scenes.</p>
+<p><strong>Packages:</strong> <strong>Window &gt; Package Manager</strong> (in Unity 6.3 it's under
+<strong>Window &gt; Package Management</strong>). Install things from <strong>Unity Registry</strong>.</p>
+<hr>
+<h2 id="part-1-one-time-setup">Part 1: One-time setup<a class="anchor" href="#part-1-one-time-setup" title="Permanent link">#</a></h2>
+<h3 id="11-turn-off-static-batching">1.1 Turn off static batching<a class="anchor" href="#11-turn-off-static-batching" title="Permanent link">#</a></h3>
+<p><strong>Edit &gt; Project Settings &gt; Player &gt; Other Settings</strong>. Untick <strong>Static
+Batching</strong>. Static batching bakes positions, which breaks when the floating
+origin moves the world.</p>
+<h3 id="12-install-terrain-tools">1.2 Install Terrain Tools<a class="anchor" href="#12-install-terrain-tools" title="Permanent link">#</a></h3>
+<p><strong>Package Manager &gt; Unity Registry</strong>, search <strong>Terrain Tools</strong>, then
+<strong>Install</strong>. It adds better sculpting brushes (Smooth, Terrace, Erosion,
+Noise...) and the <strong>Terrain Toolbox</strong>.</p>
+<p>Optional but very useful: the free <strong>Terrain Sample Asset Pack</strong> from the
+Asset Store. It has rock, grass, dirt and snow terrain layers and brushes,
+so your first terrain doesn't look like a grey blob.</p>
+<h3 id="13-sky-fog-and-exposure-in-main_world">1.3 Sky, fog and exposure in main_world<a class="anchor" href="#13-sky-fog-and-exposure-in-main_world" title="Permanent link">#</a></h3>
+<p><code>main_world</code> has a sun but <strong>no sky volume yet</strong>. HDRP needs one for sky,
+ambient light, fog and exposure.</p>
+<ol>
+<li>Open <code>main_world.unity</code>.</li>
+<li><strong>GameObject &gt; Volume &gt; Sky and Fog Global Volume</strong>. This creates a
+   Global Volume with a Visual Environment, a Physically Based Sky and
+   Fog.</li>
+<li>Select it. In the <strong>Volume</strong> component, make sure <strong>Mode = Global</strong> and
+   a <strong>Profile</strong> is assigned. Click <strong>New</strong> if the Profile is empty. Then
+   check these overrides; click <strong>Add Override</strong> to add any that are
+   missing:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Override</th>
+<th>Set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Visual Environment</strong></td>
+<td>Sky Type: Physically Based Sky. Ambient Mode: Dynamic</td>
+</tr>
+<tr>
+<td><strong>Physically Based Sky</strong></td>
+<td>The defaults are an Earth-like sky. Planet type Earth (Simple) is fine</td>
+</tr>
+<tr>
+<td><strong>Fog</strong></td>
+<td>Enable on. Fog Attenuation Distance around 400-1000 m to start. Turn <strong>Volumetric Fog</strong> on for light shafts</td>
+</tr>
+<tr>
+<td><strong>Exposure</strong></td>
+<td>Mode: <strong>Automatic Histogram</strong> (adapts like an eye). Limit Min/Max around 8 and 15</td>
+</tr>
+<tr>
+<td><strong>Volumetric Clouds</strong> (optional)</td>
+<td>Enable. Pick a preset like Sparse or Cloudy</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li>Select <strong>Directional Light</strong> (the sun):
+   - <strong>Intensity</strong> about <strong>100000 lux</strong> for midday (HDRP uses real-world
+     light units). Lower is dawn or dusk.
+   - Rotate it with <strong>E</strong> to move the sun. The sky follows it.
+   - <strong>Shadows</strong>: on.</li>
+</ol>
+<p>Keep this volume in <strong>main_world only</strong>, never in a tile scene, so the sky
+is the same everywhere. For a special area later (a gloomy swamp), add a
+<strong>Local Volume</strong> with a box collider in that tile, with stronger fog.</p>
+<h3 id="14-check-the-tile-tools">1.4 Check the tile tools<a class="anchor" href="#14-check-the-tile-tools" title="Permanent link">#</a></h3>
+<p>Open <strong>Tools &gt; Axiom &gt; Dev Tools</strong> (Shift+Alt+D) and go to the <strong>World Tiles</strong>
+tab. <strong>Tile scene folder</strong> must read <code>Assets/AxiomMMOKit/Axiom.Client/World/Tiles</code>; set
+it if not. Turn on the Scene view grid there. You'll see:</p>
+<ul>
+<li><strong>bright blue</strong>: tiles that are open;</li>
+<li><strong>dim blue</strong>: tiles that exist but aren't open;</li>
+<li><strong>grey</strong>: no tile yet.</li>
+</ul>
+<hr>
+<h2 id="part-2-build-a-zone-step-by-step">Part 2: Build a zone, step by step<a class="anchor" href="#part-2-build-a-zone-step-by-step" title="Permanent link">#</a></h2>
+<p>Example: a starting meadow east of town, tiles (0,0) and (1,0).</p>
+<h3 id="step-1-plan-on-paper">Step 1: Plan on paper<a class="anchor" href="#step-1-plan-on-paper" title="Permanent link">#</a></h3>
+<p>Sketch the zone: where the town is, the roads, a river or lake, a forest,
+a mob camp, a rift spot. Note the world coordinates. Tiles are 512 m, so
+two tiles is a kilometre end to end. That's a lot of walking: real MMO
+zones put something interesting every 100-150 m.</p>
+<h3 id="step-2-create-the-tiles">Step 2: Create the tiles<a class="anchor" href="#step-2-create-the-tiles" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; World Tiles &gt; Create tiles</strong>:</p>
+<ol>
+<li>Enter <strong>From (0, 0) To (1, 0)</strong>, or select <strong>Tile under Scene camera</strong>.</li>
+<li>Tick <strong>Create terrain</strong>.
+   - <strong>Heightmap resolution: 513</strong> (1 m detail per sample). Use 1025 for
+     a hero area with lots of detail.
+   - <strong>Max height: 600</strong> (the tallest peak possible, in metres).</li>
+<li>Click <strong>Create</strong>. Each tile gets its own scene and a 512 m terrain, and
+   the terrains connect at the edges.</li>
+</ol>
+<p>Existing tiles are skipped, so this is safe to repeat.</p>
+<h3 id="step-3-open-the-tiles-to-edit">Step 3: Open the tiles to edit<a class="anchor" href="#step-3-open-the-tiles-to-edit" title="Permanent link">#</a></h3>
+<p>Open <code>main_world</code>, then drag the tile scenes from <code>World/Tiles/...</code> into
+the Hierarchy. Or, on the Zones tab, use <strong>Open tiles</strong> for a zone. Always
+keep main_world open as well, so you see the real sky and light.</p>
+<h3 id="step-4-sculpt">Step 4: Sculpt<a class="anchor" href="#step-4-sculpt" title="Permanent link">#</a></h3>
+<p>Select a terrain. In the Inspector, the <strong>Terrain</strong> component has a toolbar.
+The brush icon is <strong>Paint Terrain</strong>. Its dropdown has the sculpt tools
+(with Terrain Tools installed you get many more):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Raise or Lower Terrain</strong></td>
+<td>Hills (click). Hold <strong>Shift</strong> to lower: valleys, lake beds</td>
+</tr>
+<tr>
+<td><strong>Set Height</strong></td>
+<td>Flat building plots and town squares. Shift-click samples a height</td>
+</tr>
+<tr>
+<td><strong>Smooth Height</strong></td>
+<td>Softens everything. Use it a lot</td>
+</tr>
+<tr>
+<td><strong>Stamp Terrain</strong></td>
+<td>Drops a mountain or crater shape from a brush texture</td>
+</tr>
+<tr>
+<td><strong>Erosion</strong> (Terrain Tools)</td>
+<td>Makes hills look weathered and real</td>
+</tr>
+<tr>
+<td><strong>Terrace</strong></td>
+<td>Rice fields, cliffs</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tips:
+- <strong>Brush Size</strong> is in metres; <strong>Opacity</strong> is strength. Start big and soft
+  for the overall shape, then go small for detail.
+- Keep slopes you want walkable under about <strong>50°</strong>. The motor's slope
+  limit is 50°; steeper is a wall.
+- Brushes work <strong>across tile edges</strong> when both tiles are open, so sculpt
+  over seams freely.
+- Ground level is up to you. Leave room below if you'll want lakes and a
+  coast later, for example a base ground height of 20-50 m.</p>
+<h3 id="step-5-paint-ground-textures-terrain-layers">Step 5: Paint ground textures (terrain layers)<a class="anchor" href="#step-5-paint-ground-textures-terrain-layers" title="Permanent link">#</a></h3>
+<ol>
+<li>Get textures: <a href="https://polyhaven.com/textures">Poly Haven</a> and
+   <a href="https://ambientcg.com">ambientCG</a> are free (CC0). Download the
+   <strong>2K</strong> "color/albedo", "normal" and optionally "AO/roughness" maps for
+   grass, dirt, rock and path. Put them in <code>Assets/AxiomMMOKit/Axiom.Client/Art/Terrain/&lt;name&gt;/</code>.</li>
+<li><strong>Create &gt; Terrain Layer</strong> (in the Project window). Set <strong>Diffuse</strong> to
+   the colour map and <strong>Normal Map</strong> to the normal map. If Unity asks, click
+   <strong>Fix Now</strong> to mark it as a normal map. Set <strong>Tiling Size</strong> around 4-10 m.</li>
+<li>Select the terrain, choose <strong>Paint Terrain &gt; Paint Texture</strong>, and
+   <strong>Add Layer</strong> for each one. The <strong>first</strong> layer covers everything: make
+   it grass.</li>
+<li>Paint dirt along paths, rock on steep slopes, and so on.</li>
+<li>The terrain's <strong>material</strong> must be HDRP's <strong>TerrainLit</strong>. New terrains
+   get it automatically; if a terrain is pink, set its Material to
+   <code>HDRP/TerrainLit</code>.</li>
+</ol>
+<h3 id="step-6-trees-and-grass">Step 6: Trees and grass<a class="anchor" href="#step-6-trees-and-grass" title="Permanent link">#</a></h3>
+<p><strong>Trees</strong> (Paint Trees tool):
+1. Get tree prefabs (Quaternius "Stylized Nature" / "Ultimate Nature"
+   packs, or the Terrain Sample Asset Pack). Import them into
+   <code>Assets/AxiomMMOKit/Axiom.Client/Art/Nature/</code> and convert their materials to HDRP (see
+   <code>CHARACTER_ANIMATION_README.md</code> 3.2).
+2. <strong>Edit Trees &gt; Add Tree</strong>, then pick the prefab. A tree with a
+   <strong>LODGroup</strong> performs much better.
+3. Set <strong>Brush Size</strong> and <strong>Tree Density</strong> and paint. Shift erases.</p>
+<p><strong>Grass and small plants</strong> (Paint Details tool):
+- Use <strong>Add Detail Mesh</strong> with a grass mesh prefab and Render Mode
+  <strong>Instanced Mesh</strong>, not grass-texture billboards, which HDRP doesn't
+  draw well.
+- Keep <strong>Detail Distance</strong> (terrain <strong>Settings</strong>, the gear tab) around 80 m
+  for performance.</p>
+<p>Trees and grass are visuals only. The server doesn't know about them, so
+they don't block movement there.</p>
+<h3 id="step-7-water-later">Step 7: Water (later)<a class="anchor" href="#step-7-water-later" title="Permanent link">#</a></h3>
+<p>Water and the ocean were taken out on purpose until the land exists. When
+you're ready, a lake is: a dip in the terrain, an HDRP <strong>Water Surface</strong>
+(GameObject &gt; Water &gt; Surface &gt; Lake or Pool), and a flat collider on a
+water layer set as the <code>LocalCharacterMotor</code>'s <strong>Water Mask</strong>. Ask for it
+when you get there; the server side needs a matching water table.</p>
+<h3 id="step-8-export-the-ground-to-the-server">Step 8: Export the ground to the server<a class="anchor" href="#step-8-export-the-ground-to-the-server" title="Permanent link">#</a></h3>
+<p><strong>Do this after every sculpt.</strong> It's the step everyone forgets.</p>
+<ol>
+<li>Save your open scenes.</li>
+<li><strong>Dev Tools &gt; World Tiles &gt; Server collision &gt; Export collision
+   (changed scenes only)</strong>. It bakes the tile scenes and prefabs that
+   changed since last time into <code>StreamingAssets/World/MovementCollision</code>
+   and copies the result to the server's <code>Data/world_collision</code> and every
+   built copy under <code>bin/</code> (where the server is is set once, in
+   <strong>Dev Tools &gt; Settings</strong>).</li>
+<li>The section shows whether the server's copy matches the client's.
+   <strong>Restart the World server</strong> to load it.</li>
+</ol>
+<p>The same export is on <strong>Tools &gt; Axiom &gt; Server Exports &gt; Movement Collision</strong>. Use
+<strong>Full rebuild</strong> if an incremental export ever looks wrong.</p>
+<blockquote>
+<p>The old <strong>Export All Terrain</strong> (<code>.achtmap</code> files into <code>Data/terrain_data</code>)
+and <strong>World &gt; Terrain &gt; Export Heightmap For Server</strong> are gone: the
+server never read that folder.</p>
+</blockquote>
+<h3 id="step-9-build-settings">Step 9: Build Settings<a class="anchor" href="#step-9-build-settings" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; World Tiles &gt; Add all tile scenes to Build Settings</strong>. A tile
+that's missing from Build Settings is silently treated as empty land when
+you play.</p>
+<h3 id="step-10-validate-and-play">Step 10: Validate and play<a class="anchor" href="#step-10-validate-and-play" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Dev Tools &gt; World Tiles &gt; Validate world partition</strong>: oversized
+   terrains, objects outside their tile, missing scenes.</li>
+<li>Start the servers (Auth, Persistence, World), open <strong>server_select</strong>
+   and press <strong>Play</strong>.</li>
+<li>Teleport or walk to your zone. Check that:
+   - you walk on the ground, not floating or sunk;
+   - you don't snap back on slopes;
+   - tiles appear before you reach them.</li>
+</ol>
+<hr>
+<h2 id="part-3-props-buildings-and-art">Part 3: Props, buildings and art<a class="anchor" href="#part-3-props-buildings-and-art" title="Permanent link">#</a></h2>
+<h3 id="where-art-goes">Where art goes<a class="anchor" href="#where-art-goes" title="Permanent link">#</a></h3>
+<p>The folder decides how a model imports (see <code>ASSET_PIPELINE.md</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>For</th>
+<th>Import</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Art/Props/</code>, <code>Art/Doodads/</code>, <code>Art/Nature/</code></td>
+<td>Rocks, crates, fences, trees, nodes</td>
+<td>Static, no colliders</td>
+</tr>
+<tr>
+<td><code>Art/Housing/</code></td>
+<td>Houses, furniture</td>
+<td>Static, mesh colliders, lightmap UVs</td>
+</tr>
+<tr>
+<td><code>Art/Dungeons/</code></td>
+<td>Dungeon walls, floors, kit pieces</td>
+<td>Static, mesh colliders, lightmap UVs</td>
+</tr>
+<tr>
+<td><code>Art/Vehicles/</code></td>
+<td>Carts</td>
+<td>Static</td>
+</tr>
+<tr>
+<td><code>Art/Creatures/</code></td>
+<td>Monsters (<code>Creatures/Humanoid/</code> for human NPCs)</td>
+<td>Rigged</td>
+</tr>
+<tr>
+<td><code>Art/Characters/</code>, <code>Art/Animations/</code>, <code>Art/Gear/</code></td>
+<td>See <code>CHARACTER_ANIMATION_README.md</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Rules for every model: <strong>1 unit = 1 metre</strong>, <strong>pivot at the base</strong>, <strong>front
+faces +Z</strong>. LODs named <code>Name_LOD0</code>, <code>Name_LOD1</code>... get a LODGroup
+automatically.</p>
+<h3 id="two-kinds-of-props">Two kinds of props<a class="anchor" href="#two-kinds-of-props" title="Permanent link">#</a></h3>
+<p><strong>1. Scenery: just place it in the tile scene.</strong> Rocks, fences, ruins,
+houses in town you can't own, bridges, cliffs. They're visual and block
+movement on the client.
+1. Make a prefab: select the model and run <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Make
+   World Prefab From Selected Model</strong>.
+2. Drag the prefab into the <strong>tile scene</strong> it stands in (check the
+   Hierarchy: the object must sit under that tile's scene header, not
+   main_world's).
+3. Drop it on the ground with <strong>Ctrl+Shift+drag</strong>.
+4. Tick <strong>Static</strong> (top-right of the Inspector), so it gets baked lighting
+   and occlusion.</p>
+<p><strong>An object must belong to the tile it's in.</strong> If it straddles a border,
+put it in the tile that holds its centre. <strong>Validate world partition</strong>
+flags mistakes.</p>
+<p><strong>2. Gameplay objects: data, not scene.</strong> Anything the server must know
+about: ore veins, herb bushes, trees you can chop, chests, doors, crafting
+stations, dungeon portals. These are <strong>doodads</strong> (Part 4.3). Make the
+prefab the same way, but don't place it in a scene: the server spawns it.</p>
+<h3 id="free-art">Free art<a class="anchor" href="#free-art" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Site</th>
+<th>What</th>
+<th>Licence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://quaternius.com">Quaternius</a></td>
+<td>Nature, medieval village, dungeon, monster and weapon packs</td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><a href="https://kenney.nl/assets">Kenney</a></td>
+<td>Stylised props and kits</td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><a href="https://polyhaven.com">Poly Haven</a></td>
+<td>Photoreal textures, HDRIs, some models</td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><a href="https://ambientcg.com">ambientCG</a></td>
+<td>Textures</td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><a href="https://assetstore.unity.com/?free=true">Unity Asset Store, free</a></td>
+<td>Lots; check each pack says HDRP or Built-in</td>
+<td>Asset Store licence</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Mix styles carefully.</strong> Quaternius and Kenney are low-poly and colourful;
+Poly Haven is photoreal. Pick one look per zone.</p>
+<h3 id="making-it-look-good-fast-wins">Making it look good (fast wins)<a class="anchor" href="#making-it-look-good-fast-wins" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Big shapes first:</strong> hills, cliffs and forest masses. Details last.</li>
+<li><strong>Paths tell players where to go.</strong> A dirt path from town to the first
+  quest area does more than any signpost.</li>
+<li><strong>Landmarks</strong> visible from far away (a tower, a giant tree) stop players
+  getting lost.</li>
+<li><strong>Cluster</strong> props in groups of 3-7, mixed sizes, rotated randomly. Never
+  in perfect rows, unless it's a fence.</li>
+<li><strong>Fog</strong> in the volume adds depth to everything; raise it a little.</li>
+<li><strong>Sun angle:</strong> a lower sun (morning or evening) gives longer shadows and
+  looks better than noon.</li>
+</ul>
+<hr>
+<h2 id="part-4-putting-gameplay-in-the-world">Part 4: Putting gameplay in the world<a class="anchor" href="#part-4-putting-gameplay-in-the-world" title="Permanent link">#</a></h2>
+<h3 id="41-zones-names-pvp-rules-levels">4.1 Zones (names, PvP rules, levels)<a class="anchor" href="#41-zones-names-pvp-rules-levels" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; Zones</strong>:
+1. <strong>Add zone</strong>: give it a Key (<code>eastern_meadow</code>), a Display name ("Eastern
+   Meadow"), PvP mode (Safe / Peaceful / Contested / War) and a level
+   range.
+2. <strong>Paint</strong> it on the map (32 m cells; Ctrl+click fills a whole tile), or
+   tick <strong>Paint in Scene view</strong> and paint straight onto the terrain.
+3. <strong>Save (client + server)</strong>. It writes the client's
+   <code>StreamingAssets/World/zones.aczmap</code> and the server's
+   <code>Data/world/zones.aczmap</code>.
+4. Restart the World server. Entering the zone now shows its name, and
+   Safe/Peaceful zones block PvP.
+5. Optional: <strong>Organize tile scenes into zone folders</strong> tidies
+   <code>World/Tiles/&lt;zone&gt;/</code>.</p>
+<h3 id="42-npc-spawners-mobs-vendors-quest-givers">4.2 NPC spawners (mobs, vendors, quest givers)<a class="anchor" href="#42-npc-spawners-mobs-vendors-quest-givers" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; World Map</strong>:
+1. <strong>⟳ Load</strong> reads the world database.
+2. <strong>DB → Scene</strong> shows existing spawners as markers under
+   <code>~WorldMap_NpcSpawners</code> in main_world.
+3. Fly to where you want mobs and click <strong>+ Add at Camera</strong>. In the
+   marker's Inspector, set:
+   - <strong>TemplateId</strong>: the NPC, from Content Studio &gt; NpcTemplates;
+   - <strong>Count</strong>: how many;
+   - <strong>Radius</strong>: how far they wander;
+   - then click <strong>Snap to Ground</strong>.
+4. <strong>Scene → DB</strong> writes everything in one go. Stop the World server first
+   (it locks the database), or use <strong>Export Patch</strong> to write an <code>.sql</code>
+   file instead.
+5. Restart the World server.</p>
+<p>Marker colours: grey = new, amber = edited, red = saved.</p>
+<p>To make <strong>a new kind of NPC</strong> (a wolf, a guard), use <strong>Tools &gt; Axiom &gt; Create &gt;
+NPC…</strong>: copy one that works, set its stats, model, loot and spawners, and
+press Create (<code>EDITOR_SUITE.md</code>, section 4). Content Studio &gt; NpcTemplates
+is for editing ones that exist. Its model and animations are Part 7 of
+<code>CHARACTER_ANIMATION_README.md</code>.</p>
+<h3 id="43-gatherables-chests-stations-doodads">4.3 Gatherables, chests, stations (doodads)<a class="anchor" href="#43-gatherables-chests-stations-doodads" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>A new kind of object</strong> (skip if it exists): <strong>Tools &gt; Axiom &gt; Create &gt; World
+   Object…</strong>. Copy a working one (Iron Vein), rename it, drag its model in,
+   change what its action gives and its timers, press Create.
+   (<code>EDITOR_SUITE.md</code> section 4; <code>DOODADS.md</code> explains phases and actions.)</li>
+<li><strong>Place them: Dev Tools &gt; Doodads.</strong>
+   - <strong>Load into scene</strong> shows the ones already saved nearby.
+   - Pick the object in the list, <strong>Place in the Scene view</strong>, click the
+     ground (Shift keeps the facing, Esc stops).
+   - Move, rotate and delete markers like any object.
+   - <strong>Save to database</strong>.</li>
+<li>Restart the World server.</li>
+</ol>
+<h3 id="44-player-spawn-points-graveyards-starting-area">4.4 Player spawn points (graveyards, starting area)<a class="anchor" href="#44-player-spawn-points-graveyards-starting-area" title="Permanent link">#</a></h3>
+<p><strong>Dev Tools &gt; Spawn Points</strong>. It works the same way as 4.2: <strong>⟳ Load from
+DB</strong>, <strong>DB → Scene</strong>, <strong>+ Add at Camera</strong>, then <strong>Scene → DB</strong>.</p>
+<h3 id="45-the-world-map">4.5 The world map<a class="anchor" href="#45-the-world-map" title="Permanent link">#</a></h3>
+<p>After building, bake the map so the M-key map shows your terrain:
+- <strong>Tools &gt; Axiom &gt; World &gt; Maps &gt; Bake Loaded Scene Map</strong> (open the tiles first)
+  for a top-down picture.
+- Or <strong>Rebuild Terrain Atlas</strong> for a terrain-only version.
+- <strong>Export Scene Map Points</strong> turns <code>MapPointAnchor</code> components (towns,
+  landmarks you add) into labelled map points.
+- <strong>Validate Atlas and Coordinates</strong> checks the result.</p>
+<h3 id="46-housing-plots">4.6 Housing plots<a class="anchor" href="#46-housing-plots" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Content Studio &gt; HousingAreas</strong> has a row per area.</li>
+<li>Draw its outline with <strong>Tools &gt; Axiom &gt; World &gt; Housing &gt; Create Zone Outline</strong>, in the
+   tile.</li>
+<li>Write it to the server with <strong>Export loaded zone outlines</strong>. The
+   outline's <code>AreaId</code> must match the row.</li>
+</ol>
+<hr>
+<h2 id="part-5-dungeons">Part 5: Dungeons<a class="anchor" href="#part-5-dungeons" title="Permanent link">#</a></h2>
+<p>A dungeon is a set of tiles <strong>far away</strong> from the overworld, in its own
+spot on the grid (the existing ones are at tiles 32,32 and 33,32). Players
+are teleported there by a portal doodad.</p>
+<ol>
+<li>Create tiles at an unused far coordinate, next to the existing
+   dungeons (the Dungeon wizard picks the next free one, e.g. 34,32).</li>
+<li>Build it from a dungeon kit in <code>Art/Dungeons/</code> (mesh colliders on) on a
+   flat terrain, or no terrain and a modelled floor. The server only knows
+   terrain height, so a dungeon floor at a single height is simplest.</li>
+<li>Export the heightmap (Part 2, step 8).</li>
+<li><strong>Tools &gt; Axiom &gt; Create &gt; Dungeon…</strong> does the rest in one window: the
+   Dungeons row (its region must cover your tiles), mobs and a boss, the
+   entrance and exit portals, and the run rules (runs per day, a time
+   limit).</li>
+</ol>
+<p>The complete walkthrough is <strong><code>DUNGEONS.md</code></strong> (Hub &gt; Guides &gt; Dungeons).</p>
+<hr>
+<h2 id="part-6-performance-an-mmo-has-many-players-on-screen">Part 6: Performance (an MMO has many players on screen)<a class="anchor" href="#part-6-performance-an-mmo-has-many-players-on-screen" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Do</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LODs on anything placed often (trees, rocks, houses)</td>
+<td>Far objects draw cheaply</td>
+</tr>
+<tr>
+<td>Mark scenery <strong>Static</strong></td>
+<td>Occlusion culling and baked light</td>
+</tr>
+<tr>
+<td>Keep terrain <strong>Pixel Error</strong> at 5-8, and Detail Distance around 80 m</td>
+<td>Terrain is often the biggest cost</td>
+</tr>
+<tr>
+<td>One material atlas per pack (Quaternius does this)</td>
+<td>Fewer draw calls</td>
+</tr>
+<tr>
+<td>Turn on <strong>Window &gt; Analysis &gt; Rendering Debugger</strong> or the <strong>Stats</strong> button in the Game view</td>
+<td>Shows what's expensive</td>
+</tr>
+<tr>
+<td>Profile with <strong>Window &gt; Analysis &gt; Profiler</strong></td>
+<td>Finds the frame-time spikes</td>
+</tr>
+<tr>
+<td>Keep <strong>Static Batching off</strong></td>
+<td>The floating origin breaks it</td>
+</tr>
+</tbody>
+</table></div>
+<p>Budget per tile, roughly: a few hundred unique props, trees as terrain
+trees, not separate objects.</p>
+<hr>
+<h2 id="part-7-checklist-troubleshooting-and-links">Part 7: Checklist, troubleshooting and links<a class="anchor" href="#part-7-checklist-troubleshooting-and-links" title="Permanent link">#</a></h2>
+<h3 id="new-zone-checklist">New zone checklist<a class="anchor" href="#new-zone-checklist" title="Permanent link">#</a></h3>
+<ul>
+<li>[ ] Tiles created, sculpted, painted, trees and props placed.</li>
+<li>[ ] Every prop sits under its own tile's scene header.</li>
+<li>[ ] <strong>Heightmaps exported</strong> and the server restarted.</li>
+<li>[ ] Tiles in <strong>Build Settings</strong>.</li>
+<li>[ ] Zone painted and saved (client + server).</li>
+<li>[ ] NPC spawners and a spawn point saved to the database.</li>
+<li>[ ] Doodads placed (Dev Tools &gt; Doodads) and saved.</li>
+<li>[ ] Map baked.</li>
+<li>[ ] Walked through it in Play: no floating, no rubber-banding, no pop-in
+      next to you.</li>
+</ul>
+<h3 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rubber-band or snap back on hills</td>
+<td>The server's heightmap is old: export and restart (Part 2, step 8)</td>
+</tr>
+<tr>
+<td>Falling through the ground at a tile</td>
+<td>That tile isn't in Build Settings, or the terrain wasn't saved in its scene</td>
+</tr>
+<tr>
+<td>A whole tile is missing in play</td>
+<td>Not in Build Settings, or its name isn't <code>tile_x_z</code></td>
+</tr>
+<tr>
+<td>Pink terrain or props</td>
+<td>Not HDRP materials: TerrainLit for terrain, HDRP/Lit for props</td>
+</tr>
+<tr>
+<td>Everything is too dark or blown out</td>
+<td>Exposure: use Automatic Histogram; the sun around 100000 lux</td>
+</tr>
+<tr>
+<td>No sky (black or grey)</td>
+<td>No Global Volume in main_world, or Visual Environment's Sky Type isn't set (Part 1.3)</td>
+</tr>
+<tr>
+<td>Objects jitter far from the start area</td>
+<td>Static Batching is on (Part 1.1)</td>
+</tr>
+<tr>
+<td>A prop disappears when you walk away and back</td>
+<td>It's in main_world or the wrong tile: move it to the tile it stands in</td>
+</tr>
+<tr>
+<td>New NPC spawner does nothing</td>
+<td>Not saved (Scene → DB), the server not restarted, or the TemplateId's ModelType has no prefab (Audit)</td>
+</tr>
+<tr>
+<td>Can't save spawners: database locked</td>
+<td>Stop the World server, or use Export Patch</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="guides-to-follow">Guides to follow<a class="anchor" href="#guides-to-follow" title="Permanent link">#</a></h3>
+<p><strong>Unity documentation (Unity 6):</strong>
+- <a href="https://docs.unity3d.com/Manual/terrain-Tools.html">Terrain tools</a>: every built-in brush
+- <a href="https://docs.unity3d.com/Manual/com.unity.terrain-tools.html">Terrain Tools package</a>: the extra brushes and toolbox
+- <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.4/manual/sky.html">HDRP sky</a>: sky types and the Visual Environment
+- <a href="https://unity.com/blog/lighting-and-environments-hdrp-updates-unity-6">Lighting and environments in HDRP, Unity 6 e-book</a>: Unity's free guide to sky, fog, clouds, exposure and light. Worth reading front to back</p>
+<p><strong>Assets:</strong>
+- <a href="https://assetstore.unity.com/packages/2d/textures-materials/terrain-tools-sample-asset-pack-145808">Terrain Sample Asset Pack</a>: free terrain layers and brushes from Unity (<a href="https://unity.com/blog/games/the-latest-unity-terrain-sample-pack-is-here">what's in it</a>)
+- <a href="https://polyhaven.com">Poly Haven</a>, <a href="https://ambientcg.com">ambientCG</a>, <a href="https://quaternius.com">Quaternius</a>, <a href="https://kenney.nl/assets">Kenney</a></p>
+<p><strong>Search YouTube for these</strong> (titles change; search the topic, filter to the last two years):
+- "Unity 6 HDRP terrain tutorial"
+- "Unity terrain tools erosion"
+- "Unity HDRP volumetric fog clouds setup"
+- "level design MMO zone layout": the principles transfer from any engine</p>
+<nav class="pager">
+<a class="prev" href="client-UI.html"><span>Previous</span>UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a>
+<a class="next" href="client-LUASDK.html"><span>Next</span>Axiom Client UI Lua SDK</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#how-axioms-world-is-built-read-once">How Axiom&#x27;s world is built (read once)</a>
+</li>
+<li><a href="#part-0-unity-basics-youll-use-constantly">Part 0: Unity basics you&#x27;ll use constantly</a>
+</li>
+<li><a href="#part-1-one-time-setup">Part 1: One-time setup</a>
+<ul>
+<li><a href="#11-turn-off-static-batching">1.1 Turn off static batching</a>
+</li>
+<li><a href="#12-install-terrain-tools">1.2 Install Terrain Tools</a>
+</li>
+<li><a href="#13-sky-fog-and-exposure-in-main_world">1.3 Sky, fog and exposure in main_world</a>
+</li>
+<li><a href="#14-check-the-tile-tools">1.4 Check the tile tools</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-2-build-a-zone-step-by-step">Part 2: Build a zone, step by step</a>
+<ul>
+<li><a href="#step-1-plan-on-paper">Step 1: Plan on paper</a>
+</li>
+<li><a href="#step-2-create-the-tiles">Step 2: Create the tiles</a>
+</li>
+<li><a href="#step-3-open-the-tiles-to-edit">Step 3: Open the tiles to edit</a>
+</li>
+<li><a href="#step-4-sculpt">Step 4: Sculpt</a>
+</li>
+<li><a href="#step-5-paint-ground-textures-terrain-layers">Step 5: Paint ground textures (terrain layers)</a>
+</li>
+<li><a href="#step-6-trees-and-grass">Step 6: Trees and grass</a>
+</li>
+<li><a href="#step-7-water-later">Step 7: Water (later)</a>
+</li>
+<li><a href="#step-8-export-the-ground-to-the-server">Step 8: Export the ground to the server</a>
+</li>
+<li><a href="#step-9-build-settings">Step 9: Build Settings</a>
+</li>
+<li><a href="#step-10-validate-and-play">Step 10: Validate and play</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-3-props-buildings-and-art">Part 3: Props, buildings and art</a>
+<ul>
+<li><a href="#where-art-goes">Where art goes</a>
+</li>
+<li><a href="#two-kinds-of-props">Two kinds of props</a>
+</li>
+<li><a href="#free-art">Free art</a>
+</li>
+<li><a href="#making-it-look-good-fast-wins">Making it look good (fast wins)</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-4-putting-gameplay-in-the-world">Part 4: Putting gameplay in the world</a>
+<ul>
+<li><a href="#41-zones-names-pvp-rules-levels">4.1 Zones (names, PvP rules, levels)</a>
+</li>
+<li><a href="#42-npc-spawners-mobs-vendors-quest-givers">4.2 NPC spawners (mobs, vendors, quest givers)</a>
+</li>
+<li><a href="#43-gatherables-chests-stations-doodads">4.3 Gatherables, chests, stations (doodads)</a>
+</li>
+<li><a href="#44-player-spawn-points-graveyards-starting-area">4.4 Player spawn points (graveyards, starting area)</a>
+</li>
+<li><a href="#45-the-world-map">4.5 The world map</a>
+</li>
+<li><a href="#46-housing-plots">4.6 Housing plots</a>
+</li>
+</ul>
+</li>
+<li><a href="#part-5-dungeons">Part 5: Dungeons</a>
+</li>
+<li><a href="#part-6-performance-an-mmo-has-many-players-on-screen">Part 6: Performance (an MMO has many players on screen)</a>
+</li>
+<li><a href="#part-7-checklist-troubleshooting-and-links">Part 7: Checklist, troubleshooting and links</a>
+<ul>
+<li><a href="#new-zone-checklist">New zone checklist</a>
+</li>
+<li><a href="#troubleshooting">Troubleshooting</a>
+</li>
+<li><a href="#guides-to-follow">Guides to follow</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

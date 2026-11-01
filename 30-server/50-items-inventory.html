@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Items, Inventory &amp; Equipment · Axiom Docs</title>
+<meta name="description" content="Item templates and copies (grades, durability, gems, uids), the bag and its stacking rules, using and equipping items, cooldown groups, regrading and sockets, the warehouse and coffers - with recipes for potions, weapons and new item behaviours.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html" class="active" aria-current="page">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="items-inventory--equipment">Items, Inventory &amp; Equipment<a class="anchor" href="#items-inventory--equipment" title="Permanent link">#</a></h1>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ItemManager</code></td>
+<td><code>Core/Items/ItemManager.cs</code></td>
+<td>Every item definition in memory: exists?, stack size, binding, gear info, grades, gems, upgrade materials, uses, vendor price.</td>
+</tr>
+<tr>
+<td><code>ItemInstance</code></td>
+<td><code>Axiom.Network/Shared/Items/ItemInstance.cs</code></td>
+<td>What makes one <strong>copy</strong> different: grade, wear, gems, uid. Travels with the item everywhere.</td>
+</tr>
+<tr>
+<td><code>InventoryComponent</code>, <code>BagMath</code></td>
+<td><code>Core/Players/Components</code>, <code>Core/Inventory</code></td>
+<td>The bag and the one set of placement rules every writer uses.</td>
+</tr>
+<tr>
+<td><code>PlayerManager</code> item API</td>
+<td><code>Core/Players/PlayerManager.cs</code></td>
+<td><code>TryAddItem</code>, <code>TryRemoveItem</code>, <code>TryMoveItem</code>, <code>TryDropItem</code>, <code>TryUseItem</code>... (<a href="10-players-sessions.html#gold-and-items">Players</a>)</td>
+</tr>
+<tr>
+<td><code>EquipmentManager</code></td>
+<td><code>Core/Items/EquipmentManager.cs</code></td>
+<td>Equip/unequip, binding on equip, stat recalculation.</td>
+</tr>
+<tr>
+<td><code>ItemUpgradeService</code></td>
+<td><code>Core/Items/ItemUpgradeService.cs</code></td>
+<td>Regrade, socket, unsocket, repair.</td>
+</tr>
+<tr>
+<td><code>ItemUids</code></td>
+<td><code>Core/Items/ItemUids.cs</code></td>
+<td>Snowflake ids for gear copies.</td>
+</tr>
+<tr>
+<td><code>WarehouseService</code></td>
+<td><code>Core/Warehouse</code></td>
+<td>The personal warehouse (bank).</td>
+</tr>
+<tr>
+<td><code>StorageService</code></td>
+<td><code>Core/Housing/StorageService.cs</code></td>
+<td>Coffers: storage inside a doodad.</td>
+</tr>
+<tr>
+<td><code>InventoryExpansion</code></td>
+<td><code>Core/Inventory</code></td>
+<td>Bag expansion scrolls.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="templates-vs-copies">Templates vs copies<a class="anchor" href="#templates-vs-copies" title="Permanent link">#</a></h2>
+<p>An <strong>item template</strong> is a row of <code>Items</code> (+ <code>ItemStats</code> for gear, <code>ItemUses</code> for usables, <code>ItemGems</code>, <code>ItemUpgradeMaterials</code>, <code>GearVisuals</code>...). Players never hold templates; they hold <strong>slots</strong>:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">InventorySlot</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ItemTemplateId</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0 = empty</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Quantity</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Bound</span><span class="p">;</span><span class="w">           </span><span class="c1">// soulbound: can&#39;t trade, never stacks with unbound</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ItemInstance</span><span class="w"> </span><span class="n">Inst</span><span class="p">;</span><span class="w">    </span><span class="c1">// grade, wear, gems, uid - default = plain</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>ItemInstance</code> (protocol 28):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Grade</code></td>
+<td>0 = the item's <code>BaseGrade</code>; otherwise an <code>ItemGrades.Id</code> (1 Crude … 12 Mythic). Grade multiplies the gear's stats.</td>
+</tr>
+<tr>
+<td><code>Wear</code></td>
+<td>durability used. At <code>MaxDurability</code> the item is <strong>broken</strong>: its stats stop counting until repaired.</td>
+</tr>
+<tr>
+<td><code>Gem1..3</code></td>
+<td>socketed gem item ids (up to the gear's <code>SocketCount</code>). Gem stats aren't scaled by grade.</td>
+</tr>
+<tr>
+<td><code>Uid</code></td>
+<td>unique id of this copy of gear (<code>ItemUids</code>): 41 bits ms since 2026-01-01, 10 bits <code>World:ItemUidNode</code>, 12 bits sequence. Stackables never get one.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>ItemManager.Normalize(itemId, inst)</code> makes non-gear plain and clamps values, so a stack of 200 Iron Ore never carries an identity.</p>
+<h2 id="the-bag">The bag<a class="anchor" href="#the-bag" title="Permanent link">#</a></h2>
+<ul>
+<li>Capacity starts at <code>InventoryRules.DefaultSlots</code> (50), grows by 10 per <strong>Inventory Expansion Scroll</strong> (item 90003), up to 500.</li>
+<li><strong>Stacking</strong> (<code>BagMath</code>): two stacks merge only if item, binding <strong>and</strong> instance are identical and the item stacks at all. A stack never exceeds <code>ItemManager.MaxStack(item)</code>: <code>Items.max_stack</code>, or 1 for gear, or <code>CombatRules.ItemDefaultMaxStack</code> (1000).</li>
+<li>Placement is <strong>all-or-nothing</strong>: <code>TryAddItem</code> plans on a copy of the bag; if the whole quantity doesn't fit, nothing changes.</li>
+<li>The client never changes its own bag. It sends requests (<code>C2WMoveItem</code>, <code>C2WUseItem</code>, <code>C2WDropItem</code>) and waits for <code>W2CInventorySlotChanged</code> from the server. Sort (<code>slot -2</code>) and expand (<code>slot -1</code>) are special requests.</li>
+</ul>
+<h2 id="using-an-item">Using an item<a class="anchor" href="#using-an-item" title="Permanent link">#</a></h2>
+<p><code>C2WUseItem { Slot }</code> → <code>PlayerManager.TryUseItem</code>:</p>
+<ol>
+<li>Gear (has an equip slot) → <code>EquipmentManager.TryEquip</code>.</li>
+<li>Otherwise the item's <code>ItemUses</code> row: cooldown (<code>CooldownMs</code>, shared by everything in the same <code>CooldownGroup</code>), optional <code>CastTimeMs</code> (a cast bar like a skill), <code>LaborCost</code>.</li>
+<li>Its effects: <code>Effects</code> rows with <code>OwnerType = 1</code> and <code>OwnerId = item_id</code>, through <code>EffectApplier</code> (<a href="30-combat.html#effects">Combat</a>). A potion is a Heal effect, a mount whistle a Mount effect, a seed bag a Place Doodad effect, a scroll a Grant Patron effect.</li>
+<li><code>ConsumeOnUse</code> removes one.</li>
+<li><code>W2CItemCooldown { ItemIds[], DurationMs }</code> greys out every item in the group, and Lua <code>OnItemUse</code> fires.</li>
+</ol>
+<h2 id="equipment">Equipment<a class="anchor" href="#equipment" title="Permanent link">#</a></h2>
+<p><code>EquipSlot</code>: 1 Head, 2 Chest, 3 Legs, 4 Hands, 5 Feet, 6 MainHand, 7 OffHand, 8 Neck, 9 Ring, 10 Trinket, 11 Backpack (a carried trade pack, not gear).</p>
+<p>Equipping checks class (<code>AllowedClasses</code>, <code>CharacterClassRules.CanWear</code>), level (<code>required_level</code>), two-handed rules (needs a free bag slot for the off-hand), binds bind-on-equip items, marks bag and equipment dirty, recalculates stats (<code>W2CStats</code>) and sends the bag slot and the whole set (<code>W2CEquipment</code>). Others see the change through <code>W2CPlayerAppearance</code> (visible gear). <code>C2WUnequip { Slot }</code> takes one off.</p>
+<p>What gear <strong>looks like</strong> on a body is client data: <code>GearVisuals</code> exported into <code>gamedata.bin</code> (<a href="../40-client/40-characters.html">Characters</a>).</p>
+<h2 id="grades-gems-repair">Grades, gems, repair<a class="anchor" href="#grades-gems-repair" title="Permanent link">#</a></h2>
+<p><code>C2WItemUpgrade</code> → <code>ItemUpgradeService</code> → <code>W2CItemUpgradeResult</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Needs</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Regrade</strong></td>
+<td>a regrade scroll (<code>ItemUpgradeMaterials.Kind 1</code>, valid for the current grade), optional charm (Kind 2: bonus chance, protection), gold</td>
+<td>up a grade, stay, down a grade or <strong>destroyed</strong>, by the <em>target</em> grade's odds in <code>ItemGrades</code></td>
+</tr>
+<tr>
+<td><strong>Socket</strong></td>
+<td>a gem item (<code>ItemGems</code>) in your bag, an empty socket</td>
+<td>gem goes in</td>
+</tr>
+<tr>
+<td><strong>Unsocket</strong></td>
+<td>optional gem extractor (Kind 3)</td>
+<td>gem back with an extractor, destroyed without</td>
+</tr>
+<tr>
+<td><strong>Repair</strong></td>
+<td>gold at a merchant (<code>RepairGoldPerPoint</code> per point of wear), or field repair from the bag (out of combat, at <code>FieldRepairCostPct</code>)</td>
+<td>wear reset</td>
+</tr>
+</tbody>
+</table></div>
+<p>Grades, gems, upgrade materials and stack limits reach the client in <code>W2CItemGearCatalog</code>. See <a href="../80-notes/client-ITEMS_AND_GRADES.html">Items and grades (note)</a>.</p>
+<h2 id="warehouse-and-coffers">Warehouse and coffers<a class="anchor" href="#warehouse-and-coffers" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Warehouse</strong>: a personal bank per character (<code>character_warehouse_items</code>, <code>warehouse_gold</code>, <code>warehouse_capacity</code>), opened at a warehouse NPC (<code>InteractionActionType.Warehouse</code>, 22). It uses a compact custom protocol (<code>WarehouseProtocol.Request/Frame</code>, feature opcodes 210/211) with server-owned revisions; every move is planned on copies first (<code>WarehousePlan</code>) so a failure never changes either side. Saved in the character snapshot.</li>
+<li><strong>Coffers</strong>: storage inside a placed doodad (a chest in your house). Contents live in Persistence <code>doodad_storage</code>; a bag↔coffer move is <strong>one transaction</strong> (the character's full save carries the coffer's new contents, guarded by <code>storage_seq</code>). <code>C2WStorageMove</code> / <code>W2CStorage</code>.</li>
+</ul>
+<h2 id="recipes">Recipes<a class="anchor" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="a-health-potion">A health potion<a class="anchor" href="#a-health-potion" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">-- SQL/patches/122_greater_healing_potion.sql</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Items</span><span class="w"> </span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">icon_name</span><span class="p">,</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">rarity_id</span><span class="p">,</span><span class="w"> </span><span class="n">required_level</span><span class="p">,</span><span class="w"> </span><span class="n">bind_type</span><span class="p">,</span><span class="w"> </span><span class="n">no_trade</span><span class="p">,</span><span class="w"> </span><span class="n">max_stack</span><span class="p">,</span><span class="w"> </span><span class="n">vendor_price</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">6100</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Greater Healing Potion&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Restores 400 health.&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Items/potion_red_large&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">);</span>
+
+<span class="c1">-- right-click: 30 s cooldown shared with every potion in group 1, consumed</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ItemUses</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">ConsumeOnUse</span><span class="p">,</span><span class="w"> </span><span class="n">EffectType</span><span class="p">,</span><span class="w"> </span><span class="n">EffectValue</span><span class="p">,</span><span class="w"> </span><span class="n">CooldownMs</span><span class="p">,</span><span class="w"> </span><span class="n">CooldownGroup</span><span class="p">,</span><span class="w"> </span><span class="n">CastTimeMs</span><span class="p">,</span><span class="w"> </span><span class="n">LaborCost</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">6100</span><span class="p">,</span><span class="w"> </span><span class="mi">6100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">30000</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">-- what it does: heal self 380-420 (OwnerType 1 = item, Target 0 = self)</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Effects</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerType</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerId</span><span class="p">,</span><span class="w"> </span><span class="n">Sort</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="k">Min</span><span class="p">,</span><span class="w"> </span><span class="k">Max</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">,</span><span class="w"> </span><span class="n">School</span><span class="p">,</span><span class="w"> </span><span class="n">Coefficient</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">9200</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">6100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">380</span><span class="p">,</span><span class="w"> </span><span class="mi">420</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">-- sell it at a vendor (shop 1) for 1 gold</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ShopItems</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">ShopId</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">BuyPrice</span><span class="p">,</span><span class="w"> </span><span class="n">SellPrice</span><span class="p">,</span><span class="w"> </span><span class="n">SortOrder</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">6100</span><span class="p">,</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Restart the World server (it rebuilds <code>gamedata.bin</code> so the client knows the name and icon), restart the client. The <strong>Tools ▸ Axiom ▸ Create ▸ Item…</strong> wizard does this with validation.</p>
+<h3 id="a-two-handed-sword">A two-handed sword<a class="anchor" href="#a-two-handed-sword" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Items</span><span class="w"> </span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">icon_name</span><span class="p">,</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">rarity_id</span><span class="p">,</span><span class="w"> </span><span class="n">required_level</span><span class="p">,</span><span class="w"> </span><span class="n">bind_type</span><span class="p">,</span><span class="w"> </span><span class="n">no_trade</span><span class="p">,</span><span class="w"> </span><span class="n">max_stack</span><span class="p">,</span><span class="w"> </span><span class="n">vendor_price</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">970100</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Greatsword of the Vale&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Items/Weapons/greatsword_vale&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4200</span><span class="p">);</span><span class="w">   </span><span class="c1">-- bind on equip</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ItemStats</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">EquipSlot</span><span class="p">,</span><span class="w"> </span><span class="n">WeaponKind</span><span class="p">,</span><span class="w"> </span><span class="n">ArmorKind</span><span class="p">,</span><span class="w"> </span><span class="n">TwoHanded</span><span class="p">,</span><span class="w"> </span><span class="n">AllowedClasses</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">Strength</span><span class="p">,</span><span class="w"> </span><span class="n">Agility</span><span class="p">,</span><span class="w"> </span><span class="n">Intelligence</span><span class="p">,</span><span class="w"> </span><span class="n">Vitality</span><span class="p">,</span><span class="w"> </span><span class="n">Spirit</span><span class="p">,</span><span class="w"> </span><span class="n">ArmorRating</span><span class="p">,</span><span class="w"> </span><span class="n">AttackPower</span><span class="p">,</span><span class="w"> </span><span class="n">SpellPower</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">CritChance</span><span class="p">,</span><span class="w"> </span><span class="n">Haste</span><span class="p">,</span><span class="w"> </span><span class="n">HealingPower</span><span class="p">,</span><span class="w"> </span><span class="n">SocketCount</span><span class="p">,</span><span class="w"> </span><span class="n">MaxDurability</span><span class="p">,</span><span class="w"> </span><span class="n">BaseGrade</span><span class="p">,</span><span class="w"> </span><span class="n">MaxGrade</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="mi">970100</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">   </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">38</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">   </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">   </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">);</span><span class="w">   </span><span class="c1">-- Warrior only, 2 sockets, Grand base</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">GearVisuals</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">EquipSlot</span><span class="p">,</span><span class="w"> </span><span class="n">PrefabKey</span><span class="p">,</span><span class="w"> </span><span class="n">AttachType</span><span class="p">,</span><span class="w"> </span><span class="n">DrawnSocket</span><span class="p">,</span><span class="w"> </span><span class="n">SheathSocket</span><span class="p">,</span><span class="w"> </span><span class="n">HideBodyParts</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">PositionX</span><span class="p">,</span><span class="w"> </span><span class="n">PositionY</span><span class="p">,</span><span class="w"> </span><span class="n">PositionZ</span><span class="p">,</span><span class="w"> </span><span class="n">RotationX</span><span class="p">,</span><span class="w"> </span><span class="n">RotationY</span><span class="p">,</span><span class="w"> </span><span class="n">RotationZ</span><span class="p">,</span><span class="w"> </span><span class="k">Scale</span><span class="p">,</span><span class="w"> </span><span class="n">SheathScale</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="mi">970100</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Gear/Weapons/greatsword_vale&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;hand_r&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;back&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Fit the visual interactively with <strong>Tools ▸ Axiom ▸ Characters &amp; Gear ▸ Gear Workshop</strong> instead of guessing offsets (<a href="../50-tools/60-asset-character-pipeline.html">Character pipeline</a>).</p>
+<h3 id="a-new-kind-of-item-behaviour">A new kind of item behaviour<a class="anchor" href="#a-new-kind-of-item-behaviour" title="Permanent link">#</a></h3>
+<p>Most item behaviours are an existing <a href="30-combat.html#effect-kinds">effect kind</a> on an <code>ItemUses</code> item. For something new (say, "teleport to your house"), add an effect kind (<a href="30-combat.html#a-new-effect-kind-code">recipe</a>) and give the item an <code>Effects</code> row with it. For script-only behaviour, use <code>Kind 0 (Script)</code> and handle Lua <code>OnItemUse</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- Lua/Server/hearthstone.lua</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnItemUse&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">itemId</span><span class="p">,</span><span class="w"> </span><span class="nv">slot</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">itemId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6200</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">Teleport</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">980</span><span class="p">)</span><span class="w">        </span><span class="c1">-- y = 0: ground height</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendMessage</span><span class="p">(</span><span class="s2">&quot;&lt;color=#e2b45c&gt;You return home.&lt;/color&gt;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Check the <a href="../70-reference/lua-api.html">Lua API</a> for event names and arguments.</p>
+<nav class="pager">
+<a class="prev" href="40-progression.html"><span>Previous</span>Classes, Skills &amp; Progression</a>
+<a class="next" href="60-loot.html"><span>Next</span>Loot</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#templates-vs-copies">Templates vs copies</a>
+</li>
+<li><a href="#the-bag">The bag</a>
+</li>
+<li><a href="#using-an-item">Using an item</a>
+</li>
+<li><a href="#equipment">Equipment</a>
+</li>
+<li><a href="#grades-gems-repair">Grades, gems, repair</a>
+</li>
+<li><a href="#warehouse-and-coffers">Warehouse and coffers</a>
+</li>
+<li><a href="#recipes">Recipes</a>
+<ul>
+<li><a href="#a-health-potion">A health potion</a>
+</li>
+<li><a href="#a-two-handed-sword">A two-handed sword</a>
+</li>
+<li><a href="#a-new-kind-of-item-behaviour">A new kind of item behaviour</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

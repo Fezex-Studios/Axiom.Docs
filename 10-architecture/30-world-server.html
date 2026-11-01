@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The World Server · Axiom Docs</title>
+<meta name="description" content="How Axiom.Server.World starts, wires its managers, runs the 20 Hz tick and shuts down, and the threading rules every feature has to follow.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="10-overview.html">Architecture Overview</a></li>
+<li><a href="20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="30-world-server.html" class="active" aria-current="page">The World Server</a></li>
+<li><a href="40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Architecture</div>
+
+<h1 id="the-world-server">The World Server<a class="anchor" href="#the-world-server" title="Permanent link">#</a></h1>
+<p><code>Axiom.Server.World</code> is the game. It owns every player session, every NPC, every doodad and every rule. The other services store data (Persistence, Auction) or check identities (Auth), but only the World server decides what happens.</p>
+<p>It is a .NET 10 console app built on the generic host (<code>Microsoft.Extensions.Hosting</code>). The interesting code is one class: <code>Core/WorldServer.cs</code>. It is an <code>IHostedService</code>, so the host calls <code>StartAsync</code> at boot and <code>StopAsync</code> on Ctrl+C. It is also LiteNetLib's <code>INetEventListener</code>, so every network event comes into it too.</p>
+<blockquote class="callout"><p><strong>Read this page before writing any server feature.</strong> The <a href="#the-threading-rule">threading rules</a> are the most important thing in the codebase. Breaking them causes bugs that only appear under load.</p>
+</blockquote>
+<h2 id="start-up-in-order">Start-up, in order<a class="anchor" href="#start-up-in-order" title="Permanent link">#</a></h2>
+<p><code>Program.cs</code> builds the host. It reads configuration from <code>appsettings.json</code>, then <code>World.Performance.json</code>, then <code>appsettings.Local.json</code> (for your secrets, git-ignored), then environment variables, in that order; later sources win. Then it calls <code>UseWorldServer()</code> (<code>Bootstrap/ServerBootstrap.cs</code>), which:</p>
+<ul>
+<li>sets up NLog from <code>nlog.config</code></li>
+<li>binds the <code>World</code>, <code>Network</code>, <code>Database</code> and <code>WorldDirectory</code> config sections to <code>WorldServerConfig</code>, <code>NetworkConfig</code>, <code>DatabaseConfig</code> and <code>WorldDirectoryReporterConfig</code></li>
+<li>registers an EF Core <code>IDbContextFactory&lt;WorldDataDbContext&gt;</code> on the SQLite file <code>Database:WorldDb</code> (<code>Data/worldserver.db</code>)</li>
+<li>registers the hosted services <code>WorldServer</code> and <code>WorldDirectoryReporter</code>, plus a few singletons (<code>AuthService</code>, <code>QuestManager</code>, <code>ItemManager</code>, <code>SpawnPointService</code>, <code>GameDataPatchRunner</code>)</li>
+</ul>
+<p><code>WorldServer.StartAsync</code> then runs these steps. The order is load-bearing, and each step says why.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What happens</th>
+<th>Why here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0a</td>
+<td><code>_world.Validate()</code>, <code>PacketSerialization.Configure()</code></td>
+<td>Refuse a broken config before anything opens a socket.</td>
+</tr>
+<tr>
+<td>0b</td>
+<td><code>db.Database.MigrateAsync()</code></td>
+<td>EF Core migrations create or alter <code>worldserver.db</code> tables.</td>
+</tr>
+<tr>
+<td>0c</td>
+<td><code>GameDataPatchRunner.RunAsync()</code></td>
+<td>Runs every <code>SQL/patches/*.sql</code> file not yet in <code>schema_versions</code>, in name order. This is how <strong>content</strong> reaches the database (<a href="../20-data/20-worldserver-db.html">worldserver.db</a>).</td>
+</tr>
+<tr>
+<td>0c+</td>
+<td><code>NpcCollisionBehaviorMigration.ApplyAsync</code></td>
+<td>One-time import of old NPC collision behaviour into the database.</td>
+</tr>
+<tr>
+<td>0d</td>
+<td><code>ClientContentExporter.Run(...)</code></td>
+<td>Builds <strong>gamedata.bin</strong> from the database it just patched and writes it to every <code>ClientContent:OutputPaths</code> entry. Its hash goes to every client on entering the world (<a href="../20-data/40-gamedata-bin.html">gamedata.bin</a>).</td>
+</tr>
+<tr>
+<td>0d+</td>
+<td><code>CharacterRaceCatalog.Load</code></td>
+<td>Races and body types are data; character creation is checked against them.</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>PersistenceClient.Start()</code></td>
+<td>Opens the HTTP link to the Persistence service and says hello.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Construct every manager (phase 1)</td>
+<td>See <a href="#two-phase-start-up">two-phase start-up</a>. The terrain, navmesh and zones go first because the movement validator needs them.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>BuildServiceContainer()</code> then <code>InitializeAll()</code> (phase 2)</td>
+<td>Managers look each other up.</td>
+</tr>
+<tr>
+<td>3b</td>
+<td>Load game data from the database</td>
+<td>Items first: quests, shops, loot and recipes check item ids against <code>ItemManager</code>. Then quests, spawn points, F/G actions, shops, loot, abilities and classes, skill plots, progression, NPC combat AI, mounts, effects, statuses, climates, doodads, interaction skills, crafting, instances, housing, fishing, trade, factions and territories.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Packet registration</td>
+<td><code>PacketDispatcher.AutoRegister</code> builds one instance of every <code>[PacketOpcode]</code> handler from the service container. The set of client opcodes is remembered, and anything else a client sends is rejected.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>NetManager.Start(Network:Port)</code></td>
+<td>The UDP socket opens with <code>ChannelsCount = PacketChannels.Count</code> (4). From here clients can connect.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Spawner definitions, NPC collision validation, pets, siege data</td>
+<td>NPCs stay dormant until a player is near.</td>
+</tr>
+<tr>
+<td>6b</td>
+<td><code>DoodadManager.SpawnWorld()</code></td>
+<td>Every world doodad (ore, herbs, chests) goes into the interest grid.</td>
+</tr>
+<tr>
+<td>6c</td>
+<td>Exploration catalog, achievements</td>
+<td>World events and treasure maps name NPC templates and items, so those must be loaded first.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>DemoService.RunService()</code></td>
+<td>Development helper.</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>WarmWorldCatalogues()</code>, <code>NpcAiManager.Start()</code>, start the tick loop</td>
+<td>The world goes live.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Background restores</td>
+<td>Player-placed doodads, trade demand, territories and world events come back from Persistence. Each one retries every 10 s until Persistence answers, then hands the result to the tick thread.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every <code>LoadFromDatabase()</code> call reads its tables through a short-lived <code>WorldDataDbContext</code> from the factory. Catalogs are <strong>read once at boot and kept in memory</strong>, so a content change needs a World server restart.</p>
+<h2 id="two-phase-start-up">Two-phase start-up<a class="anchor" href="#two-phase-start-up" title="Permanent link">#</a></h2>
+<p>The constructors in step 2 take only what a manager needs to <strong>exist</strong>: the config, the db factory, the shared interest grid. They never take another manager that might not have been built yet.</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Core/Services/IInitializable.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IInitializable</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">ServiceContainer</span><span class="w"> </span><span class="n">services</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>After every manager is registered, <code>ServiceContainer.InitializeAll()</code> calls <code>Initialize</code> on each one that implements <code>IInitializable</code>, in registration order. That is where a manager fetches the others it talks to:</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyFeatureManager</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IInitializable</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">_players</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">ItemManager</span><span class="w"> </span><span class="n">_items</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">ServiceContainer</span><span class="w"> </span><span class="n">services</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_players</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">PlayerManager</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_items</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">ItemManager</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Do NOT load data or touch the network here. That is step 3b.</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>ServiceContainer</code> (<code>Core/Services/ServiceContainer.cs</code>) is deliberately not a general DI container. It holds one instance per type, registered by hand in <code>WorldServer.BuildServiceContainer()</code>. It has two jobs:</p>
+<ol>
+<li><strong>Packet handlers are built from it.</strong> A handler's constructor parameters are resolved from the container, so every handler gets <em>the</em> <code>PlayerManager</code>, never a second empty copy.</li>
+<li><strong>Managers find each other through it</strong> in <code>Initialize</code>, instead of through static <code>Current</code> singletons.</li>
+</ol>
+<p>A handler that asks for a type nobody registered fails <strong>at boot</strong> with <code>No instance registered for X. Add a services.Register(...) call for it in WorldServer.</code> That's intended: you find out immediately, not when a player first sends the packet.</p>
+<h2 id="the-tick-loop">The tick loop<a class="anchor" href="#the-tick-loop" title="Permanent link">#</a></h2>
+<p><code>RunTickLoopAsync</code> runs the whole simulation on <strong>one thread</strong>, at <code>World:TickRate</code> (20 Hz, 50 ms by default).</p>
+<p>It is paced by <code>TickPacer</code>, not <code>PeriodicTimer</code>. On Windows a .NET timer wakes on the 15.6 ms system clock, so a 50 ms period became 62.5 ms (16 Hz). <code>TickPacer</code> uses absolute deadlines (start + n × interval), raises the Windows timer resolution to 1 ms while the server runs, sleeps most of the gap and spins the last ~1.5 ms. If the server falls more than two ticks behind (a debugger pause, a huge GC), it resynchronises instead of bursting through the missed ticks.</p>
+<p>Each tick runs these stages in this order. <code>TickHealthMonitor</code> times every stage and logs a report periodically.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage (<code>TickStage</code>)</th>
+<th>Calls</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(pre)</td>
+<td><code>PlayerManager.AdvanceTick</code>, <code>InterestManager.BeginTick</code>, admission sweep</td>
+<td>Advance the tick clock (movement packets are timestamped with it) and drop connections that never authenticated.</td>
+</tr>
+<tr>
+<td><strong>Actions</strong></td>
+<td><code>PlayerManager.DrainActions()</code></td>
+<td>Run work queued from other threads (<a href="#the-threading-rule">threading rule</a>). Bounded by <code>Performance.ActionsPerTick</code> and <code>Performance.ActionMilliseconds</code>.</td>
+</tr>
+<tr>
+<td><strong>Packets</strong></td>
+<td><code>NetManager.PollEvents()</code></td>
+<td><strong>Every C2W packet handler runs here</strong>, via <code>OnNetworkReceive</code>.</td>
+</tr>
+<tr>
+<td><strong>Entries</strong></td>
+<td><code>PlayerManager.PumpWorldEntries()</code></td>
+<td>Characters finishing their enter-world sequence.</td>
+</tr>
+<tr>
+<td><strong>Timers</strong></td>
+<td><code>Scheduler.RunDue()</code></td>
+<td>Every timer in the game: corpse expiry, respawns, harvest completion, buffs and DoTs, auction sweeps.</td>
+</tr>
+<tr>
+<td><strong>MovementAndAoi</strong></td>
+<td><code>AuthoritativeMovement.TickAsync(tick)</code></td>
+<td>Re-simulate every player's inputs with the shared motor, validate them, update the interest grid. Parallel by zone (see <a href="../80-notes/server-PARALLEL_STAGES.html">Parallel stages</a>).</td>
+</tr>
+<tr>
+<td><strong>NpcAi</strong></td>
+<td><code>NavMeshService.Tick()</code>, <code>NpcAiManager.Tick()</code></td>
+<td>Navmesh pages in/out, finished path searches, NPC brains, spawner activation.</td>
+</tr>
+<tr>
+<td><strong>WorldSystems</strong></td>
+<td>interaction skills, doodads, crafting, storage, warehouse, fishing, <code>InstanceManager.Tick()</code></td>
+<td>Timed actions; walking away cancels them. Dungeons run on their own threads; their results are applied here.</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td><code>WorldTerrainService.Tick()</code>, <code>PlayerManager.RunAutosave(tick)</code></td>
+<td>Unload unused heightmaps; spread periodic saves of dirty characters across ticks.</td>
+</tr>
+<tr>
+<td><strong>Spawns</strong></td>
+<td><code>ReplicationManager.Spawns.Flush(tick)</code></td>
+<td>Send spawn and despawn packets for everything that entered or left each player's view.</td>
+</tr>
+<tr>
+<td><strong>Snapshots</strong></td>
+<td><code>PlayerManager.FlushSnapshots(tick)</code></td>
+<td><strong>The only place position packets leave the server</strong>: one batched, quantised <code>W2CWorldSnapshot</code> per player.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Any exception inside a tick is logged (<code>[TickLoop] Unhandled exception in tick — continuing.</code>) and the loop carries on. One bad handler can't stop the world.</p>
+<h3 id="what-the-health-report-means">What the health report means<a class="anchor" href="#what-the-health-report-means" title="Permanent link">#</a></h3>
+<p>Every report window (5 s) each zone host logs its tick health:</p>
+<div class="hl"><pre><span></span><code>[zone_test1] [TickHealth] work p50=13.80ms p99=31.74ms max=52.40ms startGap p99=62.19ms max=70.00ms overrun=2/100 lateStart=1/100 GC=3/1/0 gcPause=43.8ms allocated=330.1MiB managed=1100.2MiB workingSet=1600.5MiB rate=20.0Hz target=50.0ms
+[zone_test1] [TickStages] average/max ms Actions=0.02/0.18 Packets=1.38/2.50 ... MovementAndAoi=6.08/41.69 ... Spawns=1.49/18.28 Snapshots=4.66/27.26
+[zone_test1] [TickAlloc] this thread, KiB per tick average/max Actions=0.1/1.7 ... Snapshots=228.5/270.0 total=300.0KiB/tick
+</code></pre></div>
+
+<ul>
+<li><code>work p99</code> is the number capacity is judged on: at 20 Hz each tick has 50 ms, and the load test's pass limit is 40 ms.</li>
+<li><code>GC=gen0/gen1/gen2</code>, <code>gcPause</code>, <code>allocated</code>, <code>managed</code> and <code>workingSet</code> are <strong>process-wide</strong>, not per zone. <code>gcPause</code> is the total time the runtime paused for GC in the window; a few tens of ms per 5 s is normal.</li>
+<li><code>[TickStages]</code> is the average and slowest time of each stage on that zone's tick.</li>
+<li><code>[TickAlloc]</code> is the KiB each stage allocated <strong>on the zone's tick thread</strong> (parallel workers and the network thread are not counted). A stage that finishes on another thread after an <code>await</code> counts as 0 rather than a wrong number.</li>
+</ul>
+<p>The other lines:</p>
+<div class="hl"><pre><span></span><code>[AoI] window updates=… recomputes=… work=…ms knownLinks=… pending=…
+[ParallelStages] movementWorkers=… movementMs=… aoiBatch=… snapshotWorkers=…
+[SpawnWork] lastTick recipients=… ops=… sendMs=…
+[CrowdWork] pendingActions=… pendingSpawns=… snapshotBytes=… gameplayPackets=… busyRequests=…
+[NavMesh] pages=default:12/40 paths=… failed=… maxSearchMs=…
+</code></pre></div>
+
+<p><code>pendingActions</code> rising and never falling means something floods the action queue. <code>busyRequests &gt; 0</code> means the server is refusing gameplay packets because it hit <code>Performance.GameplayPacketsPerTick</code>: players get "The server is busy". <code>maxSearchMs</code> over a few milliseconds means navmesh path searches are too long (check <code>NavMeshWorkers</code>).</p>
+<h2 id="the-threading-rule">The threading rule<a class="anchor" href="#the-threading-rule" title="Permanent link">#</a></h2>
+<blockquote class="callout"><p><strong>Everything that touches game state runs on the tick thread.</strong> Sessions, the interest grid (<code>InterestManager</code> / <code>SpatialGrid</code>), the <code>Scheduler</code>, catalogs that can change, entities: none of them are thread-safe, by design.</p>
+</blockquote>
+<p>Packet handlers already run on the tick thread (inside <code>PollEvents</code>), so a handler that only reads and writes game state needs nothing special.</p>
+<p>The trap is <strong><code>await</code></strong>. Anything that waits on the network (Persistence, Auth, Auction) finishes on a thread-pool thread. After the <code>await</code> you are <strong>off</strong> the tick thread. Hop back with <code>PlayerManager.EnqueueAction</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Inside a packet handler (tick thread)</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessagePackSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">C2WMyRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesMemory</span><span class="p">());</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_players</span><span class="p">.</span><span class="n">TryGetSession</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">session</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoadAndApplyAsync</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">);</span><span class="w">   </span><span class="c1">// fire and forget - never block the tick</span>
+<span class="p">}</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">LoadAndApplyAsync</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">PlayerSession</span><span class="w"> </span><span class="n">session</span><span class="p">,</span><span class="w"> </span><span class="n">C2WMyRequest</span><span class="w"> </span><span class="n">packet</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// An HTTP round trip to Persistence: when it returns we are on a thread-pool thread.</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">reply</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_persistence</span><span class="p">.</span><span class="n">W2PMail</span><span class="p">.</span><span class="n">List</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="n">CharacterId</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">AccountId</span><span class="p">,</span><span class="w"> </span><span class="n">countsOnly</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">_players</span><span class="p">.</span><span class="n">EnqueueAction</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">                                    </span><span class="c1">// back on the tick thread</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">peer</span><span class="p">.</span><span class="n">ConnectionState</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">ConnectionState</span><span class="p">.</span><span class="n">Connected</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w">   </span><span class="c1">// they may have left meanwhile</span>
+<span class="w">        </span><span class="n">W2CInteractDeniedPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;You have {reply.WorldMailCount} letters waiting.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The action queue (<code>WorldActionQueue</code>) is a bounded channel with a single reader (the tick). <code>EnqueueAction</code> waits for space if it's full; it never drops accepted work. <code>TryEnqueueAction</code> returns <code>false</code> instead of waiting. Many managers take <code>_playerManager.EnqueueAction</code> as a constructor argument for exactly this (<code>DoodadManager</code>, <code>GuildManager</code>, <code>MailManager</code>, <code>TerritoryService</code>...).</p>
+<p>Rules of thumb:</p>
+<ul>
+<li><strong>Never block the tick.</strong> No <code>.Result</code>, no <code>.Wait()</code>, no synchronous HTTP, no <code>Thread.Sleep</code>. Start the async work and return.</li>
+<li><strong>Re-check after the hop.</strong> The player may have disconnected, the NPC may have died. Look the session up again inside the action.</li>
+<li><strong>Timers use the <code>Scheduler</code></strong>, not <code>Task.Delay</code>. Scheduler callbacks run on the tick thread, so they may touch anything.</li>
+<li><strong>Cooldowns are timestamps</strong>, not timers. Store "ready at" and compare when the key is pressed.</li>
+</ul>
+<h2 id="the-scheduler">The Scheduler<a class="anchor" href="#the-scheduler" title="Permanent link">#</a></h2>
+<p><code>Core/Simulation/Scheduler.cs</code> is the one timer system.</p>
+<div class="hl"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_scheduler</span><span class="p">.</span><span class="n">In</span><span class="p">(</span><span class="mi">12</span><span class="n">_000</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ExpireCorpse</span><span class="p">(</span><span class="n">corpse</span><span class="p">));</span><span class="w">   </span><span class="c1">// once, in 12 s</span>
+<span class="n">_scheduler</span><span class="p">.</span><span class="n">Cancel</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span><span class="w">                                         </span><span class="c1">// looted early</span>
+<span class="n">_scheduler</span><span class="p">.</span><span class="n">Every</span><span class="p">(</span><span class="mi">60</span><span class="n">_000</span><span class="p">,</span><span class="w"> </span><span class="n">SweepAuctions</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;auction sweep&quot;</span><span class="p">);</span><span class="w">          </span><span class="c1">// repeating</span>
+<span class="n">_scheduler</span><span class="p">.</span><span class="n">At</span><span class="p">(</span><span class="n">absoluteServerMs</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StartSiege</span><span class="p">(</span><span class="n">id</span><span class="p">));</span><span class="w">             </span><span class="c1">// at a ServerClock time</span>
+</code></pre></div>
+
+<p>Times are <code>ServerClock</code> milliseconds (monotonic). Resolution is one tick: "in 100 ms" fires on the first tick at or after it's due, never early. Timers are <strong>not persisted</strong>. Anything that must survive a restart (a siege on Saturday at 20:00, a world event's next start) stores its due time in Persistence (<code>shard_state</code>) and re-schedules on boot. <code>TerritoryService</code> and <code>WorldEventService</code> do exactly this.</p>
+<h2 id="network-events">Network events<a class="anchor" href="#network-events" title="Permanent link">#</a></h2>
+<p><code>WorldServer</code> implements <code>INetEventListener</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnConnectionRequest</code></td>
+<td>Rejects payloads over 512 bytes. Reads the connection key string and compares it to <code>ProtocolVersion.ConnectionKey</code> (<code>"Axiom/45"</code>). A different key gets a readable rejection ("Your client is out of date (protocol N, server M)"). Admission control (<code>Admission.ReserveConnection</code>) caps connections per address and in total.</td>
+</tr>
+<tr>
+<td><code>OnPeerConnected</code></td>
+<td>Admission bookkeeping. The peer has no <code>PlayerSession</code> yet, so the only packet it may send is <code>Authenticate</code>.</td>
+</tr>
+<tr>
+<td><code>OnNetworkReceive</code></td>
+<td>The packet gate. See below.</td>
+</tr>
+<tr>
+<td><code>OnPeerDisconnected</code></td>
+<td><code>PlayerManager.HandlePlayerDisconnected</code> saves the character and despawns it; rate limiter and selection-return state are cleared. With zone threads the clean-up is queued on the owning zone host and <strong>rate-limited</strong>: at most <code>Performance.DisconnectsPerTick</code> (32) per tick, stopping early after <code>Performance.DisconnectMilliseconds</code> (4 ms; at least one always runs). A mass logout of 1,000 players is spread over about 30 ticks instead of stalling one tick for 300–1,300 ms. Shutdown drains the queue without limits, so nobody is left unsaved.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>OnNetworkReceive</code> checks every packet in this order, before any handler sees it:</p>
+<ol>
+<li>The peer is still connected.</li>
+<li><strong>Traffic budget</strong> per peer (<code>PacketRateLimiter.CheckTraffic</code>); persistent floods disconnect.</li>
+<li><strong>Size</strong>: over <code>PacketSerialization.MaxClientPayload</code> (16 KiB) disconnects.</li>
+<li>At least 2 bytes (the opcode).</li>
+<li>The opcode is a <strong>known client opcode</strong>, and the peer has a session (or the opcode is <code>Authenticate</code>).</li>
+<li><strong>Busy gate</strong>: if this tick already handled <code>Performance.GameplayPacketsPerTick</code> packets or the action backlog is high, the player gets "The server is busy". Movement, spawn acks, cancel-cast, target focus, respawn and selection-return are exempt ("continuation" packets).</li>
+<li><strong>Per-opcode token bucket</strong> (<code>PacketRateLimiter.Check</code>): drop, or disconnect on sustained flooding.</li>
+<li><strong>Payload validation</strong> (<code>PacketSerialization.ValidateClientPayload</code>): MessagePack depth ≤ 32, arrays ≤ 1024, maps ≤ 512, ≤ 4096 nodes, no trailing bytes.</li>
+<li><code>PacketDispatcher.Handle</code> calls the handler.</li>
+</ol>
+<p>A <code>MessagePackSerializationException</code> (malformed packet) disconnects the client. Any other exception is a handler bug: it's logged with the opcode, the packet is dropped and the player stays connected.</p>
+<h2 id="shutdown">Shutdown<a class="anchor" href="#shutdown" title="Permanent link">#</a></h2>
+<p><code>StopAsync</code> saves everything before dropping a single connection:</p>
+<ol>
+<li>Stop the directory heartbeat, NPC AI and navmesh workers.</li>
+<li>Cancel the tick loop and <strong>wait for it</strong>, so nothing else touches sessions during the saves.</li>
+<li>Drain every queued action (<code>DrainActions(drainAll: true)</code>).</li>
+<li>Park every vehicle that's being driven.</li>
+<li>Save territories, treasuries and declared sieges (5 s budget).</li>
+<li>Final save of every online character and every character returning to selection (10 s budget, <code>ShutdownSaveTimeout</code>).</li>
+<li>Only then stop the socket and dispose the Persistence client.</li>
+</ol>
+<p>Close the World server with <strong>Ctrl+C</strong>, not by killing the process, or step 6 never runs. The autosave (<code>AutosaveIntervalSeconds</code>, 120 s by default) limits what a crash can lose.</p>
+<h2 id="logging">Logging<a class="anchor" href="#logging" title="Permanent link">#</a></h2>
+<p>NLog writes to the console and a rolling file (<code>nlog.config</code>). Every <code>Axiom.*</code> logger logs at <strong>Info</strong> and above. Change <code>minlevel</code> to <code>Debug</code> there while debugging a system. Each class takes a logger with <code>LogManager.GetCurrentClassLogger()</code>.</p>
+<p>Useful log prefixes: <code>[Net]</code> (connection and packet problems), <code>[TickLoop]</code> (exceptions inside a tick), <code>[Tick]</code> (pacing), <code>[Movement]</code> (collision and corrections), <code>[Zones]</code>, <code>[NavMesh]</code>, <code>[Doodads]</code>, <code>[Trade]</code>, <code>[Shutdown]</code>.</p>
+<h2 id="where-to-go-next">Where to go next<a class="anchor" href="#where-to-go-next" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="40-networking.html">Networking &amp; packets</a>: the wire protocol in detail.</li>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; sessions</a>: what a <code>PlayerSession</code> holds and how characters load and save.</li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a server system</a>: a complete worked example that follows every rule on this page.</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="20-login-flow.html"><span>Previous</span>Login &amp; World Entry</a>
+<a class="next" href="40-networking.html"><span>Next</span>Networking &amp; Packets</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#start-up-in-order">Start-up, in order</a>
+</li>
+<li><a href="#two-phase-start-up">Two-phase start-up</a>
+</li>
+<li><a href="#the-tick-loop">The tick loop</a>
+<ul>
+<li><a href="#what-the-health-report-means">What the health report means</a>
+</li>
+</ul>
+</li>
+<li><a href="#the-threading-rule">The threading rule</a>
+</li>
+<li><a href="#the-scheduler">The Scheduler</a>
+</li>
+<li><a href="#network-events">Network events</a>
+</li>
+<li><a href="#shutdown">Shutdown</a>
+</li>
+<li><a href="#logging">Logging</a>
+</li>
+<li><a href="#where-to-go-next">Where to go next</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

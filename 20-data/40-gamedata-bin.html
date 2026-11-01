@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gamedata.bin (Client Content) · Axiom Docs</title>
+<meta name="description" content="The encrypted client content file - what&#x27;s in it, the exact binary layout (AGDB v4), how the World server builds and encrypts it at boot, how Auth serves it, how the client downloads, caches and loads it, and how to extend it.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="10-data-overview.html">Data Overview</a></li>
+<li><a href="20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="30-mysql.html">MySQL Databases</a></li>
+<li><a href="40-gamedata-bin.html" class="active" aria-current="page">gamedata.bin (Client Content)</a></li>
+<li><a href="50-world-files.html">World Files</a></li>
+<li><a href="60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Data &amp; Databases</div>
+
+<h1 id="gamedatabin">gamedata.bin<a class="anchor" href="#gamedatabin" title="Permanent link">#</a></h1>
+<p>The client needs some content <strong>before</strong> it's in the world (inventory tooltips, the character creation preview, gear on the body) and in bulk. That content ships as <code>gamedata.bin</code>: an encrypted binary package of <strong>item display data and gear visuals</strong>, generated from <code>worldserver.db</code>.</p>
+<p>Everything else the client knows about content (skills, statuses, item stats and grades, quests, recipes, shops, trade, achievements) is sent as <strong>catalogue packets</strong> when a character enters the world (<a href="10-data-overview.html#content-reaches-the-client-two-ways">Data overview</a>).</p>
+<h2 id="life-cycle">Life cycle<a class="anchor" href="#life-cycle" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>World server boot (step 0d)
+  ClientContentExporter.Run(worldserver.db, World:ClientContent)
+    ├─ ReadItems()        Items ⋈ ItemCategories ⋈ ItemRarities (+ ItemUses flags)
+    ├─ ReadGearVisuals()  GearVisuals ∪ GearVisualSlotDefaults (+ WeaponSheaths, ItemStats.WeaponKind)
+    ├─ Build()            plaintext AGDB v4
+    ├─ ContentHash = SHA-256(plaintext)            → sent to clients in W2CEnterWorld
+    └─ Encrypt(key)  → write to every OutputPaths entry (only if bytes changed, atomically)
+                          ├─ Assets/StreamingAssets/GameData/gamedata.bin   (ships in client builds)
+                          └─ Axiom.Server.Auth/…/gamedata.bin               (served by Auth)
+
+Client start (server_select scene)
+  GameDataBootstrap
+    ├─ copy StreamingAssets copy → persistentDataPath/GameData/ if newer or missing
+    ├─ GET Auth /gamedata/version  → { &quot;Hash&quot;: &quot;…&quot; }   (SHA-256 of the encrypted file)
+    ├─ different from gamedata.hash? GET /gamedata/db → replace the cached file
+    └─ GameDataDatabase.Initialize(path): decrypt in memory, parse, expose Items + gear visuals
+</code></pre></div>
+
+<h2 id="configuration-world-server">Configuration (World server)<a class="anchor" href="#configuration-world-server" title="Permanent link">#</a></h2>
+<p><code>World:ClientContent</code> (<code>Utils/Config/ClientContentConfig.cs</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>true</code></td>
+<td>Build the package and hash at boot.</td>
+</tr>
+<tr>
+<td><code>OutputPaths</code></td>
+<td><code>[]</code></td>
+<td>Where to write the encrypted file. Relative paths are relative to the World exe. Typically the client's <code>Assets/StreamingAssets/GameData/gamedata.bin</code> and the Auth server's folder.</td>
+</tr>
+<tr>
+<td><code>KeyHex</code></td>
+<td><code>""</code></td>
+<td>The AES-256 key as <strong>64 hex characters</strong>. <strong>Must equal the client's <code>GameDataCrypto.Key</code> bytes.</strong> Put it in <code>appsettings.Local.json</code>. Missing or wrong length → file not written (warning logged).</td>
+</tr>
+<tr>
+<td><code>RequireMatch</code></td>
+<td><code>false</code></td>
+<td>Sent to clients as <code>ContentMustMatch</code>. Intended: a client whose content hash differs is sent back with an explanation. (The client doesn't check it yet; see below.)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Auth: <code>Auth:GameDataPath</code> (default <code>gamedata.bin</code> next to the Auth exe) is the file it serves. It re-hashes the file automatically when it changes on disk, so Auth needs no restart.</p>
+<p>Log line to look for at World start:</p>
+<div class="hl"><pre><span></span><code>[Content] Client package: 101 items, 37 gear visuals, content hash 4be1…; 1 file(s) written, 1 already current.
+</code></pre></div>
+
+<h2 id="binary-layout-agdb-v4">Binary layout (AGDB v4)<a class="anchor" href="#binary-layout-agdb-v4" title="Permanent link">#</a></h2>
+<p>All integers little-endian; strings are .NET <code>BinaryWriter</code> strings (7-bit-encoded length prefix, then UTF-8).</p>
+<div class="hl"><pre><span></span><code>&quot;AGDB&quot;              4 bytes  magic
+version             byte     4
+itemCount           int32
+repeat itemCount:
+    ItemId          int32
+    Name            string
+    Description     string
+    Category        int32    ItemCategories.Id
+    IconName        string   resolved under Resources/Icons
+    CategoryName    string
+    RarityId        int32
+    RarityName      string
+    RarityColor     string   &quot;#RRGGBB&quot;
+    RequiredLevel   int32
+    IsUsable        bool     has an ItemUses row
+    ConsumeOnUse    bool
+visualCount         int32
+repeat visualCount (sorted by ItemId, EquipSlot; ItemId 0 = slot default):
+    ItemId          int32
+    EquipSlot       int32
+    PrefabKey       string
+    AttachType      int32    0 skinned to the body, 1 attached to a socket
+    DrawnSocket     string   where a weapon is held
+    SheathSocket    string   where it&#39;s carried
+    HideBodyParts   int32    GearBodyParts flags
+    PositionX/Y/Z   float ×3
+    RotationX/Y/Z   float ×3
+    Scale           float
+    SheathScale     float    v4
+</code></pre></div>
+
+<p>Validation on both ends: item ids positive and unique, at most 1 000 000 items and 100 000 visuals, a visual must reference an existing item (or 0), one visual per (item, slot). The client reads v1–v4 (<code>GameDataBinaryFormat.ReadPackage</code>) and refuses a newer version ("update the client and server together").</p>
+<p>The exporter's queries (<code>ClientContentExporter.ItemQuery</code>, <code>GearVisualQuery</code>) are public constants; Dev Tools' gear visual export runs the same query. Keep them identical.</p>
+<h2 id="encryption">Encryption<a class="anchor" href="#encryption" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>file = IV (16 bytes) ‖ AES-256-CBC(plaintext, key, IV, PKCS7)
+IV   = first 16 bytes of HMAC-SHA256(key, plaintext)
+</code></pre></div>
+
+<ul>
+<li>The IV is <strong>derived</strong> from the content, so the same database always produces byte-identical files: the Auth hash doesn't change and clients don't re-download after a restart with no content changes.</li>
+<li>Files are written to <code>path.tmp</code> then moved over, so Auth never serves half a file.</li>
+<li>This is a <strong>deterrent, not security</strong>: the key is in the client. Anyone determined can extract it. Treat item names in the file as public. Rotate the key (change both <code>GameDataCrypto.Key</code> and <code>KeyHex</code>) if you want old extracted keys to stop working.</li>
+</ul>
+<blockquote>
+<p>Never put the key in a shared document or a screenshot. It belongs in <code>appsettings.Local.json</code> and in <code>GameDataCrypto.cs</code>.</p>
+</blockquote>
+<h2 id="on-the-client">On the client<a class="anchor" href="#on-the-client" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File (<code>Scripts/GameData/</code>)</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GameDataBootstrap</code></td>
+<td>In the <code>server_select</code> scene: copy bundled → cache, check Auth's hash, download, initialise. Falls back to the bundled file if Auth is unreachable.</td>
+</tr>
+<tr>
+<td><code>GameDataCrypto</code></td>
+<td>The AES key and <code>Decrypt</code>.</td>
+</tr>
+<tr>
+<td><code>GameDataBinaryFormat</code></td>
+<td>Reader (and writer, for editor tools).</td>
+</tr>
+<tr>
+<td><code>GameDataDatabase</code></td>
+<td>Decrypts <strong>straight into memory</strong> (no plaintext on disk), parses once, exposes <code>Items</code> and gear visuals, raises <code>Changed</code>.</td>
+</tr>
+<tr>
+<td><code>ItemRepository</code>, <code>ItemNames</code>, <code>ItemIcons</code>, <code>InventoryItemCatalog</code></td>
+<td>Lookups the UI uses. An unknown id shows as <code>#&lt;id&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>GearCatalog</code>, <code>GearVisualRecord</code></td>
+<td>What the character equipment system reads to put gear on bodies.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Cache location: <code>Application.persistentDataPath/GameData/gamedata.bin</code> + <code>gamedata.hash</code>.</p>
+<blockquote>
+<p><code>GameDataBootstrap.AuthServerUrl</code> is a constant (<code>http://127.0.0.1:3000</code>). For a public build, change it (or read it from the same <code>-auth-url</code> argument <code>WorldDirectoryClient</code> uses).</p>
+</blockquote>
+<h3 id="content-hash-check">Content hash check<a class="anchor" href="#content-hash-check" title="Permanent link">#</a></h3>
+<p>The World server sends <code>ContentHash</code> (SHA-256 of the <em>plaintext</em>) and <code>ContentMustMatch</code> in <code>W2CEnterWorld</code>. The client <strong>doesn't compare them yet</strong>. To enforce matching content, hash the decrypted plaintext in <code>GameDataDatabase.Initialize</code>, store it, and compare in <code>W2CEnterWorldHandler</code>; on mismatch with <code>ContentMustMatch</code>, disconnect with "Your game data is out of date. Restart the game to update."</p>
+<h2 id="common-problems">Common problems<a class="anchor" href="#common-problems" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New items show as <code>#90123</code></td>
+<td>Client is using an old <code>gamedata.bin</code>. Restart the World server (rebuilds it), check the <code>[Content]</code> line wrote to the client path, restart the client. In the editor, the StreamingAssets copy is used if newer than the cache.</td>
+</tr>
+<tr>
+<td><code>[Content] … KeyHex is missing</code></td>
+<td>Set <code>World:ClientContent:KeyHex</code> (64 hex) in <code>appsettings.Local.json</code>.</td>
+</tr>
+<tr>
+<td>Client: decryption/padding error</td>
+<td><code>KeyHex</code> ≠ <code>GameDataCrypto.Key</code>.</td>
+</tr>
+<tr>
+<td>Client: "Unsupported game data version"</td>
+<td>Server writes a newer format than the client reads. Update the client.</td>
+</tr>
+<tr>
+<td>Auth <code>/gamedata/version</code> answers 503</td>
+<td>No file at <code>Auth:GameDataPath</code>. Add Auth's path to <code>OutputPaths</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="extending-the-package">Extending the package<a class="anchor" href="#extending-the-package" title="Permanent link">#</a></h2>
+<p>To ship more content in the file (say, NPC display names for nameplates before they're spawned):</p>
+<ol>
+<li>Bump <code>ClientContentExporter.FormatVersion</code> and <code>GameDataBinaryFormat.CurrentVersion</code> to 5 <strong>together</strong>.</li>
+<li>Server: add a query and a <code>Read…</code> method; append a new section at the <strong>end</strong> of <code>Build()</code> (after the gear visuals), with a count first.</li>
+<li>Client: in <code>ReadPackage</code>, read the section only <code>if (version &gt;= 5)</code>, so v4 files still load.</li>
+<li>Expose it from <code>GameDataDatabase</code> and use it.</li>
+</ol>
+<p>If the data is only needed in the world, prefer a <strong>catalogue packet</strong> instead: no format version, no file distribution, and it's always in sync with the server (<a href="../60-cookbook/10-add-packet.html">Add a packet</a>).</p>
+<p>Older notes: <a href="../80-notes/server-CLIENT_CONTENT.html">CLIENT_CONTENT.md (note)</a>.</p>
+<nav class="pager">
+<a class="prev" href="30-mysql.html"><span>Previous</span>MySQL Databases</a>
+<a class="next" href="50-world-files.html"><span>Next</span>World Files</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#life-cycle">Life cycle</a>
+</li>
+<li><a href="#configuration-world-server">Configuration (World server)</a>
+</li>
+<li><a href="#binary-layout-agdb-v4">Binary layout (AGDB v4)</a>
+</li>
+<li><a href="#encryption">Encryption</a>
+</li>
+<li><a href="#on-the-client">On the client</a>
+<ul>
+<li><a href="#content-hash-check">Content hash check</a>
+</li>
+</ul>
+</li>
+<li><a href="#common-problems">Common problems</a>
+</li>
+<li><a href="#extending-the-package">Extending the package</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

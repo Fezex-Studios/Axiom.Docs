@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interest &amp; Replication · Axiom Docs</title>
+<meta name="description" content="How the World server decides what each player can see, how entities are created on clients (spawn delivery), and how positions reach thousands of players every tick (snapshots).">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="10-overview.html">Architecture Overview</a></li>
+<li><a href="20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="30-world-server.html">The World Server</a></li>
+<li><a href="40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="60-interest-replication.html" class="active" aria-current="page">Interest &amp; Replication</a></li>
+<li><a href="70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Architecture</div>
+
+<h1 id="interest--replication">Interest &amp; Replication<a class="anchor" href="#interest--replication" title="Permanent link">#</a></h1>
+<p>A seamless world can't send everything to everyone. Three systems decide who hears about what:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>System</th>
+<th>File</th>
+<th>Answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interest</strong></td>
+<td><code>Core/Interest/InterestManager*.cs</code>, <code>Spatialgrid.cs</code></td>
+<td>Which entities is each player <em>aware of</em>?</td>
+</tr>
+<tr>
+<td><strong>Spawn delivery</strong></td>
+<td><code>Core/Interest/SpawnDeliveryQueue.cs</code></td>
+<td>Has the client <em>created</em> each of those entities yet?</td>
+</tr>
+<tr>
+<td><strong>Snapshots</strong></td>
+<td><code>Replication/SnapshotDispatcher.cs</code>, <code>SnapshotWriter.cs</code></td>
+<td>Where is everything <em>now</em>?</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="entity-ids">Entity ids<a class="anchor" href="#entity-ids" title="Permanent link">#</a></h2>
+<p>Every replicated thing has an <code>int</code> network id in one shared id space:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1 … 999 999</code></td>
+<td>players (<code>PlayerSpawnManager</code>)</td>
+</tr>
+<tr>
+<td><code>≥ 1 000 000</code> (<code>SpawnManager.NpcIdBase</code>)</td>
+<td>everything else: NPCs, doodads, corpses/ground loot, mounts, vehicles</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>SpawnManager.IsNpcId(id)</code> means "not a player". Only players <strong>observe</strong>; NPCs, doodads and corpses are only <strong>observed</strong>. Two mobs never track each other, which keeps a camp of 30 mobs next to 50 ore nodes from costing O(n²).</p>
+<h2 id="interest-a-circle-with-a-dead-band">Interest: a circle with a dead band<a class="anchor" href="#interest-a-circle-with-a-dead-band" title="Permanent link">#</a></h2>
+<p><code>InterestManager</code> keeps, for every entity, the set of players aware of it, and for every player, the set of entities they know.</p>
+<ul>
+<li><strong>Broad phase</strong>: a uniform <code>SpatialGrid</code> (50 m cells). It cheaply answers "what <em>might</em> be close".</li>
+<li><strong>Narrow phase</strong>: real distance. Awareness <strong>starts</strong> inside <code>SpawnRadius</code> (75 m) and <strong>ends</strong> outside <code>DespawnRadius</code> (85 m). The 10 m gap stops something on the edge from strobing in and out every tick.</li>
+<li><strong>Recompute</strong> when an entity crosses a cell or has moved <code>RecomputeThreshold</code> (5 m) since its last recompute.</li>
+<li><strong>Layers</strong>: every entity is in exactly one layer. Layer 0 is the open world; each dungeon instance and each house interior is its own layer with its own grids. Two parties in two copies of the same dungeon, standing on the same spot, never see each other. <code>SetLayer</code> drops all awareness and returns who lost it so the caller sends despawns.</li>
+<li><strong>Dynamic AoI</strong> (<code>InterestManager.Density.cs</code>): in very crowded places the player radius shrinks: 60 m above 128 nearby players, 45 m above 256, 30 m above 512 (<code>Performance.DensityTier*</code>, <code>*PlayerRadius</code>). NPCs and objects keep the full radius.</li>
+<li><strong>Parallel recompute</strong> (<code>InterestManager.Batch.cs</code>): distance checks for players who moved run on worker threads; the resulting enters/leaves are applied on the tick thread, in order.</li>
+</ul>
+<p>The radii go to the client in <code>WorldSettingsData</code> on world entry, so its culling matches.</p>
+<p>When an entity enters someone's interest, a spawn is queued for them; when it leaves, a despawn is sent (<code>W2CPlayerLeave</code>, <code>W2CNpcDespawn</code>, <code>W2CDespawnDoodad</code>, ...). <strong>Despawns are always reliable.</strong> Nothing despawns by silence.</p>
+<h2 id="spawn-delivery-create-then-baseline-then-snapshots">Spawn delivery: create, then baseline, then snapshots<a class="anchor" href="#spawn-delivery-create-then-baseline-then-snapshots" title="Permanent link">#</a></h2>
+<p>Creating an entity on a client is a small handshake, so a snapshot never refers to an entity the client doesn't have yet:</p>
+<div class="hl"><pre><span></span><code>stage 0  server ─ W2CSpawnNpc { Generation, BirthTick, Baseline = false } ─▶ client creates the object
+         client ─ C2WSpawnAck { id, Generation, Baseline = false } ─▶
+stage 1  server ─ W2CSpawnNpc { ..., Baseline = true } (fresh position/state) ─▶
+         client ─ C2WSpawnAck { ..., Baseline = true } ─▶
+stage 2  READY: the entity is now included in this player&#39;s snapshots
+</code></pre></div>
+
+<ul>
+<li><code>Generation</code> identifies one particular appearance of an entity. An ack for an old generation (the entity left and came back) is ignored.</li>
+<li>Unacked spawns are <strong>retried</strong> on a timer.</li>
+<li><strong>Priority lanes</strong>: NPCs, your target, anyone in combat with you or in your party are urgent; other players fill in as budget allows. 500 people arriving at a city at once queue fairly instead of starving each other.</li>
+<li><strong>Budgets</strong>: <code>Performance.SpawnOperationsPerTick</code> (1024), <code>SpawnBytesPerTick</code> (512 KiB), <code>SpawnMilliseconds</code> (6), and per player <code>SpawnOperationsPerPeer</code> (24) and <code>SpawnBytesPerPeer</code> (24 KiB). Anything over budget goes next tick.</li>
+<li><strong>Parents</strong>: a rider needs its mount, a passenger its vehicle. <code>ParentOf</code> makes sure the parent is spawned first.</li>
+</ul>
+<p>The client side is <code>ClientSpawnQueue</code>: it creates objects within a frame budget and sends the acks.</p>
+<p>Spawns are flushed once per tick in <code>TickStage.Spawns</code> (<code>ReplicationManager.Spawns.Flush</code>).</p>
+<h3 id="adding-a-new-kind-of-world-entity">Adding a new kind of world entity<a class="anchor" href="#adding-a-new-kind-of-world-entity" title="Permanent link">#</a></h3>
+<p>Implement <code>IWorldEntitySource</code> (<code>Core/Interest/IWorldEntitySource.cs</code>) and register it with <code>SpawnManager.RegisterEntitySource</code>. When one of your ids enters a player's view, the spawn manager asks each source to send its spawn packet. <code>DoodadManager</code> and <code>LootManager</code> are the two existing examples. Allocate ids above <code>NpcIdBase</code>, put them in the interest grid with <code>InterestManager.UpdatePosition</code>, remove them with <code>RemoveReplicatedEntity</code>.</p>
+<h2 id="snapshots-positions-for-everyone-every-tick">Snapshots: positions for everyone, every tick<a class="anchor" href="#snapshots-positions-for-everyone-every-tick" title="Permanent link">#</a></h2>
+<p>Movement never leaves the server as individual packets. Once per tick (<code>TickStage.Snapshots</code>), <code>SnapshotDispatcher</code> builds <strong>one batched, quantised, unreliable <code>W2CWorldSnapshot</code> per player</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Bytes</th>
+<th>Encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>header: opcode, tick, origin x/y/z, count</td>
+<td>20</td>
+<td>origin = a per-packet reference point; positions are relative to it</td>
+</tr>
+<tr>
+<td>per entity: id</td>
+<td>4</td>
+<td></td>
+</tr>
+<tr>
+<td>flags</td>
+<td>1</td>
+<td>which optional fields follow</td>
+</tr>
+<tr>
+<td>position</td>
+<td>6</td>
+<td>3 × int16, <strong>1/64 m</strong> relative to origin</td>
+</tr>
+<tr>
+<td>yaw</td>
+<td>1</td>
+<td>256 steps</td>
+</tr>
+<tr>
+<td>state</td>
+<td>1</td>
+<td><code>MovementState</code> bitfield</td>
+</tr>
+<tr>
+<td>velocity (optional)</td>
+<td>3</td>
+<td><code>VelocityCodec</code></td>
+</tr>
+<tr>
+<td>tilt (optional)</td>
+<td>2</td>
+<td>pitch/roll for mounts</td>
+</tr>
+</tbody>
+</table></div>
+<p>13–18 bytes per entity instead of ~40 with MessagePack, and zero allocations (<code>SnapshotWriter</code> writes into pooled 1 KiB buffers).</p>
+<p>Not every entity goes in every snapshot. For each observer the dispatcher:</p>
+<ol>
+<li>Takes the entities that are <strong>ready</strong> (spawn stage 2) and in interest.</li>
+<li>Scores them: distance, whether they moved, combat, target, party. Far and idle entities are sent less often; in crowds (<code>CrowdTierThreshold</code>) intervals stretch up to <code>MaximumCrowdIntervalMultiplier</code> (4×).</li>
+<li>Runs a <strong>critical pass</strong> first (your target, attackers, party: <code>SnapshotCriticalEntitiesPerPeer</code>) so they're never starved.</li>
+<li>Fills up to <code>SnapshotEntitiesPerPeer</code> (220) entities in up to <code>SnapshotDatagramsPerPeer</code> (4) datagrams.</li>
+<li>Stops the whole flush at <code>SnapshotBytesPerTick</code> (2 MiB) or <code>SnapshotMilliseconds</code> (16 ms); the next tick starts with the observers that were skipped (rotation).</li>
+</ol>
+<p>The build is parallel above <code>ParallelSnapshotMinimumPlayers</code> (64): workers build datagrams per observer, the tick thread sends them.</p>
+<p>On the client, <code>W2CWorldSnapshotHandler</code> decodes with <code>SnapshotReader</code>, keeps the newest tick per entity (snapshots can arrive out of order) and feeds each entity's <code>RemoteEntityInterpolator</code> (<a href="50-movement.html#remote-characters">Movement</a>).</p>
+<h2 id="broadcasting-other-events">Broadcasting other events<a class="anchor" href="#broadcasting-other-events" title="Permanent link">#</a></h2>
+<p>Anything else that many players should see (a cast starting, a hit, an emote) goes through <code>ReplicationManager</code> (<code>Core/Interest/ReplicationManager.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Everyone who can see this player, plus the player themselves:</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">peers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">NetPeer</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="p">};</span>
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">_interest</span><span class="p">.</span><span class="n">GetKnownBy</span><span class="p">(</span><span class="n">networkId</span><span class="p">))</span><span class="w">          </span><span class="c1">// who knows about networkId</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">SpawnManager</span><span class="p">.</span><span class="n">IsNpcId</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">_players</span><span class="p">.</span><span class="n">TryGetPeer</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">p</span><span class="p">))</span>
+<span class="w">        </span><span class="n">peers</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+
+<span class="n">_replication</span><span class="p">.</span><span class="n">Broadcast</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="n">W2CPlayerTitle</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">W2CPlayerTitlePacket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">PlayerNetworkId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkId</span><span class="p">,</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Kraken Slayer&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">peers</span><span class="p">);</span>
+</code></pre></div>
+
+<p>(This is <code>AchievementService.SetTitle</code>.) <code>Broadcast</code> serialises the packet <strong>once</strong> and sends the same bytes to each recipient, on the channel <code>PacketChannels</code> assigns; <code>BroadcastExcept</code> skips one peer; <code>SendUnreliable</code> is for cosmetic, replaceable data. Interest already respects layers, so building the list from <code>GetKnownBy</code> is all you need. Never loop over all connected peers for a local event.</p>
+<p>Spawn and despawn opcodes passing through <code>ReplicationManager</code> are automatically routed into the spawn delivery queue, so always send them through it rather than <code>WorldserverPacketSender</code> directly.</p>
+<h2 id="tuning-for-crowds">Tuning for crowds<a class="anchor" href="#tuning-for-crowds" title="Permanent link">#</a></h2>
+<p>The defaults in <code>World.Performance.json</code> were first measured with the <a href="../30-server/240-loadtest.html">LoadTest</a> bot fleet at 500 clustered players.</p>
+<p><strong>Measured capacity (1 November 2026).</strong> On a Ryzen 5 5500 (6 cores / 12 threads) running the World, Auth and Persistence servers, MySQL and the bots on the same PC, a capacity ladder with mixed-fidelity bots spread over two open-world zones gave:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Players</th>
+<th>Per zone</th>
+<th>Tick p50 (busiest zone)</th>
+<th>Worst 5 s window p99</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,000</td>
+<td>~500</td>
+<td>~6 ms</td>
+<td>21.9 ms</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>2,000</td>
+<td>~1,000</td>
+<td>~14 ms</td>
+<td>31.7 ms</td>
+<td>pass (limit 40 ms)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Per zone host at ~1,000 players the tick averages about MovementAndAoi 6–8 ms, Snapshots 4.7–6 ms, Spawns 1.5–2.4 ms, Packets 1.4–1.7 ms. Cost grows faster than the player count (about 2.3–4.7x for 2x players), because it scales with players times neighbours (~80 per player in the test). Plan on <strong>700–1,000 players per zone thread</strong> at that density; total capacity grows with the number of open-world zones. These are bots on loopback, densely packed and sharing the PC, so treat them as a floor, not a promise.</p>
+<p>The end of every step (1,000 players logging out at once) still pushes one zone's tick to a few hundred ms, mostly in MovementAndAoi: every observer recomputes who it can see as the leavers despawn. It only happens on mass logout.</p>
+<p>The log's <code>[SpawnWork]</code>, <code>[CrowdWork]</code>, <code>[AoI]</code> and <code>[ParallelStages]</code> lines (every report window) tell you which budget is the bottleneck:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Log says</th>
+<th>Means</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pendingSpawns</code> stays high</td>
+<td>spawn budget exhausted every tick</td>
+<td>raise <code>SpawnOperationsPerTick</code> / <code>SpawnMilliseconds</code></td>
+</tr>
+<tr>
+<td><code>snapshotBytes</code> at the cap</td>
+<td>snapshot budget exhausted</td>
+<td>raise <code>SnapshotBytesPerTick</code>, lower <code>SnapshotEntitiesPerPeer</code>, enable dynamic AoI</td>
+</tr>
+<tr>
+<td><code>aoi work</code> many ms</td>
+<td>interest recompute heavy</td>
+<td><code>AoiWorkers</code>, lower density radii</td>
+</tr>
+<tr>
+<td><code>movementMs</code> high</td>
+<td>motor simulation heavy</td>
+<td><code>MovementZoneWorkers</code>, more zones</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every option is listed in the <a href="../70-reference/config.html">configuration reference</a>.</p>
+<nav class="pager">
+<a class="prev" href="50-movement.html"><span>Previous</span>Movement &amp; Netcode</a>
+<a class="next" href="70-persistence-flow.html"><span>Next</span>Persistence Flow</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#entity-ids">Entity ids</a>
+</li>
+<li><a href="#interest-a-circle-with-a-dead-band">Interest: a circle with a dead band</a>
+</li>
+<li><a href="#spawn-delivery-create-then-baseline-then-snapshots">Spawn delivery: create, then baseline, then snapshots</a>
+<ul>
+<li><a href="#adding-a-new-kind-of-world-entity">Adding a new kind of world entity</a>
+</li>
+</ul>
+</li>
+<li><a href="#snapshots-positions-for-everyone-every-tick">Snapshots: positions for everyone, every tick</a>
+</li>
+<li><a href="#broadcasting-other-events">Broadcasting other events</a>
+</li>
+<li><a href="#tuning-for-crowds">Tuning for crowds</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

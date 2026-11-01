@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add an Ability · Axiom Docs</title>
+<meta name="description" content="A skill from idea to screen - the Skills row, its effects, a multi-step plot (projectile, chain, condition), a status, the icon, animation trigger and VFX prefab on the client, learning it from the class book, giving it to an NPC, and testing - with when you need code.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="20-add-server-system.html">Add a Server System</a></li>
+<li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="100-add-ability.html" class="active" aria-current="page">Add an Ability</a></li>
+<li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Cookbook (How-To)</div>
+
+<h1 id="add-an-ability">Add an Ability<a class="anchor" href="#add-an-ability" title="Permanent link">#</a></h1>
+<p>Abilities are <strong>data</strong>: a <code>Skills</code> row, <code>Effects</code> rows that say what happens, optional <code>SkillSteps</code> for multi-stage skills, optional statuses. The client gets them in <code>W2CSkillCatalog</code>; the server runs every cast. Background: <a href="../30-server/30-combat.html">Combat</a> (cast pipeline, effect kinds, statuses), <a href="../30-server/40-progression.html">Progression</a> (classes, ranks, points), <a href="../80-notes/client-SKILL_PLOTS.html">Skill plots (note)</a>.</p>
+<p>The simple version (a cast + damage + a DoT, in SQL) is the <a href="../30-server/30-combat.html#a-new-skill-data-only">Ignite recipe</a>. Here we build a <strong>multi-step</strong> Mage spell, <em>Arcane Volley</em>: a bolt flies to the target, then jumps to 2 more enemies; if the first target is below 30 % health it also slows them.</p>
+<h2 id="1-the-skill---content-studio--combat--skills">1. The skill - Content Studio ▸ Combat ▸ Skills<a class="anchor" href="#1-the-skill---content-studio--combat--skills" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name, Description</td>
+<td>Arcane Volley, "A bolt that leaps between enemies."</td>
+<td>tooltip text</td>
+</tr>
+<tr>
+<td>ClassId</td>
+<td>3 (Mage)</td>
+<td>0 = no class (items, NPCs)</td>
+</tr>
+<tr>
+<td>TargetRule</td>
+<td>0 Enemy</td>
+<td>0 Enemy, 1 Self, 2 Friendly, 3 Area Enemies, 4 Area Allies, 5 Doodad</td>
+</tr>
+<tr>
+<td>Range, CastTimeMs, CooldownMs, ManaCost</td>
+<td>30, 1200, 10000, 25</td>
+<td></td>
+</tr>
+<tr>
+<td>OnGlobalCooldown, IsSpell, RequiresFacing, CastWhileMoving</td>
+<td>1, 1, 1, 0</td>
+<td>spells use SpellPower and can be interrupted</td>
+</tr>
+<tr>
+<td>RequiredLevel, MaxRank, RankLevelStep, RankBonusPct, PointCost</td>
+<td>10, 3, 5, 10, 1</td>
+<td>rank 2 at 15, rank 3 at 20; +10 %/rank</td>
+</tr>
+<tr>
+<td>IconName</td>
+<td><code>Skills/Axiom/Mage/arcane_volley</code></td>
+<td>→ <code>Resources/Icons/Skills/Axiom/Mage/arcane_volley.png</code></td>
+</tr>
+<tr>
+<td>AnimationParameter</td>
+<td><code>Cast</code></td>
+<td>an Animator trigger (or your own, e.g. <code>ArcaneVolley</code>)</td>
+</tr>
+<tr>
+<td>IsStarter, NpcOnly, IsPassive</td>
+<td>0, 0, 0</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Leave <code>MinDamage/MaxDamage</code> at 0 - damage comes from effects.</p>
+<h2 id="2-the-steps---skill-steps-child-rows-of-the-skill">2. The steps - Skill Steps (child rows of the skill)<a class="anchor" href="#2-the-steps---skill-steps-child-rows-of-the-skill" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>StepNo</th>
+<th>DelayMs</th>
+<th>TargetMode</th>
+<th>Projectile / chain</th>
+<th>Condition</th>
+<th>Animation / VFX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0 Target</td>
+<td><code>ProjectileSpeed</code> 25 (m/s)</td>
+<td>–</td>
+<td><code>Cast</code>, <code>arcane_bolt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>5 Chain</td>
+<td><code>ChainJumps</code> 2, <code>ChainRange</code> 8, <code>MaxTargets</code> 3</td>
+<td>–</td>
+<td>–, <code>arcane_arc</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0 Target</td>
+<td>–</td>
+<td><code>ConditionKind</code> 3 TargetHealthBelowPct, <code>ConditionParam</code> 30, <code>ElseStepNo</code> 0</td>
+<td>–</td>
+</tr>
+</tbody>
+</table></div>
+<p>Other modes: 1 Self, 2 AreaAtTarget, 3 AreaAtCaster (<code>Radius</code>), 4 Cone (<code>ConeDegrees</code>), 6 Line. <code>Repeat</code> + <code>RepeatIntervalMs</code> + <code>Channeled</code> make channels (ticks stop if you move). Conditions: 1 TargetHasStatus, 2 CasterHasStatus, 3 TargetHealthBelowPct, 4 CasterHealthBelowPct, 5 DistanceBelow, 6 TargetIsPlayer, 7 Chance; <code>ConditionNot</code> inverts; <code>ElseStepNo</code> jumps (0 = skip).</p>
+<h2 id="3-the-effects---per-step-effects-ownertype-6--skill-step">3. The effects - per step (Effects, <code>OwnerType</code> 6 = skill step)<a class="anchor" href="#3-the-effects---per-step-effects-ownertype-6--skill-step" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Kind</th>
+<th>Target</th>
+<th>Min-Max</th>
+<th>School</th>
+<th>Coefficient</th>
+<th>RefId</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>6 Damage</td>
+<td>1 target</td>
+<td>22-30</td>
+<td>4 Arcane</td>
+<td>0.6</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>6 Damage</td>
+<td>1 target</td>
+<td>12-16</td>
+<td>4 Arcane</td>
+<td>0.3</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>2 Apply Status</td>
+<td>1 target</td>
+<td>1-1</td>
+<td></td>
+<td></td>
+<td>the Slowed status</td>
+</tr>
+</tbody>
+</table></div>
+<p>A skill <strong>with</strong> steps runs the steps instead of its own effects. The inspector shows them as sentences: "Deal 22-30 Arcane damage + 0.6× power".</p>
+<p>The status (Combat ▸ Statuses): <em>Arcane Slow</em>, debuff, <code>DurationMs</code> 4000, a <code>StatusModifiers</code> row: <code>Stat</code> 24 (Move Speed Pct), <code>Flat</code> -30 (percentage stats add their points in <code>Flat</code>, like the shipped <em>Hamstrung</em> -40 and <em>Chilled</em> -35). Icon under <code>Resources/Icons/Status/</code>.</p>
+<h2 id="4-client-presentation">4. Client presentation<a class="anchor" href="#4-client-presentation" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Icon</strong>: the PNG at the <code>IconName</code> path. Missing → the slot shows text.</li>
+<li><strong>Animation</strong>: <code>AnimationParameter</code> on the skill (cast release) and on steps; a parameter the Animator doesn't have falls back to <code>CastRelease</code> (spells) or <code>Attack</code> (weapon skills). To add a dedicated clip: a trigger <code>ArcaneVolley</code> + a state in the Actions layer (<a href="../50-tools/60-asset-character-pipeline.html#an-animator-controller">animator controller</a>).</li>
+<li><strong>VFX</strong>: <code>VfxKey</code> loads <code>Resources/Vfx/&lt;key&gt;</code> (<code>Resources/Vfx/arcane_bolt.prefab</code>). With <code>ProjectileSpeed</code> &gt; 0 the client flies it from caster to target over the server's flight time; cosmetic flights are budgeted in crowds. No prefab = no visual, gameplay unaffected.</li>
+</ul>
+<h2 id="5-learning-it">5. Learning it<a class="anchor" href="#5-learning-it" title="Permanent link">#</a></h2>
+<p>Players learn class skills from the <strong>spellbook</strong> with skill points once <code>RequiredLevel</code> is reached (<code>C2WLearnAbility</code>); ranks unlock every <code>RankLevelStep</code> levels. <code>IsStarter = 1</code> gives rank 1 to new characters; <code>HotbarSlot</code> places it on the bar. Passive skills use <code>AbilityPassiveModifiers</code>. (<a href="../30-server/40-progression.html#skills-ranks-and-points">Progression</a>)</p>
+<h2 id="6-giving-it-to-an-npc">6. Giving it to an NPC<a class="anchor" href="#6-giving-it-to-an-npc" title="Permanent link">#</a></h2>
+<p><strong>NPCs ▸ NPC Abilities</strong> (or the NPC wizard): <code>NpcTemplateId</code>, <code>SkillId</code>, <code>Priority</code> (higher first), <code>Target</code> (0 Current Target, 1 Self, 2 Hurt Ally, 3 Random Enemy), <code>MinHealthPct</code>/<code>MaxHealthPct</code> (use below 50 % only…), <code>Phase</code> (boss phases), <code>Chance</code>, <code>CooldownMs</code>, <code>InitialDelayMs</code>. NPC-only skills set <code>NpcOnly = 1</code> so they never appear in a class book.</p>
+<h2 id="7-test">7. Test<a class="anchor" href="#7-test" title="Permanent link">#</a></h2>
+<ol>
+<li>Content Studio F5, commit, restart the World server; the log loads skills and plots without warnings about your rows.</li>
+<li>Log in a level-10 Mage, learn it (K), drag it to the bar, cast on a group of monsters: the bolt flies, jumps to two more, the low-health target gets the slow icon.</li>
+<li>GM panel: Set Level / Clear Cooldowns to iterate quickly (needs <code>World:AllowDebugCommands</code> for levels).</li>
+</ol>
+<h2 id="when-you-need-code">When you need code<a class="anchor" href="#when-you-need-code" title="Permanent link">#</a></h2>
+<ul>
+<li>A <strong>new effect kind</strong> (a verb that doesn't exist: "swap places with the target") → <code>EffectKind</code> + a case in <code>EffectApplier.Check</code>/<code>Apply</code> + the Content Studio enum (<a href="../30-server/30-combat.html#a-new-effect-kind-code">recipe</a>).</li>
+<li>A <strong>new stat</strong> → <a href="../30-server/30-combat.html#a-new-stat">A new stat</a>.</li>
+<li>A new <strong>target mode</strong> or <strong>condition</strong> → <code>SkillStepTarget</code> / <code>SkillStepCondition</code> and the plot runner, plus <code>ContentEnums.cs</code>.</li>
+<li>Anything that should show on the client beyond icon/animation/VFX (a ground marker while aiming) → client code.</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="90-add-zone.html"><span>Previous</span>Add a Zone or a New Region</a>
+<a class="next" href="110-add-doodad.html"><span>Next</span>Add a World Object (Doodad)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#1-the-skill---content-studio--combat--skills">1. The skill - Content Studio ▸ Combat ▸ Skills</a>
+</li>
+<li><a href="#2-the-steps---skill-steps-child-rows-of-the-skill">2. The steps - Skill Steps (child rows of the skill)</a>
+</li>
+<li><a href="#3-the-effects---per-step-effects-ownertype-6--skill-step">3. The effects - per step (Effects, OwnerType 6 = skill step)</a>
+</li>
+<li><a href="#4-client-presentation">4. Client presentation</a>
+</li>
+<li><a href="#5-learning-it">5. Learning it</a>
+</li>
+<li><a href="#6-giving-it-to-an-npc">6. Giving it to an NPC</a>
+</li>
+<li><a href="#7-test">7. Test</a>
+</li>
+<li><a href="#when-you-need-code">When you need code</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

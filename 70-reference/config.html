@@ -1,0 +1,1722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration Reference · Axiom Docs</title>
+<meta name="description" content="All 11 configuration classes of the servers with defaults and descriptions, and the shipped settings files.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="packets.html">Packet Reference</a></li>
+<li><a href="services.html">Service Endpoints</a></li>
+<li><a href="worlddb.html">worldserver.db Reference</a></li>
+<li><a href="mysql.html">MySQL Reference</a></li>
+<li><a href="enums.html">Shared Enums</a></li>
+<li><a href="config.html" class="active" aria-current="page">Configuration Reference</a></li>
+<li><a href="lua-api.html">Lua API Reference</a></li>
+<li><a href="gm-commands.html">GM Command Reference</a></li>
+<li><a href="editor.html">Editor Menu Reference</a></li>
+<li><a href="codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Reference (generated)</div>
+<div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
+<h1 id="configuration-reference">Configuration Reference<a class="anchor" href="#configuration-reference" title="Permanent link">#</a></h1>
+<p>Every option class the servers bind from configuration, with defaults and descriptions, then the shipped settings files with secrets replaced by <code>&lt;secret&gt;</code>. Values come from <code>appsettings.json</code>, then <code>appsettings.{Environment}.json</code>, then your git-ignored <code>appsettings.Local.json</code>, then environment variables (<code>World__TickRate=30</code>). Guide: <a href="../20-data/60-config.html">Configuration</a>.</p>
+<h2 id="option-classes">Option classes<a class="anchor" href="#option-classes" title="Permanent link">#</a></h2>
+<h3 id="authserverconfig">AuthServerConfig<a class="anchor" href="#authserverconfig" title="Permanent link">#</a></h3>
+<p>Section <code>Auth</code> · Axiom.Server.Auth · <code>Servers/Axiom.Server.Auth/Config/AuthServerConfig.cs</code></p>
+<p>Replaces ServerConfig.ts and the .env file it read. The old server pulled AUTH_DATABASE_PATH, GAME_DATABASE_PATH and INTERNAL_SECRET out of process.env via dotenv, which meant the auth server's configuration lived in a different place, a different format, and a different editor from the other two servers. It's all appsettings.json now, same as World and Persistence. Environment variables still work and still win, which is what you want for deployment: ASP.NET Core's default configuration chain reads appsettings.json, then appsettings.{Environment}.json, then environment variables. So <code>Auth__InternalSecret=...</code> in the environment overrides the file without editing it. (Double underscore is the separator for nested keys.) The database connection is NOT here — it lives under ConnectionStrings with the name "Auth", matching how the persistence server does it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GameDataPath</code></td>
+<td><code>string</code></td>
+<td><code>"gamedata.bin"</code></td>
+<td>Path to the encrypted client game data blob served by /gamedata/db. Was GAME_DATABASE_PATH. The route never inspects the file's format, so this can point at gamedata.bin or gamedata.db equally.</td>
+</tr>
+<tr>
+<td><code>InternalSecret</code></td>
+<td><code>string</code></td>
+<td>(set in appsettings.Local.json)</td>
+<td>Shared with the WorldServer ONLY. Must match World:InternalSecret in the world server's appsettings.json and InternalSecret in the persistence server's. Never sent to a client.</td>
+</tr>
+<tr>
+<td><code>MaxLoginAttempts</code></td>
+<td><code>int</code></td>
+<td><code>5</code></td>
+<td>Failed logins allowed from ONE address before that username is locked for that address (LoginThrottle). The owner logging in from elsewhere is unaffected.</td>
+</tr>
+<tr>
+<td><code>LockoutMinutes</code></td>
+<td><code>int</code></td>
+<td><code>15</code></td>
+<td>How long a lockout lasts.</td>
+</tr>
+<tr>
+<td><code>AccountLockAttempts</code></td>
+<td><code>int</code></td>
+<td><code>50</code></td>
+<td>Failed logins from ALL addresses together before the account itself is locked everywhere. The backstop against one account being guessed at from many machines; high enough that nobody can lock someone else out casually.</td>
+</tr>
+<tr>
+<td><code>TrustForwardedFor</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Believe the X-Forwarded-For header for the client's address. ONLY turn this on when Auth sits behind a reverse proxy (nginx, Caddy) that sets it - otherwise any client can type a fake address into the header and walk around every per-IP limit.</td>
+</tr>
+<tr>
+<td><code>SessionLifetimeHours</code></td>
+<td><code>int</code></td>
+<td><code>24</code></td>
+<td>How long an issued session token stays valid, if unused.</td>
+</tr>
+<tr>
+<td><code>LaunchTokenSeconds</code></td>
+<td><code>int</code></td>
+<td><code>120</code></td>
+<td>How long a one-shot LAUNCH token lives (launcher L3). It is passed to the game on the command line, where other local processes can read it, so it should be dead within a couple of minutes whether or not the world server burned it. Replaces SessionLifetimeHours for launch tokens; that setting is now unused.</td>
+</tr>
+<tr>
+<td><code>RefreshTokenDays</code></td>
+<td><code>int</code></td>
+<td><code>30</code></td>
+<td>How long a refresh token (what the launcher keeps instead of the password) lives without being used. Every use replaces it with a new one, so an active player never hits this.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="worlddirectoryconfig">WorldDirectoryConfig<a class="anchor" href="#worlddirectoryconfig" title="Permanent link">#</a></h3>
+<p>Section <code>WorldDirectory</code> · Axiom.Server.Auth · <code>Servers/Axiom.Server.Auth/Config/WorldDirectoryConfig.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PersistenceBaseUrl</code></td>
+<td><code>string</code></td>
+<td><code>"http://127.0.0.1:7778"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>StaleAfterSeconds</code></td>
+<td><code>int</code></td>
+<td><code>25</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Worlds</code></td>
+<td><code>WorldDirectoryEntry[]</code></td>
+<td><code>Array.Empty&lt;WorldDirectoryEntry&gt;()</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="worlddirectoryentry">WorldDirectoryEntry<a class="anchor" href="#worlddirectoryentry" title="Permanent link">#</a></h3>
+<p>Section <code>WorldDirectory:Worlds</code> · Axiom.Server.Auth · <code>Servers/Axiom.Server.Auth/Config/WorldDirectoryConfig.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Host</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Port</code></td>
+<td><code>int</code></td>
+<td><code>7777</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Restrictions</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Maintenance</code></td>
+<td><code>bool</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaxCharacters</code></td>
+<td><code>int</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PersistenceBaseUrl</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>Optional override for a world with a separate character database.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="worldserverconfig">WorldServerConfig<a class="anchor" href="#worldserverconfig" title="Permanent link">#</a></h3>
+<p>Section <code>World</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/WorldServerConfig.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Performance</code></td>
+<td><code>CrowdPerformanceOptions</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ZoneThreads</code></td>
+<td><code>ZoneThreadsConfig</code></td>
+<td></td>
+<td>Every painted zone (or group of zones) on its own tick thread (Docs/ZONE_THREADS.md). Off by default.</td>
+</tr>
+<tr>
+<td><code>Plugins</code></td>
+<td><code>PluginsConfig</code></td>
+<td></td>
+<td>Server plugins: C# DLLs in Plugins/ that add to or change the game (Docs/PLUGINS.md).</td>
+</tr>
+<tr>
+<td><code>ClientContent</code></td>
+<td><code>ClientContentConfig</code></td>
+<td></td>
+<td>The client game data package built from this server's database (Docs/CLIENT_CONTENT.md).</td>
+</tr>
+<tr>
+<td><code>ItemUidNode</code></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>This server's node number in item uids (Docs/ITEM_UIDS.md), 0-1023. Every world server running at the same time needs a different one.</td>
+</tr>
+<tr>
+<td><code>NpcCollisionProfilesPath</code></td>
+<td><code>string</code></td>
+<td><code>"Data/npc_collision.json"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>StrictNpcCollision</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>True = refuse to start if an NPC template's model has no collision shape. False (default) logs a warning and that NPC has no body.</td>
+</tr>
+<tr>
+<td><code>PetsBlockPlayers</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>True (default) = pets block other players; the owner always walks through their own pet. False = pets have no collision body at all.</td>
+</tr>
+<tr>
+<td><code>MovementReadyTimeoutSeconds</code></td>
+<td><code>int</code></td>
+<td><code>30</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TeleportLoadingScreenMeters</code></td>
+<td><code>float</code></td>
+<td><code>256</code></td>
+<td>A teleport shorter than this keeps the world on screen (house lift, climbing to a roof, leaving a vehicle, standing up from furniture). Longer ones, a layer change (dungeon) or the first entry show "Loading surroundings". 256 m is well inside the 3x3 block of 512 m tiles the client keeps loaded.</td>
+</tr>
+<tr>
+<td><code>CollisionPrefetchMeters</code></td>
+<td><code>float</code></td>
+<td><code>128</code></td>
+<td>Server-side collision is loaded this far ahead of every moving player (plus 3 s of travel), so nobody reaches a terrain tile the server hasn't loaded. Before, a tile loaded only when the player was ~9 m from it, and the player stopped until it had (the first crossing into each zone after a restart).</td>
+</tr>
+<tr>
+<td><code>MovementCollisionDirectory</code></td>
+<td><code>string</code></td>
+<td><code>"Data/world_collision"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementRunSpeed</code></td>
+<td><code>float</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementWalkSpeed</code></td>
+<td><code>float</code></td>
+<td><code>2.5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementGravity</code></td>
+<td><code>float</code></td>
+<td><code>-30</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementJumpHeight</code></td>
+<td><code>float</code></td>
+<td><code>0.8</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementSlopeLimit</code></td>
+<td><code>float</code></td>
+<td><code>60</code></td>
+<td>Steepest ground a player can walk up, in degrees; anything steeper is a wall they slide along. Sent to the client with the rest of the movement profile, so client and server always agree. The motor's built-in default is 50, which stops players on ordinary sculpted hills. 60 lets them climb hills and riverbanks freely while real cliffs (70+) still block.</td>
+</tr>
+<tr>
+<td><code>TickRate</code></td>
+<td><code>int</code></td>
+<td><code>20</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaxPlayers</code></td>
+<td><code>int</code></td>
+<td><code>500</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MOTD</code></td>
+<td><code>String</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AuthServerUrl</code></td>
+<td><code>String</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>InternalSecret</code></td>
+<td><code>String</code></td>
+<td>(set in appsettings.Local.json)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>PersistenceBaseUrl</code></td>
+<td><code>String</code></td>
+<td><code>"http://127.0.0.1:7778"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AutosaveIntervalSeconds</code></td>
+<td><code>int</code></td>
+<td><code>120</code></td>
+<td>How often every in-world character is saved, in seconds. Saves are spread evenly across the interval (each player lands on its own tick), so there is never a burst of N saves at once. Only characters whose position or level changed since their last save are sent. 0 or less disables autosave (disconnect / level-up / shutdown saves still happen).</td>
+</tr>
+<tr>
+<td><code>AllowLoadTestBypass</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>DEV/LOAD-TEST ONLY. When true, AuthService accepts tokens of the form "loadtest:{n}" and returns account id (900000 + n) WITHOUT calling the real AuthServer. Never true outside a local/staging load-test run — this is a full auth bypass.</td>
+</tr>
+<tr>
+<td><code>AllowDebugCommands</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Additional server-wide switch for staff mutations (grants, level-up, NPC/doodad/PvP debug actions). Every request also requires current account access level 3-5 from Auth. Default false; enable deliberately on shards where staff should use those actions.</td>
+</tr>
+<tr>
+<td><code>AllowPlayerVersusPlayer</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Can players attack each other? Off by default: turning PvP on is a decision about what kind of server this is, not something to inherit by accident. Safe zones (SpawnPoints.SafeRadius) still apply when on.</td>
+</tr>
+<tr>
+<td><code>AuctionServerUrl</code></td>
+<td><code>string</code></td>
+<td><code>"http://127.0.0.1:5090"</code></td>
+<td>Where Axiom.Server.Auction is listening. That service has its own MySQL database holding the listings and the auction mailbox; this server never touches it directly.</td>
+</tr>
+<tr>
+<td><code>ShardName</code></td>
+<td><code>String</code></td>
+<td><code>"Dev"</code></td>
+<td>This world server's shard name, shown to players (launcher realm list, character select, the HUD). ONE WORLD SERVER PER SHARD: a shard is one seamless world run by one process - "Dawnmere" is one WorldServer, a second shard is a second process with its own config, its own port and its own persistence rows.</td>
+</tr>
+<tr>
+<td><code>TerrainDirectory</code></td>
+<td><code>String</code></td>
+<td><code>"Data/terrain_data"</code></td>
+<td>Folder of exported terrain heightmaps (*.achtmap) for the whole shard - one file per Unity Terrain, any number of them, exported by Dev Tools &gt; World Tiles &gt; Export All Terrain. They are stitched into one seamless height field (TiledHeightField) and used by MovementValidator to reject positions below the ground, and by NPC AI to walk on the terrain instead of on a flat plane. Relative paths resolve against the server's own folder. A missing or empty folder is a supported state: the shard simply runs without terrain validation. Interiors and instances have no heightmap and are never validated against one.</td>
+</tr>
+<tr>
+<td><code>HeightmapTerrainPath</code></td>
+<td><code>String</code></td>
+<td><code>""</code></td>
+<td>LEGACY single-file setting, from before the world was partitioned. Still honoured - the file is added to the same stitched field - so existing configs keep working. Prefer TerrainDirectory.</td>
+</tr>
+<tr>
+<td><code>PreloadAllTerrain</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>True loads every heightmap at boot. False (default) loads each one the first time a player or NPC needs it and unloads it after TerrainIdleUnloadMinutes unused - the right choice once the world is bigger than a handful of tiles, since a full continent of heightmaps is gigabytes and only the areas with people in them matter.</td>
+</tr>
+<tr>
+<td><code>TerrainIdleUnloadMinutes</code></td>
+<td><code>int</code></td>
+<td><code>10</code></td>
+<td>How long an unused heightmap stays in memory. See PreloadAllTerrain.</td>
+</tr>
+<tr>
+<td><code>NpcGroundSnap</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>NPCs follow the terrain height while they walk, where terrain data exists. Off keeps the old behaviour (NPCs keep the Y they spawned at), for debugging.</td>
+</tr>
+<tr>
+<td><code>ZoneMapPath</code></td>
+<td><code>String</code></td>
+<td><code>"Data/world/zones.aczmap"</code></td>
+<td>The shard's zone map (*.aczmap), painted and saved by Dev Tools &gt; Zones: which zone every point of the world is in, plus each zone's name, level range and PvP mode. The client ships its own copy in StreamingAssets; the two are compared by hash on entering the world. Missing is fine - the whole shard is simply "no zone".</td>
+</tr>
+<tr>
+<td><code>InstanceThreads</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Every dungeon instance runs its script, bosses and clock on its own tick thread (Docs/INSTANCE_ZONES.md), so one slow dungeon script never stalls the open world. False runs them inline on the world tick, the old way - a fallback switch, and what tests use.</td>
+</tr>
+<tr>
+<td><code>InstanceTickRate</code></td>
+<td><code>int</code></td>
+<td><code>20</code></td>
+<td>Each instance zone thread's rate (Hz). Events (a boss died) are handled at once regardless.</td>
+</tr>
+<tr>
+<td><code>InstanceAiBudgetMs</code></td>
+<td><code>double</code></td>
+<td><code>3.0</code></td>
+<td>Milliseconds of each world tick that dungeon NPCs (AI, movement, attacks) may use (Docs/INSTANCE_ZONES.md, "Dungeon AI budget"). Open-world NPCs run first, in full; dungeons past the budget run next tick. 0 = no limit (the old behaviour).</td>
+</tr>
+<tr>
+<td><code>InstanceViewIntervalMs</code></td>
+<td><code>int</code></td>
+<td><code>250</code></td>
+<td>How often a zone whose script watches health, combat or rooms is sent a fresh view (ms).</td>
+</tr>
+<tr>
+<td><code>InstanceCommandBudgetMs</code></td>
+<td><code>double</code></td>
+<td><code>2.0</code></td>
+<td>World-tick time spent applying zone commands each tick (ms); the rest wait a tick.</td>
+</tr>
+<tr>
+<td><code>NavMeshEnabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>NPCs walk on the navmesh (Docs/NAVMESH.md): paths around walls, up stairs, through dungeons. Baked by Axiom.Tools.NavBake (or Unity Dev Tools &gt; NavMesh) from the movement collision export into NavMeshDirectory/&lt;profile&gt;. No navmesh there = straight lines, as before.</td>
+</tr>
+<tr>
+<td><code>NavMeshDirectory</code></td>
+<td><code>string</code></td>
+<td><code>"Data/navmesh"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NavMeshWorkers</code></td>
+<td><code>int</code></td>
+<td><code>2</code></td>
+<td>Background threads searching paths (the tick never searches).</td>
+</tr>
+<tr>
+<td><code>NavMeshMaxTiles</code></td>
+<td><code>int</code></td>
+<td><code>16384</code></td>
+<td>Nav tiles (64 m) loaded at once, per profile. 16384 = 256 pages of 512 m.</td>
+</tr>
+<tr>
+<td><code>NavMeshMaxSearchNodes</code></td>
+<td><code>int</code></td>
+<td><code>4096</code></td>
+<td>A* nodes one search may expand before settling for the best partial path.</td>
+</tr>
+<tr>
+<td><code>NavMeshIdleUnloadMinutes</code></td>
+<td><code>int</code></td>
+<td><code>10</code></td>
+<td>A navmesh page no NPC has needed for this long is unloaded.</td>
+</tr>
+<tr>
+<td><code>PreloadAllNavMesh</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Load every page at boot (small worlds, profiling). Default: on demand.</td>
+</tr>
+<tr>
+<td><code>NpcUnreachableEvadeSeconds</code></td>
+<td><code>int</code></td>
+<td><code>6</code></td>
+<td>An NPC whose target the navmesh can't reach gives up (evades home) after this long. 0 = never.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="networkconfig">NetworkConfig<a class="anchor" href="#networkconfig" title="Permanent link">#</a></h3>
+<p>Section <code>Network</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/NetworkConfig.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Host</code></td>
+<td><code>string</code></td>
+<td><code>"0.0.0.0"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Port</code></td>
+<td><code>int</code></td>
+<td><code>1234</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Backlog</code></td>
+<td><code>int</code></td>
+<td><code>100</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="databaseconfig">DatabaseConfig<a class="anchor" href="#databaseconfig" title="Permanent link">#</a></h3>
+<p>Section <code>Database</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/DatabaseConfig.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Host</code></td>
+<td><code>string</code></td>
+<td><code>"localhost"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Port</code></td>
+<td><code>int</code></td>
+<td><code>3306</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>User</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Password</code></td>
+<td><code>string</code></td>
+<td>(set in appsettings.Local.json)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>WorldDb</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PatchDirectory</code></td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>Where GameDataPatchRunner reads *.sql patches from. Relative paths are relative to the server .exe. Empty = SQL/patches next to the .exe.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="worlddirectoryreporterconfig">WorldDirectoryReporterConfig<a class="anchor" href="#worlddirectoryreporterconfig" title="Permanent link">#</a></h3>
+<p>Section <code>WorldDirectory</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Core/Services/WorldDirectoryReporter.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td><code>"dev"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PublicHost</code></td>
+<td><code>string</code></td>
+<td><code>"127.0.0.1"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PublicPort</code></td>
+<td><code>int</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>IntervalSeconds</code></td>
+<td><code>int</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="crowdperformanceoptions">CrowdPerformanceOptions<a class="anchor" href="#crowdperformanceoptions" title="Permanent link">#</a></h3>
+<p>Section <code>World:Performance</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/CrowdPerformanceOptions.cs</code></p>
+<p>Work budgets, not player-capacity claims. All values apply to one world tick.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DynamicAoiEnabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensityTier1Players</code></td>
+<td><code>int</code></td>
+<td><code>128</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensityTier2Players</code></td>
+<td><code>int</code></td>
+<td><code>256</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensityTier3Players</code></td>
+<td><code>int</code></td>
+<td><code>512</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensePlayerRadius</code></td>
+<td><code>float</code></td>
+<td><code>60</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>VeryDensePlayerRadius</code></td>
+<td><code>float</code></td>
+<td><code>45</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ExtremePlayerRadius</code></td>
+<td><code>float</code></td>
+<td><code>30</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensityRecoveryFraction</code></td>
+<td><code>float</code></td>
+<td><code>0.75</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DensityRefreshSeconds</code></td>
+<td><code>double</code></td>
+<td><code>0.5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AoiRecomputesPerTick</code></td>
+<td><code>int</code></td>
+<td><code>4096</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AoiMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AoiWorkers</code></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Threads that compute view-range changes for the players who moved this tick (0 = automatic: half the cores, at most 8). Only the read-only distance work runs on them; every change to who-knows-whom is still applied on the tick thread, in order. See Docs/PARALLEL_STAGES.md.</td>
+</tr>
+<tr>
+<td><code>ParallelAoiMinimumMovers</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Below this many moving players a tick, view range is recomputed the old way, one player at a time.</td>
+</tr>
+<tr>
+<td><code>QueuedActions</code></td>
+<td><code>int</code></td>
+<td><code>8192</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaximumConnections</code></td>
+<td><code>int</code></td>
+<td><code>2048</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AuthenticationTimeoutSeconds</code></td>
+<td><code>double</code></td>
+<td><code>30</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaxPendingAuthentications</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaxServiceRequests</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>QueuedServiceRequests</code></td>
+<td><code>int</code></td>
+<td><code>512</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PacketsPerSecond</code></td>
+<td><code>int</code></td>
+<td><code>1500</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PacketBurst</code></td>
+<td><code>int</code></td>
+<td><code>4096</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>GameplayPacketsPerTick</code></td>
+<td><code>int</code></td>
+<td><code>8192</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BytesPerSecond</code></td>
+<td><code>int</code></td>
+<td><code>262144</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ByteBurst</code></td>
+<td><code>int</code></td>
+<td><code>1048576</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotCriticalEntitiesPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>12</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotCriticalScanPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>48</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotCriticalBudgetFraction</code></td>
+<td><code>double</code></td>
+<td><code>0.5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MovementZoneWorkers</code></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>0 selects a bounded automatic count; 1 forces the serial path for comparisons.</td>
+</tr>
+<tr>
+<td><code>ZoneWorkerMinimumPlayers</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ZoneMovementBatchSize</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ReuseStableGroundContacts</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DisconnectsPerTick</code></td>
+<td><code>int</code></td>
+<td><code>32</code></td>
+<td>Disconnect clean-ups a zone thread runs per tick (a mass logout is spread over several ticks).</td>
+</tr>
+<tr>
+<td><code>DisconnectMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>4</code></td>
+<td>Soft time limit for those clean-ups in one tick; at least one always runs.</td>
+</tr>
+<tr>
+<td><code>ActionsPerTick</code></td>
+<td><code>int</code></td>
+<td><code>128</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ActionMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>EntriesPerTick</code></td>
+<td><code>int</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>EntryMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>QueuedEntries</code></td>
+<td><code>int</code></td>
+<td><code>1024</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SpawnOperationsPerTick</code></td>
+<td><code>int</code></td>
+<td><code>1024</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SpawnBytesPerTick</code></td>
+<td><code>int</code></td>
+<td><code>524288</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SpawnMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>6</code></td>
+<td>6 (was 4): at 500 players the 4 ms budget was hit every tick, so spawns of NPCs/doodads queued behind each other.</td>
+</tr>
+<tr>
+<td><code>SpawnOperationsPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>24</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SpawnBytesPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>24576</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotBytesPerTick</code></td>
+<td><code>int</code></td>
+<td><code>2097152</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotMilliseconds</code></td>
+<td><code>double</code></td>
+<td><code>16</code></td>
+<td>16 (was 8): at 500 players 8 ms reached only ~280 of 500 observers per tick, stretching nearby movement updates to ~200 ms (p99 ~1 s). ~14 ms serves all 500; the tick has ~25 ms of headroom.</td>
+</tr>
+<tr>
+<td><code>SnapshotDatagramsPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotEntitiesPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>220</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotScanPerPeer</code></td>
+<td><code>int</code></td>
+<td><code>600</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SnapshotWorkers</code></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Threads that build snapshots in parallel (Docs/PARALLEL_STAGES.md). 0 = auto (half the cores, at most 8); 1 = tick thread only.</td>
+</tr>
+<tr>
+<td><code>ParallelSnapshotMinimumPlayers</code></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Fewer in-world players than this: snapshots are built on the tick thread (the fan-out isn't worth it).</td>
+</tr>
+<tr>
+<td><code>CrowdTierThreshold</code></td>
+<td><code>int</code></td>
+<td><code>128</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MaximumCrowdIntervalMultiplier</code></td>
+<td><code>int</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="zonethreadsconfig">ZoneThreadsConfig<a class="anchor" href="#zonethreadsconfig" title="Permanent link">#</a></h3>
+<p>Section <code>World:ZoneThreads</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/ZoneThreadsConfig.cs</code></p>
+<p>World:ZoneThreads (Docs/ZONE_THREADS.md). Off by default: the world runs on one tick thread exactly as before. On: every group of painted zones gets its own ZoneHost with its own tick thread and its own simulation.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td></td>
+<td>False (default) = the single tick thread.</td>
+</tr>
+<tr>
+<td><code>Groups</code></td>
+<td><code>List&lt;List&lt;string&gt;&gt;</code></td>
+<td></td>
+<td>Zone keys per host. The first group is the home host: it also owns unpainted ground, runs the lobby (log in, character select) and the shard-wide jobs. A painted zone not listed here gets a host of its own. Empty = every painted zone on its own host, the first zone in the map being home.</td>
+</tr>
+<tr>
+<td><code>GhostBandMeters</code></td>
+<td><code>float</code></td>
+<td><code>85</code></td>
+<td>How far from a border an entity is shown to the neighbouring host (ghosting, phase 3). Default = the interest despawn radius.</td>
+</tr>
+<tr>
+<td><code>Ghosting</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Mirror border entities to neighbouring hosts (phase 3). Off = entities pop in at borders.</td>
+</tr>
+<tr>
+<td><code>InboxCapacity</code></td>
+<td><code>int</code></td>
+<td><code>65536</code></td>
+<td>Packets a host's inbox holds before the network thread starts refusing that host's gameplay packets as busy.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="pluginsconfig">PluginsConfig<a class="anchor" href="#pluginsconfig" title="Permanent link">#</a></h3>
+<p>Section <code>World:Plugins</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/PluginsConfig.cs</code></p>
+<p>World:Plugins (Docs/PLUGINS.md).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Load plugins at all. With no Plugins folder (or an empty one) nothing changes either way.</td>
+</tr>
+<tr>
+<td><code>Directory</code></td>
+<td><code>string</code></td>
+<td><code>"Plugins"</code></td>
+<td>Where plugins live, one folder each with a plugin.json (relative to the server's folder).</td>
+</tr>
+<tr>
+<td><code>Disabled</code></td>
+<td><code>List&lt;string&gt;</code></td>
+<td></td>
+<td>Plugin ids not to load (and anything that depends on them).</td>
+</tr>
+<tr>
+<td><code>AllowReload</code></td>
+<td><code>bool</code></td>
+<td></td>
+<td>Allow ".plugins reload &lt;id&gt;" (staff): swap a rebuilt plugin in without a restart. For development - a reload throws away the plugin's shared store and anything it held.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="clientcontentconfig">ClientContentConfig<a class="anchor" href="#clientcontentconfig" title="Permanent link">#</a></h3>
+<p>Section <code>World:ClientContent</code> · Axiom.Server.World · <code>Servers/Axiom.Server.World/Utils/Config/ClientContentConfig.cs</code></p>
+<p>World:ClientContent - the client's game data, built from this server's own database at boot (Core/Content/ClientContentExporter, Docs/CLIENT_CONTENT.md).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Build the package and hash at boot. False = clients aren't checked and nothing is written.</td>
+</tr>
+<tr>
+<td><code>OutputPaths</code></td>
+<td><code>string[]</code></td>
+<td><code>Array.Empty&lt;string&gt;()</code></td>
+<td>Where to write the encrypted gamedata.bin. Relative paths are relative to the server .exe. Typically the auth server's GameDataPath (what launchers download) and, on a dev machine, the client's Assets/StreamingAssets/GameData/gamedata.bin. Empty = only compute the hash.</td>
+</tr>
+<tr>
+<td><code>KeyHex</code></td>
+<td><code>string</code></td>
+<td>(set in appsettings.Local.json)</td>
+<td>The client's GameDataCrypto key as 64 hex characters. Put it in appsettings.Local.json, not the committed file. Without it nothing is written.</td>
+</tr>
+<tr>
+<td><code>RequireMatch</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>True: a client whose game data hash differs is sent back to server select with an explanation. False (default while developing): it only logs an error.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="keys-read-directly">Keys read directly<a class="anchor" href="#keys-read-directly" title="Permanent link">#</a></h2>
+<p>Settings a server reads by name instead of through an option class.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Server</th>
+<th>Key</th>
+<th>Type</th>
+<th>Read in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Axiom.Server.Auction</td>
+<td><code>ConnectionStrings:AuctionDb</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Auction/Program.cs</code></td>
+</tr>
+<tr>
+<td>Axiom.Server.Auction</td>
+<td><code>Persistence:BaseUrl</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Auction/Program.cs</code></td>
+</tr>
+<tr>
+<td>Axiom.Server.Auction</td>
+<td><code>Persistence:InternalSecret</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Auction/Program.cs</code></td>
+</tr>
+<tr>
+<td>Axiom.Server.Auth</td>
+<td><code>ConnectionStrings:Auth</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Auth/Program.cs</code></td>
+</tr>
+<tr>
+<td>Axiom.Server.Persistence</td>
+<td><code>ConnectionStrings:Persistence</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Persistence/Program.cs</code></td>
+</tr>
+<tr>
+<td>Axiom.Server.Persistence</td>
+<td><code>InternalSecret</code></td>
+<td><code>string</code></td>
+<td><code>Servers/Axiom.Server.Persistence/Program.cs</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="shipped-settings-files">Shipped settings files<a class="anchor" href="#shipped-settings-files" title="Permanent link">#</a></h2>
+<p>As committed, with every secret replaced. Put real values in <code>appsettings.Local.json</code> (git-ignored), never in these files.</p>
+<h3 id="axiomserverauctionappsettingsjson">Axiom.Server.Auction/appsettings.json<a class="anchor" href="#axiomserverauctionappsettingsjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.EntityFrameworkCore.Database.Command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;AllowedHosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;Kestrel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Http&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:5090&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;//&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The auction house&#39;s OWN MySQL database. Create it first: CREATE DATABASE axiom_auction;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AuctionDb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;server=127.0.0.1;port=3306;database=axiom_auction;user=root;password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Persistence&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;//&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Where the general mailbox lives. Sales are mailed there by an outbox worker. InternalSecret must be the SAME value as InternalSecret in the persistence server&#39;s appsettings.json (32+ characters).&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;BaseUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:7778&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Auction&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;//ListingHours&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;How long a listing stays up before it goes home by mail.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ListingHours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;//FeePercent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cut taken from a sale. The seller is mailed the rest.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;FeePercent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;//MaxResults&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rows returned by one browse.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;MaxResults&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;//MailDispatchSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;How often the outbox worker looks for mail to deliver when it&#39;s idle.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;MailDispatchSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverauctionappsettingsdevelopmentjson">Axiom.Server.Auction/appsettings.Development.json<a class="anchor" href="#axiomserverauctionappsettingsdevelopmentjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverauctionappsettingslocalexamplejson">Axiom.Server.Auction/appsettings.Local.example.json<a class="anchor" href="#axiomserverauctionappsettingslocalexamplejson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;AuctionDb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;server=127.0.0.1;port=3306;database=axiom_auction;user=root;password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Persistence&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverauthappsettingsjson">Axiom.Server.Auth/appsettings.json<a class="anchor" href="#axiomserverauthappsettingsjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=127.0.0.1;Port=3306;Database=axiom_auth;User=root;Password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Kestrel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Http&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://0.0.0.0:3000&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;GameDataPath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gamedata.bin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;MaxLoginAttempts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;LockoutMinutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;SessionLifetimeHours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;WorldDirectory&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;StaleAfterSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Worlds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dev&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dawnmere&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7777</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Restrictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Maintenance&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;MaxCharacters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverauthappsettingsdevelopmentjson">Axiom.Server.Auth/appsettings.Development.json<a class="anchor" href="#axiomserverauthappsettingsdevelopmentjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverauthappsettingslocalexamplejson">Axiom.Server.Auth/appsettings.Local.example.json<a class="anchor" href="#axiomserverauthappsettingslocalexamplejson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=127.0.0.1;Port=3306;Database=axiom_auth;User=root;Password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverpersistenceappsettingsjson">Axiom.Server.Persistence/appsettings.json<a class="anchor" href="#axiomserverpersistenceappsettingsjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Persistence&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=127.0.0.1;Port=3306;Database=axiom_persistence;User=root;Password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Kestrel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Http&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://0.0.0.0:7778&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverpersistenceappsettingsdevelopmentjson">Axiom.Server.Persistence/appsettings.Development.json<a class="anchor" href="#axiomserverpersistenceappsettingsdevelopmentjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;LogLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Information&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Microsoft.AspNetCore&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Warning&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverpersistenceappsettingslocalexamplejson">Axiom.Server.Persistence/appsettings.Local.example.json<a class="anchor" href="#axiomserverpersistenceappsettingslocalexamplejson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;ConnectionStrings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Persistence&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Server=127.0.0.1;Port=3306;Database=axiom_persistence;User=root;Password=&lt;secret&gt;;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverworldappsettingsjson">Axiom.Server.World/appsettings.json<a class="anchor" href="#axiomserverworldappsettingsjson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;World&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;TickRate&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;MaxPlayers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;MOTD&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HELLO USERS THIS IS MOTD&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AuthServerUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:3000&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;PersistenceBaseUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:7778&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AutosaveIntervalSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AllowLoadTestBypass&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AllowDebugCommands&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ShardName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dawnmere&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;TerrainIdleUnloadMinutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;NpcGroundSnap&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ZoneMapPath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data/world/zones.aczmap&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ZoneThreads&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;AllowPlayerVersusPlayer&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;InstanceThreads&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;InstanceTickRate&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;NavMeshEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;NavMeshDirectory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data/navmesh&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;NavMeshWorkers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ClientContent&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;OutputPaths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;KeyHex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;RequireMatch&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Network&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7777</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Backlog&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Database&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3306</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;worldserver&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;User&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;WorldDb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Data/worldserver.db&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;PatchDirectory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SQL/patches/&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;WorldDirectory&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dev&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;PublicHost&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;PublicPort&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7777</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;IntervalSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverworldappsettingslocalexamplejson">Axiom.Server.World/appsettings.Local.example.json<a class="anchor" href="#axiomserverworldappsettingslocalexamplejson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;World&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ClientContent&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;KeyHex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;OutputPaths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;../../../../Axiom.Server.Auth/gamedata.bin&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;../../../../../Assets/StreamingAssets/GameData/gamedata.bin&quot;</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;RequireMatch&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="axiomserverworldworldperformancejson">Axiom.Server.World/World.Performance.json<a class="anchor" href="#axiomserverworldworldperformancejson" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;World&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Performance&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;ActionsPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ActionMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;EntriesPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;EntryMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;QueuedEntries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SpawnOperationsPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SpawnBytesPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">524288</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SpawnMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SpawnOperationsPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SpawnBytesPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24576</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotBytesPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2097152</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotDatagramsPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotEntitiesPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">220</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotScanPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotWorkers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ParallelSnapshotMinimumPlayers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;CrowdTierThreshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;MaximumCrowdIntervalMultiplier&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ReuseStableGroundContacts&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DynamicAoiEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensityTier1Players&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensityTier2Players&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensityTier3Players&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensePlayerRadius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;VeryDensePlayerRadius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ExtremePlayerRadius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensityRecoveryFraction&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.75</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DensityRefreshSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;MovementZoneWorkers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ZoneWorkerMinimumPlayers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ZoneMovementBatchSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;AoiRecomputesPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;AoiMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;AoiWorkers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ParallelAoiMinimumMovers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;QueuedActions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8192</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;MaximumConnections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;AuthenticationTimeoutSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;MaxPendingAuthentications&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;MaxServiceRequests&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;QueuedServiceRequests&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DisconnectsPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;DisconnectMilliseconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;PacketsPerSecond&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;PacketBurst&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;BytesPerSecond&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">262144</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ByteBurst&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1048576</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotCriticalEntitiesPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotCriticalScanPerPeer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SnapshotCriticalBudgetFraction&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;GameplayPacketsPerTick&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8192</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<nav class="pager">
+<a class="prev" href="enums.html"><span>Previous</span>Shared Enums</a>
+<a class="next" href="lua-api.html"><span>Next</span>Lua API Reference</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#option-classes">Option classes</a>
+<ul>
+<li><a href="#authserverconfig">AuthServerConfig</a>
+</li>
+<li><a href="#worlddirectoryconfig">WorldDirectoryConfig</a>
+</li>
+<li><a href="#worlddirectoryentry">WorldDirectoryEntry</a>
+</li>
+<li><a href="#worldserverconfig">WorldServerConfig</a>
+</li>
+<li><a href="#networkconfig">NetworkConfig</a>
+</li>
+<li><a href="#databaseconfig">DatabaseConfig</a>
+</li>
+<li><a href="#worlddirectoryreporterconfig">WorldDirectoryReporterConfig</a>
+</li>
+<li><a href="#crowdperformanceoptions">CrowdPerformanceOptions</a>
+</li>
+<li><a href="#zonethreadsconfig">ZoneThreadsConfig</a>
+</li>
+<li><a href="#pluginsconfig">PluginsConfig</a>
+</li>
+<li><a href="#clientcontentconfig">ClientContentConfig</a>
+</li>
+</ul>
+</li>
+<li><a href="#keys-read-directly">Keys read directly</a>
+</li>
+<li><a href="#shipped-settings-files">Shipped settings files</a>
+<ul>
+<li><a href="#axiomserverauctionappsettingsjson">Axiom.Server.Auction/appsettings.json</a>
+</li>
+<li><a href="#axiomserverauctionappsettingsdevelopmentjson">Axiom.Server.Auction/appsettings.Development.json</a>
+</li>
+<li><a href="#axiomserverauctionappsettingslocalexamplejson">Axiom.Server.Auction/appsettings.Local.example.json</a>
+</li>
+<li><a href="#axiomserverauthappsettingsjson">Axiom.Server.Auth/appsettings.json</a>
+</li>
+<li><a href="#axiomserverauthappsettingsdevelopmentjson">Axiom.Server.Auth/appsettings.Development.json</a>
+</li>
+<li><a href="#axiomserverauthappsettingslocalexamplejson">Axiom.Server.Auth/appsettings.Local.example.json</a>
+</li>
+<li><a href="#axiomserverpersistenceappsettingsjson">Axiom.Server.Persistence/appsettings.json</a>
+</li>
+<li><a href="#axiomserverpersistenceappsettingsdevelopmentjson">Axiom.Server.Persistence/appsettings.Development.json</a>
+</li>
+<li><a href="#axiomserverpersistenceappsettingslocalexamplejson">Axiom.Server.Persistence/appsettings.Local.example.json</a>
+</li>
+<li><a href="#axiomserverworldappsettingsjson">Axiom.Server.World/appsettings.json</a>
+</li>
+<li><a href="#axiomserverworldappsettingslocalexamplejson">Axiom.Server.World/appsettings.Local.example.json</a>
+</li>
+<li><a href="#axiomserverworldworldperformancejson">Axiom.Server.World/World.Performance.json</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

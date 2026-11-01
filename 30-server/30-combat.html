@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combat, Effects &amp; Statuses · Axiom Docs</title>
+<meta name="description" content="The cast pipeline, the Effects table and EffectApplier, statuses (buffs, debuffs, DoTs, crowd control), stats and the combat formulas in CombatRules, skill steps, death and respawn - with recipes for new skills, statuses and effect kinds.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html" class="active" aria-current="page">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="combat-effects--statuses">Combat, Effects &amp; Statuses<a class="anchor" href="#combat-effects--statuses" title="Permanent link">#</a></h1>
+<p>Combat in Axiom is <strong>data-driven and unified</strong>: a sword swing, a fireball, a health potion, a poison tick and an NPC's ability all become lists of <strong>effects</strong> carried out by one <code>EffectApplier</code>, rolled with one set of formulas from one table of numbers.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CombatManager</code></td>
+<td><code>Core/Combat/CombatManager.cs</code></td>
+<td>The cast pipeline, NPC swings, hits, death, respawn.</td>
+</tr>
+<tr>
+<td><code>Effect</code>, <code>EffectCatalog</code></td>
+<td><code>Core/Effects</code></td>
+<td>Effects loaded from the <code>Effects</code> table, per owner.</td>
+</tr>
+<tr>
+<td><code>EffectApplier</code></td>
+<td><code>Core/Effects/EffectApplier.cs</code></td>
+<td><strong>Check</strong> then <strong>Apply</strong> a list of effects. The only place health goes down or up.</td>
+</tr>
+<tr>
+<td><code>StatusManager</code>, <code>StatusHost</code></td>
+<td><code>Core/Statuses</code></td>
+<td>Buffs, debuffs, DoTs/HoTs, crowd control, stacking, dispels.</td>
+</tr>
+<tr>
+<td><code>StatsService</code>, <code>StatSheet</code></td>
+<td><code>Core/Stats</code></td>
+<td>Every stat, recalculated when level, gear or statuses change; regen.</td>
+</tr>
+<tr>
+<td><code>GameRules</code></td>
+<td><code>Core/Rules/GameRules.cs</code></td>
+<td>Every formula number, from <code>CombatRules</code>.</td>
+</tr>
+<tr>
+<td><code>CombatMath</code></td>
+<td><code>Core/Combat/CombatMath.cs</code></td>
+<td>Miss, glance, crit, armor, resistance, power scaling.</td>
+</tr>
+<tr>
+<td><code>ThreatService</code></td>
+<td><code>Core/Threat</code></td>
+<td>NPC aggro (<a href="20-npcs-ai.html#threat">NPCs</a>).</td>
+</tr>
+<tr>
+<td><code>AreaTargeting</code>, <code>LineOfSight</code></td>
+<td><code>Core/Combat</code></td>
+<td>Who an area hit catches; terrain line of sight.</td>
+</tr>
+<tr>
+<td><code>AbilityManager</code>, <code>AbilityCatalog</code></td>
+<td><code>Core/Abilities</code></td>
+<td>Classes, learned skills and ranks, passives, hotbar (<a href="40-progression.html">Progression</a>).</td>
+</tr>
+<tr>
+<td><code>InteractionSkillService</code></td>
+<td><code>Core/Interaction</code></td>
+<td>Skills used on world objects (gathering, furniture).</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="the-cast-pipeline">The cast pipeline<a class="anchor" href="#the-cast-pipeline" title="Permanent link">#</a></h2>
+<p>The client sends <code>C2WAttack { SkillId, TargetNetworkId, Yaw }</code> (opcode 52; <code>C2WAttackHandler</code>). <code>CombatManager.TryUseAbility</code> checks, <strong>refusing before anything is spent</strong>:</p>
+<ol>
+<li>Caster in the world and alive.</li>
+<li>The ability exists and they know it (<code>AbilityManager</code>).</li>
+<li>Not stunned; not silenced (for spells).</li>
+<li>Not already casting.</li>
+<li>Off cooldown and off the global cooldown (silently dropped otherwise).</li>
+<li>Standing still, if the cast needs it (<code>CastWhileMoving = 0</code>).</li>
+<li>A valid target for its <code>TargetRule</code> (0 Enemy, 1 Self, 2 Friendly, 3 Area enemies, 4 Area allies, 5 Doodad): attackable, in range (+ <code>RangeTolerance</code>, + slack for a moving target), in line of sight, in the facing cone if <code>RequiresFacing</code>, PvP allowed for players.</li>
+<li>Enough mana.</li>
+<li><code>EffectApplier.Check</code> says every effect can land.</li>
+<li>Start the global cooldown.</li>
+</ol>
+<p>Then:</p>
+<ul>
+<li><strong>Instant</strong> (<code>CastTimeMs = 0</code>): goes off now.</li>
+<li><strong>Cast time</strong> (shortened by Haste): <code>W2CCastStart</code> to everyone who can see the caster; the <code>Scheduler</code> completes it later unless moving, a stun, a silence, an Interrupt effect, death or <code>C2WCancelCast</code> ends it (<code>W2CCastEnd</code>). At completion the target is <strong>checked again</strong> (dead, out of range, behind a hill?).</li>
+<li><strong>Going off</strong>: spend mana, start the skill's cooldown (hasted), run its effects on each target (scaled by rank: <code>RankBonusPct</code> per rank), deliver each hit.</li>
+</ul>
+<p><code>DeliverHit</code> is the single "a hit happened" path for abilities, NPC swings and DoT ticks: <code>W2CCombatEvent</code> to everyone who can see the target, the victim's health update, death handling.</p>
+<h2 id="effects">Effects<a class="anchor" href="#effects" title="Permanent link">#</a></h2>
+<p>Every row of <code>Effects</code> is one thing that happens. Columns:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OwnerType</code>, <code>OwnerId</code></td>
+<td>whose effect: 1 Item, 2 Skill, 3 Status (a tick), 4 legacy doodad func, 5 Doodad function template, 6 Skill step</td>
+</tr>
+<tr>
+<td><code>Sort</code></td>
+<td>order within the owner's list</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td>the verb (below)</td>
+</tr>
+<tr>
+<td><code>Target</code></td>
+<td>0 self, 1 the target</td>
+</tr>
+<tr>
+<td><code>Min</code>, <code>Max</code></td>
+<td>amount range (damage, heal), or stacks/count depending on kind</td>
+</tr>
+<tr>
+<td><code>RefId</code></td>
+<td>what the kind refers to (status, skill, item, doodad template, mount...)</td>
+</tr>
+<tr>
+<td><code>DurationMs</code></td>
+<td>for statuses, taunts, mounts</td>
+</tr>
+<tr>
+<td><code>School</code></td>
+<td>0 Physical, 1 Fire, 2 Frost, 3 Nature, 4 Arcane, 5 Holy, 6 Shadow</td>
+</tr>
+<tr>
+<td><code>Coefficient</code></td>
+<td>power scaling: amount += coefficient × AttackPower (physical) or SpellPower (magic) / HealingPower (heals)</td>
+</tr>
+<tr>
+<td><code>RequiresStatus</code>, <code>BonusStatus</code> + <code>BonusPct</code>, <code>ConsumesStatus</code></td>
+<td>combos: only if the target has a status; bigger if it does; remove it afterwards</td>
+</tr>
+<tr>
+<td><code>Script</code></td>
+<td>Lua hook name for <code>Kind = 0</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="effect-kinds">Effect kinds<a class="anchor" href="#effect-kinds" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Kind</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Script</td>
+<td>nothing itself; the caller fires a Lua hook (<code>OnItemUse</code>...)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Heal</td>
+<td>roll heal (crit, HealingPower, HealingDonePct), heal threat</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Apply Status</td>
+<td><code>StatusManager.Apply(RefId)</code>; <code>Min</code> = stacks, <code>DurationMs</code> overrides</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Cast Skill</td>
+<td>run another skill's effects (sub-skills)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Mount</td>
+<td>mount <code>RefId</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Summon Pet</td>
+<td>pet template <code>RefId</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Damage</td>
+<td>roll damage: miss/glance/crit, armor or resistance, DamageDone/Taken, threat</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Dispel</td>
+<td>remove statuses of dispel type <code>RefId</code> (<code>Min</code> 0 debuffs / 1 buffs, <code>Max</code> count)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Taunt</td>
+<td>NPC fixates on the caster for <code>DurationMs</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Interrupt</td>
+<td>stop the target's cast</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Summon NPC</td>
+<td><code>Min..Max</code> adds of template <code>RefId</code> (NPC abilities)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Give Item</td>
+<td><code>TryAddItem(RefId, Min..Max)</code> (harvests, chests)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Place Doodad</td>
+<td>place doodad template <code>RefId</code> (seeds, kits)</td>
+</tr>
+<tr>
+<td>13–41</td>
+<td>world verbs</td>
+<td>open crafting, enter/leave dungeon, take gold, house access, open storage, start fishing, pick up/sell pack, trade quote, drive vehicle, siege actions, climb, dig treasure, change faction, world interaction, house traversal, furniture use, doodad use, open siege window, claim lodestone, grant Patron</td>
+</tr>
+</tbody>
+</table></div>
+<p>Because doodad actions and item uses are effects too, "plant a seed", "open a chest", "drink a potion" and "cast fireball" all go through the same checks and the same applier.</p>
+<p><code>EffectApplier</code> has two steps:</p>
+<div class="hl"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_effects</span><span class="p">.</span><span class="n">Check</span><span class="p">(</span><span class="n">effects</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">reason</span><span class="p">))</span><span class="w">   </span><span class="c1">// can every effect land? changes nothing</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reason</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="n">W2CInteractDeniedPacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">reason</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_effects</span><span class="p">.</span><span class="n">Apply</span><span class="p">(</span><span class="n">effects</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">);</span><span class="w">              </span><span class="c1">// do them in order, sum what happened</span>
+</code></pre></div>
+
+<p><code>EffectContext</code> carries the source (<code>EffectActor</code>: player or NPC), the target, the origin (for logs), rank scaling and world-interaction details.</p>
+<h2 id="statuses">Statuses<a class="anchor" href="#statuses" title="Permanent link">#</a></h2>
+<p><code>StatusTemplates</code> + <code>StatusModifiers</code> + <code>Effects (OwnerType 3)</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code>, <code>Description</code>, <code>IconName</code>, <code>IsDebuff</code></td>
+<td>display</td>
+</tr>
+<tr>
+<td><code>DurationMs</code>, <code>TickIntervalMs</code></td>
+<td>lifetime; 0 tick = no ticks</td>
+</tr>
+<tr>
+<td><code>StackRule</code>, <code>MaxStacks</code></td>
+<td>0 Refresh (one copy, reset duration), 1 Stack (add a stack), 2 Per caster (one per caster), 3 Ignore (keep the old one)</td>
+</tr>
+<tr>
+<td><code>DispelType</code></td>
+<td>0 none, 1 magic, 2 poison, 3 disease, 4 curse, 5 physical</td>
+</tr>
+<tr>
+<td><code>Crowd</code></td>
+<td>flags: 1 Stun, 2 Root, 4 Silence, 8 Break on damage</td>
+</tr>
+<tr>
+<td><code>StatusModifiers</code> rows</td>
+<td><code>Stat</code>, <code>Flat</code>, <code>Percent</code>: change the stat sheet while active</td>
+</tr>
+<tr>
+<td><code>Effects</code> rows with <code>OwnerType = 3</code></td>
+<td>run every tick, once per stack, through the same applier (so a bleed uses the same armor/crit maths as a sword)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <code>Scheduler</code> runs each status's ticks and expiry; there's no per-tick sweep over all entities. Crowd control has <strong>diminishing returns</strong> for players (<code>CrowdDiminishWindowMs</code>: half, quarter, then immune) and bosses are immune if <code>BossCrowdControlImmune = 1</code>. Statuses end on logout (not saved). Clients get the definitions in <code>W2CStatusCatalog</code> and changes in <code>W2CStatusUpdate</code>.</p>
+<h2 id="stats-and-formulas">Stats and formulas<a class="anchor" href="#stats-and-formulas" title="Permanent link">#</a></h2>
+<p><code>StatId</code> (shared enum): Strength, Agility, Vitality, Intelligence, Spirit, MaxHealth, MaxMana, AttackPower, SpellPower, Armor, CritChance, Haste, HealthRegen, ManaRegen, six resistances, DamageDonePct, DamageTakenPct, HealingDonePct, ThreatPct, MoveSpeedPct, HealingPower.</p>
+<p><code>StatsService.Recalculate</code> builds each player's <code>StatSheet</code> from: class base and per-level values (<code>Classes</code>), level × <code>StatPerLevel</code>, gear (<code>ItemStats</code>, scaled by grade), passives (<code>AbilityPassiveModifiers</code>) and active statuses (<code>StatusModifiers</code>). When max health changes, current health <strong>keeps its percentage</strong>, so swapping gear can't refill you.</p>
+<p>Every number is a row of <code>CombatRules</code> (key, value, description). A few:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HealthBase</code>, <code>HealthPerVitality</code></td>
+<td>60, 4</td>
+<td>max health</td>
+</tr>
+<tr>
+<td><code>AttackPowerPerStrength</code>, <code>SpellPowerPerIntelligence</code></td>
+<td>2, 2</td>
+<td>power</td>
+</tr>
+<tr>
+<td><code>CritBase</code>, <code>CritPerAgility</code>, <code>CritMultiplier</code></td>
+<td>5, 0.05, 1.5</td>
+<td>crits</td>
+</tr>
+<tr>
+<td><code>MissBase</code>, <code>MissPerLevel</code>, <code>GlancePerLevel</code>, <code>GlanceMultiplier</code></td>
+<td>5, 1, 4, 0.7</td>
+<td>level difference</td>
+</tr>
+<tr>
+<td><code>ArmorConstant</code>, <code>ArmorPerAttackerLevel</code>, <code>ArmorCap</code></td>
+<td>200, 50, 75</td>
+<td>armor reduction = armor / (armor + 200 + 50 × attacker level), max 75 %</td>
+</tr>
+<tr>
+<td><code>GlobalCooldownMs</code>, <code>GlobalCooldownMinMs</code></td>
+<td>1000, 750</td>
+<td>GCD</td>
+</tr>
+<tr>
+<td><code>AreaMaxTargets</code></td>
+<td>8</td>
+<td>area cap (nearest first; falloff per extra target)</td>
+</tr>
+<tr>
+<td><code>ThreatPerDamage</code>, <code>ThreatPerHeal</code>, <code>ThreatSwitchPct</code></td>
+<td>1, 0.5, 110</td>
+<td>threat</td>
+</tr>
+<tr>
+<td><code>OutOfCombatMs</code>, <code>RegenIntervalMs</code></td>
+<td>6000, 2000</td>
+<td>regen</td>
+</tr>
+</tbody>
+</table></div>
+<p>The full list (149 keys) is in the <a href="../70-reference/worlddb.html#combatrules">worldserver.db reference</a>. <strong>Tune by changing a row and restarting the World server</strong>; a key the table doesn't have uses the default in <code>GameRules.cs</code>. A misspelled key is logged and ignored.</p>
+<h2 id="skill-steps-combos-cones-channels-chains-projectiles">Skill steps (combos, cones, channels, chains, projectiles)<a class="anchor" href="#skill-steps-combos-cones-channels-chains-projectiles" title="Permanent link">#</a></h2>
+<p>A skill with <code>SkillSteps</code> rows runs them in <code>StepNo</code> order instead of its own effects. Each step has a <code>TargetMode</code> (target, self, area at target, area at caster, cone, chain, line), geometry (<code>Radius</code>, <code>ConeDegrees</code>, <code>ChainRange</code>, <code>ChainJumps</code>, <code>MaxTargets</code>, <code>ProjectileSpeed</code>), timing (<code>DelayMs</code>, <code>Repeat</code>, <code>RepeatIntervalMs</code>, <code>Channeled</code>), a condition (<code>ConditionKind</code>: target/caster has status, health below %, distance, is player, chance; <code>ElseStepNo</code>), and presentation (<code>AnimationParameter</code>, <code>VfxKey</code>). Each step's effects are <code>Effects</code> rows with <code>OwnerType = 6</code>. See <a href="../80-notes/client-SKILL_PLOTS.html">SKILL_PLOTS (note)</a>.</p>
+<h2 id="death-and-respawn">Death and respawn<a class="anchor" href="#death-and-respawn" title="Permanent link">#</a></h2>
+<p>At zero health a player <strong>dies</strong>: stays where they fell, can't act, loses every status and their cast, comes off every threat table, and sees the death screen (<code>W2CDeathHandlers</code> on the client). <code>C2WRespawn</code> brings them back at the nearest respawn point (<code>SpawnPointTables</code> with <code>IsRespawnPoint</code>, matching faction) at full health and mana. NPC death: see <a href="20-npcs-ai.html#death-loot-and-respawn">NPCs</a>.</p>
+<h2 id="pvp">PvP<a class="anchor" href="#pvp" title="Permanent link">#</a></h2>
+<p>Player targets are only valid when <code>World:AllowPlayerVersusPlayer</code> is on <strong>and</strong> the zone's PvP mode, factions, flags and duel state allow it (<code>PvpService</code>). See <a href="140-pvp-sieges.html">PvP &amp; sieges</a>.</p>
+<h2 id="recipes">Recipes<a class="anchor" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="a-new-skill-data-only">A new skill (data only)<a class="anchor" href="#a-new-skill-data-only" title="Permanent link">#</a></h3>
+<p>A Mage "Ignite": 1.5 s cast, fire damage plus a burning DoT.</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- 1. The burning status: 4 ticks of fire damage over 8 s, magic-dispellable</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">StatusTemplates</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Description</span><span class="p">,</span><span class="w"> </span><span class="n">IconName</span><span class="p">,</span><span class="w"> </span><span class="n">IsDebuff</span><span class="p">,</span><span class="w"> </span><span class="n">DispelType</span><span class="p">,</span><span class="w"> </span><span class="n">StackRule</span><span class="p">,</span><span class="w"> </span><span class="n">MaxStacks</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">,</span><span class="w"> </span><span class="n">TickIntervalMs</span><span class="p">,</span><span class="w"> </span><span class="n">Crowd</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">4100</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Burning&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Taking fire damage every 2 seconds.&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Status/burning&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Effects</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerType</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerId</span><span class="p">,</span><span class="w"> </span><span class="n">Sort</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="k">Min</span><span class="p">,</span><span class="w"> </span><span class="k">Max</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">,</span><span class="w"> </span><span class="n">School</span><span class="p">,</span><span class="w"> </span><span class="n">Coefficient</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">9100</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">08</span><span class="p">);</span><span class="w">           </span><span class="c1">-- OwnerType 3 = status tick: Damage, Fire</span>
+
+<span class="c1">-- 2. The skill</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Skills</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Description</span><span class="p">,</span><span class="w"> </span><span class="n">IconName</span><span class="p">,</span><span class="w"> </span><span class="n">ClassId</span><span class="p">,</span><span class="w"> </span><span class="n">TargetRule</span><span class="p">,</span><span class="w"> </span><span class="n">Range</span><span class="p">,</span><span class="w"> </span><span class="n">CastTimeMs</span><span class="p">,</span><span class="w"> </span><span class="n">CooldownMs</span><span class="p">,</span><span class="w"> </span><span class="n">ManaCost</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">OnGlobalCooldown</span><span class="p">,</span><span class="w"> </span><span class="n">IsSpell</span><span class="p">,</span><span class="w"> </span><span class="n">RequiresFacing</span><span class="p">,</span><span class="w"> </span><span class="n">RequiredLevel</span><span class="p">,</span><span class="w"> </span><span class="n">MaxRank</span><span class="p">,</span><span class="w"> </span><span class="n">RankLevelStep</span><span class="p">,</span><span class="w"> </span><span class="n">RankBonusPct</span><span class="p">,</span><span class="w"> </span><span class="n">PointCost</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">AnimationParameter</span><span class="p">,</span><span class="w"> </span><span class="n">MinDamage</span><span class="p">,</span><span class="w"> </span><span class="n">MaxDamage</span><span class="p">,</span><span class="w"> </span><span class="n">HotbarSlot</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">4120</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Ignite&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sets the target ablaze.&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Skills/Axiom/Mage/ignite&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">1500</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Cast&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">-- 3. What it does: hit, then apply Burning</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Effects</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerType</span><span class="p">,</span><span class="w"> </span><span class="n">OwnerId</span><span class="p">,</span><span class="w"> </span><span class="n">Sort</span><span class="p">,</span><span class="w"> </span><span class="n">Kind</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="k">Min</span><span class="p">,</span><span class="w"> </span><span class="k">Max</span><span class="p">,</span><span class="w"> </span><span class="n">RefId</span><span class="p">,</span><span class="w"> </span><span class="n">DurationMs</span><span class="p">,</span><span class="w"> </span><span class="n">School</span><span class="p">,</span><span class="w"> </span><span class="n">Coefficient</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">9101</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">26</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">),</span><span class="w">        </span><span class="c1">-- Damage, Fire, 0.7 x spell power</span>
+<span class="w">       </span><span class="p">(</span><span class="mi">9102</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4120</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">4100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">          </span><span class="c1">-- Apply Status 4100, 1 stack</span>
+</code></pre></div>
+
+<p>Restart the World server. The skill reaches clients in the skill catalogue; the icon must exist under <code>Resources/Icons/Skills/...</code> and <code>AnimationParameter</code> must be a trigger in the character Animator (<a href="../40-client/40-characters.html">Characters</a>). Content Studio shows skills' effects as sentences ("Deal 18–26 Fire damage + 0.7× power") so you can check your work.</p>
+<h3 id="a-new-effect-kind-code">A new effect kind (code)<a class="anchor" href="#a-new-effect-kind-code" title="Permanent link">#</a></h3>
+<p>Example: <strong>Lifesteal</strong> (heal the caster for a percentage of damage dealt by the previous row).</p>
+<ol>
+<li><strong>Enum</strong>: add <code>Lifesteal = 42</code> to <code>EffectKind</code> in <code>GameData/Effects/EffectRow.cs</code> and to <code>Assets/AxiomMMOKit/Editor/ContentStudio/Schema/ContentEnums.cs</code> (so Content Studio offers it).</li>
+<li><strong>Check</strong> (<code>EffectApplier.CheckOne</code>): <code>case EffectKind.Lifesteal: return context.Source.IsValid &amp;&amp; !context.Source.IsDead;</code></li>
+<li><strong>Apply</strong> (<code>EffectApplier.ApplyKind</code>):</li>
+</ol>
+<p><code>csharp
+case EffectKind.Lifesteal:
+{
+// result.Damage = damage the earlier Damage rows of this list dealt to the target
+if (!source.IsValid || source.IsDead || result.Damage &lt;= 0) return true;
+int amount = (int)MathF.Round(result.Damage * effect.Min / 100f);
+int before = source.Health;
+int after  = Math.Min(source.MaxHealth, before + amount);
+source.SetHealth(after);
+result.Healed += after - before;
+if (source.IsPlayer &amp;&amp; source.Peer != null)
+W2CHealthUpdatePacketSender.Send(source.Peer, source.Player);   // same as the Heal case
+return true;
+}</code></p>
+<ol start="4">
+<li><strong>Data</strong>: an <code>Effects</code> row after the damage row: <code>Kind 42, Target 0, Min 25</code> = heal for 25 % of the damage.</li>
+<li>No protocol change: the client sees the heal through the normal combat event and health update.</li>
+</ol>
+<p>Read <code>EffectApplier</code> before you write the case: reuse its helpers (damage, heal, status) rather than changing health directly, so threat, crits, death and combat events stay consistent.</p>
+<h3 id="a-new-stat">A new stat<a class="anchor" href="#a-new-stat" title="Permanent link">#</a></h3>
+<p>Add the value at the end of <code>StatId</code> (before <code>Count</code>) in <code>Axiom.Network/Shared/Combat/CombatTypes.cs</code>, derive or apply it in <code>StatsService</code>/<code>CombatMath</code>, add any formula numbers to <code>GameRules</code> (with defaults) and <code>CombatRules</code>, show it in the client's character window, then rebuild the DLL, bump the protocol version and copy it to the client.</p>
+<nav class="pager">
+<a class="prev" href="20-npcs-ai.html"><span>Previous</span>NPCs, Spawning &amp; AI</a>
+<a class="next" href="40-progression.html"><span>Next</span>Classes, Skills &amp; Progression</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-cast-pipeline">The cast pipeline</a>
+</li>
+<li><a href="#effects">Effects</a>
+<ul>
+<li><a href="#effect-kinds">Effect kinds</a>
+</li>
+</ul>
+</li>
+<li><a href="#statuses">Statuses</a>
+</li>
+<li><a href="#stats-and-formulas">Stats and formulas</a>
+</li>
+<li><a href="#skill-steps-combos-cones-channels-chains-projectiles">Skill steps (combos, cones, channels, chains, projectiles)</a>
+</li>
+<li><a href="#death-and-respawn">Death and respawn</a>
+</li>
+<li><a href="#pvp">PvP</a>
+</li>
+<li><a href="#recipes">Recipes</a>
+<ul>
+<li><a href="#a-new-skill-data-only">A new skill (data only)</a>
+</li>
+<li><a href="#a-new-effect-kind-code">A new effect kind (code)</a>
+</li>
+<li><a href="#a-new-stat">A new stat</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

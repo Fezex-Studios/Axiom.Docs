@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mounts and Pets · Axiom Docs</title>
+<meta name="description" content="Ground mounts, flying mounts, and pets that give their owner a buff. All of it is data: a new mount is an item and a Mounts row, a new pet is an item, an NPC and a PetBuffs row. No code.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html" class="active" aria-current="page">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/MOUNTS_AND_PETS.md</code></div>
+<h1 id="mounts-and-pets">Mounts and Pets<a class="anchor" href="#mounts-and-pets" title="Permanent link">#</a></h1>
+<p>Ground mounts, flying mounts, and pets that give their owner a buff. All
+of it is data: a new mount is an item and a Mounts row, a new pet is an
+item, an NPC and a PetBuffs row. No code.</p>
+<hr>
+<h2 id="contents">Contents<a class="anchor" href="#contents" title="Permanent link">#</a></h2>
+<ol>
+<li><a href="#1-playing-controls">Playing: controls</a></li>
+<li><a href="#2-making-a-mount">Making a mount</a></li>
+<li><a href="#3-making-it-fly">Making it fly</a></li>
+<li><a href="#4-mount-models-and-animation">Mount models and animation</a></li>
+<li><a href="#5-making-a-pet">Making a pet</a></li>
+<li><a href="#6-pet-buffs">Pet buffs</a></li>
+<li><a href="#7-what-ships">What ships</a></li>
+<li><a href="#8-rules-and-limits">Rules and limits</a></li>
+<li><a href="#9-troubleshooting">Troubleshooting</a></li>
+<li><a href="#10-reference">Reference</a></li>
+</ol>
+<hr>
+<h2 id="1-playing-controls">1. Playing: controls<a class="anchor" href="#1-playing-controls" title="Permanent link">#</a></h2>
+<p><strong>Mounts.</strong> Use the mount's item (a whistle) to get on; use it again to
+get off. Getting hit, attacking, harvesting or dying throws you off.</p>
+<p><strong>Flying mounts:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Do</th>
+<th>Keys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Take off</td>
+<td>Jump and <strong>keep holding Space</strong></td>
+</tr>
+<tr>
+<td>Climb</td>
+<td>Hold <strong>Space</strong></td>
+</tr>
+<tr>
+<td>Dive</td>
+<td>Hold <strong>X</strong></td>
+</tr>
+<tr>
+<td>Fly where you look</td>
+<td>Hold the <strong>right mouse button</strong> (or mouse look) and move forward: look up to climb, down to dive. A normal over-the-shoulder camera flies level</td>
+</tr>
+<tr>
+<td>Land</td>
+<td>Touch the ground without holding Space</td>
+</tr>
+</tbody>
+</table></div>
+<p>Space and X are the <em>Swim Up</em> / <em>Swim Down</em> keys (rebindable in Settings &gt;
+Controls). Get off in the air and you fall. Flying doesn't work inside a
+dungeon.</p>
+<p><strong>Water.</strong> Ride into deep water and the mount swims on the surface with you
+still seated. Swim Down (X) does nothing while mounted, so the mount never
+dives; get off to dive. (The server sets this with the mount state,
+<code>MovementProfile.SurfaceSwimOnly</code>, protocol 45.)</p>
+<p><strong>Pets.</strong> Use the pet's item to summon it; use it again to send it away.
+While it's out you have its buff (on your buff bar, with no timer). It
+follows you everywhere, into dungeons too, and goes away when you die or
+log out. Ride or fly off and it falls behind; once it's more than 30 m
+away it blinks to just behind you (on the ground under you if you're
+flying).</p>
+<hr>
+<h2 id="2-making-a-mount">2. Making a mount<a class="anchor" href="#2-making-a-mount" title="Permanent link">#</a></h2>
+<p>A mount is three rows. Content Studio (Ctrl+Alt+E):</p>
+<ol>
+<li><strong>Mounts</strong> (NPCs category) &gt; new row:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Swift Stag</td>
+<td></td>
+</tr>
+<tr>
+<td>ModelType</td>
+<td>Mount_Stag</td>
+<td>The prefab key (section 4)</td>
+</tr>
+<tr>
+<td>SpeedMultiplier</td>
+<td>1.8</td>
+<td>Ground speed relative to running (1-4). The server's speed check widens by exactly this</td>
+</tr>
+<tr>
+<td>CanCarryPack</td>
+<td>0</td>
+<td>1 = may be ridden with a trade pack on your back</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>Items</strong> &gt; new row: the whistle. Name, icon, category, rarity.</li>
+<li>On that item: an <strong>Effects</strong> row (Owner = the item) with <strong>Kind =
+   Mount</strong> and <strong>RefId = the mount's Id</strong>, and an <strong>ItemUses</strong> row for its
+   cooldown (<code>EffectType 4</code>, <code>EffectValue</code> = mount Id, <code>CooldownMs 2000</code>,
+   <code>ConsumeOnUse 0</code>).</li>
+</ol>
+<p>The quickest way: <strong>Tools &gt; Axiom &gt; Create &gt; Item…</strong>, copy <em>Horse Whistle</em>,
+   rename it, and change the mount id in <em>On use</em> (EffectValue) and in its
+   <em>Effects</em> row (RefId).</p>
+<ol start="4">
+<li>Commit, restart the World server, and <strong>Update Game Data</strong> (Hub &gt;
+   Tools) so the whistle's name and icon show in game.</li>
+</ol>
+<hr>
+<h2 id="3-making-it-fly">3. Making it fly<a class="anchor" href="#3-making-it-fly" title="Permanent link">#</a></h2>
+<p>On the Mounts row, the <strong>Flight</strong> group:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CanFly</strong></td>
+<td>1</td>
+<td>This mount flies</td>
+</tr>
+<tr>
+<td>FlySpeedMultiplier</td>
+<td>2.4</td>
+<td>In the air: speed relative to running on foot (1-5). 0 = the same as SpeedMultiplier</td>
+</tr>
+<tr>
+<td>FlyVerticalSpeed</td>
+<td>7</td>
+<td>Climb / dive speed in m/s on Space / X (1-30). 0 = 6</td>
+</tr>
+</tbody>
+</table></div>
+<p>That's all. The server tells the rider's client it may fly, and its
+movement check allows exactly that speed and climb, no more: a flying
+mount can't be used as a speed hack, and flight can't be faked without
+one.</p>
+<p>Flight is switched off:
+- inside a dungeon (always);
+- the moment you're off the mount (you fall).</p>
+<hr>
+<h2 id="4-mount-models-and-animation">4. Mount models and animation<a class="anchor" href="#4-mount-models-and-animation" title="Permanent link">#</a></h2>
+<p><strong>The model.</strong> Name the FBX after the mount's <strong>ModelType</strong> (the Field
+Horse is <code>Mount_Horse</code>, so <code>Mount_Horse.fbx</code>) and put it in
+<strong><code>Assets/AxiomMMOKit/Axiom.Client/Art/Mounts/</code></strong>. That folder imports it with a Generic
+rig and its clips, loops the idle/walk/run ones and keeps them in place.
+Select it and run <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Make World Prefab From Selected
+Model</strong>: it makes <code>Art/Objects/Mounts/&lt;Key&gt;.prefab</code> with a <code>RiderSeat</code> child
+and registers the key in the WorldObjectPrefabs catalog
+(<strong>Art &amp; Assets &gt; Select World Prefab Catalog</strong> shows every key).</p>
+<p>If the key is already in the catalog (an older placeholder prefab), the new
+prefab is still made but the entry is left pointing at the old one: drag the
+new prefab onto that entry's <strong>Prefab</strong> slot and save the project. Or empty the
+slot first and the tool fills it.</p>
+<p><strong>Size.</strong> Before making the prefab, drag the FBX into a scene next to a
+character: a horse's back should be about chest height. Model packs exported
+from Blender often import several times too big or too small; fix it with
+<strong>Scale Factor</strong> on the FBX's Model tab (the Quaternius horse needs about
+0.25-0.3). If the prefab already exists, delete it and its controller and make
+them again (the prefab's ground offset and RiderSeat were measured at the old
+size).</p>
+<p><strong>Where the rider sits.</strong> The game puts the <strong>rider's feet</strong> (the body's
+pivot) on the prefab's <strong><code>RiderSeat</code></strong> child, not their hips. So with a
+sitting pose the seat goes <em>below</em> the saddle, by about the pose's hip height:
+for a Mixamo sitting pose with the hips 60 cm above the feet, put RiderSeat
+about 0.6 m under the top of the back, then fine-tune in small steps.
+Forward/back, just in front of the middle of the back. Without a RiderSeat the
+rider stands at the mount's pivot.</p>
+<p><strong>Which way it faces.</strong> The mount prefab is lined up with the rider, so the
+horse's head must point along the prefab root's blue (Z) arrow. To check,
+ride forward (W): the camera should see the rider's back and the horse's tail.
+Whichever of the two faces the camera is the one that's backwards:</p>
+<ul>
+<li><strong>The horse is backwards:</strong> open the prefab, click the model child (the one
+  with the Animator, not the root) and set Rotation Y to 180. Then <strong>negate its
+  Position X and Z</strong> (Make World Prefab moved the model to centre it; turning
+  it flips that offset too, and the horse ends up shifted towards its tail).
+  Move RiderSeat forward again if needed.</li>
+<li><strong>The rider is backwards, only while mounted:</strong> it's the riding clip. Unity
+  guessed the clip's facing 180° wrong (easy with a sitting pose). Select the
+  clip's FBX, Animation tab, <strong>Root Transform Rotation</strong>: tick <strong>Bake Into
+  Pose</strong>, <strong>Offset 180</strong>, Apply. To be sure, take the clip out of the Ride
+  state: if the rider then faces forward, the clip was the cause.</li>
+</ul>
+<p><strong>The mount's own animation.</strong> If the mount prefab has an <strong>Animator</strong>
+whose controller declares any of these parameters, the game sets them
+every frame (any it doesn't declare are skipped):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Speed</td>
+<td>float</td>
+<td>Horizontal speed, m/s</td>
+</tr>
+<tr>
+<td>VerticalSpeed</td>
+<td>float</td>
+<td>Up/down speed, m/s</td>
+</tr>
+<tr>
+<td>Grounded</td>
+<td>bool</td>
+<td>On the ground</td>
+</tr>
+<tr>
+<td>Flying</td>
+<td>bool</td>
+<td>In the air on a flying mount</td>
+</tr>
+<tr>
+<td>Jump</td>
+<td>trigger</td>
+<td>The rider jumped (the rider stays in its Ride pose; the mount jumps)</td>
+</tr>
+<tr>
+<td>Swimming</td>
+<td>bool</td>
+<td>In deep water (the mount swims on the surface; the rider stays in its Ride pose)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Animation &gt; Create Mount Animator Controller</strong>
+builds one for you. Select the mount's prefab (or its FBX), pick its
+SpeedMultiplier, and it makes <code>Art/Animations/Controllers/&lt;Key&gt;_Mount.controller</code>
+with a blend tree on <em>Speed</em> from the clips it finds by name, then puts it on
+the prefab's Animator with root motion off:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Speed</th>
+<th>Clip found by name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Idle</td>
+</tr>
+<tr>
+<td>1.25 m/s</td>
+<td>WalkSlow / Slow</td>
+</tr>
+<tr>
+<td>2.5 m/s (walking)</td>
+<td>Walk</td>
+</tr>
+<tr>
+<td>5 m/s x SpeedMultiplier (9 for the Field Horse)</td>
+<td>Gallop / Run / Canter / Trot</td>
+</tr>
+<tr>
+<td>Jump trigger (back to Locomotion on landing)</td>
+<td>Jump / Leap</td>
+</tr>
+<tr>
+<td>Swimming bool</td>
+<td>Swim / Paddle (without one, Locomotion keeps playing in water)</td>
+</tr>
+<tr>
+<td>Flying bool</td>
+<td>Fly / Flap (flying mounts)</td>
+</tr>
+</tbody>
+</table></div>
+<p>If the legs move faster or slower than the mount travels, open the
+controller, double-click <strong>Locomotion</strong> and change the Run threshold.
+Building one by hand works the same way: a blend tree on <em>Speed</em>, and a
+<em>Flying</em> bool for a flying state. Turn <strong>Apply Root Motion off</strong> on the
+mount's Animator (the game does too).</p>
+<p><strong>Example: a horse from a model pack.</strong> Quaternius' <em>Farm Animals</em> horse
+(Idle, WalkSlow, Walk, Run, Jump, Death):</p>
+<ol>
+<li>Rename <code>Horse.fbx</code> to <code>Mount_Horse.fbx</code> and drop it in <code>Art/Mounts</code>.</li>
+<li>Scale Factor about <strong>0.25</strong> (it imports roughly four times too big).</li>
+<li>Make World Prefab (if <code>Mount_Horse</code> already points at an old placeholder,
+   drag the new prefab onto that catalog entry).</li>
+<li>Create Mount Animator Controller, 1.8.</li>
+<li>Give the rider a riding clip (below), then place RiderSeat about 0.6 m under
+   the back, just forward of the middle.</li>
+<li>Play, use the Horse Whistle, ride forward and check which way both face.</li>
+</ol>
+<p>The horse faces the right way as imported. Jump and Death aren't used by the
+game.</p>
+<p><strong>The rider's animation.</strong> The character controller has <strong>Mounted</strong>
+(true while riding) and <strong>Flying</strong> (true in the air on a flying mount, if you
+want a different pose). Controllers made with <em>Create Character Animator
+Controller</em> have a <strong>Ride</strong> state that plays while Mounted; for an older one,
+select it and run <strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; Animation &gt; Upgrade Selected
+Animator Controller</strong>. Without a clip in Ride the rider stands on the mount
+with arms out.</p>
+<p>The Ride clip is a <strong>humanoid</strong> clip of your character, not something from
+the horse. Where to get one:</p>
+<ul>
+<li><strong>Mixamo</strong> (humanoid only; it has no horse or other animal motions): a
+  sitting pose such as <em>Sitting</em> / <em>Sitting Idle</em>. Look for one with the knees
+  apart; with the knees together the legs go through the horse. Download <em>FBX
+  for Unity</em>, <em>Without Skin</em>.</li>
+<li><strong>Your own pose</strong>: in Blender, pose the character straddling (hips down,
+  thighs angled down and out, knees bent, hands forward on the reins) and
+  export a one-frame clip.</li>
+<li><strong>A horse pack with rider animations</strong>: some ship matching humanoid rider
+  clips (idle, walk, gallop).</li>
+</ul>
+<p>Setting it up: drop the FBX in <code>Art/Animations/</code> (imports as Humanoid). On its
+Rig tab, Avatar Definition <strong>Create From This Model</strong>, Apply; if Unity says it
+isn't in T-pose, <strong>Configure &gt; Pose &gt; Enforce T-Pose</strong>, Done, Apply. On the
+Animation tab tick <strong>Loop Time</strong> (it's only automatic when the clip's name
+contains "ride"), Apply. Drag the clip (named after its take, e.g.
+<code>mixamo.com</code>) into the controller's <strong>Ride</strong> state. Then set RiderSeat's height
+and check the facing (above).</p>
+<hr>
+<h2 id="5-making-a-pet">5. Making a pet<a class="anchor" href="#5-making-a-pet" title="Permanent link">#</a></h2>
+<p>A pet is an <strong>NPC</strong> that follows its owner instead of wandering.</p>
+<ol>
+<li><strong>NpcTemplates</strong> &gt; new row (or <strong>Tools &gt; Axiom &gt; Create &gt; NPC…</strong>, copy <em>Camp
+   Dog</em>):</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Fox Kit</td>
+<td>Shown over it</td>
+</tr>
+<tr>
+<td>ModelType</td>
+<td>NPC_Fox</td>
+<td>Its prefab key</td>
+</tr>
+<tr>
+<td>MaxHealth</td>
+<td><strong>0</strong></td>
+<td>0 = can't be attacked. Give it health and it can be</td>
+</tr>
+<tr>
+<td>Title</td>
+<td><em>(empty)</em></td>
+<td>Empty shows "\&lt;owner&gt;'s companion"</td>
+</tr>
+<tr>
+<td>LootTableId, XpReward, AggroRadius</td>
+<td>0</td>
+<td>It never fights</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>Items</strong> &gt; the item that summons it, with an <strong>Effects</strong> row <strong>Kind =
+   Summon Pet</strong>, <strong>RefId = the NPC's Id</strong>, and an <strong>ItemUses</strong> row
+   (<code>EffectType 5</code>, <code>EffectValue</code> = NPC Id) for the cooldown. Or Create &gt;
+   Item, copy <em>Dog Whistle</em>.</li>
+<li>Its buff: section 6.</li>
+<li>Commit, restart, Update Game Data.</li>
+</ol>
+<p>Pet models and animations are NPC models: <code>CHARACTER_ANIMATION_README.md</code>
+part 7.</p>
+<hr>
+<h2 id="6-pet-buffs">6. Pet buffs<a class="anchor" href="#6-pet-buffs" title="Permanent link">#</a></h2>
+<p>A pet's buff is a <strong>status</strong> put on its owner for as long as the pet is
+out: no timer, gone the moment the pet goes, and dispels don't remove it.
+What it does is the status's <strong>stat modifiers</strong>, so every pet can give
+something different.</p>
+<ol>
+<li><strong>Statuses</strong> (Combat) &gt; new row:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Fox Cunning</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Your fox keeps you sharp: critical chance +2%.</td>
+</tr>
+<tr>
+<td>IconName</td>
+<td>Status/blessing</td>
+</tr>
+<tr>
+<td>IsDebuff</td>
+<td>0</td>
+</tr>
+<tr>
+<td>DurationMs</td>
+<td>60000 (must be positive; ignored for pet buffs)</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li>On that status, <strong>Stat modifiers</strong> &gt; add a row: <strong>Stat</strong> =
+   CritChance, <strong>Flat</strong> = 2. Several rows = several stats.</li>
+<li><strong>Pet Buffs</strong> (NPCs category) &gt; new row: <strong>NpcTemplateId</strong> = the pet,
+   <strong>StatusId</strong> = the status. Or on the NPC itself, the <em>Pet buffs (while
+   summoned)</em> section. Several rows = several buffs.</li>
+<li>Commit, restart.</li>
+</ol>
+<p>Summoning shows <em>"Fox Kit joins you: Fox Cunning."</em>, and the buff appears
+on the buff bar with <em>"No time limit"</em> in its tooltip.</p>
+<p><strong>Which stats</strong> (Stat in StatusModifiers; Flat adds, Percent multiplies):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stat</th>
+<th></th>
+<th>Stat</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strength 0, Agility 1, Vitality 2, Intelligence 3, Spirit 4</td>
+<td>primary</td>
+<td>MaxHealth 5, MaxMana 6</td>
+<td></td>
+</tr>
+<tr>
+<td>AttackPower 7, SpellPower 8, HealingPower 25</td>
+<td>power</td>
+<td>Armor 9, Resist* 14-19</td>
+<td>defence</td>
+</tr>
+<tr>
+<td>CritChance 10 (%) , Haste 11 (%)</td>
+<td></td>
+<td>HealthRegen 12, ManaRegen 13</td>
+<td>per regen tick</td>
+</tr>
+<tr>
+<td>DamageDonePct 20, DamageTakenPct 21, HealingDonePct 22, ThreatPct 23</td>
+<td>%</td>
+<td><strong>MoveSpeedPct 24</strong></td>
+<td>% movement speed</td>
+</tr>
+</tbody>
+</table></div>
+<p>Keep pet buffs small: a pet is always out, so its buff is effectively
+permanent.</p>
+<hr>
+<h2 id="7-what-ships">7. What ships<a class="anchor" href="#7-what-ships" title="Permanent link">#</a></h2>
+<p>Patch 058 adds, all sold by Hilda the Trader:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Gives</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Griffin Whistle</strong></td>
+<td>Sky Griffin, mount 3</td>
+<td>Flies: x2.4 run speed in the air, climbs 7 m/s; x1.8 on the ground. Model key <code>Mount_Griffin</code> (make its prefab: section 4)</td>
+</tr>
+<tr>
+<td>Dog Whistle (existing)</td>
+<td>Camp Dog, NPC 12</td>
+<td><strong>Loyal Companion</strong>: movement speed +5%</td>
+</tr>
+<tr>
+<td><strong>Owl Perch</strong></td>
+<td>Barn Owl, NPC 32</td>
+<td><strong>Owl's Wisdom</strong>: Spirit +4, mana regeneration +2</td>
+</tr>
+<tr>
+<td><strong>Cat Basket</strong></td>
+<td>Tabby Cat, NPC 33</td>
+<td><strong>Cat's Grace</strong>: Agility +3, critical chance +1%</td>
+</tr>
+</tbody>
+</table></div>
+<p>The owl and cat use the dog's placeholder model until they have their
+own.</p>
+<hr>
+<h2 id="8-rules-and-limits">8. Rules and limits<a class="anchor" href="#8-rules-and-limits" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Where</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No summoning a mount in combat</td>
+<td>CombatRules <strong>MountInCombat</strong> (1 = allowed)</td>
+<td>0: only <code>OutOfCombatMs</code> (6 s) after the last hit</td>
+</tr>
+<tr>
+<td>Mounts in a dungeon</td>
+<td>Dungeons <strong>AllowMounts</strong></td>
+<td>off</td>
+</tr>
+<tr>
+<td>Flying in a dungeon</td>
+<td>never</td>
+<td></td>
+</tr>
+<tr>
+<td>Pet catches up</td>
+<td>CombatRules <strong>PetTeleportDistance</strong> (metres; 0 = never)</td>
+<td>30: further than this, the pet blinks to just behind its owner</td>
+</tr>
+<tr>
+<td>One pet at a time</td>
+<td></td>
+<td>using any pet item while a pet is out sends it away; use the other item again to summon that one</td>
+</tr>
+<tr>
+<td>Mount and pet saved over logout</td>
+<td>no</td>
+<td>you log in on foot, without a pet</td>
+</tr>
+</tbody>
+</table></div>
+<p>The server checks every Mounts row at startup and skips (with a warning in
+its log) one with an empty ModelType, a SpeedMultiplier outside 1-4, a
+FlySpeedMultiplier outside 0-5 or a FlyVerticalSpeed outside 0-30. A
+PetBuffs row naming a missing NPC or status is skipped the same way.</p>
+<hr>
+<h2 id="9-troubleshooting">9. Troubleshooting<a class="anchor" href="#9-troubleshooting" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Holding Space doesn't take off</td>
+<td>The mount's CanFly is 0, you're in a dungeon, or the server wasn't restarted after the change</td>
+</tr>
+<tr>
+<td>Rubber-banding while flying fast</td>
+<td>FlySpeedMultiplier changed but the server wasn't restarted (it allows the old speed)</td>
+</tr>
+<tr>
+<td>Mount invisible, rider floating</td>
+<td>No prefab for its ModelType: make one (section 4). The ride still works</td>
+</tr>
+<tr>
+<td>Rider in the wrong place on the mount</td>
+<td>Add or move the <code>RiderSeat</code> child</td>
+</tr>
+<tr>
+<td>Mount doesn't animate</td>
+<td>Its Animator needs a controller with a <code>Speed</code> (and <code>Flying</code>) parameter</td>
+</tr>
+<tr>
+<td>Make World Prefab says "'Mount_X' already maps to ..."</td>
+<td>The key had a prefab already. Drag the new prefab (Art/Objects/Mounts) onto the catalog entry's Prefab slot and save (section 4). Don't run the tool again: it would make a second copy</td>
+</tr>
+<tr>
+<td>Mount is huge or tiny</td>
+<td>FBX Model tab &gt; Scale Factor, then delete and remake the prefab and its controller (section 4)</td>
+</tr>
+<tr>
+<td>Rider stands on the mount, arms out</td>
+<td>No clip in the character controller's <strong>Ride</strong> state (section 4)</td>
+</tr>
+<tr>
+<td>Rider floats above the saddle</td>
+<td>RiderSeat is where the rider's <strong>feet</strong> go: lower it by about the pose's hip height</td>
+</tr>
+<tr>
+<td>Mount faces backwards (ride forward: you see its head)</td>
+<td>Model child Rotation Y 180, and negate its Position X and Z (section 4)</td>
+</tr>
+<tr>
+<td>Rider stands up or "jumps off" when you jump while riding</td>
+<td>Update <code>CharacterAnimator.cs</code> and <code>MountVisuals.cs</code> (riding, the rider gets no Jump/Land triggers and the mount gets the Jump). For the horse to jump too, its controller needs a Jump trigger and state: make it again with Create Mount Animator Controller</td>
+</tr>
+<tr>
+<td>In water the rider swims and the mount dives with X</td>
+<td>Update the client scripts and both shared DLLs (protocol 45): mounted, the mount swims on the surface and the rider stays seated. For a swim clip on the mount, its controller needs a Swimming bool: make it again with Create Mount Animator Controller</td>
+</tr>
+<tr>
+<td>Rider faces backwards only while mounted</td>
+<td>The Ride clip: its FBX &gt; Animation &gt; Root Transform Rotation &gt; Bake Into Pose, Offset 180</td>
+</tr>
+<tr>
+<td>Rider sits on the neck or the tail</td>
+<td>Move RiderSeat along Z; after turning the model, negate the model child's X/Z</td>
+</tr>
+<tr>
+<td>Legs slide or run in place</td>
+<td>Change the Run threshold in the controller's Locomotion blend tree</td>
+</tr>
+<tr>
+<td>"You can't summon a mount in combat."</td>
+<td>Wait 6 s after the last hit, or set MountInCombat 1</td>
+</tr>
+<tr>
+<td>Pet gives no buff</td>
+<td>No PetBuffs row for its NPC id, or the status has no stat modifiers. Check the World server's log for a skipped PetBuffs row</td>
+</tr>
+<tr>
+<td>Item has no name in game</td>
+<td>Hub &gt; Tools &gt; Update Game Data</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="10-reference">10. Reference<a class="anchor" href="#10-reference" title="Permanent link">#</a></h2>
+<p><strong>Mounts:</strong> Id, Name, ModelType, SpeedMultiplier, CanCarryPack, CanFly,
+FlySpeedMultiplier, FlyVerticalSpeed.</p>
+<p><strong>PetBuffs:</strong> Id, NpcTemplateId, StatusId, Sort.</p>
+<p><strong>Effects kinds:</strong> Mount = 4 (RefId = Mounts.Id), Summon Pet = 5 (RefId =
+NpcTemplates.Id).</p>
+<p><strong>For programmers:</strong>
+- Shared motor: <code>LocomotionMode.Flying</code> and <code>StepFlying</code> in
+  <code>Axiom.Movement/CharacterMotor.cs</code>; <code>MovementProfile.CanFly</code>,
+  <code>FlySpeed</code>, <code>FlyVerticalSpeed</code>; <code>MoveInput.Pitch</code> (nose up positive);
+  <code>MovementState.Flying</code> (bit 4, reusing the retired gliding bit).
+- Server: <code>MountManager</code> (rules, flight per rider), <code>MovementValidator</code>
+  (flight allowances only with <code>Mount.CanFly</code>), <code>MovementStateRules</code>
+  (strips the Flying bit otherwise), <code>PetManager</code> (buffs as permanent
+  statuses, <code>StatusManager.Permanent</code>; following across layers).
+- Client: <code>MountVisuals</code> (models, the mount's Animator),
+  <code>MovementSpeed</code> (profile speeds and flight), <code>LocalPlayerInput.FlightPitch</code>
+  (camera-steered flight), <code>CharacterAnimator</code> (<code>Flying</code> parameter).
+- Protocol 26: <code>W2CMountState.CanFly</code>, <code>FlySpeedMultiplier</code>,
+  <code>FlyVerticalSpeed</code>.</p>
+<nav class="pager">
+<a class="prev" href="client-LOOT.html"><span>Previous</span>Loot: groups, grades and party rolls</a>
+<a class="next" href="client-MOVEMENT_AND_CAMERA.html"><span>Next</span>Movement, camera and tab targeting</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#contents">Contents</a>
+</li>
+<li><a href="#1-playing-controls">1. Playing: controls</a>
+</li>
+<li><a href="#2-making-a-mount">2. Making a mount</a>
+</li>
+<li><a href="#3-making-it-fly">3. Making it fly</a>
+</li>
+<li><a href="#4-mount-models-and-animation">4. Mount models and animation</a>
+</li>
+<li><a href="#5-making-a-pet">5. Making a pet</a>
+</li>
+<li><a href="#6-pet-buffs">6. Pet buffs</a>
+</li>
+<li><a href="#7-what-ships">7. What ships</a>
+</li>
+<li><a href="#8-rules-and-limits">8. Rules and limits</a>
+</li>
+<li><a href="#9-troubleshooting">9. Troubleshooting</a>
+</li>
+<li><a href="#10-reference">10. Reference</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

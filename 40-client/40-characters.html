@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Characters, Gear &amp; Animation · Axiom Docs</title>
+<meta name="description" content="How a player or NPC appears on screen - the player prefab and its one-writer rule, body selection by race/gender, gear visuals (socket and skinned), character customisation, the Character Pipeline asset, the animator parameter contract, interpolation of remote entities and crowd budgets - with recipes for a new race body, a gear piece and an animation.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="10-overview.html">Client Overview</a></li>
+<li><a href="20-networking.html">Client Networking</a></li>
+<li><a href="30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="40-characters.html" class="active" aria-current="page">Characters, Gear &amp; Animation</a></li>
+<li><a href="50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Unity Client</div>
+
+<h1 id="characters-gear--animation">Characters, Gear &amp; Animation<a class="anchor" href="#characters-gear--animation" title="Permanent link">#</a></h1>
+<p>Code: <code>Assets/AxiomMMOKit/Axiom.Client/Scripts/Gameplay</code> (<code>PlayerRegistry</code>, <code>NpcRegistry</code>, <code>RemoteEntityInterpolator</code>, <code>Player/PlayerController</code>) and <code>Scripts/Gameplay/Characters</code>.</p>
+<h2 id="the-pieces-on-one-character">The pieces on one character<a class="anchor" href="#the-pieces-on-one-character" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>Player (prefab, pivot at the FEET)                   ← PlayerRegistry.Spawn(W2CSpawnPlayer)
+├── PlayerController       local/remote split; nameplate name, health; reports state from the simulation
+├── LocalCharacterMotor    LOCAL player only: input → shared CharacterMotor → transform
+├── RemoteEntityInterpolator  everyone else: snapshot buffer → transform
+├── CharacterModel         picks and swaps the visible body; swim lift; rider seat
+├── CharacterAppearance    dresses the body from gear item ids (GearVisualLibrary)
+├── CharacterLook          skin/hair/eye colour, hair style, face preset, morphs, height
+├── CharacterAnimator      drives the Animator from movement + combat events
+└── Model (child)          capsule placeholder, replaced by the body prefab
+</code></pre></div>
+
+<p><strong>One writer per transform</strong>: <code>PlayerController</code> enables exactly one of motor/interpolator. Two systems writing <code>transform.position</code> is what once put remote players under the terrain.</p>
+<p>NPCs are the same idea with <code>NpcIdentity</code> + <code>NpcRegistry</code> (models from <code>WorldObjectPrefabs</code> by the template's <code>ModelType</code>). A killed NPC's model lingers <code>DeathLingerSeconds</code> (2.5 s) for its Die animation after the server despawns it.</p>
+<h2 id="remote-entities-interpolation">Remote entities: interpolation<a class="anchor" href="#remote-entities-interpolation" title="Permanent link">#</a></h2>
+<p><code>RemoteEntityInterpolator</code> keeps a <strong>snapshot buffer keyed by server tick</strong> (not arrival time) and renders at <em>newest tick − delay</em> (about 200 ms), interpolating between two real samples. Nothing is predicted, so nothing snaps back. The delay must exceed the gap between updates; the tick rate comes from <code>WorldSettings.TickRate</code>. Jumps of remote players are simulated locally from <code>W2CJumpEvent</code> (<code>PlayerRegistry.BeginJump</code>, falling back to <code>NpcRegistry</code>), so arcs look smooth.</p>
+<p>Positions arrive in world space and are converted with <code>WorldOrigin.ToLocal</code> (<a href="30-world-streaming.html#floating-origin">floating origin</a>); facing on the wire is radians, the registries take degrees.</p>
+<h2 id="choosing-a-body">Choosing a body<a class="anchor" href="#choosing-a-body" title="Permanent link">#</a></h2>
+<p><code>CharacterBodyKeys.Resolve(race, gender, faction)</code> tries <code>WorldObjectPrefabs</code> keys, most specific first, and the <strong>first key with a prefab wins</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Example</th>
+<th>Gear variants it asks for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Character_{Race}_{Gender}</code></td>
+<td><code>Character_Elf_Female</code></td>
+<td><code>Elf_Female</code>, <code>Female</code></td>
+</tr>
+<tr>
+<td><code>Character_{Race}</code></td>
+<td><code>Character_Elf</code></td>
+<td><code>Elf</code></td>
+</tr>
+<tr>
+<td><code>Character_Default_{Gender}</code></td>
+<td><code>Character_Default_Female</code></td>
+<td><code>Female</code></td>
+</tr>
+<tr>
+<td><code>Character_Faction{N}</code></td>
+<td><code>Character_Faction2</code></td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Character_Default</code></td>
+<td></td>
+<td>–</td>
+</tr>
+</tbody>
+</table></div>
+<p>Race and gender names come from <code>worldserver.db</code> (<code>Races</code>: Human, Elf, Fairy; <code>BodyTypes</code>: Male, Female). The shipped <code>WorldObjectPrefabs</code> has <code>Character_Default</code>, <code>Character_Human_Male</code> and <code>Character_Human_Female</code>, so an elf currently falls back to <code>Character_Default</code>. You can add art a little at a time.</p>
+<p><strong>Body prefab rules</strong>: rigged, with an <code>Animator</code>; pivot at the feet; facing +Z (a root rotation is kept as a visual correction); its colliders are switched off (the player root's is the gameplay one). Optional <code>CharacterSockets</code> (explicit sockets and which renderers are which body part) and <code>SwimBodyOffset</code> (how it sits in water). Mounted: if the mount model has a child <code>RiderSeat</code>, the body sits there.</p>
+<h2 id="gear-visuals">Gear visuals<a class="anchor" href="#gear-visuals" title="Permanent link">#</a></h2>
+<p>What a character wears comes from the server as <strong>item ids per equip slot</strong> (<code>W2CSpawnPlayer.Gear</code>, <code>W2CPlayerAppearance</code>). <code>CharacterAppearance.Apply(int[] gear)</code> looks each one up in <code>GearVisualLibrary</code> - definitions from the <strong><code>GearVisuals</code> table in worldserver.db, shipped inside <code>gamedata.bin</code></strong> - and loads the prefab from <code>Resources</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>GearVisuals</code> column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td>row id</td>
+</tr>
+<tr>
+<td><code>ItemId</code></td>
+<td>the item (0 = the default look for <strong>any</strong> item in <code>EquipSlot</code> without its own row)</td>
+</tr>
+<tr>
+<td><code>EquipSlot</code></td>
+<td>1 Head, 2 Chest, 3 Legs, 4 Hands, 5 Feet, 6 MainHand, 7 OffHand, 8 Neck, 9 Ring, 10 Trinket, 11 Backpack</td>
+</tr>
+<tr>
+<td><code>PrefabKey</code></td>
+<td>Resources path without extension (<code>Gear/Chest/IronPlate</code>)</td>
+</tr>
+<tr>
+<td><code>AttachType</code></td>
+<td>0 <strong>Socket</strong> (rigid, parented to a socket: weapons, shields, most helmets) · 1 <strong>Skinned</strong> (same skeleton as the body, bones re-pointed by name: chest, legs, gloves, boots)</td>
+</tr>
+<tr>
+<td><code>DrawnSocket</code>, <code>SheathSocket</code></td>
+<td>e.g. <code>MainHand</code> in combat, <code>Back</code> / <code>HipLeft</code> when sheathed</td>
+</tr>
+<tr>
+<td><code>HideBodyParts</code></td>
+<td>flags of base-body parts hidden while worn: Head 1, Hair 2, Torso 4, Arms 8, Hands 16, Legs 32, Feet 64, Hips 128, Shoulders 256, Neck 512, Ears 1024, Beard 2048, Wings 4096, Tail 8192, Underwear 16384, Custom1-8 = bits 16-23</td>
+</tr>
+<tr>
+<td><code>Position*</code>, <code>Rotation*</code>, <code>Scale</code>, <code>SheathScale</code></td>
+<td>placement offsets for socket gear</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Variants</strong>: for each piece, <code>Resources/{PrefabKey}_{variant}</code> is tried before the plain key, using the variants of the body that was <strong>actually picked</strong>. <code>Gear/Chest/IronPlate</code> on an elf woman tries <code>IronPlate_Elf_Female</code>, <code>IronPlate_Female</code>, then <code>IronPlate</code>. Variants share the row's offsets and flags; adjust inside the variant prefab.</p>
+<p>Weapons move between hand and sheath via <code>CharacterAppearance.SetWeaponsDrawn</code> (called by the animator when combat starts/ends). Gear without a database definition simply isn't drawn. <code>GearSkinning</code> validates every bone binding before changing renderers.</p>
+<blockquote>
+<p>The legacy <code>GearVisuals.asset</code> ScriptableObject in <code>Art/Resources/World</code> is an <strong>import source only</strong>: runtime definitions come from the database via <code>gamedata.bin</code>. Edit gear looks in <strong>Content Studio ▸ Items ▸ Gear Visuals</strong>, <strong>Tools ▸ Axiom ▸ Characters &amp; Gear ▸ Gear Visuals (Database)</strong> or the <strong>Gear Workshop</strong> (fit live on any race/gender), then export game data.</p>
+</blockquote>
+<h2 id="sockets-and-the-character-pipeline">Sockets and the Character Pipeline<a class="anchor" href="#sockets-and-the-character-pipeline" title="Permanent link">#</a></h2>
+<p><code>CharacterPipeline</code> (<code>Art/Resources/Characters/CharacterPipeline.asset</code>, edited in <strong>Dev Tools ▸ Characters &amp; Races ▸ Pipeline</strong>) is one place for the rules every character tool and the runtime share:</p>
+<ul>
+<li><strong>Sockets</strong>: <code>MainHand</code> (RightHand), <code>OffHand</code> (LeftHand), <code>Back</code> (UpperChest, diagonal), <code>BackOffHand</code> (flat), <code>HipLeft</code>, <code>HipRight</code> (Hips), <code>Head</code>. A socket is found via <code>CharacterSockets</code>, else a child named <code>Socket_&lt;Name&gt;</code>, else the humanoid bone.</li>
+<li><strong>Part rules / name rules</strong>: which body part each bone's skin or a mesh named <code>Body_Torso</code>, <code>*_Legs</code>, <code>*hair*</code> belongs to (for "Split body into parts").</li>
+<li><strong>Bone aliases</strong>: <code>pelvis</code> = <code>Hips</code> = <code>mixamorig:Hips</code>, so gear authored on one naming binds to another (Unity/Mixamo, Unreal, Blender Rigify, 3ds Max Biped built in).</li>
+<li><strong>Appearance colour properties</strong> (<code>_BaseColor</code> by default) for skin, hair, eyes.</li>
+</ul>
+<p>Without the asset the built-in defaults apply.</p>
+<h2 id="customisation-characterlook">Customisation (CharacterLook)<a class="anchor" href="#customisation-characterlook" title="Permanent link">#</a></h2>
+<p><code>AppearanceData</code> (protocol 43) is saved with the character: <code>SkinColor</code>, <code>HairStyle</code>, <code>HairColor</code>, <code>EyeColor</code>, <code>FacePreset</code> (option ids, 0 = body default), <code>HeightPercent</code> (90-110), <code>MorphIds</code> + <code>MorphValues</code> (0-100).</p>
+<p>The options are rows of <code>AppearanceOptions</code> in worldserver.db (<code>Kind</code>: 1 skin colour <code>#RRGGBB</code>, 2 hair style = a Resources prefab key, 3 hair colour, 4 eye colour, 5 face preset <code>"Smile=40;JawWide=20"</code>, 6 morph slider = a blend shape name; <code>RaceId</code>/<code>BodyTypeId</code> 0 = any). The server validates choices; the client applies them: tints on the colour property, hair prefabs bound like armour (skinned) or placed on <code>Head</code>, blend shapes, uniform scale. A helmet hiding <code>Hair</code> hides the hair style too.</p>
+<h2 id="animation">Animation<a class="anchor" href="#animation" title="Permanent link">#</a></h2>
+<p><code>CharacterAnimator</code> drives <strong>your</strong> Animator controller. Every parameter is <strong>optional</strong> - a controller with only <code>Speed</code> works.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float</td>
+<td><code>Speed</code>, <code>MoveX</code>, <code>MoveZ</code>, <code>VerticalSpeed</code>, <code>LocomotionDirection</code></td>
+</tr>
+<tr>
+<td>bool</td>
+<td><code>Grounded</code>, <code>Swimming</code>, <code>Mounted</code>, <code>Flying</code>, <code>Seated</code>, <code>Dead</code>, <code>InCombat</code>, <code>Casting</code>, <code>HasStrafeClips</code> (marker)</td>
+</tr>
+<tr>
+<td>int</td>
+<td><code>SkillId</code></td>
+</tr>
+<tr>
+<td>trigger</td>
+<td><code>Jump</code>, <code>Land</code>, <code>Attack</code>, <code>CastRelease</code>, <code>CastInterrupted</code>, <code>Hit</code>, <code>Crit</code>, <code>Miss</code>, <code>Die</code>, <code>Revive</code></td>
+</tr>
+<tr>
+<td>per ability</td>
+<td>any trigger/bool named in <code>Skills.AnimationParameter</code>; skill-plot steps use the step's own trigger if present</td>
+</tr>
+</tbody>
+</table></div>
+<p>Inputs: the local motor's <code>MoveState</code> or a remote's interpolated velocity and <code>MovementState</code> bits; <code>W2CCastStart</code>/<code>W2CCastEnd</code>; <code>W2CCombatEvent</code> (hits, crits, misses, kills). Root motion is always off - the server owns positions.</p>
+<p><strong>No strafe clips?</strong> The body turns toward the direction of travel (up to 90°) and backpedalling plays the run cycle in reverse (<code>LocomotionDirection = -1</code>). Add a bool <code>HasStrafeClips</code> to the controller when you have a real 2D blend tree.</p>
+<p>Full guides: <a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Character animation (note)</a>, <a href="../80-notes/animation-00_INDEX.html">Animation series (archive)</a>, <a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">Bring your own characters</a>.</p>
+<h2 id="crowds">Crowds<a class="anchor" href="#crowds" title="Permanent link">#</a></h2>
+<p>With hundreds of players in view, bodies are the expensive part. <code>CrowdPresentationManager</code> caps how many <strong>remote bodies</strong> are fully presented; actors beyond the cap keep their network state, targeting, collision and interpolation but show a cheap representation. Settings in <code>Art/Resources/Settings/CrowdSettings.json</code>:</p>
+<div class="hl"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;detailedRemotePlayers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nameplates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;healthBars&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;markerDistance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">85</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;selectionSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;retentionSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;retentionDistance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;promotionsPerFrame&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pooledBodies&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;cosmeticProjectiles&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">96</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reservedProjectiles&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Values are clamped to safe ranges; a broken file falls back to the defaults. <code>CharacterBodyPool</code> reuses bare bodies (gear detached first).</p>
+<h2 id="recipes">Recipes<a class="anchor" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="a-body-for-a-new-race">A body for a new race<a class="anchor" href="#a-body-for-a-new-race" title="Permanent link">#</a></h3>
+<ol>
+<li>Add the race in <strong>Content Studio ▸ Items ▸ Races</strong> (or <strong>Dev Tools ▸ Characters &amp; Races</strong>) (<code>Races</code> row: name, description, playable, sort). Restart the World server so creation accepts it; re-export game data.</li>
+<li>Import the rig (Humanoid), make a prefab with pivot at the feet, an Animator with your controller, run <strong>Add missing sockets</strong> / <strong>Split body into parts</strong> in Dev Tools ▸ Characters &amp; Races.</li>
+<li>Add <code>WorldObjectPrefabs</code> entries <code>Character_Elf_Male</code> / <code>Character_Elf_Female</code> (<strong>Tools ▸ Axiom ▸ Art &amp; Assets ▸ Select World Prefab Catalog</strong> and add a row, or <strong>Make World Prefab From Selected Model</strong>).</li>
+<li>Optional gear variants: <code>IronPlate_Elf_Female</code> next to <code>IronPlate</code>.</li>
+<li>Run <strong>Tools ▸ Axiom ▸ Art &amp; Assets ▸ Asset Audit</strong> - it lists every body key a race/gender could ask for.</li>
+</ol>
+<h3 id="a-new-chest-piece">A new chest piece<a class="anchor" href="#a-new-chest-piece" title="Permanent link">#</a></h3>
+<ol>
+<li>Model it skinned to the <strong>same skeleton</strong> (bone names may differ if aliases cover them).</li>
+<li>Put the prefab under <code>Resources/Gear/Chest/</code> (e.g. <code>Resources/Gear/Chest/LeatherVest</code>).</li>
+<li>Create the item (<strong>Tools ▸ Axiom ▸ Create ▸ Item…</strong> or Content Studio ▸ Items; Gear Stats <code>EquipSlot</code> Chest), then add a <strong>Gear Visuals</strong> row: <code>PrefabKey = Gear/Chest/LeatherVest</code>, Attach = Skinned, Hide = Torso | Arms.</li>
+<li>Export game data (<code>gamedata.bin</code>) and restart the World server so new clients get it.</li>
+</ol>
+<h3 id="a-sword">A sword<a class="anchor" href="#a-sword" title="Permanent link">#</a></h3>
+<p>Socket attach, <code>DrawnSocket = MainHand</code>, <code>SheathSocket = HipLeft</code>; tune Position/Rotation in the <strong>Gear Workshop</strong> with a preview body. Build the mesh grip-at-origin, blade +Y, edge +Z and the default socket poses fit without offsets.</p>
+<nav class="pager">
+<a class="prev" href="30-world-streaming.html"><span>Previous</span>World Streaming, Floating Origin &amp; Zones</a>
+<a class="next" href="50-movement-camera.html"><span>Next</span>Input, Local Movement &amp; Camera</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-pieces-on-one-character">The pieces on one character</a>
+</li>
+<li><a href="#remote-entities-interpolation">Remote entities: interpolation</a>
+</li>
+<li><a href="#choosing-a-body">Choosing a body</a>
+</li>
+<li><a href="#gear-visuals">Gear visuals</a>
+</li>
+<li><a href="#sockets-and-the-character-pipeline">Sockets and the Character Pipeline</a>
+</li>
+<li><a href="#customisation-characterlook">Customisation (CharacterLook)</a>
+</li>
+<li><a href="#animation">Animation</a>
+</li>
+<li><a href="#crowds">Crowds</a>
+</li>
+<li><a href="#recipes">Recipes</a>
+<ul>
+<li><a href="#a-body-for-a-new-race">A body for a new race</a>
+</li>
+<li><a href="#a-new-chest-piece">A new chest piece</a>
+</li>
+<li><a href="#a-sword">A sword</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

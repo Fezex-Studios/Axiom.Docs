@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movement &amp; Netcode · Axiom Docs</title>
+<meta name="description" content="Server-authoritative movement with client prediction - the shared CharacterMotor, input commands, the jitter buffer, reconciliation, collision data that must match on both ends, and how remote characters are drawn.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="10-overview.html">Architecture Overview</a></li>
+<li><a href="20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="30-world-server.html">The World Server</a></li>
+<li><a href="40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="50-movement.html" class="active" aria-current="page">Movement &amp; Netcode</a></li>
+<li><a href="60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Architecture</div>
+
+<h1 id="movement--netcode">Movement &amp; Netcode<a class="anchor" href="#movement--netcode" title="Permanent link">#</a></h1>
+<p>Axiom's movement is <strong>server-authoritative with client-side prediction</strong>, the model used by most modern action games (Source, Overwatch, Rocket League). The client never tells the server where it is. It sends its <em>inputs</em>; both ends run them through the <strong>same code</strong>; the server's answer wins.</p>
+<blockquote>
+<p>Some classic MMO servers trusted client positions, which is why they were famous for speed and teleport hacks. Axiom deliberately doesn't.</p>
+</blockquote>
+<h2 id="the-pieces">The pieces<a class="anchor" href="#the-pieces" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Where</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CharacterMotor</code></td>
+<td><code>Axiom.Movement</code> (shared DLL)</td>
+<td><code>Step(state, input, profile, dt) → state</code>. Capsule collide-and-slide, steps, slopes, gravity, jump, swim, fly.</td>
+</tr>
+<tr>
+<td><code>MoveState</code></td>
+<td>shared</td>
+<td>Everything the motor carries between steps: position, velocity, mode, grounded, coyote time, jump buffer... A plain struct, copied freely.</td>
+</tr>
+<tr>
+<td><code>MoveInput</code></td>
+<td>shared</td>
+<td>One step of <em>intent</em>: sequence, wish direction (x, z), yaw, pitch, buttons (jump, walk, ascend, descend...).</td>
+</tr>
+<tr>
+<td><code>MovementProfile</code></td>
+<td>shared</td>
+<td>The numbers: capsule size, walk/run/swim/fly speeds, acceleration, slope limit, step height, gravity, jump height, coyote time...</td>
+</tr>
+<tr>
+<td><code>ICollisionWorld</code></td>
+<td>shared interface</td>
+<td>The only way the motor sees the world. Server: <code>WorldCollisionSet</code> (exported triangles, heightmaps, water, doodads, NPC capsules). Client online: the <strong>same</strong> <code>WorldCollisionSet</code>. Client offline: <code>UnityCollisionWorld</code> over PhysX.</td>
+</tr>
+<tr>
+<td><code>FixedStepClock</code></td>
+<td>shared</td>
+<td>60 Hz fixed timestep (<code>Delta = 1/60</code>).</td>
+</tr>
+<tr>
+<td><code>AuthoritativeMovement</code></td>
+<td>World <code>Core/Movement</code></td>
+<td>Runs every player's motor on the server.</td>
+</tr>
+<tr>
+<td><code>ServerInputQueue</code></td>
+<td>World <code>Core/Simulation</code></td>
+<td>Per-player jitter buffer of inputs.</td>
+</tr>
+<tr>
+<td><code>LocalCharacterMotor</code></td>
+<td>client <code>Movement</code></td>
+<td>Runs the motor locally at 60 Hz, keeps a prediction history, reconciles.</td>
+</tr>
+<tr>
+<td><code>MovementPredictionClient</code></td>
+<td>client <code>Networking</code></td>
+<td>Loads the client's collision set, applies <code>W2CMovementConfig</code> / <code>W2CMovementState</code> to the local motor.</td>
+</tr>
+<tr>
+<td><code>RemoteEntityInterpolator</code></td>
+<td>client <code>Gameplay</code></td>
+<td>Draws other players and NPCs from snapshots, 100-ish ms in the past.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="the-motors-three-rules">The motor's three rules<a class="anchor" href="#the-motors-three-rules" title="Permanent link">#</a></h2>
+<p>From the top of <code>CharacterMotor.cs</code>; break any and prediction stops working:</p>
+<ol>
+<li><strong>Fixed timestep only.</strong> Always <code>Step(..., dt: 1/60)</code>. Never <code>Time.deltaTime</code>. Different <code>dt</code> → different results on two machines → reconciliation impossible.</li>
+<li><strong>No state outside <code>MoveState</code>.</strong> The motor holds no per-character fields. A hidden timer wouldn't be rewound when the client replays inputs from an older state.</li>
+<li><strong>No engine calls.</strong> Everything about the world comes through <code>ICollisionWorld</code>.</li>
+</ol>
+<p>Same inputs + same profile + same collision + same start state ⇒ same result on client and server. That's the whole design.</p>
+<h2 id="a-movement-round-trip">A movement round trip<a class="anchor" href="#a-movement-round-trip" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>client frame:  read keys ─▶ MoveInput #812 ─▶ motor.Step (predict) ─▶ history[812]
+                                         └──▶ C2WMovementInputs { epoch, inputs 809..812 }   (Control channel, unreliable)
+
+server tick:   ServerInputQueue ◀── inputs ── jitter buffer ── one input per 60 Hz step
+               motor.Step(serverState, #812) ─▶ serverState, Ack = 812
+               W2CMovementState { epoch, serverTick, ack=812, state }                       (unreliable)
+               snapshot to everyone else who can see you
+
+client:        Reconcile: take server state at #812, replay history[813..], compare
+</code></pre></div>
+
+<h3 id="1-configuration-w2cmovementconfig">1. Configuration: <code>W2CMovementConfig</code><a class="anchor" href="#1-configuration-w2cmovementconfig" title="Permanent link">#</a></h3>
+<p>When a player enters the world (and whenever their movement setup changes: mounting, a speed buff, death, a stun, a GM freeze, a layer change), <code>AuthoritativeMovement.Reset</code> sends <code>W2CMovementConfig</code>:</p>
+<ul>
+<li><code>Epoch</code>: a new number. Inputs and states from an older epoch are ignored on both sides. That's how a teleport cleanly cuts off in-flight inputs.</li>
+<li><code>Profile</code>: the <strong>server-built</strong> <code>MovementProfile</code> (<code>CreateProfile</code>): base values from <code>World:Movement*</code> config, times the move-speed stat, times the mount multiplier; zero speed if dead, immobile or frozen. The client must use this profile; it can't choose its own speed.</li>
+<li><code>State</code>: the starting <code>MoveState</code>.</li>
+<li><code>CollisionHash</code>: hash of the server's collision export. The client loads its own copy (<code>StreamingAssets/World/MovementCollision</code>) and <strong>disconnects with "Client and server world collision versions differ"</strong> if the hashes don't match.</li>
+<li><code>CollisionLayer</code> (0 = open world, otherwise a dungeon instance or house layer), <code>NeedsWorldEntry</code> (show a loading screen: first entry, a layer change, or a teleport over <code>TeleportLoadingScreenMeters</code>, 256 m).</li>
+</ul>
+<p>The client answers <code>C2WMovementReady { Epoch, CollisionHash }</code> once its collision is loaded. Not ready within <code>MovementReadyTimeoutSeconds</code> (30 s) → disconnect.</p>
+<h3 id="2-inputs-c2wmovementinputs">2. Inputs: <code>C2WMovementInputs</code><a class="anchor" href="#2-inputs-c2wmovementinputs" title="Permanent link">#</a></h3>
+<p><code>LocalPlayerInput</code> turns keys and camera into a <code>MoveInput</code> once per 60 Hz step (<a href="../40-client/50-movement-camera.html">Movement &amp; camera (client)</a>). The motor steps it immediately (prediction) and appends it to the <code>PredictionHistory</code>.</p>
+<p>Inputs are sent about 20 times a second in a hand-packed binary packet (<code>MovementInputCodec</code>, 22 bytes per input, max 16 per packet). Every packet repeats recent inputs <strong>redundantly</strong>, so a lost UDP packet costs nothing: the next one carries the same inputs again. Duplicates are dropped by sequence number.</p>
+<p>Inputs carry <strong>intent</strong>, never outcomes. <code>WishDirection</code> is "which way I'm pressing", clamped to length 1 by <code>MoveInput.Sanitize()</code>. Speed comes from the profile, so a hacked client can only press harder in a direction, not go faster.</p>
+<h3 id="3-simulation-on-the-server">3. Simulation on the server<a class="anchor" href="#3-simulation-on-the-server" title="Permanent link">#</a></h3>
+<p>Every tick (<code>TickStage.MovementAndAoi</code>), <code>AuthoritativeMovement.TickAsync</code>:</p>
+<ol>
+<li>Advances its own <code>FixedStepClock</code> by real elapsed time (typically 3 steps per 50 ms tick, at most 6).</li>
+<li>For each player, checks the profile is still current (stats, mount, death) and re-sends config if not.</li>
+<li>Makes sure collision around the player is <strong>loaded</strong> (async, <code>CollisionPrefetchMeters</code> ahead plus 3 s of travel). If it isn't, the player waits rather than falling through the world.</li>
+<li>Pulls one input per step from the player's <code>ServerInputQueue</code> and runs <code>CharacterMotor.Step</code>. Players in different zones are simulated <strong>in parallel</strong> (<code>MovementZoneWorkers</code>); see <a href="../80-notes/server-PARALLEL_STAGES.html">Parallel stages</a>.</li>
+<li>Commits the result (<code>PlayerManager.CommitMotorMove</code>): position into the session, the interest grid and the snapshot dispatcher.</li>
+<li>Sends the owner <code>W2CMovementState { Epoch, ServerTick, Ack, State }</code> (unreliable).</li>
+</ol>
+<p><strong>The jitter buffer</strong> (<code>ServerInputQueue</code>). Inputs arrive in bursts. If the next input hasn't arrived yet, the server <strong>waits</strong> for it (that step isn't simulated) instead of guessing, from a budget of up to 15 steps that refills slowly, so holding inputs back can't freeze you in mid-air. If an input is truly lost, it's skipped, but a <strong>jump</strong> in a skipped or late input is carried to the next step. A jump is one input (the press): losing it would make the server's character not jump while yours did. Every input costs exactly one step, and no more than real time's worth of steps run per tick, so none of this lets anyone go faster.</p>
+<p>Players driving a vehicle, sitting on furniture or climbing a house part are <strong>managed</strong>: their position comes from that system and inputs are ignored.</p>
+<h3 id="4-reconciliation-on-the-client">4. Reconciliation on the client<a class="anchor" href="#4-reconciliation-on-the-client" title="Permanent link">#</a></h3>
+<p><code>MovementPredictionClient.Pump</code> hands the newest <code>W2CMovementState</code> to <code>LocalCharacterMotor.Reconcile</code>:</p>
+<ol>
+<li>Drop history up to and including <code>Ack</code>.</li>
+<li>Start from the server's state and <strong>replay</strong> every remaining input in history through the motor.</li>
+<li>Use the result as the new predicted state. Any visual difference is smoothed out over a few frames (a visual offset), not snapped.</li>
+</ol>
+<p>If both sides agree (the normal case) the replay lands exactly where the client already was and nothing visible happens. If the server disagrees (a stun, a wall the client didn't know about, a cheat), the client corrects.</p>
+<p>If the replay would walk into an area whose collision hasn't loaded yet, reconciliation is deferred until it has.</p>
+<h2 id="collision-data-must-match">Collision data must match<a class="anchor" href="#collision-data-must-match" title="Permanent link">#</a></h2>
+<p>Because both sides step the same motor, they must collide with the same world. The <strong>Movement Collision export</strong> (Unity: <strong>Tools ▸ Axiom ▸ Server Exports ▸ Movement Collision ▸ Export</strong>) bakes the walkable geometry of every tile scene and prefab into a set of files:</p>
+<ul>
+<li>written to the client's <code>StreamingAssets/World/MovementCollision</code>;</li>
+<li>copied to the World server's <code>World:MovementCollisionDirectory</code> (<code>Data/world_collision</code>).</li>
+</ul>
+<p>Both load them into a <code>WorldCollisionSet</code> and compare its <code>Hash</code>. <strong>Re-export after changing any walkable geometry</strong> (terrain sculpt, a new building, a river) and restart the World server. <a href="../20-data/50-world-files.html">World files</a> describes the formats; <a href="../50-tools/80-server-exports.html">Server exports</a> the tool.</p>
+<p>On top of the static set:</p>
+<ul>
+<li><strong>Doodads</strong> that block (fences, gates, placed houses) are added and removed at runtime on both sides from the doodad spawn/state packets (<code>MovementPredictionClient.DoodadSpawn/DoodadState</code>).</li>
+<li><strong>NPC bodies</strong> (capsules or boxes from <code>npc_collision.json</code>) are streamed to each client in <code>W2CNpcCollisionFrame</code> packets, numbered by <code>CollisionRevision</code>, so prediction collides with the same NPCs the server does.</li>
+<li><strong>Water</strong> comes from the HDRP Water Surfaces in the scenes, exported as <code>WaterVolumes</code> with the collision. Swimming starts at <code>SwimDepthThreshold</code> metres of water. While riding, <code>MovementProfile.SurfaceSwimOnly</code> is set (the server's <code>CreateProfile</code> from <code>Mount.IsMounted</code>, sent in <code>MotorProfileData</code>): Swim Down is ignored, so the mount swims on the surface.</li>
+</ul>
+<h2 id="remote-characters">Remote characters<a class="anchor" href="#remote-characters" title="Permanent link">#</a></h2>
+<p>Other players and NPCs are not predicted. They're drawn from <strong>snapshots</strong> (<a href="60-interest-replication.html">Interest &amp; replication</a>):</p>
+<ul>
+<li><code>W2CWorldSnapshot</code> carries quantised position (1/64 m), yaw, the <code>MovementState</code> bitfield (running, airborne, jumping, swimming, flying, in combat...) and optionally velocity and lean.</li>
+<li><code>RemoteEntityInterpolator</code> buffers them and renders a <strong>fixed delay in the past</strong>, interpolating between the two snapshots around the render time (Valve's Source approach). It never extrapolates on arrival timing, which jitter makes useless.</li>
+<li><code>RemotePlaybackClock</code> advances at the server's <strong>measured</strong> tick rate, not the nominal one, so a server running at 19 Hz doesn't make everyone stutter.</li>
+<li><strong>Jumps</strong> are a separate reliable event (<code>JumpEventBroadcaster</code>): the rising edge of the Jumping bit is sent once, and observers integrate the arc themselves with the shared <code>MovementConstants.Gravity</code> and <code>JumpVelocity</code>, so the arc is smooth even at a low snapshot rate.</li>
+</ul>
+<p><code>MovementState</code> is client-reported and presentation-only (it picks animations). <code>MovementStateRules</code> strips bits a player can't legitimately have (Flying without a flying mount). If you ever gate gameplay on one of those bits, verify it server-side first.</p>
+<h2 id="tuning-movement">Tuning movement<a class="anchor" href="#tuning-movement" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Want to change</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Run/walk speed, gravity, jump height, slope limit for players</td>
+<td><code>World:MovementRunSpeed</code>, <code>MovementWalkSpeed</code>, <code>MovementGravity</code>, <code>MovementJumpHeight</code>, <code>MovementSlopeLimit</code> in the World's <code>appsettings.json</code>. Sent to clients in the profile; no client rebuild.</td>
+</tr>
+<tr>
+<td>Mount speed, flying</td>
+<td>the mount's data in <code>worldserver.db</code> (<a href="../30-server/170-mounts-pets.html">Mounts &amp; pets</a>)</td>
+</tr>
+<tr>
+<td>A speed buff</td>
+<td>an effect that changes <code>StatId.MoveSpeedPct</code> (<a href="../30-server/30-combat.html">Combat</a>)</td>
+</tr>
+<tr>
+<td>Swim depth, buoyancy, step height, capsule</td>
+<td><code>MovementProfile</code> defaults in <code>Axiom.Movement</code> (rebuild both DLLs)</td>
+</tr>
+<tr>
+<td>Remote jump arc</td>
+<td><code>MovementConstants</code> (shared, rebuild both)</td>
+</tr>
+<tr>
+<td>Control schemes, key bindings</td>
+<td>client <code>Movement/</code> (<a href="../40-client/50-movement-camera.html">Movement &amp; camera</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="debugging-movement">Debugging movement<a class="anchor" href="#debugging-movement" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Look at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Constant small corrections on slopes</td>
+<td>Collision export out of date, or terrain heightmap differs; re-export both.</td>
+</tr>
+<tr>
+<td>"collision versions differ" on connect</td>
+<td>Client and server collision files differ. Export and copy, restart World.</td>
+</tr>
+<tr>
+<td>Rubber-banding under load</td>
+<td>World log <code>[MovementInput]</code> (waits/skips) and <code>[ParallelStages] movementMs</code>.</td>
+</tr>
+<tr>
+<td>Falling through the world</td>
+<td>Collision not exported for that tile, or a terrain hole.</td>
+</tr>
+<tr>
+<td>Can't walk up a gentle incline</td>
+<td><code>MovementSlopeLimit</code> / <code>StepHeight</code>, or a collider edge in the export.</td>
+</tr>
+<tr>
+<td>Remote players stutter</td>
+<td><code>RemoteEntityInterpolator</code> delay; snapshot budget (<code>SnapshotEntitiesPerPeer</code>), <a href="60-interest-replication.html">Interest &amp; replication</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Older design notes: <a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement and camera (note)</a>, <a href="../90-archive/JUMP_INPUT_FIX.html">Jump input fix</a>.</p>
+<nav class="pager">
+<a class="prev" href="40-networking.html"><span>Previous</span>Networking &amp; Packets</a>
+<a class="next" href="60-interest-replication.html"><span>Next</span>Interest &amp; Replication</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-pieces">The pieces</a>
+</li>
+<li><a href="#the-motors-three-rules">The motor&#x27;s three rules</a>
+</li>
+<li><a href="#a-movement-round-trip">A movement round trip</a>
+<ul>
+<li><a href="#1-configuration-w2cmovementconfig">1. Configuration: W2CMovementConfig</a>
+</li>
+<li><a href="#2-inputs-c2wmovementinputs">2. Inputs: C2WMovementInputs</a>
+</li>
+<li><a href="#3-simulation-on-the-server">3. Simulation on the server</a>
+</li>
+<li><a href="#4-reconciliation-on-the-client">4. Reconciliation on the client</a>
+</li>
+</ul>
+</li>
+<li><a href="#collision-data-must-match">Collision data must match</a>
+</li>
+<li><a href="#remote-characters">Remote characters</a>
+</li>
+<li><a href="#tuning-movement">Tuning movement</a>
+</li>
+<li><a href="#debugging-movement">Debugging movement</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>worldserver.db (Game Content) · Axiom Docs</title>
+<meta name="description" content="The SQLite content database - where it lives, how its schema (EF migrations) and content (SQL patches) are versioned, how the World server loads it, the table families and how they link together, and how to edit it safely.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="10-data-overview.html">Data Overview</a></li>
+<li><a href="20-worldserver-db.html" class="active" aria-current="page">worldserver.db (Game Content)</a></li>
+<li><a href="30-mysql.html">MySQL Databases</a></li>
+<li><a href="40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="50-world-files.html">World Files</a></li>
+<li><a href="60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Data &amp; Databases</div>
+
+<h1 id="worldserverdb">worldserver.db<a class="anchor" href="#worldserverdb" title="Permanent link">#</a></h1>
+<p><code>worldserver.db</code> is a single SQLite file that holds <strong>every piece of game content</strong>: items, NPCs, skills, effects, statuses, loot, quests, doodads, recipes, shops, trade, dungeons, factions, territories, world events, mounts, achievements and the combat formula numbers. It holds <strong>no player data</strong>. A fresh copy plus the SQL patches is the whole game design.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path</td>
+<td><code>World:Database:WorldDb</code>, default <code>Data/worldserver.db</code> next to the World server exe (in the repo: <code>src/Servers/Axiom.Server.World/Data/worldserver.db</code>, copied to <code>bin/…/Data/</code> on build)</td>
+</tr>
+<tr>
+<td>Opened by</td>
+<td>the World server (EF Core, read at boot), Content Studio and Dev Tools in Unity (direct SQLite)</td>
+</tr>
+<tr>
+<td>Size</td>
+<td>~90 tables, a few hundred KB</td>
+</tr>
+<tr>
+<td>Browse it</td>
+<td>Content Studio, or any SQLite browser (<a href="https://sqlitebrowser.org/">DB Browser for SQLite</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every table, column, reference, enum and sample row is listed in the generated <a href="../70-reference/worlddb.html">worldserver.db reference</a>.</p>
+<h2 id="schema-vs-content-two-version-streams">Schema vs content: two version streams<a class="anchor" href="#schema-vs-content-two-version-streams" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Schema</strong> (tables, columns, indexes)</th>
+<th><strong>Content</strong> (rows)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lives in</td>
+<td><code>src/Servers/Axiom.Server.World/Migrations/*.cs</code> (EF Core migrations)</td>
+<td><code>src/Servers/Axiom.Server.World/SQL/patches/*.sql</code></td>
+</tr>
+<tr>
+<td>Tracked in</td>
+<td><code>__EFMigrationsHistory</code></td>
+<td><code>schema_versions</code> (<code>patch</code>, <code>applied_at</code>)</td>
+</tr>
+<tr>
+<td>Applied by</td>
+<td><code>db.Database.MigrateAsync()</code>, boot step 0b</td>
+<td><code>GameDataPatchRunner.RunAsync()</code>, boot step 0c</td>
+</tr>
+<tr>
+<td>Written by</td>
+<td>a programmer, by hand</td>
+<td>Content Studio / Create wizards (automatically), or by hand</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both run <strong>every time the World server starts</strong>, schema first, before anything else touches the database. Then the World server builds <code>gamedata.bin</code> from the result.</p>
+<h3 id="sql-patches">SQL patches<a class="anchor" href="#sql-patches" title="Permanent link">#</a></h3>
+<p><code>GameDataPatchRunner</code> (<code>Utils/Database/SQLite/GameDataPatchRunner.cs</code>):</p>
+<ol>
+<li>Creates <code>schema_versions</code> if missing.</li>
+<li>Lists <code>*.sql</code> in <code>World:Database:PatchDirectory</code> (default: <code>SQL/patches</code> next to the exe), sorted <strong>by file name</strong> (ordinal), so <code>026_…</code> runs before <code>101_…</code>.</li>
+<li>Skips any file whose name is already in <code>schema_versions</code>.</li>
+<li>Runs each new file <strong>in a transaction</strong> and records it. A failing patch is rolled back and <strong>stops the server</strong>: <code>[Patcher] Failed applying X — rolled back. Fix the script and restart.</code></li>
+</ol>
+<p>Conventions:</p>
+<ul>
+<li>Name: <code>NNN_short_description.sql</code>, the next free number. Content Studio writes <code>NNN_content_&lt;title&gt;.sql</code>.</li>
+<li>First lines: a comment saying what it does and what it needs (the patch list in the reference shows these headers).</li>
+<li><strong>Idempotent</strong>: <code>INSERT OR REPLACE</code>, <code>UPDATE … WHERE</code>, <code>DELETE … WHERE</code>. A patch should be safe to run on a database that already has some of it.</li>
+<li><strong>Never edit a patch that has been applied anywhere.</strong> Its name is in <code>schema_versions</code>, so the edit will never run. Write a new patch.</li>
+<li>Patches are content only. A patch that creates tables (only <code>056_class_based_characters.sql</code> does, historically) belongs in a migration.</li>
+</ul>
+<p>The patch runner only runs patches whose <strong>names</strong> are new. Renaming a patch re-runs it.</p>
+<h3 id="migrations">Migrations<a class="anchor" href="#migrations" title="Permanent link">#</a></h3>
+<p>World migrations are <strong>hand-written</strong> and idempotent, in this style (<code>Migrations/20261026100000_AppearanceOptions.cs</code>):</p>
+<div class="hl"><pre><span></span><code><span class="na">[DbContext(typeof(WorldDataDbContext))]</span>
+<span class="na">[Migration(&quot;20261026100000_AppearanceOptions&quot;)]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AppearanceOptions</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Migration</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Up</span><span class="p">(</span><span class="n">MigrationBuilder</span><span class="w"> </span><span class="n">migrationBuilder</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">migrationBuilder</span><span class="p">.</span><span class="n">Sql</span><span class="p">(</span><span class="s">@&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS &quot;&quot;AppearanceOptions&quot;&quot; (</span>
+<span class="s">    &quot;&quot;Id&quot;&quot;   INTEGER NOT NULL CONSTRAINT &quot;&quot;PK_AppearanceOptions&quot;&quot; PRIMARY KEY,</span>
+<span class="s">    &quot;&quot;Kind&quot;&quot; INTEGER NOT NULL,</span>
+<span class="s">    &quot;&quot;Name&quot;&quot; TEXT NOT NULL,</span>
+<span class="s">    CONSTRAINT &quot;&quot;CK_AppearanceOptions_Kind&quot;&quot; CHECK (Kind BETWEEN 1 AND 6)</span>
+<span class="s">);</span>
+<span class="s">INSERT OR IGNORE INTO &quot;&quot;AppearanceOptions&quot;&quot; (Id, Kind, Name) VALUES (101, 1, &#39;Natural&#39;);&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Down</span><span class="p">(</span><span class="n">MigrationBuilder</span><span class="w"> </span><span class="n">migrationBuilder</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">migrationBuilder</span><span class="p">.</span><span class="n">Sql</span><span class="p">(</span><span class="s">@&quot;DROP TABLE IF EXISTS &quot;&quot;AppearanceOptions&quot;&quot;;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The id is a timestamp (<code>yyyyMMddHHmmss_Name</code>), so migrations sort in time order. Seeding a few starter rows with <code>INSERT OR IGNORE</code> in the migration is fine; real content goes in patches. Full walkthrough: <a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db table</a>.</p>
+<h2 id="how-the-world-server-reads-it">How the World server reads it<a class="anchor" href="#how-the-world-server-reads-it" title="Permanent link">#</a></h2>
+<p>Each system has a <strong>catalog</strong> that loads its tables once at boot (step 3b on the <a href="../10-architecture/30-world-server.html">World server</a> page) and keeps them in memory. The pattern, from <code>Core/Doodads/ClimateService.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="c1">// 1. An entity class per table: GameData/Climate/Climate.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Climate</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w">    </span><span class="n">Id</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">ColorHex</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#FFFFFF&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 2. A DbSet in Utils/Database/SQLite/WorldDataDbContext.cs</span>
+<span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">Climate</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Climates</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">Climate</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="c1">// 3. A catalog that loads once and validates</span>
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">LoadFromDatabase</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_dbFactory</span><span class="p">.</span><span class="n">CreateDbContext</span><span class="p">();</span><span class="w">                </span><span class="c1">// short-lived context</span>
+<span class="w">    </span><span class="n">Load</span><span class="p">(</span><span class="n">db</span><span class="p">.</span><span class="n">Climates</span><span class="p">.</span><span class="n">AsNoTracking</span><span class="p">().</span><span class="n">ToList</span><span class="p">(),</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">ZoneClimates</span><span class="p">.</span><span class="n">AsNoTracking</span><span class="p">().</span><span class="n">ToList</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Load</span><span class="p">(</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Climate</span><span class="o">&gt;</span><span class="w"> </span><span class="n">climates</span><span class="p">,</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">ZoneClimate</span><span class="o">&gt;</span><span class="w"> </span><span class="n">zones</span><span class="p">)</span><span class="w">   </span><span class="c1">// testable without a db</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">_climates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">climates</span><span class="p">.</span><span class="n">ToDictionary</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">zones</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_climates</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="n">z</span><span class="p">.</span><span class="n">ClimateId</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span><span class="w">   </span><span class="c1">// bad rows are skipped with a warning, never crash the server</span>
+<span class="w">            </span><span class="n">Logger</span><span class="p">.</span><span class="n">Warn</span><span class="p">(</span><span class="s">&quot;[Climate] ZoneClimates {Id}: climate {Climate} doesn&#39;t exist - skipped&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">.</span><span class="n">ClimateId</span><span class="p">);</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Logger</span><span class="p">.</span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;[Climate] {Climates} climate(s), {Zones} zone(s) with climates.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">_climates</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span><span class="w"> </span><span class="n">_byZone</span><span class="p">.</span><span class="n">Count</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Consequences:</p>
+<ul>
+<li><strong>Content changes need a World restart.</strong> There's no hot reload.</li>
+<li><strong>Bad rows are skipped and logged</strong>, not fatal. Read the World log after changing content: <code>[Loot] … skipped</code>, <code>[Quests] … unknown item</code>. Content Studio runs the same checks before you commit.</li>
+<li><strong>Load order matters.</strong> Items load first because quests, shops, loot and recipes check item ids against <code>ItemManager</code>.</li>
+</ul>
+<h2 id="naming">Naming<a class="anchor" href="#naming" title="Permanent link">#</a></h2>
+<p>Two naming styles exist, for history:</p>
+<ul>
+<li>The oldest tables use <strong>snake_case</strong> columns: <code>Items</code> (<code>item_id</code>, <code>icon_name</code>, <code>category_id</code>, <code>rarity_id</code>, <code>vendor_price</code>...).</li>
+<li>Everything newer uses <strong>PascalCase</strong>: <code>NpcTemplates.MaxHealth</code>, <code>Effects.OwnerType</code>.</li>
+</ul>
+<p>Table names are PascalCase plurals. Keys are <code>Id</code> (or <code>item_id</code>), integers chosen by you, not auto-increment in practice: Content Studio's New picks the next id.</p>
+<h2 id="the-table-families">The table families<a class="anchor" href="#the-table-families" title="Permanent link">#</a></h2>
+<h3 id="items">Items 📦<a class="anchor" href="#items" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Items</code></td>
+<td>Everything that can be in a bag: name, description, icon, category, rarity, required level, bind type, <code>no_trade</code>, <code>max_stack</code>, <code>vendor_price</code> (copper).</td>
+</tr>
+<tr>
+<td><code>ItemCategories</code>, <code>ItemRarities</code></td>
+<td>Tooltip labels; rarity has the name colour.</td>
+</tr>
+<tr>
+<td><code>ItemStats</code></td>
+<td>Gear only: <code>EquipSlot</code>, <code>WeaponKind</code>/<code>ArmorKind</code>, <code>TwoHanded</code>, <code>AllowedClasses</code> (class mask), primary and secondary stats, <code>SocketCount</code>, <code>MaxDurability</code>, base/max grade. One row per item.</td>
+</tr>
+<tr>
+<td><code>ItemUses</code></td>
+<td>What right-click does: <code>ConsumeOnUse</code>, <code>CooldownMs</code> + <code>CooldownGroup</code>, <code>CastTimeMs</code>, <code>LaborCost</code>. The actual effects are <code>Effects</code> rows with <code>OwnerType = 1</code> (Item) and <code>OwnerId</code> = the item.</td>
+</tr>
+<tr>
+<td><code>ItemGrades</code>, <code>ItemGradeDistributions</code></td>
+<td>12 grade tiers (Crude, Basic, Grand, Rare, Arcane, Heroic, Unique, Celestial, Divine, Epic, Legendary, Mythic) with colour, stat multipliers and upgrade odds; <code>ItemGradeDistributions</code> gives grade roll weights per loot source.</td>
+</tr>
+<tr>
+<td><code>ItemGems</code>, <code>ItemUpgradeMaterials</code></td>
+<td>Socket gems and regrade/upgrade materials.</td>
+</tr>
+<tr>
+<td><code>GearVisuals</code>, <code>GearVisualSlotDefaults</code>, <code>WeaponSheaths</code></td>
+<td>How gear looks: prefab key, attach type (skinned or socket), drawn/sheath sockets, hidden body parts, offsets. Exported into <code>gamedata.bin</code>.</td>
+</tr>
+<tr>
+<td><code>Races</code>, <code>BodyTypes</code>, <code>AppearanceOptions</code></td>
+<td>Character creation: races, bodies per race and gender, skin/hair/eye colours, hair styles, face presets.</td>
+</tr>
+<tr>
+<td><code>TreasureMaps</code>, <code>TreasureLoot</code></td>
+<td>Treasure map items and what digging gives.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="npcs">NPCs 🧌<a class="anchor" href="#npcs" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NpcTemplates</code></td>
+<td>Every creature or character: model key, rank, health, armor, damage, aggro radius, XP, loot table, AI profile, faction, title, greeting.</td>
+</tr>
+<tr>
+<td><code>NpcSpawners</code></td>
+<td>Where they appear: template, position, count, radius, respawn time, movement type (wander, patrol path, stationary), active hours, dungeon.</td>
+</tr>
+<tr>
+<td><code>NpcAbilities</code></td>
+<td>What an NPC casts: skill, <code>Priority</code>, target, health window (<code>MinHealthPct</code>–<code>MaxHealthPct</code>), boss <code>Phase</code>, <code>Chance</code>, <code>CooldownMs</code>, <code>InitialDelayMs</code>.</td>
+</tr>
+<tr>
+<td><code>NpcPhases</code></td>
+<td>Boss phases: below <code>HealthBelowPct</code> enter <code>Phase</code>, yell, summon adds.</td>
+</tr>
+<tr>
+<td><code>AiProfiles</code></td>
+<td>Combat role (<code>Role</code>: melee, caster, healer...), <code>HealBelowPct</code>, <code>AssistRadius</code>.</td>
+</tr>
+<tr>
+<td><code>SpawnPointTables</code></td>
+<td>Player spawn and respawn points.</td>
+</tr>
+<tr>
+<td><code>Mounts</code>, <code>PetBuffs</code></td>
+<td>Mount model, <code>SpeedMultiplier</code>, <code>CanCarryPack</code>, <code>CanFly</code> and flight speeds; statuses a pet gives its owner.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="combat">Combat ⚔<a class="anchor" href="#combat" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Classes</code></td>
+<td>Warrior, Healer, Mage (<code>CharacterClassRules</code>).</td>
+</tr>
+<tr>
+<td><code>Skills</code></td>
+<td>Every ability: class, target rule, range, radius, cast time, cooldown, mana, max rank, required level/weapon, flags (passive, starter, spell, interaction, NPC-only), animation parameter.</td>
+</tr>
+<tr>
+<td><code>SkillSteps</code></td>
+<td>Multi-step skills: combos, cones, channels, chains, projectiles.</td>
+</tr>
+<tr>
+<td><code>Effects</code></td>
+<td><strong>What everything does.</strong> See below.</td>
+</tr>
+<tr>
+<td><code>StatusTemplates</code>, <code>StatusModifiers</code></td>
+<td>Buffs/debuffs/DoTs: duration, tick, stack rule, dispel type, crowd control flags; stat modifiers.</td>
+</tr>
+<tr>
+<td><code>AbilityPassiveModifiers</code></td>
+<td>Passive skills' stat changes.</td>
+</tr>
+<tr>
+<td><code>CombatRules</code></td>
+<td><strong>Key/value</strong>: every number in the stat and combat formulas (<code>StatBase</code>, <code>HealthPerVitality</code>, <code>CritMultiplier</code>...). A key not in the table uses the default in <code>GameRules</code>.</td>
+</tr>
+<tr>
+<td><code>ExperienceLevels</code></td>
+<td>XP needed per level.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="effects-the-universal-verb-table"><code>Effects</code>: the universal verb table<a class="anchor" href="#effects-the-universal-verb-table" title="Permanent link">#</a></h4>
+<p><code>Effects</code> is polymorphic. Every row says <strong>who owns it</strong> and <strong>what it does</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OwnerType</code> + <code>OwnerId</code></td>
+<td>1 Item (<code>ItemUses</code>), 2 Skill, 3 Status (ticks), 4 legacy doodad func, 5 Doodad function template, 6 Skill step</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td>0 Script, 1 Heal, 2 Apply Status, 3 Cast Skill, 4 Mount, 5 Summon Pet, 6 Damage, 7 Dispel, 8 Taunt, 9 Interrupt, 10 Summon NPC, 11 Give Item, 12 Place Doodad, 13 Open Crafting, 14 Enter Dungeon, ... 41 Grant Patron</td>
+</tr>
+<tr>
+<td><code>RefId</code></td>
+<td>what <code>Kind</code> refers to (a status for Apply Status, an item for Give Item, a doodad template for Place Doodad...)</td>
+</tr>
+<tr>
+<td><code>Target</code>, <code>School</code>, min/max, scaling, chance, <code>Sort</code></td>
+<td>how and in which order</td>
+</tr>
+<tr>
+<td><code>RequiresStatus</code>, <code>BonusStatus</code>, <code>ConsumesStatus</code></td>
+<td>combo conditions</td>
+</tr>
+</tbody>
+</table></div>
+<p>So a potion, a fireball, a poison tick and "open this chest" are all just <code>Effects</code> rows run by one <code>EffectApplier</code>. <strong>Adding a new verb</strong> means a new <code>EffectKind</code> value and a case in the applier (<a href="../60-cookbook/100-add-ability.html">Add an ability</a>).</p>
+<h3 id="quests--progression">Quests &amp; progression 📜<a class="anchor" href="#quests--progression" title="Permanent link">#</a></h3>
+<p><code>Quests</code> (giver, turn-in, prerequisite, rewards, repeatable, time limit), <code>QuestObjectives</code> (type: kill, collect, talk, craft, use item, use skill, enter area, interact, kill group, kill in zone, reach level, complete quest, gather, proficiency rank; <code>TargetId</code> depends on type), <code>QuestRewards</code> (choice lists), <code>QuestCategories</code>, <code>QuestAreas</code>, <code>QuestMonsterGroups(+Npcs)</code>, <code>Achievements</code>, <code>CollectionItems</code>, <code>Titles</code>.</p>
+<h3 id="loot--economy">Loot &amp; economy 💰<a class="anchor" href="#loot--economy" title="Permanent link">#</a></h3>
+<p><code>LootTables</code> + <code>LootTableEntries</code> (group 0 entries roll their own chance; each other group rolls once and drops one entry by weight), <code>LootGroups</code>, <code>NpcLootTables</code> (extra tables per NPC), <code>Shops</code> + <code>ShopItems</code>, <code>TradePacks</code>, <code>TradeOutlets</code>, <code>TradeRoutes</code>, <code>FishingLoot</code>.</p>
+<h3 id="crafting">Crafting ⚒<a class="anchor" href="#crafting" title="Permanent link">#</a></h3>
+<p><code>Professions</code>, <code>ProficiencyRanks</code>, <code>Recipes</code> (station, output, labor, profession, rank), <code>RecipeMaterials</code>, <code>RecipeGrades</code>.</p>
+<h3 id="world">World 🗺<a class="anchor" href="#world" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DoodadTemplates</code></td>
+<td>Interactive objects: model key, start/broken phase, persistent, place rule, blocking box, climate, health.</td>
+</tr>
+<tr>
+<td><code>DoodadPhases</code></td>
+<td>A doodad's states (seedling → grown → harvested).</td>
+</tr>
+<tr>
+<td><code>DoodadFuncs</code></td>
+<td>What F/G do in a phase: action type, function template, required item/profession/rank, labor, access, next phase (−1 = remove).</td>
+</tr>
+<tr>
+<td><code>DoodadFunctionTemplates</code></td>
+<td>Reusable behaviours with their <code>Effects</code>.</td>
+</tr>
+<tr>
+<td><code>DoodadPhaseFuncs</code></td>
+<td>Timers: after N ms go to phase X.</td>
+</tr>
+<tr>
+<td><code>DoodadSpawns</code></td>
+<td>World-placed doodads (ore, herbs, chests, stations).</td>
+</tr>
+<tr>
+<td><code>InteractableActions</code></td>
+<td>NPC right-click actions (talk, shop, mailbox, auction, quests...).</td>
+</tr>
+<tr>
+<td><code>Dungeons</code>, <code>DungeonRooms</code>, <code>DungeonEvents</code>, <code>DungeonActions</code></td>
+<td>Instanced dungeons and their scripted events.</td>
+</tr>
+<tr>
+<td><code>HousingAreas</code>, <code>Climates</code>, <code>ZoneClimates</code>, <code>ClimbRoutes</code>, <code>WorldEvents</code>, <code>Vehicles</code>, <code>FurnitureInteractionSkills</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="factions--pvp">Factions &amp; PvP 🛡<a class="anchor" href="#factions--pvp" title="Permanent link">#</a></h3>
+<p><code>Factions</code>, <code>FactionRelations</code>, <code>Territories</code>, <code>SiegeWeapons</code>, <code>SiegeRewards</code>, <code>LodestoneRewards</code>, <code>CastleUpgrades</code>, <code>ZoneFestivals</code>, <code>ZoneConflicts</code>.</p>
+<p>Unused leftovers: <code>HarvestNodeTemplates</code>/<code>HarvestNodeSpawns</code> (replaced by doodads), <code>TestTableOnes</code>.</p>
+<h2 id="editing-content-safely">Editing content safely<a class="anchor" href="#editing-content-safely" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../50-tools/30-create-wizards.html">Create wizards</a> (<code>Tools ▸ Axiom ▸ Create ▸ …</code>)</td>
+<td>A new item, NPC, loot table, world object or dungeon, with every related row, in one guided window.</td>
+</tr>
+<tr>
+<td><a href="../50-tools/20-content-studio.html">Content Studio</a> (<code>Tools ▸ Axiom ▸ Content Studio</code>, Ctrl+Alt+E)</td>
+<td>Editing anything: records, references, enums, validation, undo, previews.</td>
+</tr>
+<tr>
+<td>Dev Tools tabs</td>
+<td>Spatial data: spawn points, doodad spawns, zones, world map.</td>
+</tr>
+<tr>
+<td>A hand-written patch</td>
+<td>Bulk changes, data migrations, anything scripted.</td>
+</tr>
+</tbody>
+</table></div>
+<p>When Content Studio commits it <strong>backs up the db</strong> (<code>Library/Axiom/WorldDbBackups</code>, newest 15), runs the patch <strong>and</strong> records it in <code>schema_versions</code> in one transaction, and moves the patch file into <code>SQL/patches</code>. The World server then won't run it again, and a teammate's fresh database gets it from git. If the World server is running (holding the file), use <strong>Write patch only</strong>: the server applies it on its next start.</p>
+<blockquote class="callout"><p><strong>Commit the patch files.</strong> <code>worldserver.db</code> itself is a build product: anyone can rebuild it from migrations + patches. The patches are the source of truth.</p>
+</blockquote>
+<h3 id="rebuilding-from-scratch">Rebuilding from scratch<a class="anchor" href="#rebuilding-from-scratch" title="Permanent link">#</a></h3>
+<p>Delete (or rename) <code>Data/worldserver.db</code> and start the World server: migrations create every table, then every patch runs in order. If that fails, a patch depends on data it doesn't create; fix it with a new earlier-sorting patch or a migration seed.</p>
+<h2 id="ids-and-conventions">Ids and conventions<a class="anchor" href="#ids-and-conventions" title="Permanent link">#</a></h2>
+<ul>
+<li>Choose id ranges per kind of content so ids are recognisable (the shipped data has low ids for the original test content, 6000s and 90000s for later items, 970000+ for Gear Workshop gear). Whatever you choose, <strong>never reuse an id</strong> players may hold: inventories, mail and auctions in MySQL store item ids.</li>
+<li>Times are milliseconds (<code>CooldownMs</code>, <code>DurationMs</code>), money is <strong>copper</strong> (10 000 copper = 1 gold).</li>
+<li>Model keys (<code>ModelType</code>, <code>PrefabKey</code>) are strings resolved on the client by the prefab catalogue (<a href="../40-client/90-art-assets.html">Art &amp; assets</a>).</li>
+<li>Icon names resolve under <code>Resources/Icons</code> on the client.</li>
+</ul>
+<p>Next: <a href="30-mysql.html">MySQL databases</a> · <a href="40-gamedata-bin.html">gamedata.bin</a> · <a href="../60-cookbook/50-add-content.html">Add content</a></p>
+<nav class="pager">
+<a class="prev" href="10-data-overview.html"><span>Previous</span>Data Overview</a>
+<a class="next" href="30-mysql.html"><span>Next</span>MySQL Databases</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#schema-vs-content-two-version-streams">Schema vs content: two version streams</a>
+<ul>
+<li><a href="#sql-patches">SQL patches</a>
+</li>
+<li><a href="#migrations">Migrations</a>
+</li>
+</ul>
+</li>
+<li><a href="#how-the-world-server-reads-it">How the World server reads it</a>
+</li>
+<li><a href="#naming">Naming</a>
+</li>
+<li><a href="#the-table-families">The table families</a>
+<ul>
+<li><a href="#items">Items 📦</a>
+</li>
+<li><a href="#npcs">NPCs 🧌</a>
+</li>
+<li><a href="#combat">Combat ⚔</a>
+
+</li>
+<li><a href="#quests--progression">Quests &amp; progression 📜</a>
+</li>
+<li><a href="#loot--economy">Loot &amp; economy 💰</a>
+</li>
+<li><a href="#crafting">Crafting ⚒</a>
+</li>
+<li><a href="#world">World 🗺</a>
+</li>
+<li><a href="#factions--pvp">Factions &amp; PvP 🛡</a>
+</li>
+</ul>
+</li>
+<li><a href="#editing-content-safely">Editing content safely</a>
+<ul>
+<li><a href="#rebuilding-from-scratch">Rebuilding from scratch</a>
+</li>
+</ul>
+</li>
+<li><a href="#ids-and-conventions">Ids and conventions</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

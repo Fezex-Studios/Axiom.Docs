@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Tools Reference · Axiom Docs</title>
+<meta name="description" content="Every tool under the Axiom menu, what it&#x27;s for, and where its data goes. The menu is grouped into sections; each section is a band of the menu separated by a line.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html" class="active" aria-current="page">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Content Handbook</div>
+
+<h1 id="2-tools-reference">2. Tools Reference<a class="anchor" href="#2-tools-reference" title="Permanent link">#</a></h1>
+<p>Every tool under the <strong>Axiom</strong> menu, what it's for, and where its data
+goes. The menu is grouped into sections; each section is a band of the menu
+separated by a line.</p>
+<hr>
+<h2 id="the-four-workspaces-top-of-the-menu">The four workspaces (top of the menu)<a class="anchor" href="#the-four-workspaces-top-of-the-menu" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Shortcut</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Home</strong></td>
+<td><code>Ctrl+Alt+H</code></td>
+<td>The front door: setup status with a fix button next to every problem, the Create wizards, <strong>every tool with a description (searchable, with favourites)</strong>, settings, guides</td>
+</tr>
+<tr>
+<td><strong>Content Studio</strong></td>
+<td><code>Ctrl+Alt+E</code></td>
+<td>Editing <strong>any</strong> table in the world database: items, skills, NPCs, quests, shops. <code>Ctrl+K</code> go to, <code>Ctrl+S</code> commit, <code>Ctrl+Z</code> undo</td>
+</tr>
+<tr>
+<td><strong>Dev Tools</strong></td>
+<td><code>Shift+Alt+D</code></td>
+<td>The day-to-day workbench: status dashboard, game data, characters and gear, world building (details below)</td>
+</tr>
+<tr>
+<td><strong>Server Control</strong></td>
+<td></td>
+<td>Start, stop and restart Persistence, Auth, World and Auction, with their logs inside Unity</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Not sure where something is?</strong> Tools &gt; Axiom &gt; Help &gt; <strong>Find a Tool…</strong> (or Home &gt; Tools) and type what you want to do. Every button and field in every tool also has a tooltip: hover it.</p>
+<h2 id="create">Create ▸<a class="anchor" href="#create" title="Permanent link">#</a></h2>
+<p>Wizards that build a complete piece of content in one window and save it as
+one patch. Use them for anything <strong>new</strong>; use Content Studio to change what
+exists. Every wizard: pick something to copy (recommended) or start blank,
+fill in the details, <strong>Check</strong>, <strong>Create</strong>. Unfinished wizards are kept
+across Unity restarts.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Wizard</th>
+<th>Makes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Item…</strong></td>
+<td>any item: name, icon, stats, on-use effect, who drops it, who sells it, how it looks when worn</td>
+</tr>
+<tr>
+<td><strong>NPC…</strong></td>
+<td>a monster, guard, vendor or quest giver, with loot and spawners placed from the Scene view</td>
+</tr>
+<tr>
+<td><strong>World Object…</strong></td>
+<td>gatherables, chests, crafting stations, with their phases and actions</td>
+</tr>
+<tr>
+<td><strong>Loot Table…</strong></td>
+<td>a drop table to attach to NPCs or objects</td>
+</tr>
+<tr>
+<td><strong>Dungeon…</strong></td>
+<td>a dungeon instance: entrance, map, bosses</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="content">Content ▸<a class="anchor" href="#content" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Currency Shops</strong></td>
+<td>The offers in honor, vocation and other currency shops, and the currency names and icons the client shows</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="characters--gear">Characters &amp; Gear ▸<a class="anchor" href="#characters--gear" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Characters and Races</strong></td>
+<td>Body prefab for every race and gender; sockets; what each body wears. Opens the Dev Tools tab</td>
+</tr>
+<tr>
+<td><strong>Gear Workshop</strong></td>
+<td>Fit a weapon or armour piece on any race and gender, live in the Scene; save it for everyone or as a body variant. Opens the Dev Tools tab</td>
+</tr>
+<tr>
+<td><strong>Gear Visuals (Database)</strong></td>
+<td>The table of gear visuals itself: one row per item and slot. Edit any field directly</td>
+</tr>
+<tr>
+<td><strong>Import Outfit Pack…</strong></td>
+<td>Turn a modular outfit pack (FBX parts + textures) into HDRP materials and one prefab per part</td>
+</tr>
+<tr>
+<td><strong>Animation ▸ Create Character Animator Controller</strong></td>
+<td>Creates <code>AxiomCharacter.controller</code> with every parameter and state the game drives</td>
+</tr>
+<tr>
+<td><strong>Animation ▸ Upgrade Selected Animator Controller</strong></td>
+<td>Adds parameters added since your controller was made, without touching its clips</td>
+</tr>
+<tr>
+<td><strong>Check and Export Gear Visuals</strong></td>
+<td>Re-registers and validates every gear visual row's prefab, runs the binding checks, then rebuilds <code>gamedata.bin</code></td>
+</tr>
+<tr>
+<td><strong>Run Gear Binding Checks</strong></td>
+<td>Binds sample gear to the default body in a hidden scene and reports anything that fails (bones, meshes)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="art--assets">Art &amp; Assets ▸<a class="anchor" href="#art--assets" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Make World Prefab From Selected Model</strong></td>
+<td>Select an FBX in the Project window → a prefab with colliders, layer and LODs, registered under a model key</td>
+</tr>
+<tr>
+<td><strong>Select World Prefab Catalog</strong></td>
+<td>Selects <code>Resources/World/WorldObjectPrefabs.asset</code>, the key → prefab list</td>
+</tr>
+<tr>
+<td><strong>Asset Audit</strong></td>
+<td>Every model key and gear item: what's missing a prefab, what's wrong with it</td>
+</tr>
+<tr>
+<td><strong>Python ▸ Pack Terrain Mask Maps</strong></td>
+<td>Builds an HDRP mask map for every terrain layer folder (needs Python 3 + Pillow + NumPy)</td>
+</tr>
+<tr>
+<td><strong>Python ▸ Open Scripts Folder</strong></td>
+<td><code>&lt;project&gt;/Tools/Python</code>, where the editor's Python scripts live</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="world">World ▸<a class="anchor" href="#world" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Maps ▸</strong></td>
+<td>Bake the in-game map from the loaded tiles, export map points, rebuild the terrain atlas</td>
+</tr>
+<tr>
+<td><strong>Navigation ▸ Show NavMesh Overlay</strong></td>
+<td>Draws the server's navigation mesh in the Scene view</td>
+</tr>
+<tr>
+<td><strong>Housing ▸</strong></td>
+<td>Housing zone outlines; <strong>Setup ▸</strong> installs the starter house prefabs, placard and materials</td>
+</tr>
+<tr>
+<td><strong>Furniture ▸</strong></td>
+<td>Starter furniture prefabs, and starter kits in Play Mode</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="server-exports">Server Exports ▸<a class="anchor" href="#server-exports" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Movement Collision ▸</strong></td>
+<td>Export the collision players walk on (and copy it to the server); full rebuild; verify</td>
+</tr>
+<tr>
+<td><strong>NPC Collision ▸</strong></td>
+<td>The NPC body shapes the server uses: select the profiles asset, show bodies in the Scene, set the server file, export</td>
+</tr>
+<tr>
+<td><strong>Validate Netcode Build</strong></td>
+<td>Checks the client's network DLLs, MessagePack and the collision exports (also runs before every build)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="ui">UI ▸<a class="anchor" href="#ui" title="Permanent link">#</a></h2>
+<p>Previews of UI screens, the imported icon browser, and <strong>Lua ▸</strong> to pack the
+Lua UI scripts.</p>
+<h2 id="validation--project-setup-and-health-build-and-release">Validation ▸, Project Setup and Health, Build and Release<a class="anchor" href="#validation--project-setup-and-health-build-and-release" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Validation ▸ Run All Checks</strong></td>
+<td>Every automated check, with a pass/fail report. Run it before you commit</td>
+</tr>
+<tr>
+<td><strong>Validation ▸ UI / Housing / Furniture / Maps / Shops / Gameplay ▸</strong></td>
+<td>Each check on its own</td>
+</tr>
+<tr>
+<td><strong>Project Setup and Health</strong></td>
+<td>Server repository, game data outputs and key, auth server, protocol DLL and MessagePack, with fixes</td>
+</tr>
+<tr>
+<td><strong>Build and Release</strong></td>
+<td>Checks, client build, server publish and release notes</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="help--and-settings">Help ▸ and Settings…<a class="anchor" href="#help--and-settings" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Help ▸</strong></td>
+<td>This handbook, <strong>How To ▸</strong> guides, <strong>Troubleshooting</strong>, every reference guide under <strong>Reference ▸</strong>, and <strong>Find a Tool…</strong></td>
+</tr>
+<tr>
+<td><strong>Settings…</strong></td>
+<td>The paths every tool shares: world database, patches folder (saved in <code>ProjectSettings/AxiomDevTools.asset</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The old <strong>Tool Browser</strong> is now Home &gt; Tools, and the old <strong>Maintenance ▸</strong> migrations have been removed.</p>
+<hr>
+<h2 id="dev-tools-in-detail">Dev Tools in detail<a class="anchor" href="#dev-tools-in-detail" title="Permanent link">#</a></h2>
+<p>Open with <code>Shift+Alt+D</code>. Tabs are on the left, grouped; type in the search
+box (<code>Ctrl+F</code>) to filter; <code>Ctrl+PageUp</code> / <code>Ctrl+PageDown</code> move between tabs.</p>
+<p><strong>The status bar</strong> (top) is live:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Pill</th>
+<th>Green</th>
+<th>Click it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>World DB</strong></td>
+<td>the database exists, isn't locked, has every patch</td>
+<td>opens SQL Patches</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong>, <strong>Auth</strong>, <strong>Persistence</strong>, <strong>World</strong></td>
+<td>that server is answering on its port</td>
+<td>opens Server Control</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>StreamingAssets and the auth server hold the same <code>gamedata.bin</code></td>
+<td>opens Overview</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ports default to 3000 / 7778 / 7777 / 5090 / 3306 (each server's
+<code>appsettings.json</code>).</p>
+<p><strong>The log</strong> (bottom) collects messages from every tab. Filter it by level,
+by tab, or by text; <strong>Copy</strong> puts the filtered lines on the clipboard; the
+arrow button changes its height.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Tab</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overview</td>
+<td><strong>Overview</strong></td>
+<td>One-screen health check with a fix for everything red; <strong>Export game data now</strong>; shortcuts</td>
+</tr>
+<tr>
+<td>Content &amp; Data</td>
+<td><strong>Content Studio</strong></td>
+<td>Shortcuts into Content Studio</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Game Data</strong></td>
+<td>Paths and manual steps for <code>gamedata.bin</code></td>
+</tr>
+<tr>
+<td></td>
+<td><strong>SQL Patches</strong></td>
+<td>Every patch, and which the database has applied</td>
+</tr>
+<tr>
+<td>Characters &amp; Gear</td>
+<td><strong>Characters &amp; Races</strong></td>
+<td>Races; a body slot for every race and gender; <strong>Sockets</strong> (each body's hand, back, hip and head points); the Wardrobe grid</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Gear Workshop</strong></td>
+<td>Fit and save gear on any body (automatic sockets by weapon kind, sheathed size); import outfit packs</td>
+</tr>
+<tr>
+<td>World Building</td>
+<td><strong>World Map</strong>, <strong>World Tiles</strong>, <strong>Zones</strong>, <strong>HLOD Proxies</strong>, <strong>NavMesh</strong>, <strong>Doodads</strong>, <strong>Spawn Points</strong></td>
+<td>Building the world: see <code>WORLD_BUILDING_GUIDE.md</code></td>
+</tr>
+<tr>
+<td>Diagnostics</td>
+<td><strong>Validate</strong></td>
+<td>Spawners and spawn points against the database and terrain</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every tab has a <strong>?</strong> button that opens its guide.</p>
+<h3 id="adding-your-own-dev-tools-tab-programmers">Adding your own Dev Tools tab (programmers)<a class="anchor" href="#adding-your-own-dev-tools-tab-programmers" title="Permanent link">#</a></h3>
+<p>Create a class in <code>Assets/AxiomMMOKit/Editor/DevTools/Tabs</code> that implements
+<code>IDevToolsTab</code> and has a parameterless constructor. Dev Tools finds it by
+reflection; there is no list to register it in.</p>
+<div class="hl"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyTab</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDevToolsTab</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;🔧  My Tool&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p">;</span><span class="w">                                  </span><span class="c1">// position inside its group</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Category</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DevToolsCategories</span><span class="p">.</span><span class="n">Content</span><span class="p">;</span><span class="w">    </span><span class="c1">// sidebar group</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Description</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;One line saying what it&#39;s for.&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">HelpDoc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;10_ADDING_ITEMS.md&quot;</span><span class="p">;</span><span class="w">           </span><span class="c1">// the ? button</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnEnable</span><span class="p">(</span><span class="n">DevToolsContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDisable</span><span class="p">(</span><span class="n">DevToolsContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnGUI</span><span class="p">(</span><span class="n">DevToolsContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EditorGUILayout</span><span class="p">.</span><span class="n">BeginVertical</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">Styles</span><span class="p">.</span><span class="n">Card</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EditorGUILayout</span><span class="p">.</span><span class="n">LabelField</span><span class="p">(</span><span class="s">&quot;Hello&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="n">Styles</span><span class="p">.</span><span class="n">CardTitle</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">GUILayout</span><span class="p">.</span><span class="n">Button</span><span class="p">(</span><span class="s">&quot;Do it&quot;</span><span class="p">))</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="n">Success</span><span class="p">(</span><span class="s">&quot;Done.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;My Tool&quot;</span><span class="p">);</span><span class="w">   </span><span class="c1">// goes to the shared log</span>
+<span class="w">        </span><span class="n">EditorGUILayout</span><span class="p">.</span><span class="n">EndVertical</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A new menu item takes its path and priority from <code>Editor/Core/AxiomMenu.cs</code>
+and gets an <code>[AxiomTool("what it does")]</code> so Home &gt; Tools can list it. Fixed
+asset locations come from <code>Editor/Core/AxiomAssetPaths.cs</code>. A static method
+under <code>AxiomMenu.Validation</code> is picked up by <strong>Run All Checks</strong> automatically:
+throw to fail. Full details: <code>EDITOR_TOOLS_REFERENCE.md</code> (Help &gt; Reference).</p>
+<nav class="pager">
+<a class="prev" href="handbook-01_GETTING_STARTED.html"><span>Previous</span>1. Getting Started</a>
+<a class="next" href="handbook-03_CONTENT_PIPELINE.html"><span>Next</span>3. The Content Pipeline</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-four-workspaces-top-of-the-menu">The four workspaces (top of the menu)</a>
+</li>
+<li><a href="#create">Create ▸</a>
+</li>
+<li><a href="#content">Content ▸</a>
+</li>
+<li><a href="#characters--gear">Characters &amp; Gear ▸</a>
+</li>
+<li><a href="#art--assets">Art &amp; Assets ▸</a>
+</li>
+<li><a href="#world">World ▸</a>
+</li>
+<li><a href="#server-exports">Server Exports ▸</a>
+</li>
+<li><a href="#ui">UI ▸</a>
+</li>
+<li><a href="#validation--project-setup-and-health-build-and-release">Validation ▸, Project Setup and Health, Build and Release</a>
+</li>
+<li><a href="#help--and-settings">Help ▸ and Settings…</a>
+</li>
+<li><a href="#dev-tools-in-detail">Dev Tools in detail</a>
+<ul>
+<li><a href="#adding-your-own-dev-tools-tab-programmers">Adding your own Dev Tools tab (programmers)</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

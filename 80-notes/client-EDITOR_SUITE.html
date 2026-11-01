@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axiom Editor Suite · Axiom Docs</title>
+<meta name="description" content="Everything you use inside Unity to add content to Axiom: items, NPCs, world objects, loot, spawns, terrain, maps, models and animations. All of it lives under one menu, Axiom, and one folder, Assets/AxiomMMOKit/Editor.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html" class="active" aria-current="page">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/EDITOR_SUITE.md</code></div>
+<h1 id="axiom-editor-suite">Axiom Editor Suite<a class="anchor" href="#axiom-editor-suite" title="Permanent link">#</a></h1>
+<p>Everything you use inside Unity to add content to Axiom: items, NPCs,
+world objects, loot, spawns, terrain, maps, models and animations. All of it
+lives under one menu, <strong>Axiom</strong>, and one folder, <code>Assets/AxiomMMOKit/Editor</code>.</p>
+<p>This guide is written for someone new to Unity. Read sections 1–3 once;
+after that, jump to whatever you're doing.</p>
+<hr>
+<h2 id="contents">Contents<a class="anchor" href="#contents" title="Permanent link">#</a></h2>
+<ol>
+<li><a href="#1-first-time-setup">First-time setup</a></li>
+<li><a href="#2-how-content-gets-into-the-game">How content gets into the game</a></li>
+<li><a href="#3-the-hub">The Hub</a></li>
+<li><a href="#4-create-wizards">Create wizards</a></li>
+<li><a href="#5-content-studio">Content Studio</a></li>
+<li><a href="#6-dev-tools">Dev Tools (the world in the Scene view)</a></li>
+<li><a href="#7-asset-pipeline">Asset Pipeline (models, prefabs, animators)</a></li>
+<li><a href="#8-checks">Checks</a></li>
+<li><a href="#9-full-menu-reference">Full menu reference</a></li>
+<li><a href="#10-recipes">Recipes: common jobs start to finish</a></li>
+<li><a href="#11-troubleshooting">Troubleshooting</a></li>
+<li><a href="#12-for-programmers">For programmers: extending the suite</a></li>
+</ol>
+<hr>
+<h2 id="1-first-time-setup">1. First-time setup<a class="anchor" href="#1-first-time-setup" title="Permanent link">#</a></h2>
+<ol>
+<li>Open the project in Unity 6.3.</li>
+<li><strong>Tools &gt; Axiom &gt; Settings…</strong> (Dev Tools &gt; Settings). It finds your server
+   repository next to the project and works out every path from it; set
+   <strong>Server repository</strong> yourself only if it lives somewhere unusual.</li>
+<li>Check the two paths that matter (both are worked out for you):</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Point it at</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>World database</td>
+<td>the <code>worldserver.db</code> <strong>the server runs on</strong>: <code>src/Axiom.Server.World/bin/&lt;Debug or Release&gt;/net10.0/Data/worldserver.db</code></td>
+<td>Edits go straight into the database the server loads, so a restart is all it takes to see them</td>
+</tr>
+<tr>
+<td>Patches folder</td>
+<td><code>src/Axiom.Server.World/SQL/patches</code></td>
+<td>Every change is also written here as a numbered <code>.sql</code> patch: the permanent record that goes into git</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Settings page lists every <code>worldserver.db</code> it found, newest first,
+   with a <strong>Use</strong> button. There are two copies on purpose: <code>Data/worldserver.db</code>
+   is the source that gets copied into <code>bin/</code> when you build the server;
+   the server runs on the <code>bin/</code> copy. Pick the <code>bin/</code> one.</p>
+<ol start="4">
+<li>Nothing to set for item names and icons: <strong>Dev Tools &gt; Game Data</strong>
+   builds <code>gamedata.bin</code> from the world database into StreamingAssets and
+   every built Auth server (and the World server rebuilds it on start).</li>
+<li>Go back to <strong>Status</strong>. Fix anything red or yellow with the button next
+   to it. Green across the board means you're ready.</li>
+</ol>
+<p>The settings are saved in <code>ProjectSettings/AxiomDevTools.asset</code>, shared
+by every tool in the suite.</p>
+<hr>
+<h2 id="2-how-content-gets-into-the-game">2. How content gets into the game<a class="anchor" href="#2-how-content-gets-into-the-game" title="Permanent link">#</a></h2>
+<p>The <strong>World server</strong> owns all game data: items, NPCs, loot, world objects,
+quests, spawns. It reads them from its SQLite database, <code>worldserver.db</code>.
+The Unity client only draws things; it never decides what an item does.</p>
+<p>Every tool that changes content works the same way:</p>
+<div class="hl"><pre><span></span><code> you edit  ──►  Create / Commit / Save
+                  │
+                  ├─► worldserver.db       (written straight away, in one transaction)
+                  └─► SQL/patches/NNN_*.sql (the same change, as a numbered patch)
+
+ restart the World server  ──►  it loads the new content
+</code></pre></div>
+
+<ul>
+<li><strong>The database edit</strong> is what makes it show up on your machine.</li>
+<li><strong>The patch</strong> is what makes it show up everywhere else. Commit it to git
+  with your code. When the server starts, it applies every patch its database
+  hasn't had yet (it keeps a list in the <code>schema_versions</code> table), so a
+  teammate's server, or a fresh one, catches up on its own.</li>
+<li><strong>Restart the World server</strong> after a change. It reads content once, at
+  startup.</li>
+<li><strong>Items only:</strong> run <strong>Update Game Data</strong> (Hub &gt; Tools, or the Item
+  wizard does it for you) so the client's <code>gamedata.bin</code> knows the new
+  item's name, icon and tooltip.</li>
+</ul>
+<h3 id="if-the-database-is-locked">If the database is locked<a class="anchor" href="#if-the-database-is-locked" title="Permanent link">#</a></h3>
+<p>If another program is writing to <code>worldserver.db</code> at the moment you press
+Create or Save (usually the World server), the Create wizards and the
+Doodads tab <strong>refuse and write nothing</strong>. Wait a moment or stop the
+server, then press the button again. Content Studio instead lets you choose
+<strong>Write patch only</strong>: it leaves the database alone and the server applies
+the patch on its next start.</p>
+<p>Why refuse? A patch-only change isn't in the database yet, so the next tool
+to ask for "the next free id" would hand out the same id again, and the
+second patch would fail when the server applied it.</p>
+<h3 id="backups">Backups<a class="anchor" href="#backups" title="Permanent link">#</a></h3>
+<p>Before every commit that touches the database, a copy is saved to
+<code>Library/Axiom/WorldDbBackups/</code>. To roll back, close the server and copy
+a backup over <code>worldserver.db</code>.</p>
+<hr>
+<h2 id="3-the-hub">3. The Hub<a class="anchor" href="#3-the-hub" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Home</strong> (Ctrl+Alt+H). The front door. Five pages:</p>
+<h3 id="status">Status<a class="anchor" href="#status" title="Permanent link">#</a></h3>
+<p>One line per thing that can be wrong, each with a button that fixes it:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>World database / Patches folder</td>
+<td>the paths are set and the files exist</td>
+</tr>
+<tr>
+<td>Database lock</td>
+<td>whether something has a write lock on the database right now</td>
+</tr>
+<tr>
+<td>Patches not applied</td>
+<td><code>.sql</code> files in the patches folder that this database hasn't had. Restart the server, or point Settings at the database the server runs</td>
+</tr>
+<tr>
+<td>Content Studio</td>
+<td>unsaved (uncommitted) edits waiting in Content Studio</td>
+</tr>
+<tr>
+<td>Client item catalog</td>
+<td>whether <code>gamedata.bin</code> is older than the database (names or icons may be stale in game). <strong>Update now</strong> rebuilds it</td>
+</tr>
+<tr>
+<td>Model keys</td>
+<td>NPCs, world objects, mounts etc. whose model key has no prefab in the catalog: they'll be invisible or a placeholder in game</td>
+</tr>
+<tr>
+<td>Tile scenes</td>
+<td>world tiles that aren't in Build Settings (they won't stream in). <strong>Add them</strong></td>
+</tr>
+<tr>
+<td>Unfinished wizards</td>
+<td>a Create wizard you started and didn't finish. <strong>Continue</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Press <strong>Refresh</strong> after fixing things outside Unity.</p>
+<h3 id="create">Create<a class="anchor" href="#create" title="Permanent link">#</a></h3>
+<p>Big buttons for each Create wizard (section 4), and <strong>Anything else</strong>,
+which opens Content Studio.</p>
+<h3 id="tools">Tools<a class="anchor" href="#tools" title="Permanent link">#</a></h3>
+<p>Every tool in the suite with one line on what it's for. Faster than hunting
+through menus.</p>
+<h3 id="settings">Settings<a class="anchor" href="#settings" title="Permanent link">#</a></h3>
+<p>The paths from section 1, the list of databases found, and <strong>Find paths
+automatically</strong>.</p>
+<h3 id="guides">Guides<a class="anchor" href="#guides" title="Permanent link">#</a></h3>
+<p>Opens this guide and the others: World Building, Animation, Asset Pipeline,
+Movement and Camera, Content Studio, Dungeons, Mounts and Pets, and the
+server's Doodads and Zones docs.</p>
+<hr>
+<h2 id="4-create-wizards">4. Create wizards<a class="anchor" href="#4-create-wizards" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Create &gt; …</strong>, or Hub &gt; Create. A wizard walks you through
+everything a piece of content needs, in one window, and saves it all in one
+go. Use one whenever you're making something new. Use Content Studio
+(section 5) for editing what already exists, or for tables no wizard
+covers.</p>
+<h3 id="how-every-wizard-works">How every wizard works<a class="anchor" href="#how-every-wizard-works" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Start.</strong> Pick one:
+   - <strong>Copy an existing one.</strong> Strongly recommended. You get something
+     that already works (stats, abilities, phases, actions), then change
+     what you need. Type in the picker to search by name or id. The
+     suggested starting point is pre-filled.
+   - <strong>Start blank.</strong> Every field at its default. Not offered for world
+     objects, which have too many moving parts to build from nothing.</li>
+<li><strong>Details.</strong> The important fields first. Hover any field for an
+   explanation. Everything else is under <strong>More fields</strong>. Reference fields
+   (a faction, an item, a loot table) have a picker: click it and type.</li>
+<li><strong>The extras.</strong> Sections specific to the wizard (below): stats, drops,
+   shops, spawners, phases. Each has <strong>Add</strong> buttons and an ✕ per row.</li>
+<li><strong>Finish.</strong>
+   - <strong>Check</strong> runs the same validation as Content Studio on just your new
+     rows and lists any problems (errors in red, warnings in yellow).
+   - <strong>Create</strong> checks again, then writes everything as <strong>one</strong> patch named
+     after what you made (for example <code>061_content_new_npc_frost_wolf.sql</code>) and into
+     the database.
+   - <strong>Discard</strong> throws the work away. Nothing was written.</li>
+</ol>
+<p><strong>Your work is kept.</strong> Close the window, close Unity: the wizard reopens
+where you left off (the Hub shows it under <em>Unfinished wizards</em>). Each
+wizard keeps its own pending file in <code>Library/Axiom/</code>, separate from
+Content Studio's, so the two never mix. If Content Studio has unsaved new
+rows that would take the same ids, Create stops and tells you which; commit
+or discard them in Content Studio first.</p>
+<p>After Create, <strong>restart the World server</strong>.</p>
+<h3 id="item">Item<a class="anchor" href="#item" title="Permanent link">#</a></h3>
+<p>Weapons, armour, potions, materials, quest items.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What you set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Details</td>
+<td>name, description, icon name (the icon file in the client's icon set), category, rarity, required level, bind type, tradeable</td>
+</tr>
+<tr>
+<td>Gear stats</td>
+<td>if it can be worn: the stat block (strength, armour…). One row</td>
+</tr>
+<tr>
+<td>On use</td>
+<td>if it can be used: what it does (heal, buff, place a doodad, learn…), cooldown, whether it's used up</td>
+</tr>
+<tr>
+<td>Effects</td>
+<td>extra effects the item carries</td>
+</tr>
+<tr>
+<td>Dropped by</td>
+<td>which loot tables drop it, with chance and quantity</td>
+</tr>
+<tr>
+<td>Sold by</td>
+<td>which shops sell it, buy and sell price, position in the shop</td>
+</tr>
+<tr>
+<td>How it looks</td>
+<td>for gear: the prefab shown on the character and where it attaches (main hand, back…). Added to the Gear Visual Catalog after Create</td>
+</tr>
+<tr>
+<td>Game data</td>
+<td><strong>Update gamedata.bin after Create</strong> (on by default): rebuilds <code>gamedata.bin</code> so the name and icon show in game</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="npc">NPC<a class="anchor" href="#npc" title="Permanent link">#</a></h3>
+<p>Monsters, guards, vendors, quest givers. The suggested copy is a basic
+orc that already fights.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What you set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Details</td>
+<td>name, title, level, rank, faction, health, armour, damage, attack range and speed, aggro radius, AI profile, XP, respawn time, stationary, greeting</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>the model key. Drag an <strong>FBX</strong> in and it's turned into a world prefab and given a key (see section 7); drag an existing prefab and its catalog key is used</td>
+</tr>
+<tr>
+<td>Abilities</td>
+<td>the skills it uses in combat</td>
+</tr>
+<tr>
+<td>Loot</td>
+<td><strong>Make a loot table for this NPC</strong> (its own), or keep the shared one (a warning tells you who else uses it, because changing shared drops changes them for every NPC that uses that table), then add drops</td>
+</tr>
+<tr>
+<td>Shop</td>
+<td><strong>Make it a vendor</strong>, then stock it</td>
+</tr>
+<tr>
+<td>Spawners</td>
+<td>where it appears in the world. <strong>Add a spawner where the Scene view is looking</strong> drops one on the ground at the centre of the Scene view. Move the Scene view, press it again for another</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="world-object">World Object<a class="anchor" href="#world-object" title="Permanent link">#</a></h3>
+<p>Ore veins, herbs, trees to chop, chests, crafting stations, doors. In
+Axiom these are <strong>doodads</strong>. Always starts from a copy (suggested: Iron).
+On start, the copy gets its <strong>own</strong> actions, so changing what the copy
+gives never changes the original.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What you set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Details</td>
+<td>name, description, interact range, persistent, scale, health, placement rules</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>as for NPCs</td>
+</tr>
+<tr>
+<td>Phases</td>
+<td>a doodad is a little state machine: <em>Full → Depleted → (timer) → Full</em>. For each phase: its name and model</td>
+</tr>
+<tr>
+<td>Actions (per phase)</td>
+<td>what <strong>F</strong> / <strong>G</strong> do on that phase: label, how long it takes, which skill animation plays, which phase it goes to next</td>
+</tr>
+<tr>
+<td>Gives (per action)</td>
+<td>the effects that run when the action finishes: give items, XP, gold…</td>
+</tr>
+<tr>
+<td>Timers (per phase)</td>
+<td>move to another phase after N seconds (regrowth, closing a chest, despawning)</td>
+</tr>
+<tr>
+<td>Placement</td>
+<td>where it spawns. <strong>Add one where the Scene view is looking</strong>, or place many by clicking with Dev Tools &gt; Doodads afterwards</td>
+</tr>
+</tbody>
+</table></div>
+<p>For how phases, actions and functions work on the server, read
+<code>DOODADS.md</code> (Hub &gt; Guides).</p>
+<h3 id="loot-table">Loot Table<a class="anchor" href="#loot-table" title="Permanent link">#</a></h3>
+<p>A gold range and a list of drops. <strong>Chance</strong> is per kill: <code>0.25</code> means one
+kill in four, <code>1</code> means always. <strong>Give it to an NPC…</strong> assigns the table
+(an NPC has exactly one loot table, so this replaces its old one).
+<strong>Used by</strong> lists the NPCs that drop it; <strong>Take it away</strong> unassigns.</p>
+<h3 id="dungeon">Dungeon<a class="anchor" href="#dungeon" title="Permanent link">#</a></h3>
+<p>An instanced dungeon, end to end: its run rules (runs per day or week, a
+time limit, time to loot after the boss, mounts), its region and entry /
+exit points, its mobs and boss (spawners inside it), an entrance portal in
+the open world pointed at it, and an exit portal inside. Copying a dungeon
+moves the copy to the next free region automatically. The full guide is
+<code>DUNGEONS.md</code> (Hub &gt; Guides &gt; Dungeons).</p>
+<hr>
+<h2 id="5-content-studio">5. Content Studio<a class="anchor" href="#5-content-studio" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Content Studio</strong> (Ctrl+Alt+E). Every content table in the
+database as browsable, editable records: the tool for editing what exists,
+and for everything the wizards don't cover (quests, skills, recipes,
+factions, mounts, zones' data…).</p>
+<p>The short version:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sidebar (left)</td>
+<td>tables grouped by area, with counts of pending changes</td>
+</tr>
+<tr>
+<td>Records (middle)</td>
+<td>search: plain words, <code>column:text</code> (<code>rarity:epic</code>), <code>column=value</code> (<code>Kind=11</code>), <code>#new</code> / <code>#modified</code> / <code>#error</code></td>
+</tr>
+<tr>
+<td>Inspector (right)</td>
+<td>the selected record's fields, its child rows (an NPC's abilities, a recipe's ingredients), what refers to it, and previews</td>
+</tr>
+<tr>
+<td>Toolbar</td>
+<td>Go to… (Ctrl+K), Undo (Ctrl+Z), Redo (Ctrl+Y), Validate, Commit (Ctrl+S)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Edits are <strong>pending</strong> until you commit. They survive closing Unity. Commit
+shows every change; choose <strong>Commit to database + patch</strong> (normal) or
+<strong>Write patch only</strong> (server running). Duplicate a record with its children
+from the record menu.</p>
+<p>The full guide is <code>Assets/AxiomMMOKit/Editor/ContentStudio/CONTENT_STUDIO.md</code> (Hub &gt;
+Guides &gt; Content Studio).</p>
+<hr>
+<h2 id="6-dev-tools">6. Dev Tools<a class="anchor" href="#6-dev-tools" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Dev Tools</strong> (Shift+Alt+D). Tabs for the world as it sits in the
+Scene view. The tab bar wraps when the window is narrow; a • after a tab
+name means unsaved work in that tab. A log at the bottom shows what each
+action did.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>What it's for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🗺 World Map</td>
+<td>NPC spawners: load them into the scene as markers, move them, add new ones, save back to the database</td>
+</tr>
+<tr>
+<td>🪨 Doodads</td>
+<td>world objects (ore, herbs, chests): place by clicking, move, save. See below</td>
+</tr>
+<tr>
+<td>🧱 World Tiles</td>
+<td>the 512 m tile grid: create tile scenes, export terrain heights to the server, add tiles to Build Settings</td>
+</tr>
+<tr>
+<td>🧭 Zones</td>
+<td>paint zones: names, PvP rules, level ranges</td>
+</tr>
+<tr>
+<td>⚑ Spawn Points</td>
+<td>where players appear and respawn</td>
+</tr>
+<tr>
+<td>🔍 Validate</td>
+<td>spawners and spawn points checked against the database and the terrain (floating, buried, unknown template)</td>
+</tr>
+<tr>
+<td>🧩 SQL Patches</td>
+<td>the patches folder against the database: what's applied, what isn't</td>
+</tr>
+<tr>
+<td>📦 Game Data</td>
+<td>item sync and <code>gamedata.bin</code> build, step by step</td>
+</tr>
+<tr>
+<td>🗃 Content Studio</td>
+<td>a shortcut into Content Studio</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="doodads-tab-step-by-step">Doodads tab, step by step<a class="anchor" href="#doodads-tab-step-by-step" title="Permanent link">#</a></h3>
+<ol>
+<li>Open the tile scene you're working on.</li>
+<li><strong>Load into scene.</strong> Puts a marker (with a preview of the model) at every
+   saved doodad. Tick <strong>Only near the Scene view</strong> to load just the area
+   around where you're looking (radius in metres): much faster on a big
+   world.</li>
+<li><strong>Place:</strong> click an object in the <strong>Objects</strong> list, press <strong>Place in the
+   Scene view</strong>, then click on the ground. Every click places one.
+   <strong>Random rotation</strong> varies the facing; hold <strong>Shift</strong> to keep the last
+   facing. <strong>Esc</strong> stops placing.</li>
+<li><strong>Move / rotate / scale</strong> markers with the normal Unity tools (W, E, R).
+   Only the Y rotation and a uniform scale are saved; scale 1 means "the
+   object's normal size".</li>
+<li><strong>Delete</strong> a marker (select, Delete key, or ✕ in the list) to remove that
+   spawn.</li>
+<li><strong>Save to database.</strong> Shows the counts (+new, ~moved, −removed) and
+   writes one patch.</li>
+</ol>
+<p>Marker colours: grey = new (not saved), orange = moved or edited, blue =
+matches the database. Select a marker to see its state in the Inspector.</p>
+<p><strong>Safety:</strong> a missing marker only deletes a spawn if that spawn was
+<strong>loaded into a scene that's still open</strong>. Closing or swapping scenes never
+reads as "everything was deleted". <strong>Clear markers</strong> removes the markers
+from the scene without touching the database. Markers' model previews are
+never saved into your scene.</p>
+<hr>
+<h2 id="7-asset-pipeline">7. Asset Pipeline<a class="anchor" href="#7-asset-pipeline" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt; …</strong> Getting art in. The full guide is
+<code>ASSET_PIPELINE.md</code>; for characters read <code>CHARACTER_ANIMATION_README.md</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Menu</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Make World Prefab From Selected Model</td>
+<td>select an FBX in the Project window: makes a prefab with colliders and the right layer, and registers it in the World Prefab Catalog under a <strong>model key</strong>. That key is what NPCs and doodads use in their model field</td>
+</tr>
+<tr>
+<td>Select World Prefab Catalog</td>
+<td>selects the catalog asset so you can see every key</td>
+</tr>
+<tr>
+<td>Create Character Animator Controller</td>
+<td>builds the character Animator Controller with every state and parameter wired</td>
+</tr>
+<tr>
+<td>Upgrade Selected Animator Controller</td>
+<td>adds newer parameters and states to an existing controller without losing your clips</td>
+</tr>
+<tr>
+<td>Create Gear Visual Catalog</td>
+<td>the catalog of how gear looks on a character (prefab + attach point per item)</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>lists every model key the database uses with no prefab, every gear item with no look, and import problems</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Create wizards' <strong>Model</strong> field calls Make World Prefab for you when you
+drag in an FBX.</p>
+<p><strong>Ability animations</strong> (giving Strike, Fireball or any skill its own
+animation) are set up in the Animator plus one field in Content Studio
+(Skills &gt; AnimationParameter). The full walkthrough, with the exact
+transition settings and a troubleshooting table, is Part 5 of
+<code>CHARACTER_ANIMATION_README.md</code> (Hub &gt; Guides &gt; Animation).</p>
+<hr>
+<h2 id="8-checks">8. Checks<a class="anchor" href="#8-checks" title="Permanent link">#</a></h2>
+<p><strong>Tools &gt; Axiom &gt; Validation &gt; Run All Checks</strong> runs every check and shows a report:
+PASS, FAIL (with the reason), or SKIP (needs Play Mode, or must not be in
+Play Mode). The individual checks are listed under <strong>Tools &gt; Axiom &gt; Validation</strong> by
+area (UI, Housing, Furniture, Maps, Shops, Gameplay).</p>
+<p>Run them before committing UI or housing work. A new check is picked up
+automatically (section 12).</p>
+<hr>
+<h2 id="9-full-menu-reference">9. Full menu reference<a class="anchor" href="#9-full-menu-reference" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Menu</th>
+<th>Shortcut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Home</strong></td>
+<td>Ctrl+Alt+H</td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Content Studio</strong></td>
+<td>Ctrl+Alt+E</td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Dev Tools</strong></td>
+<td>Shift+Alt+D</td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Server Control</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Create &gt;</strong> Item… · NPC… · World Object… · Loot Table… · Dungeon…</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Content &gt;</strong> Currency Shops</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Characters &amp; Gear &gt;</strong> Characters and Races · Gear Workshop · Gear Visuals (Database) · Import Outfit Pack… · Animation &gt; (Create / Upgrade Animator Controller) · Check and Export Gear Visuals · Run Gear Binding Checks</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt;</strong> Make World Prefab From Selected Model · Select World Prefab Catalog · Asset Audit · Python &gt; (Pack Terrain Mask Maps · Open Scripts Folder)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; World &gt; Maps &gt;</strong> Bake Loaded Scene Map · Export Scene Map Points · Rebuild Terrain Atlas…</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; World &gt; Navigation &gt;</strong> Show NavMesh Overlay</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; World &gt; Housing &gt;</strong> Create Zone Outline · Export Loaded Zone Outlines · Setup &gt; (Install Starter Prefab Entries · Install Property Placard · Prepare Starter Model Materials · Prepare Visual Material)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; World &gt; Furniture &gt;</strong> Build and Install Starter Furniture · Give Starter Kits (Play Mode)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Server Exports &gt;</strong> Movement Collision &gt; (Export · Export (Full Rebuild) · Verify Incremental Export) · NPC Collision &gt; (Select Profiles Asset · Show NPC Bodies In Scene · Export) · Validate Netcode Build</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; UI &gt;</strong> Reference UI Preview · Preview Auction and Community · Imported DDS Icons · Lua &gt; (Pack Scripts · Open Designer Folder)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Validation &gt;</strong> Run All Checks · UI &gt; · Housing &gt; · Furniture &gt; · Maps &gt; · Shops &gt; · Gameplay &gt; (each check)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Project Setup and Health</strong> · <strong>Build and Release</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Help &gt;</strong> Handbook · How To &gt; · Troubleshooting · Reference &gt; · Find a Tool…</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Tools &gt; Axiom &gt; Settings…</strong> (opens Dev Tools &gt; Settings)</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Components you add to objects are under <strong>Add Component &gt; Tools &gt; Axiom &gt; World</strong>
+(Floating Origin, World Streamer, Zone Tracker).</p>
+<p>Shortcuts can be changed in <strong>Edit &gt; Shortcuts…</strong> (search "Axiom").</p>
+<h3 id="where-the-files-are">Where the files are<a class="anchor" href="#where-the-files-are" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>Assets/AxiomMMOKit/Editor/
+  Core/            shared settings, paths, database status, styles
+  Hub/             the Hub
+  Create/          the Create wizards (+ ContentSession, the shared engine)
+  ContentStudio/   Content Studio (data layer, schema, UI, validation)
+  DevTools/        Dev Tools window and its tabs
+  AssetPipeline/   prefab maker, animator builder, catalogs, audit, UI art import
+  World/           heightmap export, marker inspectors
+  Maps/            in-game map baking
+  Housing/  Furniture/  Shops/  UI/   area tools
+  Checks/          every check + the runner
+&lt;server&gt;/docs/              the guides (this one included), built into &lt;server&gt;/Axiom-Docs
+</code></pre></div>
+
+<hr>
+<h2 id="10-recipes">10. Recipes<a class="anchor" href="#10-recipes" title="Permanent link">#</a></h2>
+<h3 id="a-new-monster-with-its-own-drops-placed-in-the-world">A new monster with its own drops, placed in the world<a class="anchor" href="#a-new-monster-with-its-own-drops-placed-in-the-world" title="Permanent link">#</a></h3>
+<ol>
+<li>Hub &gt; Create &gt; <strong>NPC</strong>. Copy <em>Orc</em> (or anything close).</li>
+<li>Rename it, set level, health, damage. Drag its FBX onto <strong>Model</strong>.</li>
+<li><strong>Loot:</strong> <em>Make a loot table for this NPC</em>, add two or three drops.</li>
+<li>Fly the Scene view to where it should live; <strong>Add a spawner where the
+   Scene view is looking</strong>. Repeat for more.</li>
+<li><strong>Check</strong>, then <strong>Create</strong>. Restart the World server. Log in and go
+   there.</li>
+</ol>
+<h3 id="a-new-ore-vein-that-gives-a-new-material">A new ore vein that gives a new material<a class="anchor" href="#a-new-ore-vein-that-gives-a-new-material" title="Permanent link">#</a></h3>
+<ol>
+<li>Hub &gt; Create &gt; <strong>Item</strong>: "Mithril Ore", category material, no gear stats.
+   Create.</li>
+<li>Hub &gt; Create &gt; <strong>World Object</strong>: copy <em>Iron</em>. Rename to "Mithril Vein",
+   drag in its model.</li>
+<li>On the <em>Full</em> phase's action, under <strong>Gives</strong>, change the item to
+   Mithril Ore. Adjust the respawn timer on <em>Depleted</em>.</li>
+<li>Create. Then Dev Tools &gt; <strong>Doodads</strong>: pick Mithril Vein, Place, click
+   around the mountain, <strong>Save to database</strong>. Restart the server.</li>
+</ol>
+<h3 id="a-weapon-sold-by-a-vendor">A weapon sold by a vendor<a class="anchor" href="#a-weapon-sold-by-a-vendor" title="Permanent link">#</a></h3>
+<ol>
+<li>Hub &gt; Create &gt; <strong>Item</strong>: name, icon, category weapon, rarity, required
+   level. <strong>Gear stats</strong>: add the row and fill in damage and stats.</li>
+<li><strong>Sold by</strong>: add the vendor's shop with a buy price. <strong>How it looks</strong>:
+   drag in the weapon prefab, attach to main hand.</li>
+<li>Create (leave <em>Update game data</em> ticked). Restart the server.</li>
+</ol>
+<h3 id="change-something-that-already-exists">Change something that already exists<a class="anchor" href="#change-something-that-already-exists" title="Permanent link">#</a></h3>
+<p>Content Studio (Ctrl+Alt+E) &gt; Ctrl+K &gt; type its name &gt; edit &gt; Ctrl+S.
+Restart the server.</p>
+<h3 id="bring-a-teammates-content-in">Bring a teammate's content in<a class="anchor" href="#bring-a-teammates-content-in" title="Permanent link">#</a></h3>
+<p>Pull from git. Restart the World server; it applies the new patches. If
+items were added, Hub &gt; Tools &gt; <strong>Update Game Data</strong>.</p>
+<hr>
+<h2 id="11-troubleshooting">11. Troubleshooting<a class="anchor" href="#11-troubleshooting" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The world database isn't open"</td>
+<td>Tools &gt; Axiom &gt; Settings…: set the world database. The file must exist</td>
+</tr>
+<tr>
+<td>Create says the database is locked</td>
+<td>the server is writing to it. Wait a few seconds or stop the server, then Create again. Nothing was written</td>
+</tr>
+<tr>
+<td>My change isn't in game</td>
+<td>restart the World server. Check Tools &gt; Axiom &gt; Settings… points at the <strong>bin/</strong> database the server runs. For items, Update Game Data</td>
+</tr>
+<tr>
+<td>Hub: "patches not applied"</td>
+<td>the database you're pointed at is behind. Restart the server (it applies them), or pick the database the server runs in Settings</td>
+</tr>
+<tr>
+<td>An NPC or object is invisible</td>
+<td>its model key has no prefab: Hub &gt; Status &gt; model keys, or Art &amp; Assets &gt; Asset Audit. Make a world prefab with that key</td>
+</tr>
+<tr>
+<td>New item has no name or icon</td>
+<td>Update Game Data (Hub &gt; Tools). Check the client item database path in Settings</td>
+</tr>
+<tr>
+<td>"Id clash with Content Studio"</td>
+<td>Content Studio has unsaved new rows with the same ids. Commit or discard them there, then Create again</td>
+</tr>
+<tr>
+<td>Doodads tab says spawns will be <strong>removed</strong> that I didn't delete</td>
+<td>markers for those spawns are missing from an open scene (deleted, or moved to an unloaded scene). Press <strong>Load into scene</strong> to bring them back, or Clear markers</td>
+</tr>
+<tr>
+<td>A wizard field is missing</td>
+<td>that column doesn't exist in your database yet: the server patch that adds it hasn't been applied. Restart the server once, then reopen the wizard</td>
+</tr>
+<tr>
+<td>Something is wrong after a commit</td>
+<td>stop the server; copy the newest file from <code>Library/Axiom/WorldDbBackups/</code> over <code>worldserver.db</code>; delete the patch it wrote</td>
+</tr>
+<tr>
+<td>A Dev Tools tab shows an error box</td>
+<td>press <em>Copy full exception</em> and send it to a programmer; other tabs still work</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="12-for-programmers">12. For programmers<a class="anchor" href="#12-for-programmers" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>One editor assembly.</strong> Everything in <code>Assets/AxiomMMOKit/Editor</code> compiles into
+  <code>Assembly-CSharp-Editor</code>; there are no editor asmdefs. New suite code
+  goes in namespace <code>Axiom.EditorTools.*</code> (never a namespace segment called
+  <code>Editor</code>, which clashes with <code>UnityEditor.Editor</code>). Some older tools still
+  use <code>Axiom.Client.Editor.*</code>.</li>
+<li><strong>Menus.</strong> Take every path and priority from <code>AxiomMenu</code>
+  (Core/AxiomMenu.cs) so the menu stays grouped, and add <code>[AxiomTool]</code>.</li>
+<li><strong>Paths and status.</strong> <code>AxiomEditor.WorldDbPath</code>, <code>PatchDir</code>,
+  <code>FindDoc</code>/<code>OpenDoc</code>; <code>WorldDbStatus.Get()</code> (cached) and
+  <code>WorldDbStatus.IsLocked(path)</code>.</li>
+<li><strong>A new Create wizard.</strong> Subclass <code>CreateWizard</code> (Create/). Give it
+  <code>Id</code>, <code>Title</code>, <code>Blurb</code>, <code>RootTable</code>, <code>DetailColumns</code>; override
+  <code>BuildExtras</code> for sections (helpers: <code>ChildRows</code>, <code>ModelPicker</code>,
+  <code>PlaceButton</code>, <code>AddField</code>, <code>Section</code>, <code>Note</code>), <code>OnStarted</code> to fix up a
+  copy, <code>AfterCommit</code> for follow-ups. It is found automatically and
+  appears in the Create window; add a Hub tile and a menu item in
+  <code>AxiomCreateWindow</code> if you want them. All reads and writes go through
+  <code>ContentSession</code> (<code>S</code>), which is schema-tolerant: a missing table or
+  column is skipped, not an exception.</li>
+<li><strong>A new Dev Tools tab.</strong> Implement <code>IDevToolsTab</code> with a parameterless
+  constructor. Found automatically. <code>DevToolsWindow.OpenTab("name")</code>
+  opens it from anywhere.</li>
+<li><strong>A new check.</strong> A static, parameterless method with
+  <code>[MenuItem("Axiom/Checks/&lt;Area&gt;: &lt;Name&gt;")]</code> that <strong>throws</strong> on failure.
+  Throw a message containing "Play Mode" if it can't run in the current
+  mode, and the runner reports SKIP.</li>
+<li><strong>Writing content from code.</strong> Never write SQL by hand: build a
+  <code>Changeset</code> through a <code>WorkingSet</code> (<code>RecordOps.NewRow</code>, <code>Insert</code>,
+  <code>SetRow</code>, <code>Delete</code>) and call <code>CommitService.Commit</code>, which writes the
+  database transaction, the numbered patch and the backup together.</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="client-EDITOR_SETTINGS.html"><span>Previous</span>Editor Settings</a>
+<a class="next" href="client-EDITOR_TOOLS_REFERENCE.html"><span>Next</span>Axiom Editor Tools Reference</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#contents">Contents</a>
+</li>
+<li><a href="#1-first-time-setup">1. First-time setup</a>
+</li>
+<li><a href="#2-how-content-gets-into-the-game">2. How content gets into the game</a>
+<ul>
+<li><a href="#if-the-database-is-locked">If the database is locked</a>
+</li>
+<li><a href="#backups">Backups</a>
+</li>
+</ul>
+</li>
+<li><a href="#3-the-hub">3. The Hub</a>
+<ul>
+<li><a href="#status">Status</a>
+</li>
+<li><a href="#create">Create</a>
+</li>
+<li><a href="#tools">Tools</a>
+</li>
+<li><a href="#settings">Settings</a>
+</li>
+<li><a href="#guides">Guides</a>
+</li>
+</ul>
+</li>
+<li><a href="#4-create-wizards">4. Create wizards</a>
+<ul>
+<li><a href="#how-every-wizard-works">How every wizard works</a>
+</li>
+<li><a href="#item">Item</a>
+</li>
+<li><a href="#npc">NPC</a>
+</li>
+<li><a href="#world-object">World Object</a>
+</li>
+<li><a href="#loot-table">Loot Table</a>
+</li>
+<li><a href="#dungeon">Dungeon</a>
+</li>
+</ul>
+</li>
+<li><a href="#5-content-studio">5. Content Studio</a>
+</li>
+<li><a href="#6-dev-tools">6. Dev Tools</a>
+<ul>
+<li><a href="#doodads-tab-step-by-step">Doodads tab, step by step</a>
+</li>
+</ul>
+</li>
+<li><a href="#7-asset-pipeline">7. Asset Pipeline</a>
+</li>
+<li><a href="#8-checks">8. Checks</a>
+</li>
+<li><a href="#9-full-menu-reference">9. Full menu reference</a>
+<ul>
+<li><a href="#where-the-files-are">Where the files are</a>
+</li>
+</ul>
+</li>
+<li><a href="#10-recipes">10. Recipes</a>
+<ul>
+<li><a href="#a-new-monster-with-its-own-drops-placed-in-the-world">A new monster with its own drops, placed in the world</a>
+</li>
+<li><a href="#a-new-ore-vein-that-gives-a-new-material">A new ore vein that gives a new material</a>
+</li>
+<li><a href="#a-weapon-sold-by-a-vendor">A weapon sold by a vendor</a>
+</li>
+<li><a href="#change-something-that-already-exists">Change something that already exists</a>
+</li>
+<li><a href="#bring-a-teammates-content-in">Bring a teammate&#x27;s content in</a>
+</li>
+</ul>
+</li>
+<li><a href="#11-troubleshooting">11. Troubleshooting</a>
+</li>
+<li><a href="#12-for-programmers">12. For programmers</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

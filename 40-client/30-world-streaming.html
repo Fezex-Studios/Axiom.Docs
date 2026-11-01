@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World Streaming, Floating Origin &amp; Zones · Axiom Docs</title>
+<meta name="description" content="How the client builds a seamless world - the persistent main_world scene, 512 m tile scenes streamed around the player, the ground gate, HLOD proxies for the horizon, the floating origin that keeps precision near the player, the zone tracker and the server-sent WorldSettings.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="10-overview.html">Client Overview</a></li>
+<li><a href="20-networking.html">Client Networking</a></li>
+<li><a href="30-world-streaming.html" class="active" aria-current="page">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Unity Client</div>
+
+<h1 id="world-streaming-floating-origin--zones">World Streaming, Floating Origin &amp; Zones<a class="anchor" href="#world-streaming-floating-origin--zones" title="Permanent link">#</a></h1>
+<p>Code: <code>Assets/AxiomMMOKit/Axiom.Client/Scripts/World/Streaming</code> and <code>Scripts/World/Zones</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WorldStreamer</code></td>
+<td>Loads and unloads <code>tile_X_Z</code> scenes around the local player. The ground gate (<code>IsAreaReady</code>).</td>
+</tr>
+<tr>
+<td><code>TileProxyStreamer</code> + <code>TileProxyManifest</code></td>
+<td>HLOD: a cheap baked proxy for every tile out to <code>farRadius</code>.</td>
+</tr>
+<tr>
+<td><code>FloatingOrigin</code></td>
+<td>Moves the whole world back towards (0,0,0) when the player gets far from it.</td>
+</tr>
+<tr>
+<td><code>WorldOrigin</code></td>
+<td>The <strong>one</strong> conversion between world space (network) and local space (Unity transforms).</td>
+</tr>
+<tr>
+<td><code>WorldSettings</code></td>
+<td>The shard's layout sent by the server in <code>W2CEnterWorld</code> (tick rate, interest radii, tile size, zone map hash).</td>
+</tr>
+<tr>
+<td><code>ZoneTracker</code> + <code>ZoneBannerUI</code></td>
+<td>Which zone the player is in (from the local <code>zones.aczmap</code>) and the banner.</td>
+</tr>
+<tr>
+<td><code>WorldObjectPrefabRegistry</code></td>
+<td>Maps a model key (<code>Character_Human_Male</code>, <code>Orc_Grunt</code>, <code>Tree_Oak</code>...) to a prefab, from <code>Resources/World/WorldObjectPrefabs</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="the-scenes">The scenes<a class="anchor" href="#the-scenes" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>main_world                persistent: camera, lights, sky, registries, UI, every object spawned from packets
+tile_-1_1  (axiom_wilds)  additive, one per 512 m tile, authored at real world coordinates
+tile_-2_1  (zone_test1)
+tile_32_32 (the_warrens)  dungeons live in a far-away block of tiles (32 × 512 = 16 384 m)
+tile_33_32 (the_sunken_crypt)
+</code></pre></div>
+
+<p>Tile scenes live in <code>Assets/AxiomMMOKit/Axiom.Client/World/Tiles/&lt;area&gt;/tile_X_Z.unity</code> and <strong>must be in Build Settings</strong> (the streamer asks <code>Application.CanStreamedLevelBeLoaded</code>). A tile without a scene is simply empty - open sea or unbuilt land - and nothing waits for it. They are created by <strong>Dev Tools ▸ World Tiles</strong> (<a href="../50-tools/50-world-tools.html">World tools</a>).</p>
+<p>Objects spawned from packets (players, NPCs, doodads, corpses) go into <code>main_world</code>, never into a tile, so they survive the tile under them unloading.</p>
+<h2 id="worldstreamer">WorldStreamer<a class="anchor" href="#worldstreamer" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>loadRadius</code></td>
+<td>1</td>
+<td>tiles around the player's tile to keep loaded (1 = the 3×3)</td>
+</tr>
+<tr>
+<td><code>unloadRadius</code></td>
+<td>2</td>
+<td>unload only beyond this (hysteresis, so walking along a border doesn't thrash)</td>
+</tr>
+<tr>
+<td><code>maxConcurrentOperations</code></td>
+<td>2</td>
+<td>loads/unloads in flight, issued nearest first</td>
+</tr>
+<tr>
+<td><code>refreshInterval</code></td>
+<td>0.2 s</td>
+<td></td>
+</tr>
+<tr>
+<td><code>prefetchDistance</code></td>
+<td>192 m</td>
+<td>near an edge, also load the 3×3 of the tile you're heading into (≈10 s of lead on a horse)</td>
+</tr>
+<tr>
+<td><code>smoothStreamingWhilePlaying</code></td>
+<td>on</td>
+<td><code>backgroundLoadingPriority</code> Low (2 ms/frame) while playing, High (50 ms) behind a loading screen</td>
+</tr>
+</tbody>
+</table></div>
+<p>What it follows: the local player once spawned; with <strong>no connection</strong> it follows the main camera, so you can fly around a world scene in the editor without a server.</p>
+<p><strong>The ground gate.</strong> <code>IsAreaReady(worldPos)</code> is true when every existing tile in the 3×3 around a point is loaded. <code>LocalCharacterMotor</code> won't simulate until it is, so a player spawning or being teleported onto an unloaded tile doesn't fall through terrain that isn't there yet. With no tile scenes anywhere (a legacy single-scene world), it's always true.</p>
+<p><strong>Events</strong>: <code>TileLoaded(coord, scene)</code>, <code>TileUnloaded(coord)</code>. A tile that finishes loading after the origin has shifted has its roots moved into local space in <code>sceneLoaded</code>, <strong>before any <code>Start</code></strong> runs.</p>
+<p>If the server says its tiles are a different size than this build's <code>WorldGrid.TileSize</code>, <code>WorldSettings.TileSizeMatches</code> is false and streaming is <strong>disabled</strong> with a loud error: rebuild <code>Axiom.Movement.dll</code> into the client.</p>
+<h2 id="hlod-proxies-the-horizon">HLOD proxies (the horizon)<a class="anchor" href="#hlod-proxies-the-horizon" title="Permanent link">#</a></h2>
+<p>Beyond the loaded 3×3, <code>TileProxyStreamer</code> shows each tile's <strong>proxy</strong>: a low-poly terrain with a baked top-down texture plus the big static props merged into one mesh (about two draw calls, no shadows). The proxy is hidden the moment the real tile has loaded and shown again only once it has finished unloading, so there's never a hole.</p>
+<ul>
+<li><code>farRadius</code> 5 tiles (≈2.5 km), <code>loadsPerRefresh</code> 4, <code>raiseCameraFarClip</code> on.</li>
+<li>Proxies load from <code>Resources/World/Proxies/tile_X_Z_proxy</code> listed in <code>Resources/World/TileProxies.asset</code> (<code>TileProxyManifest</code>: X, Z, Prefab, MinY/MaxY, Triangles, SourceHash, BakedAt).</li>
+<li>None show inside a dungeon (<code>InstanceState.InDungeon</code>). No manifest = it does nothing.</li>
+<li>Baked with <strong>Dev Tools ▸ HLOD Proxies</strong>; <code>SourceHash</code> lets it re-bake only changed tiles. See <a href="../80-notes/client-HLOD.html">HLOD (note)</a>.</li>
+</ul>
+<h2 id="floating-origin">Floating origin<a class="anchor" href="#floating-origin" title="Permanent link">#</a></h2>
+<p>A float has 24 bits of mantissa: at 8 km from the origin the smallest step is ~1 mm, at 32 km ~4 mm, and skinned meshes, shadows and the camera visibly jitter. So the client moves the <strong>world</strong> instead of the player.</p>
+<p><strong>Two spaces</strong>:</p>
+<ul>
+<li><strong>World space</strong>: what the server, the database, every packet and heightmap use.</li>
+<li><strong>Local space</strong>: what Unity transforms hold = world − <code>WorldOrigin.Offset</code> (only X and Z; Y never shifts).</li>
+</ul>
+<p><strong>The rule</strong>: every position <strong>arriving</strong> from the network goes through <code>WorldOrigin.ToLocal</code> before touching a transform; every position <strong>leaving</strong> for the network comes from <code>WorldOrigin.ToWorld</code>. Distances, raycasts, the camera and UI projection work in local space unchanged.</p>
+<div class="hl"><pre><span></span><code><span class="c1">// in a handler - convert INSIDE the queued lambda, not when the packet arrives:</span>
+<span class="n">WorldLoader</span><span class="p">.</span><span class="n">RunWhenReady</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorldOrigin</span><span class="p">.</span><span class="n">ToLocal</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Z</span><span class="p">);</span>
+<span class="w">    </span><span class="n">marker</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// leaving for the server - the GM panel&#39;s &quot;My Position&quot; + teleport (Staff/GmPanelWindow.cs):</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorldOrigin</span><span class="p">.</span><span class="n">ToWorld</span><span class="p">(</span><span class="n">me</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">position</span><span class="p">);</span>
+<span class="n">GmPanelState</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">GmCommand</span><span class="p">.</span><span class="n">GotoPosition</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">y</span><span class="p">;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">z</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<p><strong>A shift</strong> (<code>FloatingOrigin</code>, threshold 6144 m = 12 tiles by default), in one frame between Updates:</p>
+<ol>
+<li>new origin = the player's position snapped to a tile boundary (whole tiles, so shifts are exact in float);</li>
+<li>every root object in every loaded scene (and <code>DontDestroyOnLoad</code>) moves by the delta;</li>
+<li>world-space particles and trails are shifted;</li>
+<li><code>Physics.SyncTransforms</code>;</li>
+<li><code>WorldOrigin.Shifted(delta)</code> is raised: anything caching a local position <strong>outside a transform</strong> (interpolation buffers, the motor's state, the camera's last target, damage numbers) adds the delta.</li>
+</ol>
+<p>If you write a component that stores a <code>Vector3</code> position in a field, subscribe:</p>
+<div class="hl"><pre><span></span><code><span class="k">void</span><span class="w"> </span><span class="nf">OnEnable</span><span class="p">()</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">WorldOrigin</span><span class="p">.</span><span class="n">Shifted</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnShift</span><span class="p">;</span>
+<span class="k">void</span><span class="w"> </span><span class="nf">OnDisable</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">WorldOrigin</span><span class="p">.</span><span class="n">Shifted</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">OnShift</span><span class="p">;</span>
+<span class="k">void</span><span class="w"> </span><span class="nf">OnShift</span><span class="p">(</span><span class="n">Vector3</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">_cachedTarget</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Known limits: static batching (turn it off), baked light probes/APV don't move. Use the <strong>Shift Origin To Player Now</strong> context menu or lower the threshold to test. <code>WorldOrigin.Reset()</code> runs on connect and disconnect.</p>
+<h2 id="worldsettings">WorldSettings<a class="anchor" href="#worldsettings" title="Permanent link">#</a></h2>
+<p>Sent by the server in <code>W2CEnterWorld.World</code>, with defaults for older servers:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Default</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TickRate</code></td>
+<td>20</td>
+<td><code>RemotePlaybackClock</code> (interpolation)</td>
+</tr>
+<tr>
+<td><code>ShardName</code></td>
+<td>""</td>
+<td>UI, logs</td>
+</tr>
+<tr>
+<td><code>InterestSpawnRadius</code> / <code>DespawnRadius</code></td>
+<td>75 / 85</td>
+<td>gizmos, UI</td>
+</tr>
+<tr>
+<td><code>TileSize</code></td>
+<td>512</td>
+<td><code>TileSizeMatches</code> check</td>
+</tr>
+<tr>
+<td><code>ZoneMapHash</code></td>
+<td>""</td>
+<td><code>ZoneTracker</code> stale-map check</td>
+</tr>
+</tbody>
+</table></div>
+<p>(<code>NetworkCells</code> is an editor gizmo that draws the two interest circles; its "keep in sync" constants predate WorldSettings.)</p>
+<h2 id="zones-on-the-client">Zones on the client<a class="anchor" href="#zones-on-the-client" title="Permanent link">#</a></h2>
+<p><code>ZoneTracker</code> loads <code>StreamingAssets/World/zones.aczmap</code> - the <strong>same file</strong> the server uses, written by <strong>Dev Tools ▸ Zones</strong> - and checks the player's zone every 0.25 s locally (crossing a border costs no traffic). It raises <code>ZoneChanged(previous, current)</code>; <code>ZoneBannerUI</code> shows the name and subtitle. If its hash differs from <code>WorldSettings.ServerZoneMapHash</code> it logs an error (the client build shipped a stale map). The server tracks zones independently for anything with rules (PvP, quests): see <a href="../30-server/260-zones-terrain.html">Zones &amp; terrain</a>.</p>
+<h2 id="editor-markers-in-the-world-scenes">Editor markers in the world scenes<a class="anchor" href="#editor-markers-in-the-world-scenes" title="Permanent link">#</a></h2>
+<p><code>NpcSpawnerMarker</code>, <code>DoodadSpawnMarker</code> and <code>PlayerSpawnPointMarker</code> are editor-time stand-ins for rows in <code>NpcSpawners</code>, <code>DoodadSpawns</code> and <code>SpawnPointTables</code>. Each carries the row's <code>DbId</code> and the last synced values so the World Map / Dev Tools windows can show what changed and write it to <code>worldserver.db</code>. They are never sent to players. See <a href="../50-tools/50-world-tools.html">World tools</a>.</p>
+<nav class="pager">
+<a class="prev" href="20-networking.html"><span>Previous</span>Client Networking</a>
+<a class="next" href="40-characters.html"><span>Next</span>Characters, Gear &amp; Animation</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-scenes">The scenes</a>
+</li>
+<li><a href="#worldstreamer">WorldStreamer</a>
+</li>
+<li><a href="#hlod-proxies-the-horizon">HLOD proxies (the horizon)</a>
+</li>
+<li><a href="#floating-origin">Floating origin</a>
+</li>
+<li><a href="#worldsettings">WorldSettings</a>
+</li>
+<li><a href="#zones-on-the-client">Zones on the client</a>
+</li>
+<li><a href="#editor-markers-in-the-world-scenes">Editor markers in the world scenes</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

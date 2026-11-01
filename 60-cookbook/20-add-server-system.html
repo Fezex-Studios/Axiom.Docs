@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a Server System · Axiom Docs</title>
+<meta name="description" content="A complete worked example - playtime rewards - showing the shape of every World server system - a service class, two-phase start-up, tuning numbers in CombatRules, a Scheduler timer on the tick thread, iterating players, giving items, system chat messages, a new Lua event, and where each line goes.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="20-add-server-system.html" class="active" aria-current="page">Add a Server System</a></li>
+<li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="100-add-ability.html">Add an Ability</a></li>
+<li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Cookbook (How-To)</div>
+
+<h1 id="add-a-server-system">Add a Server System<a class="anchor" href="#add-a-server-system" title="Permanent link">#</a></h1>
+<p>We'll build <strong>playtime rewards</strong>: every 30 minutes a player is online, they get an item. Nothing new on the wire, no new table - this page is about the <strong>shape</strong> of a World server system. Add a packet with <a href="10-add-packet.html">Add a packet</a>, saved per-character state with <a href="40-add-persisted-field.html">Add a persisted field</a>, new content tables with <a href="30-add-worlddb-table.html">Add a worldserver.db table</a>.</p>
+<p>Before you start, read <a href="../10-architecture/30-world-server.html">The World server</a>: start-up order, two-phase initialisation, the tick, the threading rule, the Scheduler.</p>
+<h2 id="1-tuning-numbers-combatrules">1. Tuning numbers: CombatRules<a class="anchor" href="#1-tuning-numbers-combatrules" title="Permanent link">#</a></h2>
+<p>Numbers designers will want to change go in <code>GameRules.Defaults</code> (<code>Core/Rules/GameRules.cs</code>) and can be overridden by a <code>CombatRules</code> row (Key, Value) in worldserver.db - "change a row, restart", never a rebuild.</p>
+<div class="hl"><pre><span></span><code><span class="w">            </span><span class="c1">// ── Playtime rewards ──</span>
+<span class="w">            </span><span class="na">[&quot;PlaytimeRewardMinutes&quot;]</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w">     </span><span class="c1">// minutes online per reward (0 = off)</span>
+<span class="w">            </span><span class="na">[&quot;PlaytimeRewardItemId&quot;]</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// the item given (0 = off)</span>
+<span class="w">            </span><span class="na">[&quot;PlaytimeRewardCount&quot;]</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</code></pre></div>
+
+<p>A <code>CombatRules</code> row with an unknown key is ignored with a warning, so typos show up in the log.</p>
+<h2 id="2-the-service">2. The service<a class="anchor" href="#2-the-service" title="Permanent link">#</a></h2>
+<p><code>src/Servers/Axiom.Server.World/Core/Playtime/PlaytimeRewardService.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Network.Shared</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Lua</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Managers</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Packets.W2CSenders</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Rules</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Services</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">NLog</span><span class="p">;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Axiom.Server.World.Core.Playtime</span><span class="p">;</span>
+
+<span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// Every PlaytimeRewardMinutes a character is online, give PlaytimeRewardItemId.</span>
+<span class="c1">/// Online time is counted in memory per character and resets on logout</span>
+<span class="c1">/// (persist it with a component if it should carry over). Tick thread only.</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">PlaytimeRewardService</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IInitializable</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogManager</span><span class="p">.</span><span class="n">GetCurrentClassLogger</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">GameRules</span><span class="w"> </span><span class="n">_rules</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">PlayerManager</span><span class="w"> </span><span class="n">_players</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">ItemManager</span><span class="w"> </span><span class="n">_items</span><span class="p">;</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Scheduler</span><span class="w"> </span><span class="n">_scheduler</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">long</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_minutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span><span class="w">     </span><span class="c1">// characterId -&gt; minutes online this login</span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_seen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Phase 1: only what the service needs to EXIST.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">PlaytimeRewardService</span><span class="p">(</span><span class="n">GameRules</span><span class="w"> </span><span class="n">rules</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_rules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rules</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Phase 2: find the managers it talks to. No loading, no network here.</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">ServiceContainer</span><span class="w"> </span><span class="n">services</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_players</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">PlayerManager</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_items</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">ItemManager</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">_scheduler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">Scheduler</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">/// Called once after game data has loaded (step 3b/8 of start-up).</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">_rules</span><span class="p">[</span><span class="s">&quot;PlaytimeRewardMinutes&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">_rules</span><span class="p">[</span><span class="s">&quot;PlaytimeRewardItemId&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">every</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Logger</span><span class="p">.</span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;[Playtime] Off (PlaytimeRewardMinutes / PlaytimeRewardItemId).&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_items</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">itemId</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Logger</span><span class="p">.</span><span class="n">Warn</span><span class="p">(</span><span class="s">&quot;[Playtime] Item {Id} doesn&#39;t exist - rewards off.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">itemId</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">_scheduler</span><span class="p">.</span><span class="n">Every</span><span class="p">(</span><span class="mi">60</span><span class="n">_000</span><span class="p">,</span><span class="w"> </span><span class="n">Sweep</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;playtime rewards&quot;</span><span class="p">);</span><span class="w">     </span><span class="c1">// runs on the tick thread</span>
+<span class="w">        </span><span class="n">Logger</span><span class="p">.</span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;[Playtime] Item {Id} every {Minutes} min online.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">itemId</span><span class="p">,</span><span class="w"> </span><span class="n">every</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Sweep</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">every</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">_rules</span><span class="p">[</span><span class="s">&quot;PlaytimeRewardMinutes&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">itemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">_rules</span><span class="p">[</span><span class="s">&quot;PlaytimeRewardItemId&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">_rules</span><span class="p">[</span><span class="s">&quot;PlaytimeRewardCount&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="n">_seen</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">_players</span><span class="p">.</span><span class="n">GetAllConnectedPeers</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_players</span><span class="p">.</span><span class="n">TryGetSession</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">session</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">NetworkId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w">   </span><span class="c1">// not in the world yet</span>
+<span class="w">            </span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">CharacterId</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_seen</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">minutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_minutes</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">_minutes</span><span class="p">[</span><span class="n">id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minutes</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">minutes</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_players</span><span class="p">.</span><span class="n">TryAddItem</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">itemId</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">))</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">Tell</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Thanks for playing! {minutes} minutes online - you received a reward.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="n">_players</span><span class="p">.</span><span class="n">FireGameEvent</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">PlayerEvent</span><span class="p">.</span><span class="n">OnPlaytimeReward</span><span class="p">,</span><span class="w"> </span><span class="n">itemId</span><span class="p">,</span><span class="w"> </span><span class="n">minutes</span><span class="p">);</span><span class="w">   </span><span class="c1">// Lua, quests, achievements hear it</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">_minutes</span><span class="p">[</span><span class="n">id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minutes</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">          </span><span class="c1">// try again next minute</span>
+<span class="w">                </span><span class="n">Tell</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Your bag is full - make room to receive your playtime reward.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Forget characters that logged out (their count starts again next login).</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">gone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">_minutes</span><span class="p">.</span><span class="n">Keys</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_seen</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="n">gone</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">gone</span><span class="p">)</span><span class="w"> </span><span class="n">_minutes</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Tell</span><span class="p">(</span><span class="n">LiteNetLib</span><span class="p">.</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">W2CChatMessagePacketSender</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">_players</span><span class="p">.</span><span class="n">Replication</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;System&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">ChatChannel</span><span class="p">.</span><span class="n">System</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Why it looks like this:</p>
+<ul>
+<li><strong><code>IInitializable</code></strong> - constructors take only what the object needs to exist; managers find each other in <code>Initialize</code> after everything is registered, so construction order doesn't matter.</li>
+<li><strong>Scheduler, not <code>Task.Delay</code>/<code>Timer</code></strong> - <code>Every</code> callbacks run on the <strong>tick thread</strong>, so they can touch sessions, inventories and the interest grid. A .NET timer would run on a thread-pool thread and corrupt state.</li>
+<li><strong>Look up, don't keep</strong> - the sweep re-resolves sessions every time; never keep <code>NetPeer</code> or <code>PlayerSession</code> references across ticks in a long-lived collection (keep ids).</li>
+<li><strong>Give items through <code>PlayerManager.TryAddItem</code></strong> - it stacks, sends the bag update, fires <code>OnItemObtained</code> and marks the inventory dirty for saving. For gold use <code>TryAddGold</code>. For anything valuable, consider an immediate save (<code>_players.SaveInBackground(session)</code>).</li>
+</ul>
+<h2 id="3-wire-it-into-start-up-coreworldservercs">3. Wire it into start-up (<code>Core/WorldServer.cs</code>)<a class="anchor" href="#3-wire-it-into-start-up-coreworldservercs" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">Axiom</span><span class="p">.</span><span class="n">Server</span><span class="p">.</span><span class="n">World</span><span class="p">.</span><span class="n">Core</span><span class="p">.</span><span class="n">Playtime</span><span class="p">.</span><span class="n">PlaytimeRewardService</span><span class="w"> </span><span class="n">_playtime</span><span class="p">;</span><span class="w">   </span><span class="c1">// with the other fields</span>
+
+<span class="w">    </span><span class="c1">// step 2, &quot;construct every manager&quot; (after _rules exists):</span>
+<span class="w">    </span><span class="n">_playtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Axiom</span><span class="p">.</span><span class="n">Server</span><span class="p">.</span><span class="n">World</span><span class="p">.</span><span class="n">Core</span><span class="p">.</span><span class="n">Playtime</span><span class="p">.</span><span class="n">PlaytimeRewardService</span><span class="p">(</span><span class="n">_rules</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// BuildServiceContainer / RegisterServices:</span>
+<span class="w">    </span><span class="n">services</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">_playtime</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// after game data is loaded (step 3b), e.g. next to the other Scheduler.Every calls:</span>
+<span class="w">    </span><span class="n">_playtime</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+</code></pre></div>
+
+<p><code>Register</code> makes it available to packet handlers' constructors and other managers' <code>Initialize</code>. A handler that asks for an unregistered type fails <strong>at boot</strong> with a clear message.</p>
+<h2 id="4-a-lua-event">4. A Lua event<a class="anchor" href="#4-a-lua-event" title="Permanent link">#</a></h2>
+<p>Add to <code>Core/Lua/PlayerEvent.cs</code> (append; ids are stable for Lua - never reuse one):</p>
+<div class="hl"><pre><span></span><code><span class="w">        </span><span class="n">OnPlaytimeReward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w"> </span><span class="c1">// (player, itemTemplateId, minutesOnline) - a playtime reward was given (PlaytimeRewardService)</span>
+</code></pre></div>
+
+<p>The <code>Events</code> table and <code>Server:On("OnPlaytimeReward", fn)</code> pick it up automatically (they're built from the enum). Also add it to the editor annotations in <code>LuaSDK/Server/library/axiom_server.lua</code> (the <code>AxiomEvent</code> alias, an <code>---@overload</code> line, the <code>Events</code> table) so scripts get autocompletion. Then in a script:</p>
+<div class="hl"><pre><span></span><code><span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnPlaytimeReward&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">itemId</span><span class="p">,</span><span class="w"> </span><span class="nv">minutes</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">minutes</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendMessage</span><span class="p">(</span><span class="s2">&quot;Two hours! Take a break and stretch.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="5-content">5. Content<a class="anchor" href="#5-content" title="Permanent link">#</a></h2>
+<p>Add a <code>CombatRules</code> row in <strong>Content Studio ▸ Combat ▸ Combat Rules</strong>: <code>PlaytimeRewardItemId = 90301</code> (any real item), commit, restart the World server. The log shows <code>[Playtime] Item 90301 every 30 min online.</code></p>
+<h2 id="6-test-it-quickly">6. Test it quickly<a class="anchor" href="#6-test-it-quickly" title="Permanent link">#</a></h2>
+<p>Set <code>PlaytimeRewardMinutes = 1</code> in your local database, log in, wait a minute. For automated tests, the service has no dependency on networking beyond <code>PlayerManager</code>; put the counting logic in a pure function if you want to unit test it.</p>
+<h2 id="patterns-to-copy-for-bigger-systems">Patterns to copy for bigger systems<a class="anchor" href="#patterns-to-copy-for-bigger-systems" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Look at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content in its own tables, loaded at boot</td>
+<td><code>ShopManager.LoadFromDatabase</code>, <code>TradeCatalog</code></td>
+</tr>
+<tr>
+<td>A per-player component that's saved</td>
+<td><code>DungeonEntryComponent</code> (<a href="40-add-persisted-field.html">persisted field</a>)</td>
+</tr>
+<tr>
+<td>Shard-wide state that survives restarts</td>
+<td><code>TerritoryService</code>, <code>WorldEventService</code> (Persistence <code>shard_state</code>, re-scheduled on boot)</td>
+</tr>
+<tr>
+<td>Calls to Persistence/Auction</td>
+<td><code>MailManager</code>, <code>TradeDemandStore</code> + <code>EnqueueAction</code> (<a href="../10-architecture/30-world-server.html#the-threading-rule">threading rule</a>)</td>
+</tr>
+<tr>
+<td>A timed action the player can cancel by moving</td>
+<td><code>InteractionSkillService</code>, <code>CraftingManager</code></td>
+</tr>
+<tr>
+<td>Broadcast to everyone who can see someone</td>
+<td><code>PlayerAppearance.Broadcast</code> (<code>InterestManager.GetKnownBy</code> + <code>ReplicationManager.Broadcast</code>)</td>
+</tr>
+<tr>
+<td>A GM command for it</td>
+<td><a href="80-add-gm-command.html">Add a GM command</a></td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="10-add-packet.html"><span>Previous</span>Add a Packet (end to end)</a>
+<a class="next" href="30-add-worlddb-table.html"><span>Next</span>Add a worldserver.db Table</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#1-tuning-numbers-combatrules">1. Tuning numbers: CombatRules</a>
+</li>
+<li><a href="#2-the-service">2. The service</a>
+</li>
+<li><a href="#3-wire-it-into-start-up-coreworldservercs">3. Wire it into start-up (Core/WorldServer.cs)</a>
+</li>
+<li><a href="#4-a-lua-event">4. A Lua event</a>
+</li>
+<li><a href="#5-content">5. Content</a>
+</li>
+<li><a href="#6-test-it-quickly">6. Test it quickly</a>
+</li>
+<li><a href="#patterns-to-copy-for-bigger-systems">Patterns to copy for bigger systems</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,3356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared Enums · Axiom Docs</title>
+<meta name="description" content="All 70 shared enumerations with their values and meanings, from Axiom.Network.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="packets.html">Packet Reference</a></li>
+<li><a href="services.html">Service Endpoints</a></li>
+<li><a href="worlddb.html">worldserver.db Reference</a></li>
+<li><a href="mysql.html">MySQL Reference</a></li>
+<li><a href="enums.html" class="active" aria-current="page">Shared Enums</a></li>
+<li><a href="config.html">Configuration Reference</a></li>
+<li><a href="lua-api.html">Lua API Reference</a></li>
+<li><a href="gm-commands.html">GM Command Reference</a></li>
+<li><a href="editor.html">Editor Menu Reference</a></li>
+<li><a href="codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Reference (generated)</div>
+<div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
+<h1 id="shared-enums">Shared Enums<a class="anchor" href="#shared-enums" title="Permanent link">#</a></h1>
+<p>Enumerations defined in <code>Axiom.Network</code> and compiled into both the servers and the client. Their numbers travel on the wire and are stored in databases, so <strong>never renumber a value</strong>; add new ones at the end. Opcodes have their own page: <a href="packets.html">Packet reference</a>.</p>
+<p>70 enums.</p>
+<h2 id="abilitytargetrule">AbilityTargetRule<a class="anchor" href="#abilitytargetrule" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code></p>
+<p>Who an ability is aimed at (Skills.TargetRule).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enemy</code></td>
+<td><code>0</code></td>
+<td>An attackable NPC, or a player where PvP is allowed.</td>
+</tr>
+<tr>
+<td><code>Self</code></td>
+<td><code>1</code></td>
+<td>Yourself only.</td>
+</tr>
+<tr>
+<td><code>Friendly</code></td>
+<td><code>2</code></td>
+<td>A player (yourself if your target isn't one) - heals and buffs.</td>
+</tr>
+<tr>
+<td><code>AreaEnemies</code></td>
+<td><code>3</code></td>
+<td>Every enemy within Radius of you, nearest first, up to MaxTargets.</td>
+</tr>
+<tr>
+<td><code>AreaAllies</code></td>
+<td><code>4</code></td>
+<td>Every player within Radius of you (you included), nearest first.</td>
+</tr>
+<tr>
+<td><code>Doodad</code></td>
+<td><code>5</code></td>
+<td>A world doodad with a server-configured reaction to this learned combat skill.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="appearancekind">AppearanceKind<a class="anchor" href="#appearancekind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterAppearanceData.cs</code></p>
+<p>What an appearance option sets (AppearanceOptions.Kind).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SkinColor</code></td>
+<td><code>1</code></td>
+<td>Value: a colour "#RRGGBB", applied to the skin's material colour.</td>
+</tr>
+<tr>
+<td><code>HairStyle</code></td>
+<td><code>2</code></td>
+<td>Value: a Resources key of a hair prefab ("Hair/Long01"). Skinned hair binds to the body; rigid hair goes on the Head socket.</td>
+</tr>
+<tr>
+<td><code>HairColor</code></td>
+<td><code>3</code></td>
+<td>Value: a colour "#RRGGBB", applied to the hair style's material colour.</td>
+</tr>
+<tr>
+<td><code>EyeColor</code></td>
+<td><code>4</code></td>
+<td>Value: a colour "#RRGGBB", applied to meshes named <em>eye</em>.</td>
+</tr>
+<tr>
+<td><code>FacePreset</code></td>
+<td><code>5</code></td>
+<td>Value: blend shapes and weights 0-100, "Smile=40;JawWide=20".</td>
+</tr>
+<tr>
+<td><code>Morph</code></td>
+<td><code>6</code></td>
+<td>A slider on the creation screen. Value: the blend shape it drives ("NoseLength").</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="armorkind">ArmorKind<a class="anchor" href="#armorkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterClasses.cs</code> · flags (values combine)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="auctionbidstatus">AuctionBidStatus<a class="anchor" href="#auctionbidstatus" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MarketDtos.cs</code> · <code>byte</code></p>
+<p>Protocol 36: where a character's bid on one listing stands (Bid History).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Leading</code></td>
+<td><code>0</code></td>
+<td>The listing is live and you are the highest bidder.</td>
+</tr>
+<tr>
+<td><code>Outbid</code></td>
+<td><code>1</code></td>
+<td>Someone bid more; your coins came back by mail.</td>
+</tr>
+<tr>
+<td><code>Won</code></td>
+<td><code>2</code></td>
+<td>The listing ended with your bid on top: the item is in your mailbox.</td>
+</tr>
+<tr>
+<td><code>Refunded</code></td>
+<td><code>3</code></td>
+<td>Someone used Buy Now (or the listing was withdrawn); your coins came back by mail.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="auctionbrowsemode">AuctionBrowseMode<a class="anchor" href="#auctionbrowsemode" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/C2W/C2WMarketPackets.cs</code> · <code>byte</code></p>
+<p>Protocol 36: what a C2WAuctionBrowse asks for.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="bindtype">BindType<a class="anchor" href="#bindtype" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>Who binds an item to a character, and when.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BindOnPickup</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BindOnEquip</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="castresult">CastResult<a class="anchor" href="#castresult" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>How a cast ended (W2CCastEnd).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Completed</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Interrupted</code></td>
+<td><code>1</code></td>
+<td>Moved, stunned, silenced, or an Interrupt effect.</td>
+</tr>
+<tr>
+<td><code>Cancelled</code></td>
+<td><code>2</code></td>
+<td>The caster cancelled it (Escape).</td>
+</tr>
+<tr>
+<td><code>Failed</code></td>
+<td><code>3</code></td>
+<td>It couldn't land when it finished: target died, out of range or sight.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="characterclass">CharacterClass<a class="anchor" href="#characterclass" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterClasses.cs</code></p>
+<p>Persistent identifiers: never renumber existing classes or equipment kinds.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="charactergender">CharacterGender<a class="anchor" href="#charactergender" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterRaces.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="characterrace">CharacterRace<a class="anchor" href="#characterrace" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterRaces.cs</code></p>
+<p>The ids Axiom ships with. Races and body types are DATA now (world database tables Races and BodyTypes, protocol 42); these only name the rows the first migration seeds. Ids are stored on characters (characters.race_id / gender_id): never renumber one.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="charactersaveresult">CharacterSaveResult<a class="anchor" href="#charactersaveresult" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WCharacterSaveFullResponse.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Saved</code></td>
+<td><code>0</code></td>
+<td>Written. CurrentSeq == the request's SaveSeq.</td>
+</tr>
+<tr>
+<td><code>Stale</code></td>
+<td><code>1</code></td>
+<td>Not written: the database already holds this SaveSeq or a newer one. If CurrentSeq == the request's SaveSeq, this exact request was applied earlier (a retry after a lost answer) - i.e. success.</td>
+</tr>
+<tr>
+<td><code>NotFound</code></td>
+<td><code>2</code></td>
+<td>No such character for that account. Nothing written.</td>
+</tr>
+<tr>
+<td><code>MailGone</code></td>
+<td><code>3</code></td>
+<td>ClaimMailId no longer exists. Nothing written.</td>
+</tr>
+<tr>
+<td><code>Invalid</code></td>
+<td><code>4</code></td>
+<td>The request itself is malformed (negative gold, a slot listed twice...). It will never succeed, so it is not retried. Always a world server bug - the persistence log says what was wrong.</td>
+</tr>
+<tr>
+<td><code>StorageConflict</code></td>
+<td><code>5</code></td>
+<td>Phase 8.2: the Storage write's coffer changed (or is gone) since it was read. Nothing written.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="chatchannel">ChatChannel<a class="anchor" href="#chatchannel" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/ChatChannel.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Local</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Shout</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Whisper</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NpcYell</code></td>
+<td><code>3</code></td>
+<td>Phase 5: an NPC shouting (a boss changing phase). Server-only - nobody can send on it.</td>
+</tr>
+<tr>
+<td><code>Party</code></td>
+<td><code>4</code></td>
+<td>Your party (in a raid: your own group of up to 5).</td>
+</tr>
+<tr>
+<td><code>Raid</code></td>
+<td><code>5</code></td>
+<td>Everyone in your raid.</td>
+</tr>
+<tr>
+<td><code>Guild</code></td>
+<td><code>6</code></td>
+<td>Your guild, wherever they are on this shard.</td>
+</tr>
+<tr>
+<td><code>Zone</code></td>
+<td><code>7</code></td>
+<td>Everyone in the same zone as you (ZoneService; the whole shard when no zone map is loaded).</td>
+</tr>
+<tr>
+<td><code>System</code></td>
+<td><code>8</code></td>
+<td>Server notices ("Kara joined the party"). Server-only - nobody can send on it.</td>
+</tr>
+<tr>
+<td><code>Trade</code></td>
+<td><code>9</code></td>
+<td>Player trading chat in the same zone and world layer; /tr or /tradechat.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="classmask">ClassMask<a class="anchor" href="#classmask" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterClasses.cs</code> · flags (values combine)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="communityaction">CommunityAction<a class="anchor" href="#communityaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/CommunityContracts.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="crowdcontrol">CrowdControl<a class="anchor" href="#crowdcontrol" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · flags (values combine)</p>
+<p>What a status stops you doing (roadmap Phase 4 crowd control). StatusTemplates.Crowd, a bitmask. A status with none of these is an ordinary buff or debuff.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Stun</code></td>
+<td><code>1</code></td>
+<td>No moving, turning, casting or attacking. Interrupts a cast.</td>
+</tr>
+<tr>
+<td><code>Root</code></td>
+<td><code>2</code></td>
+<td>No moving. Casting and turning are fine.</td>
+</tr>
+<tr>
+<td><code>Silence</code></td>
+<td><code>4</code></td>
+<td>No spells (Skills.IsSpell). Interrupts a spell being cast.</td>
+</tr>
+<tr>
+<td><code>BreakOnDamage</code></td>
+<td><code>8</code></td>
+<td>Ends early the moment the target takes damage (sleep, fear).</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="damageschool">DamageSchool<a class="anchor" href="#damageschool" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>What kind of damage. Physical is reduced by armor, the rest by that school's resistance.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Physical</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Fire</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Frost</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Nature</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Arcane</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Holy</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Shadow</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="equipslot">EquipSlot<a class="anchor" href="#equipslot" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code></p>
+<p>Where a piece of gear goes. 0 = not equippable.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Head</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Chest</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Legs</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Hands</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Feet</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MainHand</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>OffHand</code></td>
+<td><code>7</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Neck</code></td>
+<td><code>8</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ring</code></td>
+<td><code>9</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Trinket</code></td>
+<td><code>10</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Backpack</code></td>
+<td><code>11</code></td>
+<td>Phase 9: a trade pack on your back. Not gear - nothing equips into it from the bag. A pack goes here when it's crafted or picked up, and "taking it off" sets it down on the ground (TradePackService). Saved with the rest of the equipment.</td>
+</tr>
+<tr>
+<td><code>Shoulders</code></td>
+<td><code>13</code></td>
+<td>Protocol 42 (25 Oct 2026): classic MMO-style extra slots. All drawn on the character.</td>
+</tr>
+<tr>
+<td><code>Cloak</code></td>
+<td><code>14</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Belt</code></td>
+<td><code>15</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Wrists</code></td>
+<td><code>16</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Costume</code></td>
+<td><code>17</code></td>
+<td>Worn over armour: while it's on, the armour it covers isn't drawn (stats still count). EquipSlots.CoveredByCostume.</td>
+</tr>
+<tr>
+<td><code>Undergarments</code></td>
+<td><code>18</code></td>
+<td>Underwear as an item. Its gear visual usually hides the body's own Underwear part.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="factionstance">FactionStance<a class="anchor" href="#factionstance" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<p>How one faction stands with another. Same faction = Friendly unless a row says otherwise.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Hostile</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Neutral</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Friendly</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="fishingstate">FishingState<a class="anchor" href="#fishingstate" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CHousingPackets.cs</code> · <code>byte</code></p>
+<p>What a fishing attempt is doing (FishingState).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Waiting</code></td>
+<td><code>1</code></td>
+<td>cast - wait for a bite (TimeMs is unknown, 0)</td>
+</tr>
+<tr>
+<td><code>Bite</code></td>
+<td><code>2</code></td>
+<td>a bite! Press F on the spot within TimeMs</td>
+</tr>
+<tr>
+<td><code>Caught</code></td>
+<td><code>3</code></td>
+<td>ItemId x Count is in your bag</td>
+</tr>
+<tr>
+<td><code>Escaped</code></td>
+<td><code>4</code></td>
+<td>Message says why (too early, too late, moved)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="furnitureaction">FurnitureAction<a class="anchor" href="#furnitureaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Furniture/FurnitureRules.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="gmcommand">GmCommand<a class="anchor" href="#gmcommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/Staff/GmPackets.cs</code> · <code>byte</code></p>
+<p>Protocol 36: the GM panel's commands (C2WGmCommand 177). The server re-checks the sender's CURRENT account access level with the Auth service for every one (StaffAccessService) and writes each to the staff audit log. See GmRules for who may use what.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PlayerList</code></td>
+<td><code>1</code></td>
+<td>Information (answered with W2CGmState)</td>
+</tr>
+<tr>
+<td><code>PlayerInfo</code></td>
+<td><code>2</code></td>
+<td>the target's details</td>
+</tr>
+<tr>
+<td><code>ServerStats</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AuditLog</code></td>
+<td><code>4</code></td>
+<td>the latest staff actions on this world</td>
+</tr>
+<tr>
+<td><code>AccountLookup</code></td>
+<td><code>5</code></td>
+<td>TargetName = account user name OR character name (the account it belongs to)</td>
+</tr>
+<tr>
+<td><code>SelfState</code></td>
+<td><code>6</code></td>
+<td>your GM toggles</td>
+</tr>
+<tr>
+<td><code>GotoPlayer</code></td>
+<td><code>10</code></td>
+<td>Movement</td>
+</tr>
+<tr>
+<td><code>Summon</code></td>
+<td><code>11</code></td>
+<td>the target -&gt; you</td>
+</tr>
+<tr>
+<td><code>GotoPosition</code></td>
+<td><code>12</code></td>
+<td>you -&gt; X, Y, Z (world metres)</td>
+</tr>
+<tr>
+<td><code>Unstuck</code></td>
+<td><code>13</code></td>
+<td>the target -&gt; the nearest respawn point</td>
+</tr>
+<tr>
+<td><code>Kick</code></td>
+<td><code>20</code></td>
+<td>Moderation</td>
+</tr>
+<tr>
+<td><code>Mute</code></td>
+<td><code>21</code></td>
+<td>A = minutes (1-10080), Text = reason</td>
+</tr>
+<tr>
+<td><code>Unmute</code></td>
+<td><code>22</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ban</code></td>
+<td><code>23</code></td>
+<td>A = minutes (0 = permanent), Text = reason; TargetName or the target's account</td>
+</tr>
+<tr>
+<td><code>Unban</code></td>
+<td><code>24</code></td>
+<td>TargetName = account user name or character name</td>
+</tr>
+<tr>
+<td><code>Freeze</code></td>
+<td><code>25</code></td>
+<td>the target can't move until Unfreeze</td>
+</tr>
+<tr>
+<td><code>Unfreeze</code></td>
+<td><code>26</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Whisper</code></td>
+<td><code>27</code></td>
+<td>Text: a private message from "GM" on the target's screen</td>
+</tr>
+<tr>
+<td><code>Invisible</code></td>
+<td><code>30</code></td>
+<td>Your GM toggles (A = 1 on, 0 off)</td>
+</tr>
+<tr>
+<td><code>God</code></td>
+<td><code>31</code></td>
+<td>you take no damage</td>
+</tr>
+<tr>
+<td><code>Speed</code></td>
+<td><code>32</code></td>
+<td>A = extra movement speed, percent (0-400)</td>
+</tr>
+<tr>
+<td><code>Heal</code></td>
+<td><code>40</code></td>
+<td>The target (online player, or the NPC you have targeted)</td>
+</tr>
+<tr>
+<td><code>Revive</code></td>
+<td><code>41</code></td>
+<td>a dead player stands up where they fell</td>
+</tr>
+<tr>
+<td><code>Kill</code></td>
+<td><code>42</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SetLevel</code></td>
+<td><code>43</code></td>
+<td>A = level</td>
+</tr>
+<tr>
+<td><code>GiveItem</code></td>
+<td><code>44</code></td>
+<td>A = item template id, B = quantity</td>
+</tr>
+<tr>
+<td><code>GiveCoins</code></td>
+<td><code>45</code></td>
+<td>A = copper (negative takes)</td>
+</tr>
+<tr>
+<td><code>Mail</code></td>
+<td><code>46</code></td>
+<td>TargetName = character (online or not); Text = subject; A = item id, B = quantity, C = copper</td>
+</tr>
+<tr>
+<td><code>ClearCooldowns</code></td>
+<td><code>47</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>GrantPatron</code></td>
+<td><code>48</code></td>
+<td>A = days of Patron to add to the target's account (negative takes days away)</td>
+</tr>
+<tr>
+<td><code>GiveLoyalty</code></td>
+<td><code>49</code></td>
+<td>A = Loyalty Tokens to give the target's account (negative takes)</td>
+</tr>
+<tr>
+<td><code>Announce</code></td>
+<td><code>50</code></td>
+<td>World</td>
+</tr>
+<tr>
+<td><code>SpawnNpc</code></td>
+<td><code>51</code></td>
+<td>A = NPC template id, B = how many (1-20), at your feet</td>
+</tr>
+<tr>
+<td><code>DespawnNpc</code></td>
+<td><code>52</code></td>
+<td>the targeted NPC (one you spawned, or any)</td>
+</tr>
+<tr>
+<td><code>StartWorldEvent</code></td>
+<td><code>53</code></td>
+<td>A = world event id</td>
+</tr>
+<tr>
+<td><code>ResetNpc</code></td>
+<td><code>54</code></td>
+<td>the targeted NPC: full health, threat cleared</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="gmstatekind">GmStateKind<a class="anchor" href="#gmstatekind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/Staff/GmPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildaction">GuildAction<a class="anchor" href="#guildaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/SocialTypes.cs</code> · <code>byte</code></p>
+<p>What a guild command does (C2WGuildCommand.Action).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Create</code></td>
+<td><code>1</code></td>
+<td>Name = the guild's name</td>
+</tr>
+<tr>
+<td><code>Invite</code></td>
+<td><code>2</code></td>
+<td>Name = a player online</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Decline</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Leave</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Kick</code></td>
+<td><code>6</code></td>
+<td>CharacterId, or Name of a member</td>
+</tr>
+<tr>
+<td><code>SetRank</code></td>
+<td><code>7</code></td>
+<td>CharacterId (or Name), Rank - promote or demote</td>
+</tr>
+<tr>
+<td><code>TransferLeader</code></td>
+<td><code>8</code></td>
+<td>CharacterId (or Name) becomes the leader (leader only)</td>
+</tr>
+<tr>
+<td><code>SetMotd</code></td>
+<td><code>9</code></td>
+<td>Text</td>
+</tr>
+<tr>
+<td><code>EditRank</code></td>
+<td><code>10</code></td>
+<td>Rank, Name = its new name, Permissions (leader only)</td>
+</tr>
+<tr>
+<td><code>Disband</code></td>
+<td><code>11</code></td>
+<td>leader only</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildinterest">GuildInterest<a class="anchor" href="#guildinterest" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildRecruitPackets.cs</code> · flags (values combine)</p>
+<p>What a guild is about (flags; a post can tick several).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Dungeons</code></td>
+<td><code>1</code></td>
+<td>PvE: dungeons, world bosses, rifts</td>
+</tr>
+<tr>
+<td><code>Pvp</code></td>
+<td><code>2</code></td>
+<td>PvP, open world fights</td>
+</tr>
+<tr>
+<td><code>Exploration</code></td>
+<td><code>4</code></td>
+<td>exploring, treasure, the sea</td>
+</tr>
+<tr>
+<td><code>Trade</code></td>
+<td><code>8</code></td>
+<td>trade packs and commerce</td>
+</tr>
+<tr>
+<td><code>Siege</code></td>
+<td><code>16</code></td>
+<td>territories and sieges</td>
+</tr>
+<tr>
+<td><code>Crafting</code></td>
+<td><code>32</code></td>
+<td>crafting, farming, gathering</td>
+</tr>
+<tr>
+<td><code>All</code></td>
+<td><code>63</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildop">GuildOp<a class="anchor" href="#guildop" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildDto.cs</code> · <code>byte</code></p>
+<p>What /guilds/command does.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Create</code></td>
+<td><code>1</code></td>
+<td>CharacterId founds guild Name (with Ranks)</td>
+</tr>
+<tr>
+<td><code>AddMember</code></td>
+<td><code>2</code></td>
+<td>CharacterId joins GuildId at Rank (at most MaxMembers)</td>
+</tr>
+<tr>
+<td><code>RemoveMember</code></td>
+<td><code>3</code></td>
+<td>CharacterId leaves GuildId (never the leader while others remain)</td>
+</tr>
+<tr>
+<td><code>SetRank</code></td>
+<td><code>4</code></td>
+<td>CharacterId's Rank in GuildId (1-4; rank 0 only through TransferLeader)</td>
+</tr>
+<tr>
+<td><code>TransferLeader</code></td>
+<td><code>5</code></td>
+<td>OtherCharacterId becomes leader, CharacterId (the old one) becomes rank 1</td>
+</tr>
+<tr>
+<td><code>SetMotd</code></td>
+<td><code>6</code></td>
+<td>Text</td>
+</tr>
+<tr>
+<td><code>EditRank</code></td>
+<td><code>7</code></td>
+<td>Rank's Name and Permissions</td>
+</tr>
+<tr>
+<td><code>Disband</code></td>
+<td><code>8</code></td>
+<td>the whole guild</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildpermission">GuildPermission<a class="anchor" href="#guildpermission" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/SocialTypes.cs</code> · flags (values combine)</p>
+<p>What a guild rank may do. The leader (rank 0) may do everything.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Invite</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Kick</code></td>
+<td><code>2</code></td>
+<td>members of a lower rank</td>
+</tr>
+<tr>
+<td><code>SetRanks</code></td>
+<td><code>4</code></td>
+<td>promote/demote, only below your own rank</td>
+</tr>
+<tr>
+<td><code>EditMotd</code></td>
+<td><code>8</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>UseShop</code></td>
+<td><code>16</code></td>
+<td>Buy from the guild shop with the guild's Prestige (Docs/GUILD_SHOP.md).</td>
+</tr>
+<tr>
+<td><code>ActivateBuffs</code></td>
+<td><code>32</code></td>
+<td>Spend Prestige on a temporary buff for every member.</td>
+</tr>
+<tr>
+<td><code>All</code></td>
+<td><code>63</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildrecruitaction">GuildRecruitAction<a class="anchor" href="#guildrecruitaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildRecruitPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Search</code></td>
+<td><code>0</code></td>
+<td>The posts matching the filters (also: open the tab, change page).</td>
+</tr>
+<tr>
+<td><code>Post</code></td>
+<td><code>1</code></td>
+<td>Recruiters: put up or update your guild's post.</td>
+</tr>
+<tr>
+<td><code>RemovePost</code></td>
+<td><code>2</code></td>
+<td>Recruiters: take the post down (pending applications are declined).</td>
+</tr>
+<tr>
+<td><code>Apply</code></td>
+<td><code>3</code></td>
+<td>Apply to GuildId with Text as your message.</td>
+</tr>
+<tr>
+<td><code>CancelApplication</code></td>
+<td><code>4</code></td>
+<td>Withdraw your application to GuildId.</td>
+</tr>
+<tr>
+<td><code>Applicants</code></td>
+<td><code>5</code></td>
+<td>Recruiters: who applied to your guild.</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td><code>6</code></td>
+<td>Recruiters: take CharacterId into the guild.</td>
+</tr>
+<tr>
+<td><code>Decline</code></td>
+<td><code>7</code></td>
+<td>Recruiters: turn CharacterId down.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildrecruitsort">GuildRecruitSort<a class="anchor" href="#guildrecruitsort" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildRecruitPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Newest</code></td>
+<td><code>0</code></td>
+<td>most recently posted first</td>
+</tr>
+<tr>
+<td><code>Level</code></td>
+<td><code>1</code></td>
+<td>highest guild level first</td>
+</tr>
+<tr>
+<td><code>Members</code></td>
+<td><code>2</code></td>
+<td>most members first</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildresult">GuildResult<a class="anchor" href="#guildresult" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildDto.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ok</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NotFound</code></td>
+<td><code>1</code></td>
+<td>no such guild (or character not in one, for /guilds/of-character)</td>
+</tr>
+<tr>
+<td><code>NameTaken</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Invalid</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AlreadyInGuild</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Full</code></td>
+<td><code>5</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NotMember</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="guildshopaction">GuildShopAction<a class="anchor" href="#guildshopaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildShopPackets.cs</code> · <code>byte</code></p>
+<p>── Guild shop and temporary guild buffs (Docs/GUILD_SHOP.md) ───────── Prestige is the guild's money. Ranks with the UseShop permission buy items with it (limited per member and per guild each week); ranks with ActivateBuffs switch on a timed buff for every member. Everything spent is logged for the leader. Opcodes 189-190, no protocol bump.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Refresh</code></td>
+<td><code>0</code></td>
+<td>Send me the shop (opening the tab).</td>
+</tr>
+<tr>
+<td><code>Buy</code></td>
+<td><code>1</code></td>
+<td>Buy GuildShopItems row Id once.</td>
+</tr>
+<tr>
+<td><code>Activate</code></td>
+<td><code>2</code></td>
+<td>Switch on GuildBuffOffers row Id for every member.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="hitoutcome">HitOutcome<a class="anchor" href="#hitoutcome" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>How an attack landed (roadmap 3.4). Shown by the client's combat text.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Hit</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Crit</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Glance</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Miss</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="hotbarkind">HotbarKind<a class="anchor" href="#hotbarkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>What a hotbar slot holds.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Empty</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ability</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Item</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="houseaccess">HouseAccess<a class="anchor" href="#houseaccess" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/DoodadDto.cs</code></p>
+<p>Phase 8.2: HouseAccess values.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Private</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Guild</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Public</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="housemenuaction">HouseMenuAction<a class="anchor" href="#housemenuaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Housing/HouseMenuPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="housepartkind">HousePartKind<a class="anchor" href="#housepartkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Housing/HouseAttachmentLayout.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="housingplacementaction">HousingPlacementAction<a class="anchor" href="#housingplacementaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Housing/HousingPlacementPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="housingplacementreply">HousingPlacementReply<a class="anchor" href="#housingplacementreply" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Housing/HousingPlacementPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="interactionactiontype">InteractionActionType<a class="anchor" href="#interactionactiontype" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/InteractionActionData.cs</code></p>
+<p>What pressing a key does to an interactable. Every interaction in the game goes through this: harvesting, looting, talking, trading. The type is fixed code (each needs server logic); everything a player SEES - label, icon, cursor, whether it's available - is data from the server's InteractableActions table.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Talk</code></td>
+<td><code>1</code></td>
+<td>NPC greeting + Lua OnInteract</td>
+</tr>
+<tr>
+<td><code>Trade</code></td>
+<td><code>2</code></td>
+<td>open the NPC's shop</td>
+</tr>
+<tr>
+<td><code>Harvest</code></td>
+<td><code>3</code></td>
+<td>gather from a doodad (label says Mine / Chop / Gather...)</td>
+</tr>
+<tr>
+<td><code>LootAll</code></td>
+<td><code>4</code></td>
+<td>corpse: take everything that fits</td>
+</tr>
+<tr>
+<td><code>OpenLoot</code></td>
+<td><code>5</code></td>
+<td>corpse: open the loot window</td>
+</tr>
+<tr>
+<td><code>Climb</code></td>
+<td><code>6</code></td>
+<td>doodad: a ladder, vines, a rope - climb to the top (Phase 11; the ClimbRoutes table says where)</td>
+</tr>
+<tr>
+<td><code>Quests</code></td>
+<td><code>7</code></td>
+<td>open this NPC's quest list (offers, hand-ins)</td>
+</tr>
+<tr>
+<td><code>Mailbox</code></td>
+<td><code>8</code></td>
+<td>open the mailbox at this NPC</td>
+</tr>
+<tr>
+<td><code>Auction</code></td>
+<td><code>9</code></td>
+<td>open the auction house at this NPC</td>
+</tr>
+<tr>
+<td><code>CashShop</code></td>
+<td><code>10</code></td>
+<td>open the cash shop</td>
+</tr>
+<tr>
+<td><code>Use</code></td>
+<td><code>11</code></td>
+<td>doodad: a generic use - open a chest, pull a lever, drink from a well</td>
+</tr>
+<tr>
+<td><code>PickUp</code></td>
+<td><code>12</code></td>
+<td>doodad: take a placed object back (owner)</td>
+</tr>
+<tr>
+<td><code>Craft</code></td>
+<td><code>13</code></td>
+<td>doodad: a crafting station - open the crafting window (Phase 7)</td>
+</tr>
+<tr>
+<td><code>Enter</code></td>
+<td><code>14</code></td>
+<td>doodad: a dungeon portal - enter (Phase 8)</td>
+</tr>
+<tr>
+<td><code>Leave</code></td>
+<td><code>15</code></td>
+<td>doodad: a dungeon's way out - leave (Phase 8)</td>
+</tr>
+<tr>
+<td><code>Fish</code></td>
+<td><code>16</code></td>
+<td>doodad: a fishing spot - cast, and press again on a bite to reel in (Phase 8.4)</td>
+</tr>
+<tr>
+<td><code>Deliver</code></td>
+<td><code>17</code></td>
+<td>doodad: a trade outlet - sell the trade pack on your back (Phase 9)</td>
+</tr>
+<tr>
+<td><code>Drive</code></td>
+<td><code>18</code></td>
+<td>doodad: a parked vehicle - get in and drive (Phase 9)</td>
+</tr>
+<tr>
+<td><code>Siege</code></td>
+<td><code>19</code></td>
+<td>doodad: batter a castle gate or wall, or claim a Lord's Seal - in a siege (Phase 10)</td>
+</tr>
+<tr>
+<td><code>Repair</code></td>
+<td><code>20</code></td>
+<td>doodad: repair a castle gate or wall (Phase 10)</td>
+</tr>
+<tr>
+<td><code>Warehouse</code></td>
+<td><code>22</code></td>
+<td>NPC: open this character's personal warehouse</td>
+</tr>
+<tr>
+<td><code>Declare</code></td>
+<td><code>21</code></td>
+<td>doodad: declare a siege at a Siege Board (Phase 10)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="itemupgradecommand">ItemUpgradeCommand<a class="anchor" href="#itemupgradecommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/ItemUpgradePackets.cs</code> · <code>byte</code></p>
+<p>C2WItemUpgrade.Command.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Regrade</code></td>
+<td><code>1</code></td>
+<td>Regrade the item with the scroll in MaterialSlot (and the charm in CharmSlot, -1 = none).</td>
+</tr>
+<tr>
+<td><code>Socket</code></td>
+<td><code>2</code></td>
+<td>Put the gem in MaterialSlot into the item's first empty socket (SocketIndex, -1 = first empty).</td>
+</tr>
+<tr>
+<td><code>Unsocket</code></td>
+<td><code>3</code></td>
+<td>Take the gem out of SocketIndex. With an extractor in your bag (MaterialSlot, -1 = find one) the gem comes back; without, it's destroyed.</td>
+</tr>
+<tr>
+<td><code>Repair</code></td>
+<td><code>4</code></td>
+<td>At a merchant (NpcNetworkId): repair this one item.</td>
+</tr>
+<tr>
+<td><code>RepairAll</code></td>
+<td><code>5</code></td>
+<td>At a merchant (NpcNetworkId): repair everything you wear and carry.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="itemupgradekind">ItemUpgradeKind<a class="anchor" href="#itemupgradekind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/ItemUpgradePackets.cs</code> · <code>byte</code></p>
+<p>What an upgrade material does (ItemUpgradeMaterials.Kind, ItemGearData.UpgradeKind).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>RegradeScroll</code></td>
+<td><code>1</code></td>
+<td>Consumed by a regrade attempt; needed for every attempt.</td>
+</tr>
+<tr>
+<td><code>RegradeCharm</code></td>
+<td><code>2</code></td>
+<td>Optional with a scroll: better odds, and/or protects the item from a bad failure.</td>
+</tr>
+<tr>
+<td><code>GemExtractor</code></td>
+<td><code>3</code></td>
+<td>Lets a gem come out of its socket intact (otherwise removing a gem destroys it).</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="itemupgradeoutcome">ItemUpgradeOutcome<a class="anchor" href="#itemupgradeoutcome" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/ItemUpgradePackets.cs</code> · <code>byte</code></p>
+<p>W2CItemUpgradeResult.Outcome.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Refused</code></td>
+<td><code>0</code></td>
+<td>Not attempted (Message says why) - nothing was used up.</td>
+</tr>
+<tr>
+<td><code>Success</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Failed</code></td>
+<td><code>2</code></td>
+<td>Regrade failed; the item kept its grade.</td>
+</tr>
+<tr>
+<td><code>Downgraded</code></td>
+<td><code>3</code></td>
+<td>Regrade failed; the item dropped a grade.</td>
+</tr>
+<tr>
+<td><code>Destroyed</code></td>
+<td><code>4</code></td>
+<td>Regrade failed; the item was destroyed.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="lootrollchoice">LootRollChoice<a class="anchor" href="#lootrollchoice" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/LootAndSkillStepPackets.cs</code> · <code>byte</code></p>
+<p>C2WLootRollChoice.Choice (protocol 30, Docs/LOOT.md).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pass</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Greed</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Need</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="lootrule">LootRule<a class="anchor" href="#lootrule" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/SocialTypes.cs</code> · <code>byte</code></p>
+<p>Who may loot what a party kills (roadmap Phase 6).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FreeForAll</code></td>
+<td><code>0</code></td>
+<td>Anyone in the party who was near the kill.</td>
+</tr>
+<tr>
+<td><code>RoundRobin</code></td>
+<td><code>1</code></td>
+<td>Each kill belongs to the next member in turn (of those near it).</td>
+</tr>
+<tr>
+<td><code>MasterLooter</code></td>
+<td><code>2</code></td>
+<td>Everything goes to the master looter (the leader by default), who hands it out.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="missionaction">MissionAction<a class="anchor" href="#missionaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MissionPackets.cs</code> · <code>byte</code></p>
+<p>C2WMissionCommand.Action.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Refresh</code></td>
+<td><code>0</code></td>
+<td>Send me my missions for Owner (also when the window opens).</td>
+</tr>
+<tr>
+<td><code>Open</code></td>
+<td><code>1</code></td>
+<td>Open the sealed mission in Slot so it starts counting.</td>
+</tr>
+<tr>
+<td><code>OpenAll</code></td>
+<td><code>2</code></td>
+<td>Open every sealed mission of Scope.</td>
+</tr>
+<tr>
+<td><code>Change</code></td>
+<td><code>3</code></td>
+<td>Replace the mission in Slot with another. Individual: a daily attempt. Group: the leader; costs guild Prestige.</td>
+</tr>
+<tr>
+<td><code>Donate</code></td>
+<td><code>4</code></td>
+<td>Hand in the items a DonateItem mission in Slot asks for (as many as you carry, up to what's left).</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="missionkind">MissionKind<a class="anchor" href="#missionkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MissionPackets.cs</code> · <code>byte</code></p>
+<p>What a mission counts. TargetId narrows it (0 = any).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KillNpc</code></td>
+<td><code>1</code></td>
+<td>TargetId = NPC template</td>
+</tr>
+<tr>
+<td><code>CompleteQuest</code></td>
+<td><code>2</code></td>
+<td>TargetId = quest</td>
+</tr>
+<tr>
+<td><code>EarnXp</code></td>
+<td><code>3</code></td>
+<td>counts XP points</td>
+</tr>
+<tr>
+<td><code>Harvest</code></td>
+<td><code>4</code></td>
+<td>TargetId = item gathered (per item)</td>
+</tr>
+<tr>
+<td><code>Craft</code></td>
+<td><code>5</code></td>
+<td>TargetId = item crafted (per item)</td>
+</tr>
+<tr>
+<td><code>SpendLabor</code></td>
+<td><code>6</code></td>
+<td>counts labor points</td>
+</tr>
+<tr>
+<td><code>UseItem</code></td>
+<td><code>7</code></td>
+<td>TargetId = item used</td>
+</tr>
+<tr>
+<td><code>DonateItem</code></td>
+<td><code>8</code></td>
+<td>TargetId = item handed in with Donate (required)</td>
+</tr>
+<tr>
+<td><code>TradePackSold</code></td>
+<td><code>9</code></td>
+<td>TargetId = trade pack item</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="missionowner">MissionOwner<a class="anchor" href="#missionowner" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MissionPackets.cs</code> · <code>byte</code></p>
+<p>Whose missions: a guild's or a family's.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Guild</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Family</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="missionscope">MissionScope<a class="anchor" href="#missionscope" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MissionPackets.cs</code> · <code>byte</code></p>
+<p>Individual (daily, per member) or Group (weekly, shared).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Individual</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Group</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="npcrank">NpcRank<a class="anchor" href="#npcrank" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>How tough an NPC is (NpcTemplates.Rank).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Normal</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Elite</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Boss</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="organizationbuffkind">OrganizationBuffKind<a class="anchor" href="#organizationbuffkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/MissionPackets.cs</code> · <code>byte</code></p>
+<p>What a guild or family buff improves (OrganizationBuffs table). Every member gets the buffs of their guild's and their family's level; the two add up.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Experience</code></td>
+<td><code>1</code></td>
+<td>% more XP from kills and quests</td>
+</tr>
+<tr>
+<td><code>GoldLoot</code></td>
+<td><code>2</code></td>
+<td>% more gold looted from creatures</td>
+</tr>
+<tr>
+<td><code>LaborRegen</code></td>
+<td><code>3</code></td>
+<td>% faster labor regeneration</td>
+</tr>
+<tr>
+<td><code>Proficiency</code></td>
+<td><code>4</code></td>
+<td>% more proficiency from crafting and gathering</td>
+</tr>
+<tr>
+<td><code>Honor</code></td>
+<td><code>5</code></td>
+<td>% more honor from PvP kills</td>
+</tr>
+<tr>
+<td><code>TradePackGold</code></td>
+<td><code>6</code></td>
+<td>% more gold for delivering trade packs</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="partyaction">PartyAction<a class="anchor" href="#partyaction" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/SocialTypes.cs</code> · <code>byte</code></p>
+<p>What a party command does (C2WPartyCommand.Action).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Invite</code></td>
+<td><code>1</code></td>
+<td>Name, or TargetNetworkId</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td><code>2</code></td>
+<td>your pending invite</td>
+</tr>
+<tr>
+<td><code>Decline</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Leave</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Kick</code></td>
+<td><code>5</code></td>
+<td>CharacterId (leader)</td>
+</tr>
+<tr>
+<td><code>Promote</code></td>
+<td><code>6</code></td>
+<td>CharacterId becomes leader (leader)</td>
+</tr>
+<tr>
+<td><code>ConvertToRaid</code></td>
+<td><code>7</code></td>
+<td>(leader)</td>
+</tr>
+<tr>
+<td><code>SetLootRule</code></td>
+<td><code>8</code></td>
+<td>Value = LootRule, CharacterId = master looter for MasterLooter (leader)</td>
+</tr>
+<tr>
+<td><code>MoveToGroup</code></td>
+<td><code>9</code></td>
+<td>CharacterId, Value = raid group 0-9 (leader)</td>
+</tr>
+<tr>
+<td><code>SetRole</code></td>
+<td><code>10</code></td>
+<td>Value = PartyRole, your own role (anyone)</td>
+</tr>
+<tr>
+<td><code>RadiusInvite</code></td>
+<td><code>11</code></td>
+<td>Value = radius in metres: a raid invite to everyone nearby who isn't grouped (leader, or not in a party)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="partyrole">PartyRole<a class="anchor" href="#partyrole" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Social/SocialTypes.cs</code> · <code>byte</code></p>
+<p>The role a member picked in the raid window (shown on party/raid frames). Cosmetic: the server only stores it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Undecided</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Melee</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ranged</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Defender</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Healer</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="professionkind">ProfessionKind<a class="anchor" href="#professionkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Crafting/CraftingTypes.cs</code> · <code>byte</code></p>
+<p>Phase 7: what kind of profession (vocation) it is.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Gathering</code></td>
+<td><code>1</code></td>
+<td>mining, logging, herbalism, farming - raised on doodads</td>
+</tr>
+<tr>
+<td><code>Crafting</code></td>
+<td><code>2</code></td>
+<td>metalwork, carpentry, alchemy... - raised at stations</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="pvpcommand">PvpCommand<a class="anchor" href="#pvpcommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/C2W/C2WPvpPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FlagOn</code></td>
+<td><code>1</code></td>
+<td>retired 12 Oct 2026 - there's no PvP flag any more (the server says so)</td>
+</tr>
+<tr>
+<td><code>FlagOff</code></td>
+<td><code>2</code></td>
+<td>retired</td>
+</tr>
+<tr>
+<td><code>BloodlustOn</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BloodlustOff</code></td>
+<td><code>4</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DebugStartSiege</code></td>
+<td><code>20</code></td>
+<td>Debug (World:AllowDebugCommands only) - for testing sieges and justice without waiting a week.</td>
+</tr>
+<tr>
+<td><code>DebugAddCrime</code></td>
+<td><code>21</code></td>
+<td>Amount = crime points (infamy too)</td>
+</tr>
+<tr>
+<td><code>DebugSetFaction</code></td>
+<td><code>22</code></td>
+<td>TargetId = faction id</td>
+</tr>
+<tr>
+<td><code>DebugEndJail</code></td>
+<td><code>23</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DebugZoneTension</code></td>
+<td><code>24</code></td>
+<td>retired (no conflict cycle)</td>
+</tr>
+<tr>
+<td><code>DebugWorldEvent</code></td>
+<td><code>25</code></td>
+<td>Phase 11: TargetId = world event id - start it now</td>
+</tr>
+<tr>
+<td><code>DebugFestival</code></td>
+<td><code>26</code></td>
+<td>TargetId = zone id, Amount = minutes (0 = end a /festival one)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="pvpflags">PvpFlags<a class="anchor" href="#pvpflags" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code> · flags (values combine)</p>
+<p>Bits of W2CPlayerPvp.Flags / W2CSpawnPlayer.PvpFlags.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Flagged</code></td>
+<td><code>1</code></td>
+<td>Opted in to PvP (/pvp) - attackable in peaceful zones by others who did too.</td>
+</tr>
+<tr>
+<td><code>Wanted</code></td>
+<td><code>2</code></td>
+<td>Crime points over the wanted line - guards attack them.</td>
+</tr>
+<tr>
+<td><code>Bloodlust</code></td>
+<td><code>4</code></td>
+<td>Bloodlust (/bloodlust): may attack their own faction - and it's a crime.</td>
+</tr>
+<tr>
+<td><code>Jailed</code></td>
+<td><code>8</code></td>
+<td>Serving a jail sentence.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="questobjectivetype">QuestObjectiveType<a class="anchor" href="#questobjectivetype" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/QuestData.cs</code></p>
+<p>What an objective asks for. The count is always "how many".</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Kill</code></td>
+<td><code>1</code></td>
+<td>TargetId = NpcTemplates.Id</td>
+</tr>
+<tr>
+<td><code>Collect</code></td>
+<td><code>2</code></td>
+<td>TargetId = Items.item_id   (counted from the bag, taken on hand-in)</td>
+</tr>
+<tr>
+<td><code>Talk</code></td>
+<td><code>3</code></td>
+<td>TargetId = NpcTemplates.Id</td>
+</tr>
+<tr>
+<td><code>Craft</code></td>
+<td><code>4</code></td>
+<td>── Protocol 30 (Docs/QUESTS.md) ──</td>
+</tr>
+<tr>
+<td><code>UseItem</code></td>
+<td><code>5</code></td>
+<td>TargetId = Items.item_id</td>
+</tr>
+<tr>
+<td><code>UseSkill</code></td>
+<td><code>6</code></td>
+<td>TargetId = Skills.Id (Param = only on this NPC template)</td>
+</tr>
+<tr>
+<td><code>EnterArea</code></td>
+<td><code>7</code></td>
+<td>TargetId = QuestAreas.Id</td>
+</tr>
+<tr>
+<td><code>Interact</code></td>
+<td><code>8</code></td>
+<td>TargetId = DoodadTemplates.Id (any of its actions succeeding)</td>
+</tr>
+<tr>
+<td><code>KillGroup</code></td>
+<td><code>9</code></td>
+<td>TargetId = QuestMonsterGroups.Id</td>
+</tr>
+<tr>
+<td><code>KillInZone</code></td>
+<td><code>10</code></td>
+<td>TargetKey = zone key (Param = lowest NPC level that counts)</td>
+</tr>
+<tr>
+<td><code>ReachLevel</code></td>
+<td><code>11</code></td>
+<td>TargetId = level</td>
+</tr>
+<tr>
+<td><code>CompleteQuest</code></td>
+<td><code>12</code></td>
+<td>TargetId = Quests.Id</td>
+</tr>
+<tr>
+<td><code>Gather</code></td>
+<td><code>13</code></td>
+<td>TargetId = Items.item_id (counts what you harvest, not what you hold)</td>
+</tr>
+<tr>
+<td><code>ProficiencyRank</code></td>
+<td><code>14</code></td>
+<td>TargetId = profession id, RequiredCount = rank</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="queststatus">QuestStatus<a class="anchor" href="#queststatus" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/QuestData.cs</code></p>
+<p>Where a quest stands for one character.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td><code>1</code></td>
+<td>in the log, objectives not met</td>
+</tr>
+<tr>
+<td><code>Complete</code></td>
+<td><code>2</code></td>
+<td>objectives met, waiting to be handed in</td>
+</tr>
+<tr>
+<td><code>TurnedIn</code></td>
+<td><code>3</code></td>
+<td>done</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="siegecommand">SiegeCommand<a class="anchor" href="#siegecommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/SiegePackets.cs</code> · <code>byte</code></p>
+<p>C2WSiegeCommand.Command.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Open</code></td>
+<td><code>1</code></td>
+<td>Send me this territory's siege info (and open the window).</td>
+</tr>
+<tr>
+<td><code>Bid</code></td>
+<td><code>2</code></td>
+<td>Guild leader: bid Amount gold for the attacker slot (a raise pays the difference).</td>
+</tr>
+<tr>
+<td><code>Apply</code></td>
+<td><code>3</code></td>
+<td>Ask to fight on Side (your guild's side joins at once).</td>
+</tr>
+<tr>
+<td><code>Withdraw</code></td>
+<td><code>4</code></td>
+<td>Leave the roster, or take back your request.</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td><code>5</code></td>
+<td>Side leader: accept CharacterId's request.</td>
+</tr>
+<tr>
+<td><code>Decline</code></td>
+<td><code>6</code></td>
+<td>Side leader: decline CharacterId's request.</td>
+</tr>
+<tr>
+<td><code>Kick</code></td>
+<td><code>7</code></td>
+<td>Side leader: take CharacterId off the roster.</td>
+</tr>
+<tr>
+<td><code>Upgrade</code></td>
+<td><code>8</code></td>
+<td>Owner guild leader: buy the castle's next upgrade from the treasury.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="siegecyclephase">SiegeCyclePhase<a class="anchor" href="#siegecyclephase" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/SiegePackets.cs</code> · <code>byte</code></p>
+<p>Where a territory is in its siege cycle (W2CSiegeInfo.Phase).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Peace</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Bidding</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Preparation</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="siegephase">SiegePhase<a class="anchor" href="#siegephase" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Declared</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ended</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="siegeresult">SiegeResult<a class="anchor" href="#siegeresult" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AttackersWon</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DefendersHeld</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Cancelled</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="siegeside">SiegeSide<a class="anchor" href="#siegeside" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/SiegePackets.cs</code> · <code>byte</code></p>
+<p>Which side of a siege.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Attackers</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Defenders</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="statid">StatId<a class="anchor" href="#statid" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code></p>
+<p>Every number a character's stat sheet holds (roadmap 3.1). Shared by the server and the client, so W2CStats can send them as one array indexed by this enum and the character window reads the same slots. Append only - never renumber. A client with an older list sim ply ignores values past its end.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strength</code></td>
+<td><code>0</code></td>
+<td>── Primary: come from level, gear and statuses ──</td>
+</tr>
+<tr>
+<td><code>Agility</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Vitality</code></td>
+<td><code>2</code></td>
+<td>stamina: health</td>
+</tr>
+<tr>
+<td><code>Intelligence</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Spirit</code></td>
+<td><code>4</code></td>
+<td>healing power and regeneration</td>
+</tr>
+<tr>
+<td><code>MaxHealth</code></td>
+<td><code>5</code></td>
+<td>── Derived: worked out from the primaries (players), then modified ──</td>
+</tr>
+<tr>
+<td><code>MaxMana</code></td>
+<td><code>6</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AttackPower</code></td>
+<td><code>7</code></td>
+<td>adds to physical damage</td>
+</tr>
+<tr>
+<td><code>SpellPower</code></td>
+<td><code>8</code></td>
+<td>adds to magic damage</td>
+</tr>
+<tr>
+<td><code>Armor</code></td>
+<td><code>9</code></td>
+<td>reduces physical damage taken</td>
+</tr>
+<tr>
+<td><code>CritChance</code></td>
+<td><code>10</code></td>
+<td>percent</td>
+</tr>
+<tr>
+<td><code>Haste</code></td>
+<td><code>11</code></td>
+<td>percent: shortens cooldowns and NPC swing timers</td>
+</tr>
+<tr>
+<td><code>HealthRegen</code></td>
+<td><code>12</code></td>
+<td>per regen tick, out of combat</td>
+</tr>
+<tr>
+<td><code>ManaRegen</code></td>
+<td><code>13</code></td>
+<td>per regen tick</td>
+</tr>
+<tr>
+<td><code>ResistFire</code></td>
+<td><code>14</code></td>
+<td>── Resistances: reduce magic damage of one school ──</td>
+</tr>
+<tr>
+<td><code>ResistFrost</code></td>
+<td><code>15</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ResistNature</code></td>
+<td><code>16</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ResistArcane</code></td>
+<td><code>17</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ResistHoly</code></td>
+<td><code>18</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ResistShadow</code></td>
+<td><code>19</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DamageDonePct</code></td>
+<td><code>20</code></td>
+<td>── Multipliers, in percent (0 = normal, 20 = +20%, -30 = -30%) ──</td>
+</tr>
+<tr>
+<td><code>DamageTakenPct</code></td>
+<td><code>21</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>HealingDonePct</code></td>
+<td><code>22</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ThreatPct</code></td>
+<td><code>23</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MoveSpeedPct</code></td>
+<td><code>24</code></td>
+<td>── Phase 4 ──</td>
+</tr>
+<tr>
+<td><code>HealingPower</code></td>
+<td><code>25</code></td>
+<td>Separate healing scaling; existing stat identifiers remain unchanged.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td><code>26</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tradecommand">TradeCommand<a class="anchor" href="#tradecommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/C2W/C2WTradePackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Request</code></td>
+<td><code>1</code></td>
+<td>Ask TargetId (a player close by) to trade.</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td><code>2</code></td>
+<td>Answer TargetId's request.</td>
+</tr>
+<tr>
+<td><code>Decline</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Cancel</code></td>
+<td><code>4</code></td>
+<td>Close the trade window (or withdraw a request).</td>
+</tr>
+<tr>
+<td><code>AddItem</code></td>
+<td><code>5</code></td>
+<td>Offer Quantity (0 = the stack) from bag slot BagSlot, in trade slot TradeSlot (-1 = the first free).</td>
+</tr>
+<tr>
+<td><code>RemoveItem</code></td>
+<td><code>6</code></td>
+<td>Take trade slot TradeSlot out of your offer.</td>
+</tr>
+<tr>
+<td><code>SetGold</code></td>
+<td><code>7</code></td>
+<td>Offer Gold.</td>
+</tr>
+<tr>
+<td><code>Lock</code></td>
+<td><code>8</code></td>
+<td>Step 1: lock your offer in (any change unlocks both sides).</td>
+</tr>
+<tr>
+<td><code>Confirm</code></td>
+<td><code>9</code></td>
+<td>Step 2, both locked: confirm. Both confirmed = it happens.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="trialphase">TrialPhase<a class="anchor" href="#trialphase" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ended</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>InSession</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Verdict</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="trialverdict">TrialVerdict<a class="anchor" href="#trialverdict" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pending</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Guilty</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Innocent</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="vehiclecommand">VehicleCommand<a class="anchor" href="#vehiclecommand" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/C2W/C2WTradePackets.cs</code> · <code>byte</code></p>
+<p>Phase 9: vehicles and player trade.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Board</code></td>
+<td><code>1</code></td>
+<td>Take a free seat in TargetId's vehicle (they're driving it). Party or guild only.</td>
+</tr>
+<tr>
+<td><code>Leave</code></td>
+<td><code>2</code></td>
+<td>Get out of the vehicle you're a passenger in (or stop driving yours - it parks where it is).</td>
+</tr>
+<tr>
+<td><code>Stow</code></td>
+<td><code>3</code></td>
+<td>Pack your parked vehicle (TargetId = its doodad) back into its kit. Owner only, empty cargo.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="weaponkind">WeaponKind<a class="anchor" href="#weaponkind" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CharacterClasses.cs</code> · flags (values combine)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="worldeventphase">WorldEventPhase<a class="anchor" href="#worldeventphase" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CExplorationPackets.cs</code> · <code>byte</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Announced</code></td>
+<td><code>1</code></td>
+<td>Coming soon (StartsAtUnixMs).</td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td><code>2</code></td>
+<td>Under way (EndsAtUnixMs).</td>
+</tr>
+<tr>
+<td><code>Won</code></td>
+<td><code>3</code></td>
+<td>The boss fell (or every wave did).</td>
+</tr>
+<tr>
+<td><code>Failed</code></td>
+<td><code>4</code></td>
+<td>Time ran out.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="xpsource">XpSource<a class="anchor" href="#xpsource" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Combat/CombatTypes.cs</code> · <code>byte</code></p>
+<p>Where experience came from (W2CExperience).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Kill</code></td>
+<td><code>1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Quest</code></td>
+<td><code>2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Other</code></td>
+<td><code>3</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="zoneconflictstage">ZoneConflictStage<a class="anchor" href="#zoneconflictstage" title="Permanent link">#</a></h2>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2C/W2CPvpPackets.cs</code> · <code>byte</code></p>
+<p>What a zone's conflict cycle is doing (only zones with a ZoneConflicts row cycle).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Static</code></td>
+<td><code>0</code></td>
+<td>No cycle: the zone's painted PvP mode always applies.</td>
+</tr>
+<tr>
+<td><code>Peace</code></td>
+<td><code>1</code></td>
+<td>Peace: open PvP is off for a while after a war.</td>
+</tr>
+<tr>
+<td><code>Tension</code></td>
+<td><code>2</code></td>
+<td>Tension builds with every player killed here; at the top, war.</td>
+</tr>
+<tr>
+<td><code>War</code></td>
+<td><code>3</code></td>
+<td>War: open PvP and no crime, until it burns out.</td>
+</tr>
+<tr>
+<td><code>Festival</code></td>
+<td><code>4</code></td>
+<td>A festival (12 Oct 2026): no PvP and the zone's faction NPCs are neutral until StageEndsAtUnixMs. (Peace/Tension/War above are the retired conflict cycle.)</td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="mysql.html"><span>Previous</span>MySQL Reference</a>
+<a class="next" href="config.html"><span>Next</span>Configuration Reference</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#abilitytargetrule">AbilityTargetRule</a>
+</li>
+<li><a href="#appearancekind">AppearanceKind</a>
+</li>
+<li><a href="#armorkind">ArmorKind</a>
+</li>
+<li><a href="#auctionbidstatus">AuctionBidStatus</a>
+</li>
+<li><a href="#auctionbrowsemode">AuctionBrowseMode</a>
+</li>
+<li><a href="#bindtype">BindType</a>
+</li>
+<li><a href="#castresult">CastResult</a>
+</li>
+<li><a href="#characterclass">CharacterClass</a>
+</li>
+<li><a href="#charactergender">CharacterGender</a>
+</li>
+<li><a href="#characterrace">CharacterRace</a>
+</li>
+<li><a href="#charactersaveresult">CharacterSaveResult</a>
+</li>
+<li><a href="#chatchannel">ChatChannel</a>
+</li>
+<li><a href="#classmask">ClassMask</a>
+</li>
+<li><a href="#communityaction">CommunityAction</a>
+</li>
+<li><a href="#crowdcontrol">CrowdControl</a>
+</li>
+<li><a href="#damageschool">DamageSchool</a>
+</li>
+<li><a href="#equipslot">EquipSlot</a>
+</li>
+<li><a href="#factionstance">FactionStance</a>
+</li>
+<li><a href="#fishingstate">FishingState</a>
+</li>
+<li><a href="#furnitureaction">FurnitureAction</a>
+</li>
+<li><a href="#gmcommand">GmCommand</a>
+</li>
+<li><a href="#gmstatekind">GmStateKind</a>
+</li>
+<li><a href="#guildaction">GuildAction</a>
+</li>
+<li><a href="#guildinterest">GuildInterest</a>
+</li>
+<li><a href="#guildop">GuildOp</a>
+</li>
+<li><a href="#guildpermission">GuildPermission</a>
+</li>
+<li><a href="#guildrecruitaction">GuildRecruitAction</a>
+</li>
+<li><a href="#guildrecruitsort">GuildRecruitSort</a>
+</li>
+<li><a href="#guildresult">GuildResult</a>
+</li>
+<li><a href="#guildshopaction">GuildShopAction</a>
+</li>
+<li><a href="#hitoutcome">HitOutcome</a>
+</li>
+<li><a href="#hotbarkind">HotbarKind</a>
+</li>
+<li><a href="#houseaccess">HouseAccess</a>
+</li>
+<li><a href="#housemenuaction">HouseMenuAction</a>
+</li>
+<li><a href="#housepartkind">HousePartKind</a>
+</li>
+<li><a href="#housingplacementaction">HousingPlacementAction</a>
+</li>
+<li><a href="#housingplacementreply">HousingPlacementReply</a>
+</li>
+<li><a href="#interactionactiontype">InteractionActionType</a>
+</li>
+<li><a href="#itemupgradecommand">ItemUpgradeCommand</a>
+</li>
+<li><a href="#itemupgradekind">ItemUpgradeKind</a>
+</li>
+<li><a href="#itemupgradeoutcome">ItemUpgradeOutcome</a>
+</li>
+<li><a href="#lootrollchoice">LootRollChoice</a>
+</li>
+<li><a href="#lootrule">LootRule</a>
+</li>
+<li><a href="#missionaction">MissionAction</a>
+</li>
+<li><a href="#missionkind">MissionKind</a>
+</li>
+<li><a href="#missionowner">MissionOwner</a>
+</li>
+<li><a href="#missionscope">MissionScope</a>
+</li>
+<li><a href="#npcrank">NpcRank</a>
+</li>
+<li><a href="#organizationbuffkind">OrganizationBuffKind</a>
+</li>
+<li><a href="#partyaction">PartyAction</a>
+</li>
+<li><a href="#partyrole">PartyRole</a>
+</li>
+<li><a href="#professionkind">ProfessionKind</a>
+</li>
+<li><a href="#pvpcommand">PvpCommand</a>
+</li>
+<li><a href="#pvpflags">PvpFlags</a>
+</li>
+<li><a href="#questobjectivetype">QuestObjectiveType</a>
+</li>
+<li><a href="#queststatus">QuestStatus</a>
+</li>
+<li><a href="#siegecommand">SiegeCommand</a>
+</li>
+<li><a href="#siegecyclephase">SiegeCyclePhase</a>
+</li>
+<li><a href="#siegephase">SiegePhase</a>
+</li>
+<li><a href="#siegeresult">SiegeResult</a>
+</li>
+<li><a href="#siegeside">SiegeSide</a>
+</li>
+<li><a href="#statid">StatId</a>
+</li>
+<li><a href="#tradecommand">TradeCommand</a>
+</li>
+<li><a href="#trialphase">TrialPhase</a>
+</li>
+<li><a href="#trialverdict">TrialVerdict</a>
+</li>
+<li><a href="#vehiclecommand">VehicleCommand</a>
+</li>
+<li><a href="#weaponkind">WeaponKind</a>
+</li>
+<li><a href="#worldeventphase">WorldEventPhase</a>
+</li>
+<li><a href="#xpsource">XpSource</a>
+</li>
+<li><a href="#zoneconflictstage">ZoneConflictStage</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lua Scripting (Server &amp; Client UI) · Axiom Docs</title>
+<meta name="description" content="Server Lua (MoonSharp, sandboxed and time-limited): where scripts live, events, commands, timers, saved data, NPC spawning; client Lua UI addons; editor setup; and how to expose new C# functions to Lua.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html" class="active" aria-current="page">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="lua-scripting">Lua Scripting<a class="anchor" href="#lua-scripting" title="Permanent link">#</a></h1>
+<p>Axiom has two Lua environments, both MoonSharp (Lua 5.2), both sandboxed and time-limited. (For compiled C# on the server, with hooks that change XP, damage, items or prices before they happen, see <a href="205-plugins.html">C# server plugins</a>.)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Server Lua</th>
+<th>Client UI Lua</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Runs in</td>
+<td>World server (<code>Core/Lua</code>)</td>
+<td>Unity client (<code>Scripts/UI/Toolkit/Lua</code>)</td>
+</tr>
+<tr>
+<td>For</td>
+<td>game logic: rewards, events, chat commands, NPC dialogue, timed events</td>
+<td>UI addons: windows, bars, slash commands</td>
+</tr>
+<tr>
+<td>Scripts</td>
+<td><code>Axiom.Server.World/Lua/Server/**/*.lua</code> (copied next to the exe)</td>
+<td><code>Assets/AxiomMMOKit/Axiom.Client/Lua/DesignerScripts/UI/*.lua</code> (packed into <code>LuaUiScripts.asset</code>)</td>
+</tr>
+<tr>
+<td>Loaded</td>
+<td>once at World start (restart to reload)</td>
+<td>on entering the world, in name order; <code>/lua reload</code> in chat</td>
+</tr>
+<tr>
+<td>Can</td>
+<td>read and <strong>change</strong> game state through the API</td>
+<td>read-only game state; can't act (no casting, moving, buying)</td>
+</tr>
+<tr>
+<td>SDK</td>
+<td><code>LuaSDK/Server/</code> (README, library, examples, TEMPLATE)</td>
+<td><code>Lua/LuaSDK/Client/</code></td>
+</tr>
+<tr>
+<td>API</td>
+<td><a href="../70-reference/lua-api.html">Lua API reference</a></td>
+<td><a href="../70-reference/lua-api.html#client-ui-api-axiom_uilua">Lua API reference</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="server-lua">Server Lua<a class="anchor" href="#server-lua" title="Permanent link">#</a></h2>
+<h3 id="how-it-runs">How it runs<a class="anchor" href="#how-it-runs" title="Permanent link">#</a></h3>
+<p><code>LuaEngine</code> (<code>Core/Lua/LuaEngine.cs</code>), Eluna-style:</p>
+<ol>
+<li>At boot, <code>PlayerManager.InitializeScripts()</code> loads <strong>every <code>.lua</code> file</strong> in <code>Lua/Server</code> (and subfolders). Each runs its top level <strong>once</strong>, which is where it registers hooks, commands and timers. The log shows <code>[LuaEngine] Loaded script: …</code> or the error with file and line.</li>
+<li>Gameplay code fires events (<code>PlayerManager.Fire*Event</code>, <code>LuaEngine.FireEvent</code>); the engine calls the registered functions. No file is touched after boot.</li>
+<li><strong>Sandbox</strong> (<code>Preset_SoftSandbox</code>): <code>string</code>, <code>table</code>, <code>math</code>, <code>coroutine</code>, <code>os.time</code>/<code>os.clock</code>. <strong>No</strong> <code>io</code>, <code>os.execute</code>, <code>load</code>/<code>loadstring</code>/<code>dofile</code>/<code>require</code>, network.</li>
+<li><strong>Budget</strong>: each hook/command/timer call may run <strong>200 000 instructions</strong> (<code>HookInstructionBudget</code>; a few ms), loading a file 5 000 000. Past that it's stopped and logged; a hook that overruns 3 times is switched off. A <code>while true do end</code> costs one budget, not the shard.</li>
+<li>Everything runs on the <strong>tick thread</strong>, so scripts can call any API safely.</li>
+</ol>
+<h3 id="the-api-in-one-screen">The API in one screen<a class="anchor" href="#the-api-in-one-screen" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">-- events, by name (handler arguments are listed in the reference)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnKill&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">npcTemplateId</span><span class="p">)</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnEnterZone&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">zoneId</span><span class="p">,</span><span class="w"> </span><span class="nv">zoneKey</span><span class="p">,</span><span class="w"> </span><span class="nv">previousZoneId</span><span class="p">)</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+<span class="c1">-- or by id: Server:RegisterPlayerEvent(Events.OnKill, handler)</span>
+
+<span class="c1">-- chat commands: &quot;.name args&quot; (the message isn&#39;t shown to anyone)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">RegisterCommand</span><span class="p">(</span><span class="s2">&quot;where&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">args</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">y</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetPosition</span><span class="p">()</span>
+<span class="w">    </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendMessage</span><span class="p">((</span><span class="s2">&quot;%.0f, %.0f, %.0f in zone %d&quot;</span><span class="p">):</span><span class="nf">format</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">y</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="p">,</span><span class="w"> </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetZoneId</span><span class="p">()))</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="c1">-- timers (ms)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Every</span><span class="p">(</span><span class="mi">60000</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">After</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">CancelTimer</span><span class="p">(</span><span class="nv">id</span><span class="p">)</span>
+
+<span class="c1">-- the player</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">GetName</span><span class="p">()</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetLevel</span><span class="p">()</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetCharacterId</span><span class="p">()</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">IsOnline</span><span class="p">()</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">GiveGold</span><span class="p">(</span><span class="nv">copper</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">TakeGold</span><span class="p">(</span><span class="nv">copper</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetGold</span><span class="p">()</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">GiveItem</span><span class="p">(</span><span class="nv">itemId</span><span class="p">,</span><span class="w"> </span><span class="nv">count</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">TakeItem</span><span class="p">(</span><span class="nv">itemId</span><span class="p">,</span><span class="w"> </span><span class="nv">count</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">CountItem</span><span class="p">(</span><span class="nv">itemId</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">HasItem</span><span class="p">(</span><span class="nv">itemId</span><span class="p">,</span><span class="w"> </span><span class="nv">count</span><span class="p">)</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">Teleport</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">y</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="p">)</span><span class="w">        </span><span class="c1">-- y = 0: ground height</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">SendMessage</span><span class="p">(</span><span class="nv">text</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendAnnouncementMessage</span><span class="p">(</span><span class="nv">text</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendDialogue</span><span class="p">(</span><span class="nv">speaker</span><span class="p">,</span><span class="w"> </span><span class="nv">text</span><span class="p">)</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">Kick</span><span class="p">(</span><span class="nv">reason</span><span class="p">)</span>
+<span class="nv">player</span><span class="p">:</span><span class="nf">GetData</span><span class="p">(</span><span class="nv">key</span><span class="p">)</span><span class="w">  </span><span class="nv">player</span><span class="p">:</span><span class="nf">SetData</span><span class="p">(</span><span class="nv">key</span><span class="p">,</span><span class="w"> </span><span class="nv">value</span><span class="p">)</span><span class="w">        </span><span class="c1">-- per character, survives restarts</span>
+
+<span class="c1">-- the world</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">Players</span><span class="p">()</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">PlayerCount</span><span class="p">()</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">FindPlayer</span><span class="p">(</span><span class="nv">name</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">GetPlayer</span><span class="p">(</span><span class="nv">networkId</span><span class="p">)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">Broadcast</span><span class="p">(</span><span class="nv">text</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Announce</span><span class="p">(</span><span class="nv">text</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">npc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Server</span><span class="p">:</span><span class="nf">SpawnNpc</span><span class="p">(</span><span class="nv">templateId</span><span class="p">,</span><span class="w"> </span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="p">)</span><span class="w">       </span><span class="c1">-- fights and drops loot, never respawns</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">NpcsNear</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="p">,</span><span class="w"> </span><span class="nv">radius</span><span class="p">)</span><span class="w">   </span><span class="nv">npc</span><span class="p">:</span><span class="nf">IsAlive</span><span class="p">()</span><span class="w">  </span><span class="nv">npc</span><span class="p">:</span><span class="nf">GetHealth</span><span class="p">()</span><span class="w">  </span><span class="nv">npc</span><span class="p">:</span><span class="nf">Despawn</span><span class="p">()</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">ItemName</span><span class="p">(</span><span class="nv">id</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">NpcName</span><span class="p">(</span><span class="nv">id</span><span class="p">)</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">GetData</span><span class="p">(</span><span class="nv">key</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">SetData</span><span class="p">(</span><span class="nv">key</span><span class="p">,</span><span class="w"> </span><span class="nv">value</span><span class="p">)</span><span class="w">        </span><span class="c1">-- shared, in Data/lua_data.json</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">Log</span><span class="p">(</span><span class="nv">msg</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Warn</span><span class="p">(</span><span class="nv">msg</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Error</span><span class="p">(</span><span class="nv">msg</span><span class="p">)</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Now</span><span class="p">()</span><span class="w">  </span><span class="nv">Server</span><span class="p">:</span><span class="nf">GetDateTime</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Saved data (<code>GetData</code>/<code>SetData</code>) is for <strong>small</strong> values (strings, numbers, booleans): counters, daily flags, high scores. It's written to <code>Data/lua_data.json</code> a few seconds after a change. Anything bigger or that must be transactional with the character belongs in a real component (<a href="../60-cookbook/40-add-persisted-field.html">Add a persisted field</a>).</p>
+<h3 id="events">Events<a class="anchor" href="#events" title="Permanent link">#</a></h3>
+<p>Every event has an id in <code>Core/Lua/PlayerEvent.cs</code> and a name in the global <code>Events</code> table: <code>OnConnect</code>, <code>OnDisconnect</code>, <code>OnLevelUp</code>, <code>OnChat</code> (return <code>false</code> to block), <code>OnDeath</code>, <code>OnInteract</code>, <code>OnItemUse</code>, <code>OnHarvest</code>, <code>OnKill</code>, <code>OnEnterZone</code>, <code>OnDoodadUse</code>, <code>OnCraft</code>, <code>OnTheft</code>, <code>OnTradePackSold</code>, <code>OnTrade</code>, <code>OnPvpKill</code>, <code>OnCrime</code>, <code>OnSentenced</code>, <code>OnTerritoryCaptured</code>, <code>OnWorldEvent</code>, <code>OnTreasure</code>, <code>OnClimb</code>, <code>OnItemObtained</code>, <code>OnJuryVote</code>, <code>OnAchievement</code>, <code>OnSkillUse</code>. Arguments: <a href="../70-reference/lua-api.html#events">reference</a>.</p>
+<p>The same events drive <strong>quests</strong> and <strong>achievements</strong> (both listen to <code>LuaEngine.EventFired</code>), so a script, a quest and an achievement always agree on what happened.</p>
+<h3 id="a-complete-script-a-timed-world-boss">A complete script: a timed world boss<a class="anchor" href="#a-complete-script-a-timed-world-boss" title="Permanent link">#</a></h3>
+<p>From <code>LuaSDK/Server/examples/world_boss.lua</code>-style logic:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- Lua/Server/sunday_boss.lua</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">BOSS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">90400</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">X</span><span class="p">,</span><span class="w"> </span><span class="nv">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2400</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1800</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">alive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">nil</span>
+
+<span class="kd">local</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="nf">spawnBoss</span><span class="p">()</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">alive</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nv">alive</span><span class="p">:</span><span class="nf">IsAlive</span><span class="p">()</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="kr">end</span>
+<span class="w">    </span><span class="nv">alive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Server</span><span class="p">:</span><span class="nf">SpawnNpc</span><span class="p">(</span><span class="nv">BOSS</span><span class="p">,</span><span class="w"> </span><span class="nv">X</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nv">Z</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">alive</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Announce</span><span class="p">(</span><span class="s2">&quot;The Kraken rises off the eastern coast!&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">end</span>
+<span class="kr">end</span>
+
+<span class="nv">Server</span><span class="p">:</span><span class="nf">Every</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w">                 </span><span class="c1">-- check hourly</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">Server</span><span class="p">:</span><span class="nf">GetDateTime</span><span class="p">():</span><span class="nf">sub</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;20&quot;</span><span class="w"> </span><span class="kr">then</span><span class="w">    </span><span class="c1">-- 20:00-20:59 server time</span>
+<span class="w">        </span><span class="nf">spawnBoss</span><span class="p">()</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnKill&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">templateId</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">templateId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nv">BOSS</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">Server</span><span class="p">:</span><span class="nf">Broadcast</span><span class="p">(</span><span class="nv">player</span><span class="p">:</span><span class="nf">GetName</span><span class="p">()</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; struck the final blow on the Kraken!&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">GiveItem</span><span class="p">(</span><span class="mi">90001</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<p>For a scheduled boss with rewards for everyone who fought, prefer a <code>WorldEvents</code> row (<a href="160-exploration-events.html">World events</a>); use Lua for the custom touches.</p>
+<h3 id="editor-setup">Editor setup<a class="anchor" href="#editor-setup" title="Permanent link">#</a></h3>
+<p>Install <strong>VS Code</strong> and the <strong>Lua</strong> extension (sumneko/LuaLS), open <code>Axiom.Server.World/Lua/Server/</code>. Its <code>.luarc.json</code> points at <code>LuaSDK/Server/library</code>, so <code>Server:</code>, <code>player:</code> and <code>npc:</code> autocomplete and <code>Server:On("</code> lists every event with typed handler arguments. Copy <code>LuaSDK/Server/TEMPLATE.lua</code> to start.</p>
+<h3 id="exposing-a-new-function-to-lua-c">Exposing a new function to Lua (C#)<a class="anchor" href="#exposing-a-new-function-to-lua-c" title="Permanent link">#</a></h3>
+<p>The bindings are plain C# classes registered as MoonSharp <code>UserData</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lua</th>
+<th>C#</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Server</code></td>
+<td><code>Core/Lua/Bindings/LuaServerBinding.cs</code></td>
+</tr>
+<tr>
+<td><code>player</code></td>
+<td><code>Core/Lua/Bindings/LuaPlayer.cs</code></td>
+</tr>
+<tr>
+<td><code>npc</code></td>
+<td><code>Core/Lua/Bindings/LuaNpc.cs</code></td>
+</tr>
+<tr>
+<td>services they reach</td>
+<td><code>Core/Lua/LuaWorld.cs</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>A <strong>public method is callable from Lua immediately</strong>. Example: let scripts read a player's honor.</p>
+<div class="hl"><pre><span></span><code><span class="c1">// Core/Lua/Bindings/LuaPlayer.cs</span>
+<span class="c1">/// &lt;summary&gt;Honor points (0 when offline).&lt;/summary&gt;</span>
+<span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">GetHonor</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">Pvp</span><span class="p">.</span><span class="n">Honor</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Then document it in <code>LuaSDK/Server/library/axiom_server.lua</code> (so editors autocomplete it) and the SDK README:</p>
+<div class="hl"><pre><span></span><code><span class="c1">---Honor points (0 when offline).</span>
+<span class="c1">---@return integer</span>
+<span class="kr">function</span><span class="w"> </span><span class="nc">Player</span><span class="p">:</span><span class="nf">GetHonor</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span>
+</code></pre></div>
+
+<p>Rules for bindings: <strong>validate every argument</strong> (scripts are content, not trusted code), go through the same manager APIs C# uses (<code>TryAddItem</code>, not the inventory array), return simple types (numbers, strings, booleans, tables of them, <code>LuaPlayer</code>/<code>LuaNpc</code>), and never block.</p>
+<h3 id="a-new-event">A new event<a class="anchor" href="#a-new-event" title="Permanent link">#</a></h3>
+<ol>
+<li>Add the value to <code>PlayerEvent</code> (<code>Core/Lua/PlayerEvent.cs</code>).</li>
+<li>Fire it where it happens: <code>_players.FireGameEvent(peer, PlayerEvent.OnFishCaught, fishItemId)</code> (or add a typed <code>Fire…Event</code> helper on <code>PlayerManager</code>).</li>
+<li>Add it to <code>axiom_server.lua</code> (<code>Events</code> table, the <code>AxiomEvent</code> alias and an <code>@overload</code> with the handler's arguments).</li>
+</ol>
+<p>Quests and achievements can then count it too.</p>
+<h2 id="client-ui-lua">Client UI Lua<a class="anchor" href="#client-ui-lua" title="Permanent link">#</a></h2>
+<p>UI addons built from windows, labels, bars, buttons, item slots, inputs, with slash commands, timers and saved settings. Game state is <strong>read-only</strong> (that keeps addons from becoming bots).</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- Assets/AxiomMMOKit/Axiom.Client/Lua/DesignerScripts/UI/20_target_frame.lua</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">w</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">UI</span><span class="p">.</span><span class="nf">Window</span><span class="p">(</span><span class="s2">&quot;tf&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Target&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">240</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">nm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Label</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ac-h2&quot;</span><span class="p">)</span>
+<span class="kd">local</span><span class="w"> </span><span class="nv">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Bar</span><span class="p">(</span><span class="s2">&quot;#C9423A&quot;</span><span class="p">)</span>
+
+<span class="nv">SDK</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;TargetChanged&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">id</span><span class="p">,</span><span class="w"> </span><span class="nv">name</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Close</span><span class="p">()</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="nv">nm</span><span class="p">:</span><span class="nf">SetText</span><span class="p">(</span><span class="nv">name</span><span class="p">);</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Open</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="nv">UI</span><span class="p">.</span><span class="nf">Every</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">IsOpen</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nv">Game</span><span class="p">.</span><span class="nf">HasTarget</span><span class="p">()</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">bar</span><span class="p">:</span><span class="nf">SetValue</span><span class="p">(</span><span class="nv">SDK</span><span class="p">.</span><span class="nf">Ratio</span><span class="p">(</span><span class="nv">Game</span><span class="p">.</span><span class="nf">TargetHealth</span><span class="p">(),</span><span class="w"> </span><span class="nv">Game</span><span class="p">.</span><span class="nf">TargetMaxHealth</span><span class="p">()))</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="nv">UI</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s2">&quot;tf&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="nv">w</span><span class="p">:</span><span class="nf">Toggle</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<ul>
+<li>Files load <strong>in name order</strong>; <code>000_axiom_sdk.lua</code> (the <code>SDK.*</code> helpers and value-change events) is first.</li>
+<li><code>/lua reload</code> re-runs everything (in the editor); <code>/lua</code> lists what's loaded.</li>
+<li>Styling uses USS classes from <code>Resources/UI</code> stylesheets (<code>ac-h2</code>, <code>ac-muted</code>, <code>ac-small</code>, <code>ac-gold</code>).</li>
+<li>Builds pack the scripts automatically (<code>LuaUiScriptPacker</code>; manually: <strong>Tools ▸ Axiom ▸ UI ▸ Lua ▸ Pack Scripts</strong>).</li>
+<li>To add to the API: public methods on <code>LuaUiApi</code> (<code>UI</code>), <code>LuaGame</code> (<code>Game</code>, keep it read-only) and <code>LuaElement</code> (<code>Scripts/UI/Toolkit/Lua/LuaUiApi.cs</code>), then document them in <code>library/axiom_ui.lua</code>.</li>
+</ul>
+<p>The client also has <code>LuaNetworkBinding</code> (<code>Networking/LuaNetworkBinding.cs</code>) for scripted network hooks used by the UI layer. See <a href="../40-client/70-ui.html">UI</a>.</p>
+<nav class="pager">
+<a class="prev" href="190-staff-gm.html"><span>Previous</span>Staff, GM Panel &amp; Debug Tools</a>
+<a class="next" href="205-plugins.html"><span>Next</span>C# Server Plugins</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#server-lua">Server Lua</a>
+<ul>
+<li><a href="#how-it-runs">How it runs</a>
+</li>
+<li><a href="#the-api-in-one-screen">The API in one screen</a>
+</li>
+<li><a href="#events">Events</a>
+</li>
+<li><a href="#a-complete-script-a-timed-world-boss">A complete script: a timed world boss</a>
+</li>
+<li><a href="#editor-setup">Editor setup</a>
+</li>
+<li><a href="#exposing-a-new-function-to-lua-c">Exposing a new function to Lua (C#)</a>
+</li>
+<li><a href="#a-new-event">A new event</a>
+</li>
+</ul>
+</li>
+<li><a href="#client-ui-lua">Client UI Lua</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

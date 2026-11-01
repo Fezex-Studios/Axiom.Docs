@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a GM Command · Axiom Docs</title>
+<meta name="description" content="Adding an audited staff command to the GM panel end to end - the GmCommand value and its access level, the server case in GmService with target resolution, permission checks and the audit row, and the button on the client&#x27;s GM panel - using &quot;reset a player&#x27;s dungeon lockouts&quot; as the example.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="20-add-server-system.html">Add a Server System</a></li>
+<li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="80-add-gm-command.html" class="active" aria-current="page">Add a GM Command</a></li>
+<li><a href="90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="100-add-ability.html">Add an Ability</a></li>
+<li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Cookbook (How-To)</div>
+
+<h1 id="add-a-gm-command">Add a GM Command<a class="anchor" href="#add-a-gm-command" title="Permanent link">#</a></h1>
+<p>Staff commands travel in <strong>one</strong> packet (<code>C2WGmCommand</code>, opcode 177) with a <code>GmCommand</code> value and generic arguments; the server re-checks the sender's <strong>current</strong> access level with Auth for every command, refuses staff at or above your own level, and writes each action to the <strong>audit log</strong>. Background: <a href="../30-server/190-staff-gm.html">Staff &amp; GM tools</a>; every command that exists: <a href="../70-reference/gm-commands.html">GM command reference</a>.</p>
+<p>Example: support staff need to <strong>reset a player's dungeon lockouts</strong> ("I disconnected during the boss and lost my run").</p>
+<h2 id="1-shared-axiomnetworksharedpacketsstaffgmpacketscs">1. Shared (<code>Axiom.Network/Shared/Packets/Staff/GmPackets.cs</code>)<a class="anchor" href="#1-shared-axiomnetworksharedpacketsstaffgmpacketscs" title="Permanent link">#</a></h2>
+<p>Add the value with a comment saying what the arguments mean (append; values are bytes and stable):</p>
+<div class="hl"><pre><span></span><code><span class="w">        </span><span class="n">ResetNpc</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">54</span><span class="p">,</span><span class="w">  </span><span class="c1">// the targeted NPC: full health, threat cleared</span>
+<span class="w">        </span><span class="n">ResetDungeonEntries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w"> </span><span class="c1">// the target&#39;s dungeon run counts: A = dungeon id (0 = every dungeon)</span>
+</code></pre></div>
+
+<p>Give it an access level in <code>GmRules.MinLevel</code> (3 Community Manager, 4 Game Master, 5 Developer; unlisted = 5):</p>
+<div class="hl"><pre><span></span><code><span class="w">                </span><span class="k">case</span><span class="w"> </span><span class="n">GmCommand</span><span class="p">.</span><span class="n">Ban</span><span class="p">:</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="n">GmCommand</span><span class="p">.</span><span class="n">Unban</span><span class="p">:</span>
+<span class="w">                </span><span class="k">case</span><span class="w"> </span><span class="n">GmCommand</span><span class="p">.</span><span class="n">ResetDungeonEntries</span><span class="p">:</span>
+<span class="w">                </span><span class="c1">// ...</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+</code></pre></div>
+
+<p>If it <strong>creates value</strong> (items, coins, levels), add it to <code>GmRules.NeedsDebug</code> so it only works where <code>World:AllowDebugCommands</code> is on; if it only <strong>reads</strong>, add it to <code>IsQuery</code>. This one does neither.</p>
+<p><code>C2WGmCommandPacket</code> already carries <code>TargetCharacterId</code>, <code>TargetNetworkId</code>, <code>TargetName</code>, <code>A</code>, <code>B</code>, <code>C</code>, <code>X/Y/Z</code> and <code>Text</code> - most commands need no new fields, so no packet change. Rebuild <code>Axiom.Network</code>, copy the DLL to the client, and bump the protocol (the enum is shared).</p>
+<h2 id="2-a-small-helper-on-the-component">2. A small helper on the component<a class="anchor" href="#2-a-small-helper-on-the-component" title="Permanent link">#</a></h2>
+<p><code>Core/Players/Components/DungeonEntryComponent.cs</code>:</p>
+<div class="hl"><pre><span></span><code><span class="w">        </span><span class="c1">/// &lt;summary&gt;GM: forget runs used (one dungeon, or all with 0). Returns how many were cleared.&lt;/summary&gt;</span>
+<span class="w">        </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">Reset</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dungeonId</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dungeonId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">Entries</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">Entries</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">dungeonId</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dungeonId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">Entries</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">_dirty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">        </span><span class="c1">// saved with the next full save</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="3-server-corestaffgmservicecs">3. Server (<code>Core/Staff/GmService.cs</code>)<a class="anchor" href="#3-server-corestaffgmservicecs" title="Permanent link">#</a></h2>
+<p>Add a case to the command switch, next to the other "the target" commands:</p>
+<div class="hl"><pre><span></span><code><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">GmCommand</span><span class="p">.</span><span class="n">ResetDungeonEntries</span><span class="p">:</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Target</span><span class="p">(</span><span class="n">gm</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">tp</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Reply</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;That player isn&#39;t online.&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">gm</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">AccessLevel</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">level</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Reply</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Not staff at or above your own level.&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">A</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Reply</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Dungeon id must be 0 (all) or a dungeon id.&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">cleared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">DungeonEntries</span><span class="p">.</span><span class="n">Reset</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">A</span><span class="p">);</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cleared</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Reply</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;{t.Name} has no runs used{(p.A &gt; 0 ? &quot;</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">dungeon</span><span class="s">&quot; : &quot;&quot;)}.&quot;</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">                </span><span class="n">_players</span><span class="p">.</span><span class="n">SaveInBackground</span><span class="p">(</span><span class="n">t</span><span class="p">);</span><span class="w">                                   </span><span class="c1">// don&#39;t wait for autosave</span>
+<span class="w">                </span><span class="n">Done</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">gm</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">A</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;all dungeons&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s">$&quot;dungeon {p.A}&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="s">$&quot;Reset {cleared} dungeon lockout(s) for {t.Name}.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+</code></pre></div>
+
+<p>What the helpers do:</p>
+<ul>
+<li><code>Target(gm, p, allowSelf, out peer, out session)</code> resolves the target from <code>TargetCharacterId</code>, then <code>TargetNetworkId</code> (your current target), then (if allowed) yourself. Only <strong>online</strong> players.</li>
+<li><code>Reply(peer, cmd, ok, message)</code> answers the GM panel without auditing (refusals).</li>
+<li><code>Done(peer, gm, cmd, target, detail, message)</code> writes the <strong>audit row</strong> (who, what, target, detail, when) and answers. Every command that changes something must end in <code>Done</code>.</li>
+<li><code>level</code> is the GM's <strong>current</strong> access level, already checked against <code>GmRules.MinLevel</code> before the switch.</li>
+</ul>
+<p>Commands that need another service (Persistence for offline characters, Auth for bans) start an async method (see <code>BanAsync</code>) and come back with <code>EnqueueAction</code> before touching sessions.</p>
+<h2 id="4-client-scriptsstaffgmpanelwindowcs">4. Client (<code>Scripts/Staff/GmPanelWindow.cs</code>)<a class="anchor" href="#4-client-scriptsstaffgmpanelwindowcs" title="Permanent link">#</a></h2>
+<p>On the <strong>Target</strong> page (<code>BuildTarget</code>), add a line:</p>
+<div class="hl"><pre><span></span><code><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">dungeons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Section</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Dungeons&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Clear runs used this period (0 = every dungeon).&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Line</span><span class="p">(</span><span class="n">dungeons</span><span class="p">);</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">dungeonId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Int</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Dungeon&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Command</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Reset Lockouts&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">GmCommand</span><span class="p">.</span><span class="n">ResetDungeonEntries</span><span class="p">,</span>
+<span class="w">                </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Confirm</span><span class="p">(</span><span class="s">&quot;Reset dungeon lockouts for &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">TargetName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;?&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;They can enter again this period.&quot;</span><span class="p">,</span>
+<span class="w">                              </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">On</span><span class="p">(</span><span class="n">GmCommand</span><span class="p">.</span><span class="n">ResetDungeonEntries</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="n">dungeonId</span><span class="p">.</span><span class="k">value</span><span class="p">)),</span>
+<span class="w">                </span><span class="s">&quot;Give back the dungeon runs they&#39;ve used.&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>Command(...)</code> greys the button out when your access level is below <code>GmRules.MinLevel</code> for that command, so staff only see what they may use. <code>On(cmd, a:, text:)</code> sends it for the selected player via <code>GmPanelState.Send</code>. The answer appears in the panel's status line; the audit page lists it.</p>
+<h2 id="5-test">5. Test<a class="anchor" href="#5-test" title="Permanent link">#</a></h2>
+<ol>
+<li>A test account with access level 4 (Auth database <code>accounts.access_level</code>, <a href="../20-data/30-mysql.html#axiom_auth">MySQL</a>), log in, <strong>F12</strong> opens the GM panel.</li>
+<li>Enter a dungeon with a limited-entry character, leave, try again (refused: no runs left).</li>
+<li>GM panel → Players → pick them → Target → Reset Lockouts → they can enter again.</li>
+<li>Audit page shows the row. A level-3 account sees the button disabled; the server refuses it anyway if sent.</li>
+</ol>
+<h2 id="faster-alternative-for-development">Faster alternative for development<a class="anchor" href="#faster-alternative-for-development" title="Permanent link">#</a></h2>
+<p>A Lua chat command is quicker for a private shortcut, but <strong>unaudited and unchecked</strong> - keep those out of production:</p>
+<div class="hl"><pre><span></span><code><span class="nv">Server</span><span class="p">:</span><span class="nf">RegisterCommand</span><span class="p">(</span><span class="s2">&quot;resetme&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">args</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetName</span><span class="p">()</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;DevAlice&quot;</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="kr">end</span>
+<span class="w">    </span><span class="c1">-- ...</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+<nav class="pager">
+<a class="prev" href="70-add-lua-script.html"><span>Previous</span>Add a Server Lua Script</a>
+<a class="next" href="90-add-zone.html"><span>Next</span>Add a Zone or a New Region</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#1-shared-axiomnetworksharedpacketsstaffgmpacketscs">1. Shared (Axiom.Network/Shared/Packets/Staff/GmPackets.cs)</a>
+</li>
+<li><a href="#2-a-small-helper-on-the-component">2. A small helper on the component</a>
+</li>
+<li><a href="#3-server-corestaffgmservicecs">3. Server (Core/Staff/GmService.cs)</a>
+</li>
+<li><a href="#4-client-scriptsstaffgmpanelwindowcs">4. Client (Scripts/Staff/GmPanelWindow.cs)</a>
+</li>
+<li><a href="#5-test">5. Test</a>
+</li>
+<li><a href="#faster-alternative-for-development">Faster alternative for development</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

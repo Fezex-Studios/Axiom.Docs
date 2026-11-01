@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Content (a whole hamlet, no code) · Axiom Docs</title>
+<meta name="description" content="A designer&#x27;s walkthrough that adds a small area with no programming - a trader NPC with a shop and quests, a wolf camp with loot, a kill quest with rewards, a herb to gather, all placed in the world - using the Create wizards, Content Studio and Dev Tools, with the equivalent SQL for reference.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="20-add-server-system.html">Add a Server System</a></li>
+<li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="50-add-content.html" class="active" aria-current="page">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="100-add-ability.html">Add an Ability</a></li>
+<li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Cookbook (How-To)</div>
+
+<h1 id="add-content-a-hamlet">Add Content: a Hamlet<a class="anchor" href="#add-content-a-hamlet" title="Permanent link">#</a></h1>
+<p>Everything here is <strong>data</strong>: rows in <code>worldserver.db</code>, placed with editor tools, saved as SQL patches. No C#, no Lua, no client build (except new art). Restart the World server at the end.</p>
+<p>We'll add <strong>Ashford</strong>: Marta the trader (sells potions, gives a quest), a wolf camp nearby, a quest "Wolves at the Gate" (kill 8 Grey Wolves, return to Marta), and silverleaf bushes to gather.</p>
+<h2 id="0-before-you-start">0. Before you start<a class="anchor" href="#0-before-you-start" title="Permanent link">#</a></h2>
+<ul>
+<li>Open <code>main_world</code> and the tile scene for the area (Dev Tools ▸ World Tiles) - the NPC and spawn tools place things where the Scene view looks.</li>
+<li>Know your model keys (Content Studio's model-key picker lists them). New art: <a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; character pipeline</a>.</li>
+<li>If the World server is running, tools will write <strong>patches only</strong>; that's fine - restart at the end.</li>
+</ul>
+<h2 id="1-the-wolves---tools--axiom--create--npc">1. The wolves - Tools ▸ Axiom ▸ Create ▸ NPC…<a class="anchor" href="#1-the-wolves---tools--axiom--create--npc" title="Permanent link">#</a></h2>
+<p>Start <strong>as a copy</strong> of an existing monster (it already fights). Set:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Grey Wolf</td>
+</tr>
+<tr>
+<td>Level, MaxHealth, damage, armor</td>
+<td>6, 420, 14-22, 20</td>
+</tr>
+<tr>
+<td>ModelType</td>
+<td>a wolf model key (or <code>NPC_ORC</code> as a placeholder)</td>
+</tr>
+<tr>
+<td>Rank</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td>AiProfileId</td>
+<td>a pack profile (wolves help each other)</td>
+</tr>
+<tr>
+<td>XpReward</td>
+<td>0 = from the level curve</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Extras ▸ Loot</strong>: create a new loot table <em>Wolf</em> with <code>MinGold 5</code>, <code>MaxGold 20</code> (copper); drops: <code>Wolf Pelt</code> chance 0.6, <code>Minor Health Potion</code> 0.1.
+<strong>Extras ▸ Spawners</strong>: point the Scene view at the camp, add a spawner: Count 6, Radius 18, wander 10.
+<strong>Create</strong>.</p>
+<h2 id="2-marta-the-trader---create--npc">2. Marta the trader - Create ▸ NPC…<a class="anchor" href="#2-marta-the-trader---create--npc" title="Permanent link">#</a></h2>
+<p>Copy an existing vendor (it has Talk/Trade actions). Name <em>Marta</em>, Title <em>Trader</em>, Greeting <em>"Mind the wolves on the east road."</em>, <code>MaxHealth</code> 0 (non-combat), a villager model key. <strong>Extras ▸ Shop</strong>: add Minor Health Potion (Buy 50), Wolf Pelt (Sell 12). Spawner: Count 1, Radius 0, <code>IsStationary</code> on. <strong>Create</strong>.</p>
+<p>Then <strong>Content Studio ▸ World ▸ NPC Actions</strong> (<code>InteractableActions</code>) for Marta's template: slot 0 (F) <code>Quests</code>, slot 1 (G) <code>Trade</code> - so F opens her quest list. Quest givers are talkable automatically even without rows.</p>
+<h2 id="3-the-quest---content-studio--quests--progression">3. The quest - Content Studio ▸ Quests &amp; Progression<a class="anchor" href="#3-the-quest---content-studio--quests--progression" title="Permanent link">#</a></h2>
+<p><strong>Quests ▸ New</strong> (Ctrl+N):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Wolves at the Gate</td>
+</tr>
+<tr>
+<td>Description / AcceptText / CompleteText</td>
+<td>the story text</td>
+</tr>
+<tr>
+<td>GiverNpcTemplateId / TurnInNpcTemplateId</td>
+<td>Marta / Marta</td>
+</tr>
+<tr>
+<td>MinLevel</td>
+<td>5</td>
+</tr>
+<tr>
+<td>RewardXp, RewardGold</td>
+<td>0 (from the curve), 500 (copper)</td>
+</tr>
+<tr>
+<td>CategoryId</td>
+<td>your zone's category</td>
+</tr>
+</tbody>
+</table></div>
+<p>Child grid <strong>Objectives ▸ Add</strong>: <code>ObjectiveType</code> Kill, <code>TargetId</code> Grey Wolf, <code>RequiredCount</code> 8, <code>Text</code> "Wolves slain".
+Child grid <strong>Rewards ▸ Add</strong> (a choice of two): <code>Kind</code> Item, <code>RefId</code> a leather helm, <code>Choice</code> 1; another row with a leather boots item, <code>Choice</code> 1.</p>
+<p>The <strong>preview</strong> shows the chain, objectives, rewards and XP as a share of the level. F5 → no errors → <strong>Ctrl+S</strong>.</p>
+<h2 id="4-a-herb-to-gather---create--world-object">4. A herb to gather - Create ▸ World Object…<a class="anchor" href="#4-a-herb-to-gather---create--world-object" title="Permanent link">#</a></h2>
+<p>Always starts from a working copy: pick an existing herb doodad. Rename <em>Silverleaf</em>, its model key (<code>SilverleafPatch</code> exists), the action's label <em>Gather</em>, what it gives (Silverleaf ×1-2), respawn time. <strong>Create</strong>, then <strong>Dev Tools ▸ Doodads ▸ Place</strong>: click the ground around the hamlet a dozen times. <strong>Save</strong>.</p>
+<h2 id="5-player-respawn-point">5. Player respawn point<a class="anchor" href="#5-player-respawn-point" title="Permanent link">#</a></h2>
+<p><strong>Dev Tools ▸ Spawn Points ▸ + Add at Camera</strong> in the village square, name <em>Ashford</em>, <strong>Scene → DB</strong>.</p>
+<h2 id="6-check-restart-play">6. Check, restart, play<a class="anchor" href="#6-check-restart-play" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Dev Tools ▸ Validate ▸ Run Checks</strong> (spawners have ground under them, no duplicates).</li>
+<li>Content Studio <strong>F5</strong>: zero errors.</li>
+<li>Restart the World server. Read the first screen of the log: <code>[Shop]</code>, <code>[Actions]</code>, <code>[Quest]</code>, <code>[Doodads]</code> lines, and no warnings about your rows.</li>
+<li>Log in, walk to Ashford, talk to Marta, kill wolves, loot, hand in.</li>
+</ol>
+<p>New items with icons? Export game data (Dev Tools ▸ Game Data, or the World server does it at boot) so the client shows names and icons.</p>
+<h2 id="the-same-thing-as-sql-for-reference">The same thing as SQL (for reference)<a class="anchor" href="#the-same-thing-as-sql-for-reference" title="Permanent link">#</a></h2>
+<p>What the tools wrote, roughly (ids from your database; the real patches are in <code>SQL/patches/NNN_content_*.sql</code>):</p>
+<div class="hl"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">LootTables</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">MinGold</span><span class="p">,</span><span class="w"> </span><span class="n">MaxGold</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Wolf&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">LootTableEntries</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">LootTableId</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">Chance</span><span class="p">,</span><span class="w"> </span><span class="n">MinQuantity</span><span class="p">,</span><span class="w"> </span><span class="n">MaxQuantity</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">3001</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">90500</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w">     </span><span class="c1">-- Wolf Pelt</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">3002</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">     </span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">     </span><span class="c1">-- Minor Health Potion</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcTemplates</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">Level</span><span class="p">,</span><span class="w"> </span><span class="n">ModelType</span><span class="p">,</span><span class="w"> </span><span class="n">MaxHealth</span><span class="p">,</span><span class="w"> </span><span class="n">AttackDamageMin</span><span class="p">,</span><span class="w"> </span><span class="n">AttackDamageMax</span><span class="p">,</span><span class="w"> </span><span class="n">Armor</span><span class="p">,</span>
+<span class="w">  </span><span class="n">AggroRadius</span><span class="p">,</span><span class="w"> </span><span class="n">AttackRange</span><span class="p">,</span><span class="w"> </span><span class="n">AttackCooldownMs</span><span class="p">,</span><span class="w"> </span><span class="n">LootTableId</span><span class="p">,</span><span class="w"> </span><span class="n">AiProfileId</span><span class="p">,</span><span class="w"> </span><span class="n">Rank</span><span class="p">,</span><span class="w"> </span><span class="n">RespawnSeconds</span><span class="p">,</span><span class="w"> </span><span class="n">InteractRange</span><span class="p">,</span><span class="w"> </span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Greeting</span><span class="p">,</span><span class="w"> </span><span class="n">XpReward</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">90200</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Grey Wolf&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;NPC_ORC&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">420</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">       </span><span class="p">(</span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Marta&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Character_Human_Female&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Trader&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Mind the wolves on the east road.&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcSpawners</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">TemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="p">,</span><span class="w"> </span><span class="k">Count</span><span class="p">,</span><span class="w"> </span><span class="n">Radius</span><span class="p">,</span><span class="w"> </span><span class="n">WanderRadius</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">5200</span><span class="p">,</span><span class="w"> </span><span class="mi">90200</span><span class="p">,</span><span class="w"> </span><span class="mi">812</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1034</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">5201</span><span class="p">,</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="mi">760</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1001</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Shops</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">NpcTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Marta&#39;&#39;s Goods&#39;</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">ShopItems</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">ShopId</span><span class="p">,</span><span class="w"> </span><span class="n">ItemId</span><span class="p">,</span><span class="w"> </span><span class="n">BuyPrice</span><span class="p">,</span><span class="w"> </span><span class="n">SellPrice</span><span class="p">,</span><span class="w"> </span><span class="n">SortOrder</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">402</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">90500</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">InteractableActions</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">TargetKind</span><span class="p">,</span><span class="w"> </span><span class="n">TemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">Slot</span><span class="p">,</span><span class="w"> </span><span class="n">ActionType</span><span class="p">,</span><span class="w"> </span><span class="n">Label</span><span class="p">,</span><span class="w"> </span><span class="n">IconName</span><span class="p">,</span><span class="w"> </span><span class="n">CursorName</span><span class="p">,</span><span class="w"> </span><span class="n">IsEnabled</span><span class="p">,</span><span class="w"> </span><span class="n">SkillId</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Quests&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;action_quest&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;talk&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="mi">301</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Trade&#39;</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;action_trade&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;talk&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">Quests</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Description</span><span class="p">,</span><span class="w"> </span><span class="n">AcceptText</span><span class="p">,</span><span class="w"> </span><span class="n">CompleteText</span><span class="p">,</span><span class="w"> </span><span class="n">GiverNpcTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">TurnInNpcTemplateId</span><span class="p">,</span>
+<span class="w">  </span><span class="n">MinLevel</span><span class="p">,</span><span class="w"> </span><span class="n">RequiredQuestId</span><span class="p">,</span><span class="w"> </span><span class="n">RewardXp</span><span class="p">,</span><span class="w"> </span><span class="n">RewardGold</span><span class="p">,</span><span class="w"> </span><span class="n">RewardItemId</span><span class="p">,</span><span class="w"> </span><span class="n">RewardItemQuantity</span><span class="p">,</span><span class="w"> </span><span class="n">AutoComplete</span><span class="p">,</span><span class="w"> </span><span class="n">CategoryId</span><span class="p">,</span><span class="w"> </span><span class="k">Repeatable</span><span class="p">,</span><span class="w"> </span><span class="n">RepeatResetHours</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLimitSeconds</span><span class="p">,</span><span class="w"> </span><span class="n">StartAreaId</span><span class="p">,</span><span class="w"> </span><span class="n">StartItemId</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Wolves at the Gate&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;The wolves grow bold...&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Thin their numbers.&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Ashford sleeps easier.&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">QuestObjectives</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">QuestId</span><span class="p">,</span><span class="w"> </span><span class="n">SortOrder</span><span class="p">,</span><span class="w"> </span><span class="n">ObjectiveType</span><span class="p">,</span><span class="w"> </span><span class="n">TargetId</span><span class="p">,</span><span class="w"> </span><span class="n">RequiredCount</span><span class="p">,</span><span class="w"> </span><span class="nb">Text</span><span class="p">,</span><span class="w"> </span><span class="n">Hidden</span><span class="p">,</span><span class="w"> </span><span class="n">Param</span><span class="p">,</span><span class="w"> </span><span class="n">Stage</span><span class="p">,</span><span class="w"> </span><span class="n">TargetKey</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1200</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">90200</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Wolves slain&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>(<code>TargetKind</code> 1 = NPC; <code>ActionType</code> 7 = Quests, 2 = Trade; <code>ObjectiveType</code> 1 = Kill. Item 90500 stands for your pelt item.)</p>
+<p>Every table and column: <a href="../70-reference/worlddb.html">worldserver.db reference</a>. Systems involved: <a href="../30-server/20-npcs-ai.html">NPCs</a>, <a href="../30-server/60-loot.html">Loot</a>, <a href="../30-server/90-quests.html">Quests</a>, <a href="../30-server/100-economy.html">Economy</a>, <a href="../30-server/70-doodads-gathering.html">Doodads</a>.</p>
+<nav class="pager">
+<a class="prev" href="40-add-persisted-field.html"><span>Previous</span>Add a Persisted Character Field</a>
+<a class="next" href="60-add-ui-window.html"><span>Next</span>Add a UI Window or HUD Widget</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#0-before-you-start">0. Before you start</a>
+</li>
+<li><a href="#1-the-wolves---tools--axiom--create--npc">1. The wolves - Tools ▸ Axiom ▸ Create ▸ NPC…</a>
+</li>
+<li><a href="#2-marta-the-trader---create--npc">2. Marta the trader - Create ▸ NPC…</a>
+</li>
+<li><a href="#3-the-quest---content-studio--quests--progression">3. The quest - Content Studio ▸ Quests &amp; Progression</a>
+</li>
+<li><a href="#4-a-herb-to-gather---create--world-object">4. A herb to gather - Create ▸ World Object…</a>
+</li>
+<li><a href="#5-player-respawn-point">5. Player respawn point</a>
+</li>
+<li><a href="#6-check-restart-play">6. Check, restart, play</a>
+</li>
+<li><a href="#the-same-thing-as-sql-for-reference">The same thing as SQL (for reference)</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

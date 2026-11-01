@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Service Endpoints · Axiom Docs</title>
+<meta name="description" content="All 54 HTTP routes of the Auth, Persistence and Auction servers with request/response types and callers.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="packets.html">Packet Reference</a></li>
+<li><a href="services.html" class="active" aria-current="page">Service Endpoints</a></li>
+<li><a href="worlddb.html">worldserver.db Reference</a></li>
+<li><a href="mysql.html">MySQL Reference</a></li>
+<li><a href="enums.html">Shared Enums</a></li>
+<li><a href="config.html">Configuration Reference</a></li>
+<li><a href="lua-api.html">Lua API Reference</a></li>
+<li><a href="gm-commands.html">GM Command Reference</a></li>
+<li><a href="editor.html">Editor Menu Reference</a></li>
+<li><a href="codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Reference (generated)</div>
+<div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
+<h1 id="service-endpoints">Service Endpoints<a class="anchor" href="#service-endpoints" title="Permanent link">#</a></h1>
+<p>Every HTTP route of the Auth, Persistence and Auction servers, the request and response types, and the code that calls it. See <a href="../10-architecture/70-persistence-flow.html">Persistence flow</a> and <a href="../10-architecture/20-login-flow.html">Login &amp; world entry</a>.</p>
+<h2 id="auth-server">Auth server<a class="anchor" href="#auth-server" title="Permanent link">#</a></h2>
+<p><code>Axiom.Server.Auth</code> · port 3000, JSON - called by the launcher, the client and the World server.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Request</th>
+<th>Response</th>
+<th>Called from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/internal/account-access</code></td>
+<td></td>
+<td><a href="#accountaccessresponse">AccountAccessResponse</a></td>
+<td><code>Authservice.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/internal/account-lookup</code></td>
+<td></td>
+<td><a href="#lookupresponse">LookupResponse</a></td>
+<td><code>Authservice.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/internal/account-ban</code></td>
+<td></td>
+<td><a href="#banresponse">BanResponse</a></td>
+<td><code>Authservice.cs</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/gamedata/version</code></td>
+<td></td>
+<td><a href="#errorresponse">ErrorResponse</a></td>
+<td><code>AxiomServiceProbe.cs</code>, <code>AxiomProjectHealth.cs</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/gamedata/db</code></td>
+<td></td>
+<td><a href="#errorresponse">ErrorResponse</a></td>
+<td></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/login</code></td>
+<td><a href="#loginrequest">LoginRequest</a></td>
+<td><a href="#loginresponse">LoginResponse</a></td>
+<td><code>ClientNetworkLoginInspector.cs</code>, <code>AuthClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/register</code></td>
+<td><a href="#registerrequest">RegisterRequest</a></td>
+<td><a href="#registerresponse">RegisterResponse</a></td>
+<td><code>AuthClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/session/launch-token</code></td>
+<td><a href="#refreshrequest">RefreshRequest</a></td>
+<td><a href="#loginresponse">LoginResponse</a></td>
+<td></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/logout</code></td>
+<td><a href="#refreshrequest">RefreshRequest</a></td>
+<td><a href="#logoutresponse">LogoutResponse</a></td>
+<td><code>ClientNetworkLoginInspector.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/validate-session</code></td>
+<td></td>
+<td><a href="#validatesessionresponse">ValidateSessionResponse</a></td>
+<td><code>Program.cs</code>, <code>Authservice.cs</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/worlds</code></td>
+<td></td>
+<td></td>
+<td><code>WorldDirectoryClient.cs</code>, <code>Program.cs</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/worlds/characters</code></td>
+<td></td>
+<td></td>
+<td><code>WorldDirectoryClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/worlds/heartbeat</code></td>
+<td></td>
+<td></td>
+<td><code>WorldDirectoryReporter.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/worlds/selection-token</code></td>
+<td></td>
+<td><a href="#worldselectiontokenresponse">WorldSelectionTokenResponse</a></td>
+<td><code>CharacterSelectionReturnService.cs</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="post-internalaccount-access">POST /internal/account-access<a class="anchor" href="#post-internalaccount-access" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/AccountAccessEndpoint.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/Authservice/Authservice.cs</code></p>
+<h3 id="post-internalaccount-lookup">POST /internal/account-lookup<a class="anchor" href="#post-internalaccount-lookup" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/AccountModerationEndpoints.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/Authservice/Authservice.cs</code></p>
+<h3 id="post-internalaccount-ban">POST /internal/account-ban<a class="anchor" href="#post-internalaccount-ban" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/AccountModerationEndpoints.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/Authservice/Authservice.cs</code></p>
+<h3 id="get-gamedataversion">GET /gamedata/version<a class="anchor" href="#get-gamedataversion" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/GameDataEndpoints.cs</code> · called from <code>Assets/AxiomMMOKit/Editor/Core/AxiomServiceProbe.cs</code>, <code>Assets/AxiomMMOKit/Editor/Project/AxiomProjectHealth.cs</code></p>
+<h3 id="get-gamedatadb">GET /gamedata/db<a class="anchor" href="#get-gamedatadb" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/GameDataEndpoints.cs</code></p>
+<h3 id="post-login">POST /login<a class="anchor" href="#post-login" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/LoginEndpoint.cs</code> · called from <code>Assets/AxiomMMOKit/Editor/Project/ClientNetworkLoginInspector.cs</code>, <code>Tools/Axiom.LoadTest/AuthClient.cs</code></p>
+<h3 id="post-register">POST /register<a class="anchor" href="#post-register" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/RegisterEndpoint.cs</code> · called from <code>Tools/Axiom.LoadTest/AuthClient.cs</code></p>
+<h3 id="post-sessionlaunch-token">POST /session/launch-token<a class="anchor" href="#post-sessionlaunch-token" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/SessionEndpoints.cs</code></p>
+<h3 id="post-logout">POST /logout<a class="anchor" href="#post-logout" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/SessionEndpoints.cs</code> · called from <code>Assets/AxiomMMOKit/Editor/Project/ClientNetworkLoginInspector.cs</code></p>
+<h3 id="post-validate-session">POST /validate-session<a class="anchor" href="#post-validate-session" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/ValidateSessionEndpoint.cs</code> · called from <code>Servers/Axiom.Server.Auth/Program.cs</code>, <code>Servers/Axiom.Server.World/Core/Services/Authservice/Authservice.cs</code></p>
+<h3 id="get-worlds">GET /worlds<a class="anchor" href="#get-worlds" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/WorldDirectoryEndpoints.cs</code> · called from <code>Assets/AxiomMMOKit/Axiom.Client/Networking/WorldDirectoryClient.cs</code>, <code>Servers/Axiom.Server.Auth/Program.cs</code></p>
+<h3 id="get-worldscharacters">GET /worlds/characters<a class="anchor" href="#get-worldscharacters" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/WorldDirectoryEndpoints.cs</code> · called from <code>Assets/AxiomMMOKit/Axiom.Client/Networking/WorldDirectoryClient.cs</code></p>
+<h3 id="post-worldsheartbeat">POST /worlds/heartbeat<a class="anchor" href="#post-worldsheartbeat" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/WorldDirectoryEndpoints.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/WorldDirectoryReporter.cs</code></p>
+<h3 id="post-worldsselection-token">POST /worlds/selection-token<a class="anchor" href="#post-worldsselection-token" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auth/Endpoints/WorldDirectoryEndpoints.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/CharacterSelectionReturnService.cs</code></p>
+<h2 id="persistence-server">Persistence server<a class="anchor" href="#persistence-server" title="Permanent link">#</a></h2>
+<p><code>Axiom.Server.Persistence</code> · MessagePack - called only by the World server, with the x-internal-secret header.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Request</th>
+<th>Response</th>
+<th>Called from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/connect</code></td>
+<td><a href="#w2pconnectionrequest">W2PConnectionRequest</a></td>
+<td><a href="#p2wconnectresponse">P2WConnectResponse</a></td>
+<td><code>W2PConnectSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/hello-world</code></td>
+<td><a href="#w2phelloworldpacket">W2PHelloWorldPacket</a></td>
+<td></td>
+<td><code>W2PHelloWorldSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/create</code></td>
+<td><a href="#w2pcreatecharacterrequest">W2PCreateCharacterRequest</a></td>
+<td><a href="#p2wcreatecharacterresponse">P2WCreateCharacterResponse</a></td>
+<td><code>W2PCharacterCreateSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/find</code></td>
+<td><a href="#w2pcharacterfindrequest">W2PCharacterFindRequest</a></td>
+<td><a href="#p2wcharacterfindresponse">P2WCharacterFindResponse</a></td>
+<td><code>GmService.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/list</code></td>
+<td><a href="#w2pcharacterlistrequest">W2PCharacterListRequest</a></td>
+<td><a href="#p2wcharacterlistresponse">P2WCharacterListResponse</a></td>
+<td><code>WorldCharacterCounts.cs</code>, <code>W2PCharacterListSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/load</code></td>
+<td><a href="#w2pcharacterloadrequest">W2PCharacterLoadRequest</a></td>
+<td><a href="#p2wcharacterloadresponse">P2WCharacterLoadResponse</a></td>
+<td><code>W2PCharacterLoadSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/save</code></td>
+<td><a href="#w2pcharactersaverequest">W2PCharacterSaveRequest</a></td>
+<td></td>
+<td><code>W2PCharacterSaveSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/save-full</code></td>
+<td><a href="#w2pcharactersavefullrequest">W2PCharacterSaveFullRequest</a></td>
+<td><a href="#p2wcharactersavefullresponse">P2WCharacterSaveFullResponse</a></td>
+<td><code>W2PCharacterSaveFullSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/save-pair</code></td>
+<td><a href="#w2pcharactersavepairrequest">W2PCharacterSavePairRequest</a></td>
+<td><a href="#p2wcharactersavepairresponse">P2WCharacterSavePairResponse</a></td>
+<td><code>CharacterPersistence.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/trade/demand/list</code></td>
+<td><a href="#w2ptradedemandlistrequest">W2PTradeDemandListRequest</a></td>
+<td><a href="#p2wtradedemandlistresponse">P2WTradeDemandListResponse</a></td>
+<td><code>TradeDemandStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/trade/demand/set</code></td>
+<td><a href="#w2ptradedemandsetrequest">W2PTradeDemandSetRequest</a></td>
+<td><a href="#p2wtradedemandsetresponse">P2WTradeDemandSetResponse</a></td>
+<td><code>TradeDemandStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/shard/state/list</code></td>
+<td><a href="#w2pshardstatelistrequest">W2PShardStateListRequest</a></td>
+<td><a href="#p2wshardstatelistresponse">P2WShardStateListResponse</a></td>
+<td><code>ShardStateStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/shard/state/set</code></td>
+<td><a href="#w2pshardstatesetrequest">W2PShardStateSetRequest</a></td>
+<td><a href="#p2wshardstatesetresponse">P2WShardStateSetResponse</a></td>
+<td><code>ShardStateStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/inventory/save</code></td>
+<td><a href="#w2pinventorysaverequest">W2PInventorySaveRequest</a></td>
+<td></td>
+<td><code>W2PInventorySaveSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/characters/quests/save</code></td>
+<td><a href="#w2pquestsaverequest">W2PQuestSaveRequest</a></td>
+<td></td>
+<td><code>W2PQuestSaveSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/cashshop/catalog</code></td>
+<td><a href="#w2pcashshopcatalogrequest">W2PCashShopCatalogRequest</a></td>
+<td><a href="#p2wcashshopcatalogresponse">P2WCashShopCatalogResponse</a></td>
+<td><code>W2PCashShopSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/cashshop/buy</code></td>
+<td><a href="#w2pcashshopbuyrequest">W2PCashShopBuyRequest</a></td>
+<td><a href="#p2wcashshopbuyresponse">P2WCashShopBuyResponse</a></td>
+<td><code>W2PCashShopSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/cashshop/gift</code></td>
+<td><a href="#w2pcashshopgiftrequest">W2PCashShopGiftRequest</a></td>
+<td><a href="#p2wcashshopbuyresponse">P2WCashShopBuyResponse</a></td>
+<td><code>W2PCashShopSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/doodads/list</code></td>
+<td><a href="#w2pdoodadlistrequest">W2PDoodadListRequest</a></td>
+<td><a href="#p2wdoodadlistresponse">P2WDoodadListResponse</a></td>
+<td><code>DoodadStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/doodads/create</code></td>
+<td><a href="#w2pdoodadcreaterequest">W2PDoodadCreateRequest</a></td>
+<td><a href="#p2wdoodadcreateresponse">P2WDoodadCreateResponse</a></td>
+<td><code>DoodadStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/doodads/update</code></td>
+<td><a href="#w2pdoodadupdaterequest">W2PDoodadUpdateRequest</a></td>
+<td><a href="#p2wdoodadupdateresponse">P2WDoodadUpdateResponse</a></td>
+<td><code>DoodadStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/doodads/delete</code></td>
+<td><a href="#w2pdoodaddeleterequest">W2PDoodadDeleteRequest</a></td>
+<td><a href="#p2wdoodaddeleteresponse">P2WDoodadDeleteResponse</a></td>
+<td><code>DoodadStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/doodads/storage</code></td>
+<td><a href="#w2pdoodadstoragerequest">W2PDoodadStorageRequest</a></td>
+<td><a href="#p2wdoodadstorageresponse">P2WDoodadStorageResponse</a></td>
+<td><code>DoodadStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/guilds/of-character</code></td>
+<td><a href="#w2pguildofcharacterrequest">W2PGuildOfCharacterRequest</a></td>
+<td><a href="#p2wguildresponse">P2WGuildResponse</a></td>
+<td><code>GuildStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/guilds/command</code></td>
+<td><a href="#w2pguildcommandrequest">W2PGuildCommandRequest</a></td>
+<td><a href="#p2wguildresponse">P2WGuildResponse</a></td>
+<td><code>GuildStore.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/mail/list</code></td>
+<td><a href="#w2pmaillistrequest">W2PMailListRequest</a></td>
+<td><a href="#p2wmaillistresponse">P2WMailListResponse</a></td>
+<td><code>W2PMailSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/mail/claim</code></td>
+<td><a href="#w2pmailclaimrequest">W2PMailClaimRequest</a></td>
+<td><a href="#p2wmailclaimresponse">P2WMailClaimResponse</a></td>
+<td><code>W2PMailSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/mail/send</code></td>
+<td><a href="#w2pmailsendrequest">W2PMailSendRequest</a></td>
+<td><a href="#p2wmailsendresponse">P2WMailSendResponse</a></td>
+<td><code>MailDispatcher.cs</code>, <code>W2PMailSender.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/outbox/add</code></td>
+<td><a href="#w2poutboxaddrequest">W2POutboxAddRequest</a></td>
+<td><a href="#p2woutboxack">P2WOutboxAck</a></td>
+<td><code>WorldOutbox.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/outbox/done</code></td>
+<td><a href="#w2poutboxdonerequest">W2POutboxDoneRequest</a></td>
+<td><a href="#p2woutboxack">P2WOutboxAck</a></td>
+<td><code>WorldOutbox.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/outbox/pending</code></td>
+<td><a href="#w2poutboxpendingrequest">W2POutboxPendingRequest</a></td>
+<td><a href="#p2woutboxpendingresponse">P2WOutboxPendingResponse</a></td>
+<td><code>WorldOutbox.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/community/command</code></td>
+<td><a href="#communityrequest">CommunityRequest</a></td>
+<td><a href="#communityreply">CommunityReply</a></td>
+<td><code>C2WCommunityHandler.cs</code>, <code>FamilyNameService.cs</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="post-connect">POST /connect<a class="anchor" href="#post-connect" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PConnectSender.cs</code></p>
+<h3 id="post-hello-world">POST /hello-world<a class="anchor" href="#post-hello-world" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PHelloWorldSender.cs</code></p>
+<h3 id="post-characterscreate">POST /characters/create<a class="anchor" href="#post-characterscreate" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCharacterCreateSender.cs</code></p>
+<h3 id="post-charactersfind">POST /characters/find<a class="anchor" href="#post-charactersfind" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Staff/GmService.cs</code></p>
+<h3 id="post-characterslist">POST /characters/list<a class="anchor" href="#post-characterslist" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.Auth/Services/WorldCharacterCounts.cs</code>, <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCharacterListSender.cs</code></p>
+<h3 id="post-charactersload">POST /characters/load<a class="anchor" href="#post-charactersload" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCharacterLoadSender.cs</code></p>
+<h3 id="post-characterssave">POST /characters/save<a class="anchor" href="#post-characterssave" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCharacterSaveSender.cs</code></p>
+<h3 id="post-characterssave-full">POST /characters/save-full<a class="anchor" href="#post-characterssave-full" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCharacterSaveFullSender.cs</code></p>
+<h3 id="post-characterssave-pair">POST /characters/save-pair<a class="anchor" href="#post-characterssave-pair" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Players/Saving/CharacterPersistence.cs</code></p>
+<h3 id="post-tradedemandlist">POST /trade/demand/list<a class="anchor" href="#post-tradedemandlist" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Trade/TradeDemandStore.cs</code></p>
+<h3 id="post-tradedemandset">POST /trade/demand/set<a class="anchor" href="#post-tradedemandset" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Trade/TradeDemandStore.cs</code></p>
+<h3 id="post-shardstatelist">POST /shard/state/list<a class="anchor" href="#post-shardstatelist" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Pvp/ShardStateStore.cs</code></p>
+<h3 id="post-shardstateset">POST /shard/state/set<a class="anchor" href="#post-shardstateset" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Pvp/ShardStateStore.cs</code></p>
+<h3 id="post-charactersinventorysave">POST /characters/inventory/save<a class="anchor" href="#post-charactersinventorysave" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PInventorySaveSender.cs</code></p>
+<h3 id="post-charactersquestssave">POST /characters/quests/save<a class="anchor" href="#post-charactersquestssave" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PQuestSaveSender.cs</code></p>
+<h3 id="post-cashshopcatalog">POST /cashshop/catalog<a class="anchor" href="#post-cashshopcatalog" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCashShopSender.cs</code></p>
+<h3 id="post-cashshopbuy">POST /cashshop/buy<a class="anchor" href="#post-cashshopbuy" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCashShopSender.cs</code></p>
+<h3 id="post-cashshopgift">POST /cashshop/gift<a class="anchor" href="#post-cashshopgift" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PCashShopSender.cs</code></p>
+<h3 id="post-doodadslist">POST /doodads/list<a class="anchor" href="#post-doodadslist" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Doodads/DoodadStore.cs</code></p>
+<h3 id="post-doodadscreate">POST /doodads/create<a class="anchor" href="#post-doodadscreate" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Doodads/DoodadStore.cs</code></p>
+<h3 id="post-doodadsupdate">POST /doodads/update<a class="anchor" href="#post-doodadsupdate" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Doodads/DoodadStore.cs</code></p>
+<h3 id="post-doodadsdelete">POST /doodads/delete<a class="anchor" href="#post-doodadsdelete" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Doodads/DoodadStore.cs</code></p>
+<h3 id="post-doodadsstorage">POST /doodads/storage<a class="anchor" href="#post-doodadsstorage" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Doodads/DoodadStore.cs</code></p>
+<h3 id="post-guildsof-character">POST /guilds/of-character<a class="anchor" href="#post-guildsof-character" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Social/GuildStore.cs</code></p>
+<h3 id="post-guildscommand">POST /guilds/command<a class="anchor" href="#post-guildscommand" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Social/GuildStore.cs</code></p>
+<h3 id="post-maillist">POST /mail/list<a class="anchor" href="#post-maillist" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PMailSender.cs</code></p>
+<h3 id="post-mailclaim">POST /mail/claim<a class="anchor" href="#post-mailclaim" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PMailSender.cs</code></p>
+<h3 id="post-mailsend">POST /mail/send<a class="anchor" href="#post-mailsend" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.Auction/Services/MailDispatcher.cs</code>, <code>Servers/Axiom.Server.World/Core/PersistenceServer/W2PSenders/W2PMailSender.cs</code></p>
+<h3 id="post-outboxadd">POST /outbox/add<a class="anchor" href="#post-outboxadd" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/WorldOutbox.cs</code></p>
+<h3 id="post-outboxdone">POST /outbox/done<a class="anchor" href="#post-outboxdone" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/WorldOutbox.cs</code></p>
+<h3 id="post-outboxpending">POST /outbox/pending<a class="anchor" href="#post-outboxpending" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Services/WorldOutbox.cs</code></p>
+<h3 id="post-communitycommand">POST /community/command<a class="anchor" href="#post-communitycommand" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Persistence/Api/CommunityEndpoints.cs</code> · called from <code>Servers/Axiom.Server.World/Core/Packets/C2WHandlers/C2WCommunityHandler.cs</code>, <code>Servers/Axiom.Server.World/Core/Social/FamilyNameService.cs</code></p>
+<h2 id="auction-server">Auction server<a class="anchor" href="#auction-server" title="Permanent link">#</a></h2>
+<p><code>Axiom.Server.Auction</code> · MessagePack - called only by the World server, with the x-internal-secret header.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Request</th>
+<th>Response</th>
+<th>Called from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/health</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/browse</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/create</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/get</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/take</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/bid</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/bids</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auctions/expire</code></td>
+<td></td>
+<td></td>
+<td><code>AuctionClient.cs</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="get-health">GET /health<a class="anchor" href="#get-health" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionsbrowse">POST /auctions/browse<a class="anchor" href="#post-auctionsbrowse" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionscreate">POST /auctions/create<a class="anchor" href="#post-auctionscreate" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionsget">POST /auctions/get<a class="anchor" href="#post-auctionsget" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionstake">POST /auctions/take<a class="anchor" href="#post-auctionstake" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionsbid">POST /auctions/bid<a class="anchor" href="#post-auctionsbid" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionsbids">POST /auctions/bids<a class="anchor" href="#post-auctionsbids" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h3 id="post-auctionsexpire">POST /auctions/expire<a class="anchor" href="#post-auctionsexpire" title="Permanent link">#</a></h3>
+<p>Handled in <code>Servers/Axiom.Server.Auction/Program.cs</code> · called from <code>Servers/Axiom.Server.World/Core/AuctionServer/AuctionClient.cs</code></p>
+<h2 id="request-and-response-types">Request and response types<a class="anchor" href="#request-and-response-types" title="Permanent link">#</a></h2>
+<h3 id="accountaccessresponse">AccountAccessResponse<a class="anchor" href="#accountaccessresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Valid</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccessLevel</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="banresponse">BanResponse<a class="anchor" href="#banresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Endpoints/AccountModerationEndpoints.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ok</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Username</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BannedUntilUnix</code></td>
+<td><code>long</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="communityreply">CommunityReply<a class="anchor" href="#communityreply" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Social/CommunityContracts.cs</code></p>
+<h3 id="communityrequest">CommunityRequest<a class="anchor" href="#communityrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Social/CommunityContracts.cs</code></p>
+<h3 id="errorresponse">ErrorResponse<a class="anchor" href="#errorresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Error</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="loginrequest">LoginRequest<a class="anchor" href="#loginrequest" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Username</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Password</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="loginresponse">LoginResponse<a class="anchor" href="#loginresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Success</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Token</code></td>
+<td><code>string?</code></td>
+<td>One-shot launch token, valid for Auth:LaunchTokenSeconds.</td>
+</tr>
+<tr>
+<td><code>RefreshToken</code></td>
+<td><code>string?</code></td>
+<td>Long-lived credential the launcher keeps instead of the password and trades for launch tokens at /session/launch-token. Single use: each trade returns a replacement.</td>
+</tr>
+<tr>
+<td><code>Username</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="logoutresponse">LogoutResponse<a class="anchor" href="#logoutresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Success</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="lookupresponse">LookupResponse<a class="anchor" href="#lookupresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Endpoints/AccountModerationEndpoints.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Found</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Username</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccessLevel</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BannedUntilUnix</code></td>
+<td><code>long</code></td>
+<td>0 = not banned, -1 = permanently, otherwise Unix seconds.</td>
+</tr>
+<tr>
+<td><code>BanReason</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BannedBy</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="p2wcashshopbuyresponse">P2WCashShopBuyResponse<a class="anchor" href="#p2wcashshopbuyresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wcashshopcatalogresponse">P2WCashShopCatalogResponse<a class="anchor" href="#p2wcashshopcatalogresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wcharacterfindresponse">P2WCharacterFindResponse<a class="anchor" href="#p2wcharacterfindresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PStaffRequests.cs</code></p>
+<h3 id="p2wcharacterlistresponse">P2WCharacterListResponse<a class="anchor" href="#p2wcharacterlistresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WCharacterListResponse.cs</code></p>
+<h3 id="p2wcharacterloadresponse">P2WCharacterLoadResponse<a class="anchor" href="#p2wcharacterloadresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WCharacterLoadResponse.cs</code></p>
+<h3 id="p2wcharactersavefullresponse">P2WCharacterSaveFullResponse<a class="anchor" href="#p2wcharactersavefullresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WCharacterSaveFullResponse.cs</code></p>
+<h3 id="p2wcharactersavepairresponse">P2WCharacterSavePairResponse<a class="anchor" href="#p2wcharactersavepairresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WTradeResponses.cs</code></p>
+<h3 id="p2wconnectresponse">P2WConnectResponse<a class="anchor" href="#p2wconnectresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WConnectResponse.cs</code></p>
+<h3 id="p2wcreatecharacterresponse">P2WCreateCharacterResponse<a class="anchor" href="#p2wcreatecharacterresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WCreateCharacterResponse.cs</code></p>
+<h3 id="p2wdoodadcreateresponse">P2WDoodadCreateResponse<a class="anchor" href="#p2wdoodadcreateresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wdoodaddeleteresponse">P2WDoodadDeleteResponse<a class="anchor" href="#p2wdoodaddeleteresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wdoodadlistresponse">P2WDoodadListResponse<a class="anchor" href="#p2wdoodadlistresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wdoodadstorageresponse">P2WDoodadStorageResponse<a class="anchor" href="#p2wdoodadstorageresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wdoodadupdateresponse">P2WDoodadUpdateResponse<a class="anchor" href="#p2wdoodadupdateresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wguildresponse">P2WGuildResponse<a class="anchor" href="#p2wguildresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildDto.cs</code></p>
+<h3 id="p2wmailclaimresponse">P2WMailClaimResponse<a class="anchor" href="#p2wmailclaimresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wmaillistresponse">P2WMailListResponse<a class="anchor" href="#p2wmaillistresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2wmailsendresponse">P2WMailSendResponse<a class="anchor" href="#p2wmailsendresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WMarketResponses.cs</code></p>
+<h3 id="p2woutboxack">P2WOutboxAck<a class="anchor" href="#p2woutboxack" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PWorldOutbox.cs</code></p>
+<h3 id="p2woutboxpendingresponse">P2WOutboxPendingResponse<a class="anchor" href="#p2woutboxpendingresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PWorldOutbox.cs</code></p>
+<h3 id="p2wshardstatelistresponse">P2WShardStateListResponse<a class="anchor" href="#p2wshardstatelistresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WPvpResponses.cs</code></p>
+<h3 id="p2wshardstatesetresponse">P2WShardStateSetResponse<a class="anchor" href="#p2wshardstatesetresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WPvpResponses.cs</code></p>
+<h3 id="p2wtradedemandlistresponse">P2WTradeDemandListResponse<a class="anchor" href="#p2wtradedemandlistresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WTradeResponses.cs</code></p>
+<h3 id="p2wtradedemandsetresponse">P2WTradeDemandSetResponse<a class="anchor" href="#p2wtradedemandsetresponse" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/P2W/P2WTradeResponses.cs</code></p>
+<h3 id="refreshrequest">RefreshRequest<a class="anchor" href="#refreshrequest" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RefreshToken</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="registerrequest">RegisterRequest<a class="anchor" href="#registerrequest" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Username</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Password</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="registerresponse">RegisterResponse<a class="anchor" href="#registerresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Success</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string?</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="validatesessionresponse">ValidateSessionResponse<a class="anchor" href="#validatesessionresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/AuthContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Valid</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AccessLevel</code></td>
+<td><code>int</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="w2pcashshopbuyrequest">W2PCashShopBuyRequest<a class="anchor" href="#w2pcashshopbuyrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pcashshopcatalogrequest">W2PCashShopCatalogRequest<a class="anchor" href="#w2pcashshopcatalogrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pcashshopgiftrequest">W2PCashShopGiftRequest<a class="anchor" href="#w2pcashshopgiftrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pcharacterfindrequest">W2PCharacterFindRequest<a class="anchor" href="#w2pcharacterfindrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PStaffRequests.cs</code></p>
+<h3 id="w2pcharacterlistrequest">W2PCharacterListRequest<a class="anchor" href="#w2pcharacterlistrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PCharacterListRequest.cs</code></p>
+<h3 id="w2pcharacterloadrequest">W2PCharacterLoadRequest<a class="anchor" href="#w2pcharacterloadrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PCharacterLoadRequest.cs</code></p>
+<h3 id="w2pcharactersavefullrequest">W2PCharacterSaveFullRequest<a class="anchor" href="#w2pcharactersavefullrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PCharacterSaveFullRequest.cs</code></p>
+<h3 id="w2pcharactersavepairrequest">W2PCharacterSavePairRequest<a class="anchor" href="#w2pcharactersavepairrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PTradeRequests.cs</code></p>
+<h3 id="w2pcharactersaverequest">W2PCharacterSaveRequest<a class="anchor" href="#w2pcharactersaverequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PCharacterSaveRequest.cs</code></p>
+<h3 id="w2pconnectionrequest">W2PConnectionRequest<a class="anchor" href="#w2pconnectionrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PConnectionRequest.cs</code></p>
+<h3 id="w2pcreatecharacterrequest">W2PCreateCharacterRequest<a class="anchor" href="#w2pcreatecharacterrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PCreateCharacterRequest.cs</code></p>
+<h3 id="w2pdoodadcreaterequest">W2PDoodadCreateRequest<a class="anchor" href="#w2pdoodadcreaterequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pdoodaddeleterequest">W2PDoodadDeleteRequest<a class="anchor" href="#w2pdoodaddeleterequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pdoodadlistrequest">W2PDoodadListRequest<a class="anchor" href="#w2pdoodadlistrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pdoodadstoragerequest">W2PDoodadStorageRequest<a class="anchor" href="#w2pdoodadstoragerequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pdoodadupdaterequest">W2PDoodadUpdateRequest<a class="anchor" href="#w2pdoodadupdaterequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pguildcommandrequest">W2PGuildCommandRequest<a class="anchor" href="#w2pguildcommandrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildDto.cs</code></p>
+<h3 id="w2pguildofcharacterrequest">W2PGuildOfCharacterRequest<a class="anchor" href="#w2pguildofcharacterrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/GuildDto.cs</code></p>
+<h3 id="w2phelloworldpacket">W2PHelloWorldPacket<a class="anchor" href="#w2phelloworldpacket" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PHelloWorldpacket.cs</code></p>
+<h3 id="w2pinventorysaverequest">W2PInventorySaveRequest<a class="anchor" href="#w2pinventorysaverequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PInventorySaveRequest.cs</code></p>
+<h3 id="w2pmailclaimrequest">W2PMailClaimRequest<a class="anchor" href="#w2pmailclaimrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pmaillistrequest">W2PMailListRequest<a class="anchor" href="#w2pmaillistrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2pmailsendrequest">W2PMailSendRequest<a class="anchor" href="#w2pmailsendrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PMarketRequests.cs</code></p>
+<h3 id="w2poutboxaddrequest">W2POutboxAddRequest<a class="anchor" href="#w2poutboxaddrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PWorldOutbox.cs</code></p>
+<h3 id="w2poutboxdonerequest">W2POutboxDoneRequest<a class="anchor" href="#w2poutboxdonerequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PWorldOutbox.cs</code></p>
+<h3 id="w2poutboxpendingrequest">W2POutboxPendingRequest<a class="anchor" href="#w2poutboxpendingrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PWorldOutbox.cs</code></p>
+<h3 id="w2pquestsaverequest">W2PQuestSaveRequest<a class="anchor" href="#w2pquestsaverequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PQuestSaveRequest.cs</code></p>
+<h3 id="w2pshardstatelistrequest">W2PShardStateListRequest<a class="anchor" href="#w2pshardstatelistrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PPvpRequests.cs</code></p>
+<h3 id="w2pshardstatesetrequest">W2PShardStateSetRequest<a class="anchor" href="#w2pshardstatesetrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PPvpRequests.cs</code></p>
+<h3 id="w2ptradedemandlistrequest">W2PTradeDemandListRequest<a class="anchor" href="#w2ptradedemandlistrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PTradeRequests.cs</code></p>
+<h3 id="w2ptradedemandsetrequest">W2PTradeDemandSetRequest<a class="anchor" href="#w2ptradedemandsetrequest" title="Permanent link">#</a></h3>
+<p><code>Shared/Axiom.Network/Shared/Packets/W2P/W2PTradeRequests.cs</code></p>
+<h3 id="worldselectiontokenresponse">WorldSelectionTokenResponse<a class="anchor" href="#worldselectiontokenresponse" title="Permanent link">#</a></h3>
+<p><code>Servers/Axiom.Server.Auth/Contracts/WorldDirectoryContracts.cs</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Success</code></td>
+<td><code>bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Token</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="packets.html"><span>Previous</span>Packet Reference</a>
+<a class="next" href="worlddb.html"><span>Next</span>worldserver.db Reference</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#auth-server">Auth server</a>
+<ul>
+<li><a href="#post-internalaccount-access">POST /internal/account-access</a>
+</li>
+<li><a href="#post-internalaccount-lookup">POST /internal/account-lookup</a>
+</li>
+<li><a href="#post-internalaccount-ban">POST /internal/account-ban</a>
+</li>
+<li><a href="#get-gamedataversion">GET /gamedata/version</a>
+</li>
+<li><a href="#get-gamedatadb">GET /gamedata/db</a>
+</li>
+<li><a href="#post-login">POST /login</a>
+</li>
+<li><a href="#post-register">POST /register</a>
+</li>
+<li><a href="#post-sessionlaunch-token">POST /session/launch-token</a>
+</li>
+<li><a href="#post-logout">POST /logout</a>
+</li>
+<li><a href="#post-validate-session">POST /validate-session</a>
+</li>
+<li><a href="#get-worlds">GET /worlds</a>
+</li>
+<li><a href="#get-worldscharacters">GET /worlds/characters</a>
+</li>
+<li><a href="#post-worldsheartbeat">POST /worlds/heartbeat</a>
+</li>
+<li><a href="#post-worldsselection-token">POST /worlds/selection-token</a>
+</li>
+</ul>
+</li>
+<li><a href="#persistence-server">Persistence server</a>
+<ul>
+<li><a href="#post-connect">POST /connect</a>
+</li>
+<li><a href="#post-hello-world">POST /hello-world</a>
+</li>
+<li><a href="#post-characterscreate">POST /characters/create</a>
+</li>
+<li><a href="#post-charactersfind">POST /characters/find</a>
+</li>
+<li><a href="#post-characterslist">POST /characters/list</a>
+</li>
+<li><a href="#post-charactersload">POST /characters/load</a>
+</li>
+<li><a href="#post-characterssave">POST /characters/save</a>
+</li>
+<li><a href="#post-characterssave-full">POST /characters/save-full</a>
+</li>
+<li><a href="#post-characterssave-pair">POST /characters/save-pair</a>
+</li>
+<li><a href="#post-tradedemandlist">POST /trade/demand/list</a>
+</li>
+<li><a href="#post-tradedemandset">POST /trade/demand/set</a>
+</li>
+<li><a href="#post-shardstatelist">POST /shard/state/list</a>
+</li>
+<li><a href="#post-shardstateset">POST /shard/state/set</a>
+</li>
+<li><a href="#post-charactersinventorysave">POST /characters/inventory/save</a>
+</li>
+<li><a href="#post-charactersquestssave">POST /characters/quests/save</a>
+</li>
+<li><a href="#post-cashshopcatalog">POST /cashshop/catalog</a>
+</li>
+<li><a href="#post-cashshopbuy">POST /cashshop/buy</a>
+</li>
+<li><a href="#post-cashshopgift">POST /cashshop/gift</a>
+</li>
+<li><a href="#post-doodadslist">POST /doodads/list</a>
+</li>
+<li><a href="#post-doodadscreate">POST /doodads/create</a>
+</li>
+<li><a href="#post-doodadsupdate">POST /doodads/update</a>
+</li>
+<li><a href="#post-doodadsdelete">POST /doodads/delete</a>
+</li>
+<li><a href="#post-doodadsstorage">POST /doodads/storage</a>
+</li>
+<li><a href="#post-guildsof-character">POST /guilds/of-character</a>
+</li>
+<li><a href="#post-guildscommand">POST /guilds/command</a>
+</li>
+<li><a href="#post-maillist">POST /mail/list</a>
+</li>
+<li><a href="#post-mailclaim">POST /mail/claim</a>
+</li>
+<li><a href="#post-mailsend">POST /mail/send</a>
+</li>
+<li><a href="#post-outboxadd">POST /outbox/add</a>
+</li>
+<li><a href="#post-outboxdone">POST /outbox/done</a>
+</li>
+<li><a href="#post-outboxpending">POST /outbox/pending</a>
+</li>
+<li><a href="#post-communitycommand">POST /community/command</a>
+</li>
+</ul>
+</li>
+<li><a href="#auction-server">Auction server</a>
+<ul>
+<li><a href="#get-health">GET /health</a>
+</li>
+<li><a href="#post-auctionsbrowse">POST /auctions/browse</a>
+</li>
+<li><a href="#post-auctionscreate">POST /auctions/create</a>
+</li>
+<li><a href="#post-auctionsget">POST /auctions/get</a>
+</li>
+<li><a href="#post-auctionstake">POST /auctions/take</a>
+</li>
+<li><a href="#post-auctionsbid">POST /auctions/bid</a>
+</li>
+<li><a href="#post-auctionsbids">POST /auctions/bids</a>
+</li>
+<li><a href="#post-auctionsexpire">POST /auctions/expire</a>
+</li>
+</ul>
+</li>
+<li><a href="#request-and-response-types">Request and response types</a>
+<ul>
+<li><a href="#accountaccessresponse">AccountAccessResponse</a>
+</li>
+<li><a href="#banresponse">BanResponse</a>
+</li>
+<li><a href="#communityreply">CommunityReply</a>
+</li>
+<li><a href="#communityrequest">CommunityRequest</a>
+</li>
+<li><a href="#errorresponse">ErrorResponse</a>
+</li>
+<li><a href="#loginrequest">LoginRequest</a>
+</li>
+<li><a href="#loginresponse">LoginResponse</a>
+</li>
+<li><a href="#logoutresponse">LogoutResponse</a>
+</li>
+<li><a href="#lookupresponse">LookupResponse</a>
+</li>
+<li><a href="#p2wcashshopbuyresponse">P2WCashShopBuyResponse</a>
+</li>
+<li><a href="#p2wcashshopcatalogresponse">P2WCashShopCatalogResponse</a>
+</li>
+<li><a href="#p2wcharacterfindresponse">P2WCharacterFindResponse</a>
+</li>
+<li><a href="#p2wcharacterlistresponse">P2WCharacterListResponse</a>
+</li>
+<li><a href="#p2wcharacterloadresponse">P2WCharacterLoadResponse</a>
+</li>
+<li><a href="#p2wcharactersavefullresponse">P2WCharacterSaveFullResponse</a>
+</li>
+<li><a href="#p2wcharactersavepairresponse">P2WCharacterSavePairResponse</a>
+</li>
+<li><a href="#p2wconnectresponse">P2WConnectResponse</a>
+</li>
+<li><a href="#p2wcreatecharacterresponse">P2WCreateCharacterResponse</a>
+</li>
+<li><a href="#p2wdoodadcreateresponse">P2WDoodadCreateResponse</a>
+</li>
+<li><a href="#p2wdoodaddeleteresponse">P2WDoodadDeleteResponse</a>
+</li>
+<li><a href="#p2wdoodadlistresponse">P2WDoodadListResponse</a>
+</li>
+<li><a href="#p2wdoodadstorageresponse">P2WDoodadStorageResponse</a>
+</li>
+<li><a href="#p2wdoodadupdateresponse">P2WDoodadUpdateResponse</a>
+</li>
+<li><a href="#p2wguildresponse">P2WGuildResponse</a>
+</li>
+<li><a href="#p2wmailclaimresponse">P2WMailClaimResponse</a>
+</li>
+<li><a href="#p2wmaillistresponse">P2WMailListResponse</a>
+</li>
+<li><a href="#p2wmailsendresponse">P2WMailSendResponse</a>
+</li>
+<li><a href="#p2woutboxack">P2WOutboxAck</a>
+</li>
+<li><a href="#p2woutboxpendingresponse">P2WOutboxPendingResponse</a>
+</li>
+<li><a href="#p2wshardstatelistresponse">P2WShardStateListResponse</a>
+</li>
+<li><a href="#p2wshardstatesetresponse">P2WShardStateSetResponse</a>
+</li>
+<li><a href="#p2wtradedemandlistresponse">P2WTradeDemandListResponse</a>
+</li>
+<li><a href="#p2wtradedemandsetresponse">P2WTradeDemandSetResponse</a>
+</li>
+<li><a href="#refreshrequest">RefreshRequest</a>
+</li>
+<li><a href="#registerrequest">RegisterRequest</a>
+</li>
+<li><a href="#registerresponse">RegisterResponse</a>
+</li>
+<li><a href="#validatesessionresponse">ValidateSessionResponse</a>
+</li>
+<li><a href="#w2pcashshopbuyrequest">W2PCashShopBuyRequest</a>
+</li>
+<li><a href="#w2pcashshopcatalogrequest">W2PCashShopCatalogRequest</a>
+</li>
+<li><a href="#w2pcashshopgiftrequest">W2PCashShopGiftRequest</a>
+</li>
+<li><a href="#w2pcharacterfindrequest">W2PCharacterFindRequest</a>
+</li>
+<li><a href="#w2pcharacterlistrequest">W2PCharacterListRequest</a>
+</li>
+<li><a href="#w2pcharacterloadrequest">W2PCharacterLoadRequest</a>
+</li>
+<li><a href="#w2pcharactersavefullrequest">W2PCharacterSaveFullRequest</a>
+</li>
+<li><a href="#w2pcharactersavepairrequest">W2PCharacterSavePairRequest</a>
+</li>
+<li><a href="#w2pcharactersaverequest">W2PCharacterSaveRequest</a>
+</li>
+<li><a href="#w2pconnectionrequest">W2PConnectionRequest</a>
+</li>
+<li><a href="#w2pcreatecharacterrequest">W2PCreateCharacterRequest</a>
+</li>
+<li><a href="#w2pdoodadcreaterequest">W2PDoodadCreateRequest</a>
+</li>
+<li><a href="#w2pdoodaddeleterequest">W2PDoodadDeleteRequest</a>
+</li>
+<li><a href="#w2pdoodadlistrequest">W2PDoodadListRequest</a>
+</li>
+<li><a href="#w2pdoodadstoragerequest">W2PDoodadStorageRequest</a>
+</li>
+<li><a href="#w2pdoodadupdaterequest">W2PDoodadUpdateRequest</a>
+</li>
+<li><a href="#w2pguildcommandrequest">W2PGuildCommandRequest</a>
+</li>
+<li><a href="#w2pguildofcharacterrequest">W2PGuildOfCharacterRequest</a>
+</li>
+<li><a href="#w2phelloworldpacket">W2PHelloWorldPacket</a>
+</li>
+<li><a href="#w2pinventorysaverequest">W2PInventorySaveRequest</a>
+</li>
+<li><a href="#w2pmailclaimrequest">W2PMailClaimRequest</a>
+</li>
+<li><a href="#w2pmaillistrequest">W2PMailListRequest</a>
+</li>
+<li><a href="#w2pmailsendrequest">W2PMailSendRequest</a>
+</li>
+<li><a href="#w2poutboxaddrequest">W2POutboxAddRequest</a>
+</li>
+<li><a href="#w2poutboxdonerequest">W2POutboxDoneRequest</a>
+</li>
+<li><a href="#w2poutboxpendingrequest">W2POutboxPendingRequest</a>
+</li>
+<li><a href="#w2pquestsaverequest">W2PQuestSaveRequest</a>
+</li>
+<li><a href="#w2pshardstatelistrequest">W2PShardStateListRequest</a>
+</li>
+<li><a href="#w2pshardstatesetrequest">W2PShardStateSetRequest</a>
+</li>
+<li><a href="#w2ptradedemandlistrequest">W2PTradeDemandListRequest</a>
+</li>
+<li><a href="#w2ptradedemandsetrequest">W2PTradeDemandSetRequest</a>
+</li>
+<li><a href="#worldselectiontokenresponse">WorldSelectionTokenResponse</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

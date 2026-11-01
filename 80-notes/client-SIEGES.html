@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sieges · Axiom Docs</title>
+<meta name="description" content="classic MMO-style castle sieges: guilds bid for the right to attack, both sides sign up on rosters, and the battle is fought with siege weapons, forward camps, respawn waves and rings of walls. The castle&#x27;s owner…">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html" class="active" aria-current="page">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/SIEGES.md</code></div>
+<h1 id="sieges">Sieges<a class="anchor" href="#sieges" title="Permanent link">#</a></h1>
+<p>classic MMO-style castle sieges: guilds bid for the right to attack, both
+sides sign up on rosters, and the battle is fought with siege weapons,
+forward camps, respawn waves and rings of walls. The castle's owner
+upgrades it from the territory's treasury. Everything is data, so a new
+castle, weapon, reward or upgrade needs no code.</p>
+<p>(Siege v2, protocol 27. It replaces "Declare siege" from Phase 10. The
+territory basics—taxes, the treasury, guards, the blessing—are unchanged
+and are still described in <code>PHASE10.md</code>.)</p>
+<hr>
+<h2 id="contents">Contents<a class="anchor" href="#contents" title="Permanent link">#</a></h2>
+<ol>
+<li><a href="#1-the-weekly-cycle">The weekly cycle</a></li>
+<li><a href="#2-playing-a-siege">Playing a siege</a>
+   - <a href="#2b-claiming-a-castle-nobody-holds-the-lodestone">2b. Claiming a castle nobody holds (the Lodestone)</a></li>
+<li><a href="#3-the-siege-window-and-hud">The siege window and HUD</a></li>
+<li><a href="#4-setting-up-a-territory">Setting up a territory</a></li>
+<li><a href="#5-gates-walls-and-rings">Gates, walls and rings</a></li>
+<li><a href="#6-siege-weapons">Siege weapons</a></li>
+<li><a href="#7-camps">Camps</a></li>
+<li><a href="#8-rewards">Rewards</a></li>
+<li><a href="#9-castle-upgrades">Castle upgrades</a></li>
+<li><a href="#10-rules">Rules</a></li>
+<li><a href="#11-what-ships-greywatch">What ships (Greywatch)</a></li>
+<li><a href="#12-testing-a-siege-quickly">Testing a siege quickly</a></li>
+<li><a href="#13-troubleshooting">Troubleshooting</a></li>
+<li><a href="#14-reference">Reference</a></li>
+</ol>
+<hr>
+<h2 id="1-the-weekly-cycle">1. The weekly cycle<a class="anchor" href="#1-the-weekly-cycle" title="Permanent link">#</a></h2>
+<p>Each territory has one siege slot a week (<code>SiegeDayOfWeek</code> at
+<code>SiegeHourUtc</code>, UTC). Its cycle goes like this:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>When</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Peace</strong></td>
+<td>Most of the week</td>
+<td>Nothing. The window shows when bidding opens.</td>
+</tr>
+<tr>
+<td><strong>Bidding</strong></td>
+<td>From <code>BidOpenHours</code> until <code>BidCloseHours</code> before the slot (default 72 h → 24 h)</td>
+<td>Guild leaders bid gold for the attacker slot. The gold is taken at once. A raise pays only the difference.</td>
+</tr>
+<tr>
+<td><strong>Preparation</strong></td>
+<td>From bidding close to the slot</td>
+<td>The <strong>highest bid attacks</strong>; on a tie, the earlier bid wins. The winning gold is spent. Every other bid is <strong>mailed back</strong>. Both sides fill their rosters.</td>
+</tr>
+<tr>
+<td><strong>Active</strong></td>
+<td><code>SiegeMinutes</code> from the slot</td>
+<td>The battle (section 2).</td>
+</tr>
+<tr>
+<td><em>(Protection)</em></td>
+<td><code>PeaceHours</code> after a siege</td>
+<td>No bidding opens during this time. 0 means the next week's slot as usual.</td>
+</tr>
+</tbody>
+</table></div>
+<p>If nobody bids, there is no siege that week.</p>
+<p><strong>Safety.</strong> Bids, rosters, scores and the castle tier are all saved
+(<code>shard_state</code>). A restart keeps everything:
+- A siege due while the server was down starts on restart if there's
+  still time.
+- Refunds use delivery keys, so a crash or retry can never pay anyone
+  twice.
+- A bid is only forgotten once its refund is in the mailbox.</p>
+<hr>
+<h2 id="2-playing-a-siege">2. Playing a siege<a class="anchor" href="#2-playing-a-siege" title="Permanent link">#</a></h2>
+<h3 id="bidding-guild-leaders">Bidding (guild leaders)<a class="anchor" href="#bidding-guild-leaders" title="Permanent link">#</a></h3>
+<ol>
+<li>Open the siege window: the <strong>Siege Board</strong>, <code>/siege</code>, or <strong>Siege...</strong>
+   next to the territory in the Faction &amp; PvP window (<code>/faction</code>).</li>
+<li>During Bidding, type an amount such as <code>12g</code>, <code>12g 50s</code> or <code>1500s</code> (a
+   plain number means gold) and click <strong>Bid</strong>.</li>
+</ol>
+<p>Limits:
+- The bid must be at least the territory's minimum (<code>DeclareCostGold</code>).
+- To take the top spot, you must beat the current top bid by at least
+  <code>SiegeBidOutbidPct</code> (5%).
+- A guild can bid on one siege at a time.
+- The castle's own guild can't bid.
+- Only the leader who placed the bid can raise it.</p>
+<h3 id="joining-a-side">Joining a side<a class="anchor" href="#joining-a-side" title="Permanent link">#</a></h3>
+<p>Once the attacker is known (Preparation, and during the battle), anyone
+can click <strong>Fight for the attackers</strong> or <strong>Fight for the defenders</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Who</th>
+<th>Joins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Members of the attacking guild</td>
+<td>The attackers, at once</td>
+</tr>
+<tr>
+<td>Members of the castle's guild (or, if nobody's guild holds it, the owner faction's players)</td>
+<td>The defenders, at once</td>
+</tr>
+<tr>
+<td>Anyone else (<strong>mercenaries</strong>)</td>
+<td>Their request waits until that side's leader (the attacking or owning guild's leader) clicks <strong>Accept</strong> or <strong>Decline</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Other rules:
+- <code>RosterCap</code> limits each side.
+- Leaders can <strong>Remove</strong> anyone from their side.
+- <strong>Leave the roster</strong> takes you off it.
+- Requests nobody answered are dropped when the battle starts.</p>
+<h3 id="the-battle">The battle<a class="anchor" href="#the-battle" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Lockdown.</strong> Only rostered players may be inside the battle area
+  (<code>LockdownRadius</code> round the castle). Anyone else is sent outside every
+  couple of seconds.</li>
+<li><strong>Sides, not factions.</strong> Inside the battle area, the two rosters fight
+  each other whatever their factions, and it's never a crime. You can't
+  hurt your own side.</li>
+<li><strong>Gates and walls.</strong> Attackers break them with <strong>Batter</strong>, Siege Charges
+  or siege weapons. Defenders <strong>Repair</strong> them (2 Lumber). Inner rings stay
+  sealed until the outer gates fall (section 5).</li>
+<li><strong>Siege weapons.</strong> Attackers set up <strong>Battering Rams</strong> and
+  <strong>Trebuchets</strong> from kits. Defenders man the <strong>Castle Cannons</strong>. To fire,
+  face the target and use the weapon (section 6).</li>
+<li><strong>Camps.</strong> Attackers raise <strong>Siege Camps</strong>. Attackers who die come back
+  at the nearest one. Defenders tear them down (section 7).</li>
+<li><strong>Respawn waves.</strong> The dead come back together, every
+  <code>RespawnWaveSeconds</code>. Press Respawn and you'll come back with the next
+  wave. The HUD shows the countdown.</li>
+<li><strong>Winning.</strong> With <strong>every gate</strong> down, an attacker channels <strong>Claim</strong> at
+  the Lord's Seal (10 s). <strong>Any hit breaks the claim.</strong> When the claim
+  completes, the territory, its treasury and its guards go to the
+  attackers. If time runs out, the defenders hold.</li>
+<li><strong>Score.</strong> Kills, damage to structures, broken gates and destroyed
+  camps or weapons all add to your score (section 10). Score decides the
+  bonus rewards.</li>
+</ul>
+<h3 id="afterwards">Afterwards<a class="anchor" href="#afterwards" title="Permanent link">#</a></h3>
+<ul>
+<li>Everything placed for the siege is removed.</li>
+<li>Walls are restored.</li>
+<li>Everyone on a roster gets their side's rewards: gold and items <strong>by
+  mail</strong>, and honor straight away if they're online (section 8).</li>
+</ul>
+<hr>
+<h2 id="2b-claiming-a-castle-nobody-holds-the-lodestone">2b. Claiming a castle nobody holds (the Lodestone)<a class="anchor" href="#2b-claiming-a-castle-nobody-holds-the-lodestone" title="Permanent link">#</a></h2>
+<p>A territory whose castle no guild holds yet isn't besieged. There's no
+bidding and no siege; it's <strong>claimed</strong> in a weekly PvP event around its
+<strong>Lodestone</strong>. Once a guild holds it, the normal siege cycle (section 1)
+takes over.</p>
+<p><strong>The week of an unclaimed castle</strong> (Greywatch's times):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>When</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Friday 20:00 UTC (2 h before)</td>
+<td><strong>Crafting opens.</strong> A <strong>guild leader</strong>, and only a leader, crafts the <strong>Lodestone pack</strong> at the Lodestone Workbench. One pack per guild per event. That guild is now a <strong>contender</strong>.</td>
+</tr>
+<tr>
+<td>Friday 22:00 UTC, 60 min</td>
+<td><strong>The Lodestone wakes.</strong> The whole territory is at <strong>war</strong>: open PvP for everyone, no crime.</td>
+</tr>
+<tr>
+<td>During it</td>
+<td>Someone carrying a pack, from a contender guild, <strong>channels</strong> the Lodestone (15 s).</td>
+</tr>
+<tr>
+<td>The channel finishes</td>
+<td>The pack is spent. <strong>The territory belongs to the channeller's guild</strong> (and their faction): its treasury, guards and taxes. Every member of that guild is mailed the rewards.</td>
+</tr>
+<tr>
+<td>Time runs out</td>
+<td>Nobody claimed it. It stays unclaimed until next week.</td>
+</tr>
+<tr>
+<td>After the event</td>
+<td>Every Lodestone pack left anywhere crumbles. This covers packs on backs, on the ground, and on players who were offline.</td>
+</tr>
+</tbody>
+</table></div>
+<p>22:00 UTC is 6 PM New York time in summer (EDT) and 5 PM in winter (EST).
+The schedule is stored in UTC, so set <code>ClaimHourUtc</code> to 23 for winter if
+you want to keep 6 PM.</p>
+<p><strong>The pack</strong> is a trade pack:
+- It goes on your back and makes you 30% slower.
+- No mounts, unless the mount can carry packs.
+- It drops where you die, and <strong>anyone can pick it up</strong>. So the fight is
+  over who carries it.
+- It can't be sold, stowed in a cargo hold, or traded.</p>
+<p><strong>Rules of the channel:</strong>
+- <strong>One person at a time.</strong> While someone channels, nobody else can start.
+- <strong>Any hit breaks it.</strong> The territory is told who's channelling, so
+  everyone knows where to go.
+- <strong>Only a contender guild can win.</strong> You need the pack on your back,
+  <strong>and</strong> your guild must have crafted a pack for this event. Anyone can
+  pick up and carry a pack, for example to keep it away from a rival, but
+  a guild that never crafted one can't claim with it.
+- <strong>Uncontested is fine.</strong> If only one guild crafted a pack, it can walk
+  in and channel. The PvP is the only thing stopping it.</p>
+<p><strong>After the claim:</strong>
+- The siege window shows the normal cycle.
+- Next week another guild can bid for the attacker slot (section 1) and
+  besiege the new lord.
+- The new lord inherits the treasury that built up while the castle had
+  no owner.</p>
+<p><strong>Setting it up</strong> (Content Studio &gt; Factions &amp; PvP &gt; Territories &gt;
+<strong>Lodestone claim</strong>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Greywatch</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClaimPackItemId</td>
+<td>7105</td>
+<td>The pack. It must be a <strong>TradePacks</strong> item (ground doodad 150, a MoveSpeedPct, BaseGold 0). Each territory needs its own pack item. 0 = no Lodestone: an unclaimed castle is besieged like any other.</td>
+</tr>
+<tr>
+<td>ClaimDayOfWeek, ClaimHourUtc</td>
+<td>5, 22</td>
+<td>Friday 22:00 UTC.</td>
+</tr>
+<tr>
+<td>ClaimMinutes</td>
+<td>60</td>
+<td>How long the Lodestone is awake (0 = no event).</td>
+</tr>
+<tr>
+<td>ClaimCraftHours</td>
+<td>2</td>
+<td>Leaders can craft from this many hours before, until the event ends.</td>
+</tr>
+</tbody>
+</table></div>
+<p>You also need:
+- <strong>The Lodestone:</strong> a doodad with <strong>SiegeRole 6 (Lodestone)</strong> standing
+  in the territory, with a timed <strong>Channel</strong> action whose effect is
+  <strong>Claim Lodestone (40)</strong>. Copy <em>Greywatch Lodestone</em> (194) and move its
+  DoodadSpawns row to the heart of the territory. The World log warns at
+  startup if a territory has the event but no Lodestone.
+- <strong>The recipe:</strong> a Recipes row that outputs the pack, at any station.
+  The leader-only, one-per-guild and crafting-window rules are enforced by
+  the server for any recipe that makes a territory's Lodestone pack.
+  Greywatch's recipe takes 20 Lumber at the <em>Lodestone Workbench</em> (195) by
+  the Siege Board.
+- <strong>Rewards:</strong> <strong>LodestoneRewards</strong> rows, with <code>LeaderOnly</code> 0 for every
+  member (the leader included) or 1 for the leader only. They're mailed
+  from "Siege Council". Several rows add up. Greywatch's: every member 1g;
+  the leader 5g and 5 Siege Charges.</p>
+<hr>
+<h2 id="3-the-siege-window-and-hud">3. The siege window and HUD<a class="anchor" href="#3-the-siege-window-and-hud" title="Permanent link">#</a></h2>
+<p><strong>The window</strong> has four parts:
+- <strong>Header:</strong> who holds the castle, its tier and treasury, the phase and
+  the times (in your local time).
+- <strong>Bidding:</strong> every guild's bid.
+- <strong>Sides:</strong> both rosters, with Accept, Decline and Remove buttons for
+  leaders.
+- <strong>The castle:</strong> the upgrade tiers, and the <strong>Build</strong> button for the
+  owner guild's leader.</p>
+<p>The window refreshes itself every 10 seconds while open.</p>
+<p><strong>The HUD</strong> appears at the top centre while you're on a roster near a
+castle under siege:</p>
+<div class="hl"><pre><span></span><code>Siege of Greywatch  42:13
+Outer gates 2/2 down  -  Keep 0/1 down  -  Seal: barred
+Attackers 12 (31 kills)  -  Defenders 10 (25 kills)  -  Camps 2
+You: attacker  -  score 120  -  4 kills  -  next wave 0:12
+</code></pre></div>
+
+<p>Click it to open the siege window.</p>
+<hr>
+<h2 id="4-setting-up-a-territory">4. Setting up a territory<a class="anchor" href="#4-setting-up-a-territory" title="Permanent link">#</a></h2>
+<p>A territory is a <strong>Territories</strong> row. Content Studio (Ctrl+Alt+E) &gt;
+Factions &amp; PvP &gt; Territories. The Phase 10 fields (name, zone, owner,
+tax, castle position, <code>SiegeRadius</code>, schedule, spawns) still apply. The
+<strong>Siege cycle</strong> group adds:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Greywatch</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeclareCostGold</td>
+<td>1000</td>
+<td>Now the <strong>lowest bid</strong>, in copper (1000 = 10s).</td>
+</tr>
+<tr>
+<td>BidOpenHours</td>
+<td>72</td>
+<td>Bidding opens this many hours before the siege.</td>
+</tr>
+<tr>
+<td>BidCloseHours</td>
+<td>24</td>
+<td>...and closes this many hours before it. Must be less than BidOpenHours, and open must be under 168.</td>
+</tr>
+<tr>
+<td>RosterCap</td>
+<td>50</td>
+<td>Most players on each side (0 = no limit, max 150).</td>
+</tr>
+<tr>
+<td>PeaceHours</td>
+<td>0</td>
+<td>Protection after a siege (no bidding during it).</td>
+</tr>
+<tr>
+<td>LockdownRadius</td>
+<td>180</td>
+<td>The battle area, in metres round <code>CastleX/Z</code>. 0 = 1.5 × SiegeRadius. Must be at least SiegeRadius.</td>
+</tr>
+<tr>
+<td>EjectX, EjectZ</td>
+<td>0, 0</td>
+<td>Where non-participants are sent. 0, 0 = just outside the area, on their side of the castle.</td>
+</tr>
+<tr>
+<td>RespawnWaveSeconds</td>
+<td>20</td>
+<td>Seconds between respawn waves (0 = respawn at once, max 600).</td>
+</tr>
+<tr>
+<td>MaxCamps</td>
+<td>3</td>
+<td>Attacker camps standing at once (0 = no camps).</td>
+</tr>
+</tbody>
+</table></div>
+<p>Other fields:
+- <code>AttackerSpawnX/Z</code> is where attackers come back if they have no camp.
+- <code>DefenderSpawnX/Z</code> is where defenders come back. Castle guards also
+  turn out there.
+- <code>DeclareMinHours</code> is no longer used.</p>
+<p>The server checks every row at startup. A bad one is skipped, with a
+warning naming it in the World log.</p>
+<hr>
+<h2 id="5-gates-walls-and-rings">5. Gates, walls and rings<a class="anchor" href="#5-gates-walls-and-rings" title="Permanent link">#</a></h2>
+<p>Castle structures are doodads within <code>SiegeRadius</code> of the castle:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>DoodadTemplates field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SiegeRole</strong></td>
+<td>1 Gate, 2 Wall, 3 Seal, 4 Weapon, 5 Camp</td>
+</tr>
+<tr>
+<td><strong>MaxHealth</strong></td>
+<td>Its health (0 = can't be damaged)</td>
+</tr>
+<tr>
+<td><strong>BrokenPhaseId</strong></td>
+<td>The phase it goes to at 0 health (e.g. <em>Breached</em>)</td>
+</tr>
+<tr>
+<td><strong>SiegeRing</strong></td>
+<td>Gates and walls: 1 (or 0) = the outer wall, 2 = the next ring, and so on</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Rings.</strong> A ring's gates and walls can't be damaged while any <strong>gate</strong>
+of a ring outside it still stands.</p>
+<p><strong>The seal</strong> opens when <strong>every gate</strong>, in every ring, is down.</p>
+<p>So a castle with an outer wall (ring 1) and a keep (ring 2) is fought in
+three stages: break the outer gates, then the keep gate, then claim the
+seal.</p>
+<p><strong>To add a ring:</strong>
+1. Make a gate template with <code>SiegeRing 2</code> (copy <em>Keep Gate</em>, 164).
+2. Place it with a DoodadSpawns row inside the castle.</p>
+<p>Gates and walls are back to full health at the start and end of every
+siege.</p>
+<hr>
+<h2 id="6-siege-weapons">6. Siege weapons<a class="anchor" href="#6-siege-weapons" title="Permanent link">#</a></h2>
+<p>A weapon is three things:</p>
+<ol>
+<li><strong>A doodad</strong> with <code>SiegeRole 4</code>, <code>MaxHealth</code> &gt; 0 (it can be
+   destroyed), <code>PlaceRule 0</code> (Anywhere), <code>IsPersistent 0</code>, and a
+   <code>PlaceRadius</code> so two weapons can't overlap.
+   - It needs a phase with a <strong>Fire</strong> action: a DoodadFuncs row whose
+     <code>FuncId</code> is the shared <strong>"Fire siege weapon [siege v2]"</strong> function
+     (it holds the <em>Siege Fire</em>, 38, effect).
+   - Optionally, a <strong>Repair</strong> action.
+   - Copy <em>Battering Ram</em> (190) and you get all of this.</li>
+<li><strong>A SiegeWeapons row</strong> (Factions &amp; PvP &gt; Siege Weapons, or on the
+   doodad's page) saying what a shot does:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Ram</th>
+<th>Trebuchet</th>
+<th>Cannon</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Side</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Who may place and fire it: 0 attackers, 1 defenders, 2 either</td>
+</tr>
+<tr>
+<td>StructureDamageMin/Max</td>
+<td>900-1200</td>
+<td>1500-2200</td>
+<td>600-900</td>
+<td>Against gates, walls, camps and weapons (0 = never aims at them)</td>
+</tr>
+<tr>
+<td>PlayerDamageMin/Max</td>
+<td>0</td>
+<td>250-400</td>
+<td>300-450</td>
+<td>Against enemy players (0 = never aims at them)</td>
+</tr>
+<tr>
+<td>Range / MinRange</td>
+<td>7 / 0</td>
+<td>90 / 25</td>
+<td>70 / 8</td>
+<td>Metres from the weapon</td>
+</tr>
+<tr>
+<td>Radius</td>
+<td>0</td>
+<td>6</td>
+<td>4</td>
+<td>Splash: everything of the enemy's this close to the impact</td>
+</tr>
+<tr>
+<td>CooldownMs</td>
+<td>4000</td>
+<td>12000</td>
+<td>8000</td>
+<td>Between shots of this weapon</td>
+</tr>
+<tr>
+<td>AmmoItemId, AmmoCount</td>
+<td>-</td>
+<td>Trebuchet Stone ×1</td>
+<td>-</td>
+<td>Taken from the shooter's bag per shot</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="3">
+<li><strong>How it gets on the field.</strong> Either:
+   - <strong>a kit item</strong> with a <em>Place Doodad</em> (12) effect (RefId = the doodad)
+     and an ItemUses row with <code>ConsumeOnUse 1</code>. Copy <em>Battering Ram Kit</em>,<ol start="7101">
+<li>Or:
+   - <strong>a DoodadSpawns row</strong> inside the castle. A world-placed weapon
+ belongs to the castle and is restored after each siege.</li>
+</ol>
+</li>
+</ol>
+<p><strong>Aiming.</strong> The shooter faces the target and uses the weapon. A shot goes
+at the <strong>nearest</strong> target within <code>SiegeWeaponAimCone</code> (60°) of where
+they face, between MinRange and Range:
+- An enemy structure first, if the weapon does structure damage.
+- Otherwise an enemy player, if it does player damage.</p>
+<p>Inner-ring walls aren't targets until their ring opens.</p>
+<p><strong>Placing.</strong> Weapons can only be placed inside the battle area during the
+battle, by someone on a roster whose side matches <code>Side</code>. They're removed
+when the siege ends.</p>
+<hr>
+<h2 id="7-camps">7. Camps<a class="anchor" href="#7-camps" title="Permanent link">#</a></h2>
+<p>A <strong>Siege Camp</strong> is a doodad with <code>SiegeRole 5</code> and health. <em>Siege Camp</em>
+(193) has a <strong>Tear down</strong> action, which is Batter for defenders, and a
+<strong>Repair</strong> action. It's placed from the <em>Siege Camp Banner</em> (7103).</p>
+<p>Placement rules:
+- Only by attackers on the roster, during the battle.
+- At most <code>MaxCamps</code> at once.
+- At least <code>SiegeCampMinDistance</code> (40 m) from the castle centre.</p>
+<p>How it works in battle:
+- A dead attacker comes back beside the camp <strong>nearest to where they
+  died</strong>. Without a camp, they come back at <code>AttackerSpawnX/Z</code>.
+- At 0 health the camp is destroyed, and the destroyer scores
+  <code>SiegeScorePerCamp</code>.</p>
+<hr>
+<h2 id="8-rewards">8. Rewards<a class="anchor" href="#8-rewards" title="Permanent link">#</a></h2>
+<p><strong>SiegeRewards</strong> rows (Factions &amp; PvP &gt; Siege Rewards, or on a territory's page)
+are given to everyone <strong>on a roster</strong> when a siege ends with a winner. A
+called-off siege gives nothing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TerritoryId</td>
+<td>0 = every territory, or just this one</td>
+</tr>
+<tr>
+<td>Side</td>
+<td>1 attackers, 2 defenders</td>
+</tr>
+<tr>
+<td>Won</td>
+<td>1 = when that side won, 0 = when it lost</td>
+</tr>
+<tr>
+<td>MinScore</td>
+<td>Only players who scored at least this</td>
+</tr>
+<tr>
+<td>ItemId / ItemCount, Gold</td>
+<td>Mailed (from "Siege Council"), one mail per row. Gold is in copper</td>
+</tr>
+<tr>
+<td>Honor</td>
+<td>Given at once if they're online (not mailed)</td>
+</tr>
+</tbody>
+</table></div>
+<p>A player gets <strong>every row</strong> that matches, so rows stack. For example, a
+base reward for everyone on the winning side, plus a bonus row with
+<code>MinScore 50</code>.</p>
+<hr>
+<h2 id="9-castle-upgrades">9. Castle upgrades<a class="anchor" href="#9-castle-upgrades" title="Permanent link">#</a></h2>
+<p><strong>CastleUpgrades</strong> rows (Factions &amp; PvP &gt; Castle Upgrades, or on a territory's
+page) are the tiers a castle can buy, numbered 1, 2, 3 and so on, with
+none missing.</p>
+<p><strong>Buying.</strong> The <strong>owner guild's leader</strong> buys the next tier in the siege
+window, paid from the <strong>territory's treasury</strong>. You can't buy during the
+battle. The purchase is saved before it counts.</p>
+<p><strong>Effects.</strong> Every tier owned adds up:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WallHealthPct</td>
+<td>Gates and walls get this much more health (+25 = ×1.25)</td>
+</tr>
+<tr>
+<td>DefenderStatusId</td>
+<td>A status defenders have <strong>inside the battle area during a siege</strong> (refreshed every 2 s, removed when they leave or it ends)</td>
+</tr>
+<tr>
+<td>GuardTemplateId, GuardCount</td>
+<td>NPCs that turn out at the defender spawn when the battle starts and leave when it ends. They attack <strong>attackers only</strong>; only attackers can attack them</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>On capture</strong> the castle loses <code>CastleTierLostOnCapture</code> tiers (default
+1; 0 = keep them all; 99 = lose them all).</p>
+<hr>
+<h2 id="10-rules">10. Rules<a class="anchor" href="#10-rules" title="Permanent link">#</a></h2>
+<p>CombatRules (Content Studio &gt; Combat &gt; Combat Rules):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CastleTierLostOnCapture</td>
+<td>1</td>
+<td>Upgrade tiers lost when a castle changes hands</td>
+</tr>
+<tr>
+<td>SiegeScorePerKill</td>
+<td>10</td>
+<td>Killing someone on the other roster</td>
+</tr>
+<tr>
+<td>SiegeScorePerGate</td>
+<td>25</td>
+<td>Breaking a gate or wall</td>
+</tr>
+<tr>
+<td>SiegeScorePerCamp</td>
+<td>15</td>
+<td>Destroying an enemy camp or weapon</td>
+</tr>
+<tr>
+<td>SiegeDamagePerPoint</td>
+<td>200</td>
+<td>Structure damage per point of score</td>
+</tr>
+<tr>
+<td>SiegeCampMinDistance</td>
+<td>40</td>
+<td>Metres from the castle centre a camp must be</td>
+</tr>
+<tr>
+<td>SiegeWeaponAimCone</td>
+<td>60</td>
+<td>Degrees either side combined that a weapon can aim</td>
+</tr>
+<tr>
+<td>SiegeBidOutbidPct</td>
+<td>5</td>
+<td>% a new top bid must beat the current one by</td>
+</tr>
+<tr>
+<td>SiegeClaimRange</td>
+<td>6</td>
+<td>(Phase 10) Metres from the seal to claim it</td>
+</tr>
+<tr>
+<td>SiegeChargeRadius</td>
+<td>8</td>
+<td>(Phase 10) A Siege Charge hits enemy structures this close</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="11-what-ships-greywatch">11. What ships (Greywatch)<a class="anchor" href="#11-what-ships-greywatch" title="Permanent link">#</a></h2>
+<p>Patch <strong>059</strong> adds:</p>
+<ul>
+<li><strong>Greywatch's cycle:</strong> bidding 72 h → 24 h before Saturday 20:00 UTC, 50 a
+  side, a 180 m battle area, waves every 20 s, 3 camps.</li>
+<li><strong>Keep Gate</strong> (164, ring 2) just in front of the Lord's Seal. The South
+  and West gates are ring 1.</li>
+<li><strong>Two Castle Cannons</strong> (192) on the south wall, for the defenders.</li>
+<li><strong>Sold by Hilda the Trader:</strong></li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Price</th>
+<th>Places</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Battering Ram Kit (7101)</td>
+<td>50s</td>
+<td>Battering Ram (190)</td>
+</tr>
+<tr>
+<td>Trebuchet Kit (7102)</td>
+<td>1g 50s</td>
+<td>Trebuchet (191)</td>
+</tr>
+<tr>
+<td>Siege Camp Banner (7103)</td>
+<td>1g</td>
+<td>Siege Camp (193)</td>
+</tr>
+<tr>
+<td>Trebuchet Stone (7104)</td>
+<td>2s</td>
+<td>Ammunition</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Rewards:</strong></li>
+<li>Winners get 2g and 300 honor; losers get 50s and 100 honor.</li>
+<li>Winners scoring 50+ also get 2 Siege Charges and 100 honor.</li>
+<li><strong>Upgrades:</strong></li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Name</th>
+<th>Cost</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reinforced Gates</td>
+<td>5g</td>
+<td>Walls +25%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Garrison</td>
+<td>15g</td>
+<td>4 Castle Garrison guards (NPC 34)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Banner of the Keep</td>
+<td>30g</td>
+<td>Defenders −10% damage taken and +10 health regen (status 5101); walls +25% more</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Siege Board:</strong> its action is now <strong>Siege window</strong>.</li>
+</ul>
+<p><strong>Models to make</strong> (until then they show as placeholders). Make a world
+prefab for each key with <strong>Tools &gt; Axiom &gt; Art &amp; Assets &gt; Make World Prefab
+From Selected Model</strong>:
+- <code>SiegeRam</code>
+- <code>SiegeTrebuchet</code>
+- <code>CastleCannon</code>
+- <code>SiegeCamp</code></p>
+<p>The Keep Gate reuses <code>CastleGate</code>.</p>
+<hr>
+<h2 id="12-testing-a-siege-quickly">12. Testing a siege quickly<a class="anchor" href="#12-testing-a-siege-quickly" title="Permanent link">#</a></h2>
+<p>The server needs <code>World:AllowDebugCommands</code> on.</p>
+<ol>
+<li>Make a guild (you're its leader) and stand near Greywatch.</li>
+<li><code>/siegenow 1 15</code> starts a siege of territory 1 in 10 seconds, for 15
+   minutes. Your guild attacks and you're on its roster. If a siege is
+   already planned, it starts now instead.</li>
+<li><code>/siege</code> opens the window. A second character in the castle's guild
+   (or Greywatch's faction) clicks <strong>Fight for the defenders</strong>.</li>
+<li>Buy a Battering Ram Kit from Hilda. Use it facing a gate inside the
+   battle area, then face the gate and use the ram.</li>
+</ol>
+<p><strong>Testing the Lodestone claim:</strong>
+1. On the Greywatch row, set <code>ClaimDayOfWeek</code> and <code>ClaimHourUtc</code> to a few
+   minutes from now (UTC), and restart.
+2. As a guild leader, craft the pack at the Lodestone Workbench (20
+   Lumber).
+3. Channel the Lodestone at (-330, 790) when it wakes.</p>
+<p><code>/siegenow</code> skips all this: it starts a siege even on an unclaimed castle.</p>
+<p>Bidding can't be skipped from the client. To test it, set
+<code>BidOpenHours</code>/<code>BidCloseHours</code> so bidding is open now, restart, and bid.
+The attacker is chosen within 5 seconds of bidding closing.</p>
+<hr>
+<h2 id="13-troubleshooting">13. Troubleshooting<a class="anchor" href="#13-troubleshooting" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Bidding for X isn't open."</td>
+<td>Check the window's times. A bid only works between BidOpen and BidClose. <code>PeaceHours</code> may be protecting it.</td>
+</tr>
+<tr>
+<td>Nobody won the bidding</td>
+<td>Only the castle's own guild bid (it can't attack itself). The bids are refunded once the slot passes.</td>
+</tr>
+<tr>
+<td>Refund mail never came</td>
+<td>The World server couldn't reach the persistence server. It retries every 5 s, and the bid stays saved until the refund is delivered.</td>
+</tr>
+<tr>
+<td>Thrown out of the castle area</td>
+<td>You're not on an accepted roster. Join in the siege window, or wait for the side's leader to accept you.</td>
+</tr>
+<tr>
+<td>"The outer gates still stand"</td>
+<td>Ring rules (section 5). Break every gate of the outer ring first.</td>
+</tr>
+<tr>
+<td>"Nothing to aim at"</td>
+<td>Face the target. It must be between MinRange and Range and within the aim cone. Inner-ring walls aren't targets yet.</td>
+</tr>
+<tr>
+<td>Can't place a camp</td>
+<td>Not an attacker on the roster, too close to the castle (40 m), or MaxCamps camps already stand.</td>
+</tr>
+<tr>
+<td>Weapon kit does nothing</td>
+<td>Only inside the battle area during the battle, and only for the side the SiegeWeapons row allows.</td>
+</tr>
+<tr>
+<td>Garrison guards don't appear</td>
+<td>No tier with GuardTemplateId bought, or the NPC template is missing. Check the World log for a skipped CastleUpgrades row.</td>
+</tr>
+<tr>
+<td>Territory missing after editing</td>
+<td>A bad Territories row is skipped. The World log names the field.</td>
+</tr>
+<tr>
+<td>Client and server won't talk</td>
+<td>Protocol 27: rebuild <strong>both</strong> Axiom.Network and Axiom.Movement DLLs and copy them to <code>Assets/AxiomMMOKit/Plugins</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="14-reference">14. Reference<a class="anchor" href="#14-reference" title="Permanent link">#</a></h2>
+<p><strong>Tables:</strong>
+- <strong>Territories</strong> (+BidOpenHours, BidCloseHours, RosterCap, PeaceHours,
+  LockdownRadius, EjectX, EjectZ, RespawnWaveSeconds, MaxCamps)
+- <strong>Territories</strong> (+ClaimPackItemId, ClaimDayOfWeek, ClaimHourUtc,
+  ClaimMinutes, ClaimCraftHours) and <strong>LodestoneRewards</strong>: migration
+  <code>20261012000000_LodestoneClaim</code> and patch 060
+- <strong>DoodadTemplates</strong> (+SiegeRing)
+- <strong>SiegeWeapons</strong>, <strong>SiegeRewards</strong>, <strong>CastleUpgrades</strong></p>
+<p>All come from the World migration <code>20261011120000_SiegeV2</code> and patch 059.</p>
+<p><strong>Effect kinds:</strong>
+- 38 <strong>Siege Fire</strong>: on a weapon's doodad action.
+- 39 <strong>Open Siege Window</strong>: RefId = territory, 0 = here.
+- 40 <strong>Claim Lodestone</strong>: on a Lodestone's timed action (section 2b).
+- 28 <em>Declare Siege</em> now also just opens the window.
+- 24 Batter and 30 Siege Charge now hit any enemy structure, camp or
+  weapon, and respect rings.</p>
+<p><strong>Protocol 27:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Opcode</th>
+<th>Packet</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>158</td>
+<td>C2WSiegeCommand</td>
+<td>Open, Bid, Apply, Withdraw, Accept, Decline, Kick, Upgrade</td>
+</tr>
+<tr>
+<td>159</td>
+<td>W2CSiegeInfo</td>
+<td>One territory's siege, as the viewer sees it (the window)</td>
+</tr>
+<tr>
+<td>160</td>
+<td>W2CSiegeScore</td>
+<td>The battle, every 2 s, to rostered players near the castle (the HUD)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Saved state</strong> (<code>shard_state</code> on the persistence server):
+- <code>territory</code>: owner, treasury, castle tier, protection.
+- <code>siege</code>: the attacker, times, rosters with scores, kills.
+- <code>siegebid</code>: one row per guild bid until it's spent or refunded.
+- <code>lodestone</code>: an unclaimed territory's next Lodestone event and its
+  contender guilds.</p>
+<p><strong>For programmers:</strong>
+- Server, <code>Core/Pvp/TerritoryService*.cs</code>:
+  - <code>.Cycle</code> (slots, bidding, settling, refunds, mail retry)
+  - <code>.Rosters</code> (sides, lockdown, waves, respawn points, kills)
+  - <code>.Battle</code> (gear, firing, HUD, rewards, data loading)
+  - <code>.Castle</code> (upgrades, guards, defender buff, the window)
+  - <code>.Claim</code> (the Lodestone: schedule, leader-only pack, contenders,
+    channel, claim, rewards, the pack sweep)
+- Hooks:
+  - <code>DoodadManager.SiegePlacement</code> / <code>SiegePlaced</code> / <code>InterruptSiegeClaim</code>
+  - <code>CombatManager.SiegeHit</code> / <code>HoldRespawn</code>
+  - <code>PvpService</code> (<code>SiegeRelation</code> in CanAttack/IsCrime, <code>SiegeGuardHates</code>)
+  - <code>DoodadEntity.MaxHealthOverride</code>
+- Client:
+  - <code>SiegeState</code>, <code>SiegeWindow</code>, <code>SiegeHudUI</code>
+  - <code>C2WSiegeSenders</code>, <code>W2CSiegeHandlers</code>
+  - <code>/siege</code> in <code>PvpCommands</code></p>
+<nav class="pager">
+<a class="prev" href="client-QUESTS.html"><span>Previous</span>Quests: objective types, stages, timers, repeatables and rewards</a>
+<a class="next" href="client-SKILL_PLOTS.html"><span>Next</span>Skill plots: multi-stage skills</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#contents">Contents</a>
+</li>
+<li><a href="#1-the-weekly-cycle">1. The weekly cycle</a>
+</li>
+<li><a href="#2-playing-a-siege">2. Playing a siege</a>
+<ul>
+<li><a href="#bidding-guild-leaders">Bidding (guild leaders)</a>
+</li>
+<li><a href="#joining-a-side">Joining a side</a>
+</li>
+<li><a href="#the-battle">The battle</a>
+</li>
+<li><a href="#afterwards">Afterwards</a>
+</li>
+</ul>
+</li>
+<li><a href="#2b-claiming-a-castle-nobody-holds-the-lodestone">2b. Claiming a castle nobody holds (the Lodestone)</a>
+</li>
+<li><a href="#3-the-siege-window-and-hud">3. The siege window and HUD</a>
+</li>
+<li><a href="#4-setting-up-a-territory">4. Setting up a territory</a>
+</li>
+<li><a href="#5-gates-walls-and-rings">5. Gates, walls and rings</a>
+</li>
+<li><a href="#6-siege-weapons">6. Siege weapons</a>
+</li>
+<li><a href="#7-camps">7. Camps</a>
+</li>
+<li><a href="#8-rewards">8. Rewards</a>
+</li>
+<li><a href="#9-castle-upgrades">9. Castle upgrades</a>
+</li>
+<li><a href="#10-rules">10. Rules</a>
+</li>
+<li><a href="#11-what-ships-greywatch">11. What ships (Greywatch)</a>
+</li>
+<li><a href="#12-testing-a-siege-quickly">12. Testing a siege quickly</a>
+</li>
+<li><a href="#13-troubleshooting">13. Troubleshooting</a>
+</li>
+<li><a href="#14-reference">14. Reference</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

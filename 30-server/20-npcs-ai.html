@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NPCs, Spawning &amp; AI · Axiom Docs</title>
+<meta name="description" content="NPC templates and spawners, proximity activation, wander/chase/leash behaviour, threat, data-driven combat AI with abilities and boss phases, navmesh movement, death, respawn and corpses - and how to add NPCs and behaviours.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html" class="active" aria-current="page">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="npcs-spawning--ai">NPCs, Spawning &amp; AI<a class="anchor" href="#npcs-spawning--ai" title="Permanent link">#</a></h1>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NpcTemplate</code></td>
+<td><code>GameData/Npcs/NpcTemplate.cs</code> (<code>NpcTemplates</code>)</td>
+<td>What an NPC <strong>is</strong>: model, level, health, damage, aggro, loot, AI profile, faction, title, greeting.</td>
+</tr>
+<tr>
+<td><code>NpcSpawnerTable</code></td>
+<td><code>GameData/Npcs/NpcSpawnTable.cs</code> (<code>NpcSpawners</code>)</td>
+<td><strong>Where</strong> NPCs appear and how many, how they move, when they respawn.</td>
+</tr>
+<tr>
+<td><code>SpawnManager</code></td>
+<td><code>Core/Npcs/SpawnManager.cs</code></td>
+<td>Loads spawners; activates a spawner's group when a player comes near, despawns it after 30 s with nobody around.</td>
+</tr>
+<tr>
+<td><code>NpcAiManager</code></td>
+<td><code>Core/Npcs/NpcAiManager.cs</code></td>
+<td>Every tick: wander, chase, attack, leash home, spawner scans, respawns.</td>
+</tr>
+<tr>
+<td><code>NpcCombatAi</code></td>
+<td><code>Core/Ai/NpcCombatAi.cs</code></td>
+<td><strong>Which ability</strong> to use: data-driven priorities, targets, health windows, boss phases.</td>
+</tr>
+<tr>
+<td><code>ThreatService</code>, <code>ThreatTable</code></td>
+<td><code>Core/Threat</code></td>
+<td>Who the NPC is angry at.</td>
+</tr>
+<tr>
+<td><code>NavMeshService</code>, <code>NavAgent</code></td>
+<td><code>Core/Navigation</code></td>
+<td>Paths around walls and up stairs on the baked navmesh (<a href="250-navigation.html">Navigation</a>).</td>
+</tr>
+<tr>
+<td><code>NpcCollisionService</code></td>
+<td><code>Core/Npcs</code></td>
+<td>NPC bodies that block players and each other.</td>
+</tr>
+<tr>
+<td><code>NpcEntity</code></td>
+<td><code>Core/Entities/NpcEntity.cs</code></td>
+<td>One live NPC: id, template, position, health, threat table, spawner.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="templates">Templates<a class="anchor" href="#templates" title="Permanent link">#</a></h2>
+<p>Key <code>NpcTemplates</code> columns (full list in the <a href="../70-reference/worlddb.html#npctemplates">reference</a>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code>, <code>Title</code>, <code>Level</code>, <code>ModelType</code></td>
+<td>display; <code>ModelType</code> is a prefab key resolved on the client</td>
+</tr>
+<tr>
+<td><code>MaxHealth</code></td>
+<td><strong>0 = can't be attacked</strong> (merchants, quest givers). Give health on purpose.</td>
+</tr>
+<tr>
+<td><code>AggroRadius</code></td>
+<td>0 = never aggressive; otherwise attacks players who come this close</td>
+</tr>
+<tr>
+<td><code>AttackRange</code>, <code>AttackCooldownMs</code>, <code>AttackDamageMin/Max</code></td>
+<td>its basic attack</td>
+</tr>
+<tr>
+<td><code>Armor</code>, <code>Resistance</code></td>
+<td>damage reduction (<a href="30-combat.html">Combat</a>)</td>
+</tr>
+<tr>
+<td><code>Rank</code></td>
+<td>0 normal, 1 elite, 2 boss (more XP; bosses ignore crowd control and have phases)</td>
+</tr>
+<tr>
+<td><code>XpReward</code></td>
+<td>0 = formula from <code>CombatRules</code></td>
+</tr>
+<tr>
+<td><code>LootTableId</code></td>
+<td>what it drops (<a href="60-loot.html">Loot</a>)</td>
+</tr>
+<tr>
+<td><code>AiProfileId</code></td>
+<td>how it fights (<code>AiProfiles</code>: Brute / Caster / Healer, heal threshold, assist radius)</td>
+</tr>
+<tr>
+<td><code>FactionId</code></td>
+<td>0 = monster (hostile to all), a faction id, or −1 = territory guard (takes the owner's guard faction)</td>
+</tr>
+<tr>
+<td><code>IsStationary</code></td>
+<td>never wanders (vendors, guards on post)</td>
+</tr>
+<tr>
+<td><code>BlocksPlayers</code>, <code>BlocksNpcs</code>, <code>BlocksWhenDead</code></td>
+<td>collision rules</td>
+</tr>
+<tr>
+<td><code>RespawnSeconds</code>, <code>InteractRange</code>, <code>Greeting</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="spawners-and-activation">Spawners and activation<a class="anchor" href="#spawners-and-activation" title="Permanent link">#</a></h2>
+<p>A spawner row places <code>Count</code> NPCs of a template at random spots within <code>Radius</code> of (<code>X</code>,<code>Y</code>,<code>Z</code>), at least <code>MinSpacing</code> (2.5 m) apart and not on top of a player.</p>
+<p><strong>NPCs sleep until a player is near.</strong> <code>SpawnManager.ScanSpawners</code> runs once a second: a spawner whose area overlaps any player's interest becomes active and spawns its group; one with nobody near for 30 s (<code>DespawnGrace</code>) despawns it. A world full of camps costs nothing where nobody is.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Spawner column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MoveType</code></td>
+<td>0 default (wander unless stationary), 1 idle, 2 wander (around its own spot, resting 3–9 s), 3 patrol (<code>PathId</code>)</td>
+</tr>
+<tr>
+<td><code>WanderRadius</code></td>
+<td>0 = 8 m</td>
+</tr>
+<tr>
+<td><code>RespawnMinSeconds</code>/<code>MaxSeconds</code></td>
+<td>random respawn delay; both 0 = the template's <code>RespawnSeconds</code> (default 30)</td>
+</tr>
+<tr>
+<td><code>ActiveFromHour</code>/<code>ToHour</code></td>
+<td>only up during these game hours</td>
+</tr>
+<tr>
+<td><code>DungeonId</code></td>
+<td>0 = open world; otherwise spawned once per instance of that dungeon, never respawned</td>
+</tr>
+<tr>
+<td><code>Tag</code>, <code>Dormant</code></td>
+<td>names for dungeon scripts; dormant spawners wait for a <code>SpawnTag</code> action</td>
+</tr>
+<tr>
+<td><code>PathId</code>, <code>PoolId</code></td>
+<td>patrol routes and rare-spawn pools (columns exist; the <code>PatrolPaths</code>/<code>SpawnPools</code> tables aren't in the database yet)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Place spawners in Unity with <strong>Dev Tools ▸ Spawn Points</strong>, or the NPC Create wizard.</p>
+<h2 id="the-ai-loop">The AI loop<a class="anchor" href="#the-ai-loop" title="Permanent link">#</a></h2>
+<p>Each tick <code>NpcAiManager.Tick()</code> (stage <code>NpcAi</code>) runs every active NPC:</p>
+<div class="hl"><pre><span></span><code>idle/wander ── player enters AggroRadius ──▶ chase (3.2 m/s) ──▶ in AttackRange: attack / cast
+     ▲                                          │
+     └──── arrived home ◀── return (no re-aggro) ◀── target lost, dead, &gt; 25 m chase or leash
+</code></pre></div>
+
+<ul>
+<li><strong>Wander</strong>: a new waypoint at most every 300 ms (a decision, not a movement), within the wander radius, never more than 15 m (<code>LeashRadius</code>) from spawn.</li>
+<li><strong>Chase</strong>: towards the top of the threat table; on the navmesh when one is loaded (<code>NavAgent</code>), otherwise straight with terrain ground snap.</li>
+<li><strong>Leash/evade</strong>: too far from home, or the target unreachable on the navmesh for <code>NpcUnreachableEvadeSeconds</code>, and it walks home, resetting health and threat.</li>
+<li><strong>Unstuck</strong>: an NPC that hasn't moved for 700 ms while trying is ghosted through obstacles briefly.</li>
+<li>Movement goes out through the <strong>snapshot dispatcher</strong> like players' (no per-NPC packets), so distant NPCs cost less bandwidth.</li>
+</ul>
+<h3 id="threat">Threat<a class="anchor" href="#threat" title="Permanent link">#</a></h3>
+<p><code>ThreatService</code> turns events into threat (<a href="30-combat.html">Combat</a>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Threat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>damage to the NPC</td>
+<td>damage × <code>ThreatPerDamage</code></td>
+</tr>
+<tr>
+<td>healing a player the NPC is fighting</td>
+<td>heal × <code>ThreatPerHeal</code>, split across those NPCs</td>
+</tr>
+<tr>
+<td>taunt</td>
+<td>top of the table, fixated for <code>TauntDurationMs</code></td>
+</tr>
+<tr>
+<td>walking into aggro range</td>
+<td><code>AggroThreat</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>All scaled by the source's <code>ThreatPct</code> stat (a tank stance is a status with +100 %). The NPC switches target only when someone beats the current one by a margin, so it doesn't flicker.</p>
+<h3 id="combat-ai-abilities-and-phases">Combat AI (abilities and phases)<a class="anchor" href="#combat-ai-abilities-and-phases" title="Permanent link">#</a></h3>
+<p>There is <strong>one AI</strong> for mobs and bosses. A boss is an NPC with phases and more ability rows.</p>
+<ul>
+<li><strong><code>AiProfiles</code></strong>: <code>Role</code> (Brute closes to melee; Caster/Healer stand off at their longest spell's range), <code>HealBelowPct</code>, <code>AssistRadius</code> (nearby aggressive friends join the fight).</li>
+<li><strong><code>NpcAbilities</code></strong>: each row is a <code>Skills</code> row (usually <code>NpcOnly</code>) with <code>Priority</code> (higher first), <code>Target</code> (0 current target, 1 self, 2 most hurt ally, 3 random enemy on its threat table), health window, <code>Phase</code>, <code>Chance</code>, <code>CooldownMs</code>, <code>InitialDelayMs</code>. Abilities cast through <strong>the same pipeline players use</strong>: cast bars, interrupts, effects, crowd control.</li>
+<li><strong><code>NpcPhases</code></strong>: below <code>HealthBelowPct</code> → enter <code>Phase</code>, <code>Yell</code> to everyone nearby, summon <code>SummonCount</code> × <code>SummonTemplateId</code>. Lua gets <code>OnNpcPhase</code> for anything more.</li>
+</ul>
+<h2 id="death-loot-and-respawn">Death, loot and respawn<a class="anchor" href="#death-loot-and-respawn" title="Permanent link">#</a></h2>
+<p><code>CombatManager.KillNpc</code>:</p>
+<ol>
+<li>Works out kill credit (who tagged it; party sharing within <code>PartyShareRange</code>).</li>
+<li>Stops casts, clears statuses, raises the <code>NpcDied</code> event (world events and achievements listen), clears threat.</li>
+<li><code>NpcAiManager.KillNpc</code>: despawn for everyone (<code>W2CNpcDespawn</code>), schedule one replacement in <code>RespawnSeconds</code> via the <code>Scheduler</code>. If the spawner went inactive meanwhile, its next activation refills the group.</li>
+<li><code>LootManager.CreateCorpse</code>: a lootable corpse for the eligible looters (<a href="60-loot.html">Loot</a>).</li>
+<li>XP to everyone sharing (with a party bonus, at each member's own level) and Lua <code>OnKill</code> / quest kill credit.</li>
+</ol>
+<h2 id="talking-to-npcs">Talking to NPCs<a class="anchor" href="#talking-to-npcs" title="Permanent link">#</a></h2>
+<p>Right-clicking an NPC runs its <strong>interaction actions</strong> (<code>InteractableActions</code> rows: talk, trade/shop, quests, mailbox, auction, cash shop, warehouse...) through <code>Core/Interaction</code>. The template's <code>Greeting</code> is the Talk text. Lua can answer <code>OnInteract</code> for custom dialogue:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- Lua/Server/blacksmith.lua</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">RegisterPlayerEvent</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">templateId</span><span class="p">,</span><span class="w"> </span><span class="nv">kind</span><span class="p">)</span><span class="w">   </span><span class="c1">-- 6 = OnInteract</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">templateId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">90010</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">player</span><span class="p">:</span><span class="nf">SendDialogue</span><span class="p">(</span><span class="s2">&quot;Brannoc&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Bring me 10 Iron Ore and I&#39;ll make it worth your while.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="recipes">Recipes<a class="anchor" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="a-new-monster-camp-data-only">A new monster camp (data only)<a class="anchor" href="#a-new-monster-camp-data-only" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="c1">-- SQL/patches/120_wolf_camp.sql</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcTemplates</span>
+<span class="w">  </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">Level</span><span class="p">,</span><span class="w"> </span><span class="n">ModelType</span><span class="p">,</span><span class="w"> </span><span class="n">MaxHealth</span><span class="p">,</span><span class="w"> </span><span class="n">AggroRadius</span><span class="p">,</span><span class="w"> </span><span class="n">AttackRange</span><span class="p">,</span><span class="w"> </span><span class="n">AttackCooldownMs</span><span class="p">,</span>
+<span class="w">   </span><span class="n">AttackDamageMin</span><span class="p">,</span><span class="w"> </span><span class="n">AttackDamageMax</span><span class="p">,</span><span class="w"> </span><span class="n">Armor</span><span class="p">,</span><span class="w"> </span><span class="n">Resistance</span><span class="p">,</span><span class="w"> </span><span class="n">Rank</span><span class="p">,</span><span class="w"> </span><span class="n">LootTableId</span><span class="p">,</span><span class="w"> </span><span class="n">AiProfileId</span><span class="p">,</span><span class="w"> </span><span class="n">FactionId</span><span class="p">,</span>
+<span class="w">   </span><span class="n">IsStationary</span><span class="p">,</span><span class="w"> </span><span class="n">InteractRange</span><span class="p">,</span><span class="w"> </span><span class="n">RespawnSeconds</span><span class="p">,</span><span class="w"> </span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">Greeting</span><span class="p">,</span><span class="w"> </span><span class="n">XpReward</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">90200</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Grey Wolf&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;NPC_WOLF&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">420</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcSpawners</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">TemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="p">,</span><span class="w"> </span><span class="k">Count</span><span class="p">,</span><span class="w"> </span><span class="n">Radius</span><span class="p">,</span><span class="w"> </span><span class="n">DungeonId</span><span class="p">,</span><span class="w"> </span><span class="n">MoveType</span><span class="p">,</span><span class="w"> </span><span class="n">WanderRadius</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5200</span><span class="p">,</span><span class="w"> </span><span class="mi">90200</span><span class="p">,</span><span class="w"> </span><span class="mi">812</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1034</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>AiProfileId 2</code> is the "Pack" profile (assists friends within 10 m). <code>ModelType 'NPC_WOLF'</code> must exist in the client's prefab catalogue and should have an NPC collision profile. Restart the World server. Easier: <strong>Tools ▸ Axiom ▸ Create ▸ NPC…</strong> does all of this with validation (<a href="../50-tools/30-create-wizards.html">Create wizards</a>).</p>
+<h3 id="a-boss-with-phases">A boss with phases<a class="anchor" href="#a-boss-with-phases" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcAbilities</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">NpcTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">SkillId</span><span class="p">,</span><span class="w"> </span><span class="n">Priority</span><span class="p">,</span><span class="w"> </span><span class="n">Target</span><span class="p">,</span><span class="w"> </span><span class="n">MinHealthPct</span><span class="p">,</span><span class="w"> </span><span class="n">MaxHealthPct</span><span class="p">,</span><span class="w"> </span><span class="n">Phase</span><span class="p">,</span><span class="w"> </span><span class="n">Chance</span><span class="p">,</span><span class="w"> </span><span class="n">CooldownMs</span><span class="p">,</span><span class="w"> </span><span class="n">InitialDelayMs</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">700</span><span class="p">,</span><span class="w"> </span><span class="mi">90300</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span><span class="w"> </span><span class="mi">3000</span><span class="p">),</span><span class="w">   </span><span class="c1">-- Orc Chop the tank every 8 s</span>
+<span class="w">       </span><span class="p">(</span><span class="mi">701</span><span class="p">,</span><span class="w"> </span><span class="mi">90300</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">15000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w">     </span><span class="c1">-- phase 2+: Firebolt a random enemy</span>
+<span class="w">       </span><span class="p">(</span><span class="mi">702</span><span class="p">,</span><span class="w"> </span><span class="mi">90300</span><span class="p">,</span><span class="w"> </span><span class="mi">106</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">60000</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">      </span><span class="c1">-- below 30 %: Blood Rage on itself (once a minute)</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">NpcPhases</span><span class="w"> </span><span class="p">(</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">NpcTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">Phase</span><span class="p">,</span><span class="w"> </span><span class="n">HealthBelowPct</span><span class="p">,</span><span class="w"> </span><span class="n">Yell</span><span class="p">,</span><span class="w"> </span><span class="n">SummonTemplateId</span><span class="p">,</span><span class="w"> </span><span class="n">SummonCount</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">90300</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;You will burn!&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">90301</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Skills 101, 102 and 106 are shipped <code>NpcOnly</code> skills (Orc Chop, Firebolt, Blood Rage). Any <code>Skills</code> row with its <code>Effects</code> works (<a href="30-combat.html">Combat</a>); see <code>Grukk the Warchief</code> (template 19) in the shipped data for a complete boss.</p>
+<h3 id="a-new-ai-behaviour-code">A new AI behaviour (code)<a class="anchor" href="#a-new-ai-behaviour-code" title="Permanent link">#</a></h3>
+<p>To add a target rule such as "lowest-health enemy":</p>
+<ol>
+<li>Add <code>LowestHealthEnemy = 4</code> to <code>NpcAbilityTarget</code> (<code>GameData/Npcs/NpcAi.cs</code>) and to <code>Assets/AxiomMMOKit/Editor/ContentStudio/Schema/ContentEnums.cs</code> (Content Studio dropdown).</li>
+<li>In <code>NpcCombatAi</code>, where the target of an ability row is resolved, add the case: walk <code>npc.Threat.Entries</code>, resolve players with <code>_players.TryGetPeer</code>, pick the lowest <code>session.Combat.Health</code> in range.</li>
+<li>Use it in a row: <code>Target = 4</code>.</li>
+</ol>
+<p>Keep AI decisions <strong>data-driven</strong>: a new column or enum value on <code>NpcAbilities</code>/<code>AiProfiles</code> serves every NPC, where a C# special case serves one.</p>
+<h2 id="debugging-npcs">Debugging NPCs<a class="anchor" href="#debugging-npcs" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NPC never appears</td>
+<td>Spawner position (Dev Tools ▸ Spawn Points), <code>ActiveFromHour</code>, a player close enough, <code>[Spawn]</code> log lines.</td>
+</tr>
+<tr>
+<td>Can't attack it</td>
+<td><code>MaxHealth = 0</code>, or its faction is friendly, or a Safe zone.</td>
+</tr>
+<tr>
+<td>Walks through walls</td>
+<td>No navmesh for that area (<code>[NavMesh]</code> log), or <code>NavMeshEnabled = false</code>. Bake it (<a href="250-navigation.html">Navigation</a>).</td>
+</tr>
+<tr>
+<td>Falls through floors / floats</td>
+<td><code>NpcGroundSnap</code>, missing terrain heightmap for that tile.</td>
+</tr>
+<tr>
+<td>Players walk through it</td>
+<td>No collision profile for its <code>ModelType</code> (export NPC collision), or <code>BlocksPlayers = 0</code>.</td>
+</tr>
+<tr>
+<td>Boss phases don't trigger</td>
+<td><code>NpcPhases</code> thresholds; abilities' <code>Phase</code> values. GM <code>C2WDebugNpcHealth</code> (DEV) sets an NPC's health % to test.</td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="10-players-sessions.html"><span>Previous</span>Players &amp; Sessions</a>
+<a class="next" href="30-combat.html"><span>Next</span>Combat, Effects &amp; Statuses</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#templates">Templates</a>
+</li>
+<li><a href="#spawners-and-activation">Spawners and activation</a>
+</li>
+<li><a href="#the-ai-loop">The AI loop</a>
+<ul>
+<li><a href="#threat">Threat</a>
+</li>
+<li><a href="#combat-ai-abilities-and-phases">Combat AI (abilities and phases)</a>
+</li>
+</ul>
+</li>
+<li><a href="#death-loot-and-respawn">Death, loot and respawn</a>
+</li>
+<li><a href="#talking-to-npcs">Talking to NPCs</a>
+</li>
+<li><a href="#recipes">Recipes</a>
+<ul>
+<li><a href="#a-new-monster-camp-data-only">A new monster camp (data only)</a>
+</li>
+<li><a href="#a-boss-with-phases">A boss with phases</a>
+</li>
+<li><a href="#a-new-ai-behaviour-code">A new AI behaviour (code)</a>
+</li>
+</ul>
+</li>
+<li><a href="#debugging-npcs">Debugging NPCs</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

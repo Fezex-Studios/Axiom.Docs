@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social: Chat, Parties, Guilds &amp; Friends · Axiom Docs</title>
+<meta name="description" content="Chat channels and their ranges, sanitising and links, Lua chat commands; parties and raids with loot rules and kill sharing; guilds with ranks and permissions stored in Persistence; friends, blocks and families - and how to add a chat channel or a guild feature.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="60-loot.html">Loot</a></li>
+<li><a href="70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="90-quests.html">Quests</a></li>
+<li><a href="100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="130-social.html" class="active" aria-current="page">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="205-plugins.html">C# Server Plugins</a></li>
+<li><a href="210-auth-server.html">Auth Server</a></li>
+<li><a href="220-persistence-server.html">Persistence Server</a></li>
+<li><a href="230-auction-server.html">Auction Server</a></li>
+<li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Server Systems</div>
+
+<h1 id="social-chat-parties-guilds--friends">Social: Chat, Parties, Guilds &amp; Friends<a class="anchor" href="#social-chat-parties-guilds--friends" title="Permanent link">#</a></h1>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C2WChatHandler</code></td>
+<td><code>Core/Packets/C2WHandlers/C2WChatHandler.cs</code></td>
+<td>Validates and routes chat by channel.</td>
+</tr>
+<tr>
+<td><code>ChatChannel</code>, <code>ChatRules</code></td>
+<td><code>Axiom.Network/Shared</code></td>
+<td>Channel numbers; sanitising and link rules (shared).</td>
+</tr>
+<tr>
+<td><code>PartyManager</code></td>
+<td><code>Core/Social/PartyManager.cs</code></td>
+<td>Parties and raids, invites, loot rules, kill sharing, party frames. In memory.</td>
+</tr>
+<tr>
+<td><code>GuildManager</code>, <code>GuildStore</code></td>
+<td><code>Core/Social</code></td>
+<td>Guilds: a cached copy of what Persistence says.</td>
+</tr>
+<tr>
+<td><code>C2WCommunityHandler</code>, <code>FamilyNameService</code></td>
+<td><code>Core/Packets</code>, <code>Core/Social</code></td>
+<td>Friends, blocks, mutes, families (stored in Persistence).</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="chat">Chat<a class="anchor" href="#chat" title="Permanent link">#</a></h2>
+<p><code>ChatMessage</code> (opcode 22) carries <code>Channel</code>, <code>Message</code>, optional <code>TargetName</code> (whispers) and a structured link (label + URL).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Channel</th>
+<th>Who hears it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Local</td>
+<td>everyone who can see you (your interest set)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Shout</td>
+<td>everyone within 4 grid cells (~200 m)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Whisper</td>
+<td>one player by name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>NpcYell</td>
+<td>server only (boss phase yells)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Party</td>
+<td>your party (in a raid: your group)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Raid</td>
+<td>your raid</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Guild</td>
+<td>your guild, anywhere on the shard</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Zone</td>
+<td>same zone and layer</td>
+</tr>
+<tr>
+<td>8</td>
+<td>System</td>
+<td>server only (notices)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Trade</td>
+<td>same zone and layer; <code>/tr</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Every message: muted players (GM) are dropped; control characters and bidi overrides are stripped (<code>ChatRules.Clean</code>, max 200 characters); links must be absolute http(s) without credentials. The client shows player text inside <code>&lt;noparse&gt;</code>, so rich-text tags in a message are harmless.</p>
+<p>Before routing, <code>PlayerManager.FireChatEvent</code> gives Lua the message: a registered <strong><code>.command</code></strong> consumes it, and an <code>OnChat</code> hook returning <code>false</code> blocks it:</p>
+<div class="hl"><pre><span></span><code><span class="c1">-- Lua/Server/chat_commands.lua</span>
+<span class="nv">Server</span><span class="p">:</span><span class="nf">RegisterCommand</span><span class="p">(</span><span class="s2">&quot;roll&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">args</span><span class="p">)</span><span class="w">          </span><span class="c1">-- &quot;.roll&quot; in chat</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">math.random</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">_</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">player</span><span class="p">:</span><span class="nf">GetPosition</span><span class="p">()</span><span class="w">                       </span><span class="c1">-- GetPosition returns x, y, z</span>
+<span class="w">    </span><span class="kr">for</span><span class="w"> </span><span class="nv">_</span><span class="p">,</span><span class="w"> </span><span class="nv">p</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nb">ipairs</span><span class="p">(</span><span class="nv">Server</span><span class="p">:</span><span class="nf">Players</span><span class="p">())</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="nv">p</span><span class="p">:</span><span class="nf">DistanceTo</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">z</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="kr">then</span><span class="w">                        </span><span class="c1">-- flat distance in metres</span>
+<span class="w">            </span><span class="nv">p</span><span class="p">:</span><span class="nf">SendMessage</span><span class="p">(</span><span class="nv">player</span><span class="p">:</span><span class="nf">GetName</span><span class="p">()</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; rolls &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">n</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; (1-100).&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">end</span>
+<span class="w">    </span><span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="nv">Server</span><span class="p">:</span><span class="nf">On</span><span class="p">(</span><span class="s2">&quot;OnChat&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="nv">player</span><span class="p">,</span><span class="w"> </span><span class="nv">channel</span><span class="p">,</span><span class="w"> </span><span class="nv">message</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">message</span><span class="p">:</span><span class="nf">lower</span><span class="p">():</span><span class="nf">find</span><span class="p">(</span><span class="s2">&quot;buy gold&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="kr">end</span><span class="w">   </span><span class="c1">-- swallow spam</span>
+<span class="kr">end</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Client slash commands (<code>ChatUI</code>): <code>/general</code>, <code>/p</code>, <code>/ra</code>, <code>/g</code>, <code>/z</code>, <code>/shout</code>, <code>/tr</code>, <code>/w name</code>, <code>/r</code>.</p>
+<h2 id="parties-and-raids">Parties and raids<a class="anchor" href="#parties-and-raids" title="Permanent link">#</a></h2>
+<p>Parties live <strong>in memory</strong> on the World server (<code>PartyManager</code>); members who disconnect stay for <code>PartyOfflineGraceSeconds</code> so a relog keeps the group.</p>
+<ul>
+<li><code>C2WPartyCommand { Action, Name, TargetNetworkId, CharacterId, Value }</code> with <code>PartyAction</code>: Invite, Accept, Decline, Leave, Kick, Promote, ConvertToRaid, SetLootRule, MoveToGroup, SetRole, RadiusInvite.</li>
+<li><code>W2CPartyState</code> (the whole party on every change), <code>W2CPartyVitals</code> (health/mana/level/position for party frames, periodically), <code>W2CPartyInvite</code>.</li>
+<li>Sizes: <code>PartyMaxSize</code> 5; a raid is up to <code>RaidMaxSize</code> 50 (10 groups of 5).</li>
+<li><strong>Sharing</strong>: a kill tagged by a party is shared by members alive and within <code>PartyShareRange</code> (80 m): XP (with <code>PartyXpBonusPct</code> per extra member), quest credit and loot eligibility by the party's <a href="60-loot.html#party-loot">loot rule</a>.</li>
+</ul>
+<h2 id="guilds">Guilds<a class="anchor" href="#guilds" title="Permanent link">#</a></h2>
+<p>Guilds live <strong>in Persistence</strong> (<code>guilds</code>, <code>guild_members</code>, <code>guild_ranks</code>). The World server keeps a copy of every guild with someone online and changes it <strong>only with what Persistence answers</strong>: each command is written there first (<code>/guilds/command</code>), and the answer, the guild as it now is, replaces the copy and goes to everyone online in it. Commands for one guild run one at a time, in order.</p>
+<ul>
+<li><code>C2WGuildCommand { Action, Name, CharacterId, Rank, Text, Permissions }</code> with <code>GuildAction</code>: Create, Invite, Accept, Decline, Leave, Kick, SetRank, TransferLeader, SetMotd, EditRank, Disband.</li>
+<li>Ranks 0 (leader) to 4, each with <code>GuildPermission</code> flags: Invite, Kick, SetRanks, EditMotd, UseShop, ActivateBuffs (All). The leader can do everything.</li>
+<li>Checked twice: permissions here, invariants there (one guild per character, always a leader, rank bounds, <code>GuildMaxMembers</code> 100, <code>GuildNameRules</code>).</li>
+<li><code>W2CGuildState</code>, <code>W2CGuildMemberStatus</code> (online/offline/level), <code>W2CGuildInvite</code>, <code>W2CPlayerGuild</code> (the name under a player's name, to everyone who can see them).</li>
+</ul>
+<h3 id="guild-and-family-progression">Guild and family progression<a class="anchor" href="#guild-and-family-progression" title="Permanent link">#</a></h3>
+<p>Guilds and families level up through <strong>missions</strong>, which also earn a guild <strong>Prestige</strong>. Levels unlock perks and buffs for every member; Prestige buys from the guild shop and activates temporary guild buffs. These run on the World server (<code>Core/Social/Missions</code>, <code>Core/Social/Recruitment</code>) and are saved in Persistence's <code>shard_state</code>:</p>
+<ul>
+<li><a href="131-guild-progression.html">Guild &amp; Family Progression</a>: missions, levels, the buffs that grow with level.</li>
+<li><a href="132-guild-recruitment.html">Guild Recruitment</a>: the Recruit/Search tab, posts and applications.</li>
+<li><a href="133-guild-shop.html">Guild Shop &amp; Prestige</a>: the shop, rank permissions, timed buffs, the guild log.</li>
+</ul>
+<h2 id="friends-blocks-and-families">Friends, blocks and families<a class="anchor" href="#friends-blocks-and-families" title="Permanent link">#</a></h2>
+<p><code>C2WCommunityCommand</code> → <code>/community/command</code> on Persistence (<code>community_contacts</code>, <code>community_families</code>, <code>community_family_members</code>) → <code>W2CCommunityState</code>. Families show a family name line on nameplates (<code>W2CPlayerFamily</code>, via <code>FamilyNameService</code>).</p>
+<h2 id="recipes">Recipes<a class="anchor" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="a-new-chat-channel-faction">A new chat channel ("Faction")<a class="anchor" href="#a-new-chat-channel-faction" title="Permanent link">#</a></h3>
+<ol>
+<li>Add <code>Faction = 10</code> to <code>ChatChannel</code> (shared; rebuild DLL, bump protocol).</li>
+<li>In <code>C2WChatHandler</code>, add a case that collects peers with the same faction (<code>PvpService.FactionOf(session)</code>) and calls <code>SendToRecipients(...)</code>.</li>
+<li>Client: a tab/colour and a slash command in <code>ChatUI</code>.</li>
+</ol>
+<h3 id="a-guild-feature-guild-bank-gold">A guild feature (guild bank gold)<a class="anchor" href="#a-guild-feature-guild-bank-gold" title="Permanent link">#</a></h3>
+<p>Because guilds are owned by Persistence, add it <strong>there</strong> first: a column (<code>guilds.bank_gold</code>), a new command in the <code>/guilds/command</code> handler (deposit/withdraw with checks inside the transaction), and the field on the guild DTO. Then in <code>GuildManager</code> add the action, check the rank permission (add a <code>GuildPermission</code> flag), take the gold from the player <strong>with a write-through save</strong> and send the command; apply the answer. Follow the <a href="100-economy.html#the-pattern-for-new-economy-features">economy pattern</a>: the gold leaves the player only once the save is confirmed, and the deposit is idempotent by key.</p>
+<nav class="pager">
+<a class="prev" href="120-housing-farming.html"><span>Previous</span>Housing, Farming &amp; Furniture</a>
+<a class="next" href="131-guild-progression.html"><span>Next</span>Guild &amp; Family Progression: Missions, Levels, Buffs</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#chat">Chat</a>
+</li>
+<li><a href="#parties-and-raids">Parties and raids</a>
+</li>
+<li><a href="#guilds">Guilds</a>
+<ul>
+<li><a href="#guild-and-family-progression">Guild and family progression</a>
+</li>
+</ul>
+</li>
+<li><a href="#friends-blocks-and-families">Friends, blocks and families</a>
+</li>
+<li><a href="#recipes">Recipes</a>
+<ul>
+<li><a href="#a-new-chat-channel-faction">A new chat channel (&quot;Faction&quot;)</a>
+</li>
+<li><a href="#a-guild-feature-guild-bank-gold">A guild feature (guild bank gold)</a>
+</li>
+</ul>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

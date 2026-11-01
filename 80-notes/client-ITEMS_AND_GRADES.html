@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Items: Grades, Sockets, Durability and Stack Limits · Axiom Docs</title>
+<meta name="description" content="Before this, every sword of the same kind was identical. Now each copy of an item can be different. That is the base that loot grade rolls, crafting quality and later phases are built on.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="server-SAVES.html">Character saves</a></li>
+<li><a href="server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="server-ZONES.html">Zones</a></li>
+<li><a href="server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="client-ITEMS_AND_GRADES.html" class="active" aria-current="page">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="client-SIEGES.html">Sieges</a></li>
+<li><a href="client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Client &amp; Editor Notes</div>
+<div class="note-banner">Feature note, kept next to the code it describes. Source: <code>docs/notes/client/ITEMS_AND_GRADES.md</code></div>
+<h1 id="items-grades-sockets-durability-and-stack-limits">Items: Grades, Sockets, Durability and Stack Limits<a class="anchor" href="#items-grades-sockets-durability-and-stack-limits" title="Permanent link">#</a></h1>
+<p><em>Axiom, 12 Oct 2026. Protocol 28. Phase 1 of the "classic MMO-style database" plan.</em></p>
+<p>Before this, every sword of the same kind was identical. Now each <strong>copy</strong> of an item can be different. That is the base that loot grade rolls, crafting quality and later phases are built on.</p>
+<p>A copy carries four things, together called its <strong>instance</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it is</th>
+<th>Stored as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Grade</strong></td>
+<td>Crude, Basic, Grand ... Mythic. A higher grade means bigger stats and a different name colour.</td>
+<td><code>ItemGrades</code> id. 0 means "the item's base grade".</td>
+</tr>
+<tr>
+<td><strong>Wear</strong></td>
+<td>How much durability it has lost.</td>
+<td>Points lost. Current = Max − Wear.</td>
+</tr>
+<tr>
+<td><strong>Gems</strong></td>
+<td>Up to 3 gems in its sockets.</td>
+<td>Gem item ids. 0 means an empty socket.</td>
+</tr>
+<tr>
+<td>(Binding)</td>
+<td>Soulbound or not. This existed before; it travels the same way.</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>The instance goes wherever the item goes: bag, equipment, house coffers, mail, trade, auction house. If you mail a Heroic sword with two rubies, it arrives as a Heroic sword with two rubies.</p>
+<p>Every item that existed before this update loads as <strong>Basic grade, full durability, empty sockets</strong>. You don't need to run anything for that.</p>
+<hr>
+<h2 id="1-for-players">1. For players<a class="anchor" href="#1-for-players" title="Permanent link">#</a></h2>
+<h3 id="grades">Grades<a class="anchor" href="#grades" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Grade</th>
+<th>Stats</th>
+<th>Regrade into it</th>
+<th>If it fails</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Crude</td>
+<td>90%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Basic</strong> (the default)</td>
+<td>100%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Grand</td>
+<td>105%</td>
+<td>100%</td>
+<td>keeps its grade</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Rare</td>
+<td>110%</td>
+<td>90%</td>
+<td>keeps its grade</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Arcane</td>
+<td>116%</td>
+<td>75%</td>
+<td>keeps its grade</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Heroic</td>
+<td>123%</td>
+<td>60%</td>
+<td>25% chance it drops a grade</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Unique</td>
+<td>131%</td>
+<td>45%</td>
+<td>35% chance it drops a grade</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Celestial</td>
+<td>140%</td>
+<td>35%</td>
+<td>5% chance it breaks, 40% it drops a grade</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Divine</td>
+<td>150%</td>
+<td>25%</td>
+<td>10% breaks, 45% drops</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Epic</td>
+<td>161%</td>
+<td>18%</td>
+<td>15% breaks, 50% drops</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Legendary</td>
+<td>173%</td>
+<td>12%</td>
+<td>20% breaks, 50% drops</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Mythic</td>
+<td>186%</td>
+<td>7%</td>
+<td>25% breaks, 50% drops</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are the starting numbers. Change them in <strong>Content Studio &gt; Items &gt; Item Grades</strong>.</p>
+<ul>
+<li>The item's name in its tooltip is shown in its grade colour, and the grade name appears under it.</li>
+<li>In the bag and the character window, gear of Grand grade or better gets a coloured frame.</li>
+<li>Gem stats are <strong>not</strong> scaled by grade. Only the item's own stats are.</li>
+</ul>
+<h3 id="the-item-upgrade-window">The Item Upgrade window<a class="anchor" href="#the-item-upgrade-window" title="Permanent link">#</a></h3>
+<p>Open it with <strong><code>/upgrade</code></strong> (also <code>/regrade</code> or <code>/sockets</code>), or right-click a regrade scroll, charm, gem or gem extractor in your bag. The bag opens next to it.</p>
+<ol>
+<li><strong>Pick the item.</strong> Click one of your worn items along the top, or right-click a piece of equipment in your bag.</li>
+<li><strong>Regrade tab.</strong> Right-click a <strong>Regrade Scroll</strong> in your bag. You can also right-click a <strong>charm</strong>. The window shows:
+   - the chance of success,
+   - what a failure can do,
+   - the gold cost.</li>
+</ol>
+<p>The scroll, the charm and the gold are used up whether it works or not. If a failure could break the item or drop its grade, you're asked to confirm first.
+3. <strong>Sockets tab.</strong> Right-click a gem in your bag. It goes into the first empty socket. <strong>Remove</strong> takes a gem out:
+   - With a <strong>Gem Extractor</strong> in your bag, the extractor is used up and the gem comes back to you.
+   - Without one, the gem shatters. You're asked before that happens.</p>
+<p>You can upgrade worn items too. Your stats update straight away.</p>
+<h3 id="durability">Durability<a class="anchor" href="#durability" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Dying</strong> costs every worn item 10% of its maximum durability.</li>
+<li><strong>Each hit you land</strong> has a 3% chance to wear your weapon by 1 point.</li>
+<li><strong>Each hit you take</strong> has a 3% chance to wear one armor piece or your shield by 1 point.</li>
+<li>At <strong>0 durability</strong> the item is <strong>broken</strong>. It stays on you but gives no stats and no gem bonuses. Its icon turns red, and its tooltip says "broken".</li>
+<li><strong>Repair</strong> at any merchant NPC: the shop window has a <strong>Repair All</strong> button that shows the price. It repairs everything you're wearing and carrying.</li>
+<li>Accessories (neck, ring, trinket) don't wear out by default.</li>
+</ul>
+<h3 id="stack-limits">Stack limits<a class="anchor" href="#stack-limits" title="Permanent link">#</a></h3>
+<p>Every item now has a stack limit:</p>
+<ul>
+<li>Gear: 1.</li>
+<li>Guild Crests and Aether Crystals: 9,999.</li>
+<li>Scrolls, charms and gems: 100.</li>
+<li>Everything else: 1,000 unless its data says otherwise.</li>
+</ul>
+<p>Loot, crafting, mail, trade, coffers and shops all fill existing stacks up to the limit, then use new slots. A stack that was already bigger than its limit from before this update is left alone. It just won't take any more.</p>
+<h3 id="where-to-get-the-materials">Where to get the materials<a class="anchor" href="#where-to-get-the-materials" title="Permanent link">#</a></h3>
+<p><strong>Hilda's General Goods</strong> (shop 1) sells all of these for testing:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Id</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regrade Scroll (current grade Crude to Rare)</td>
+<td>90101</td>
+<td>5s</td>
+</tr>
+<tr>
+<td>Superior Regrade Scroll (current grade Arcane and up)</td>
+<td>90102</td>
+<td>50s</td>
+</tr>
+<tr>
+<td>Lucky Charm (+10% success)</td>
+<td>90103</td>
+<td>20s</td>
+</tr>
+<tr>
+<td>Guardian Charm (a failure never drops or breaks the item)</td>
+<td>90104</td>
+<td>1g</td>
+</tr>
+<tr>
+<td>Gem Extractor</td>
+<td>90105</td>
+<td>15s</td>
+</tr>
+<tr>
+<td>Lesser Ruby (+3 Strength, weapons only)</td>
+<td>90121</td>
+<td>10s</td>
+</tr>
+<tr>
+<td>Lesser Topaz (+2 Agility, any gear)</td>
+<td>90122</td>
+<td>10s</td>
+</tr>
+<tr>
+<td>Lesser Sapphire (+2 Intelligence, any gear)</td>
+<td>90123</td>
+<td>10s</td>
+</tr>
+<tr>
+<td>Lesser Emerald (+3 Vitality, armor only)</td>
+<td>90124</td>
+<td>10s</td>
+</tr>
+<tr>
+<td>Lesser Pearl (+3 Spirit, accessories only)</td>
+<td>90125</td>
+<td>10s</td>
+</tr>
+<tr>
+<td>Lesser Onyx (+12 Armor, armor or shield)</td>
+<td>90126</td>
+<td>10s</td>
+</tr>
+</tbody>
+</table></div>
+<p>Later, these move to loot tables and crafting (phases 2 and 3).</p>
+<hr>
+<h2 id="2-testing-it-quickly">2. Testing it quickly<a class="anchor" href="#2-testing-it-quickly" title="Permanent link">#</a></h2>
+<ol>
+<li>Log in and get some gold: in the Editor or a development build, press <strong>F12</strong> (the admin panel) and add gold.</li>
+<li>Buy 3 Regrade Scrolls, a Lucky Charm, 2 Lesser Rubies and a Gem Extractor from Hilda.</li>
+<li>Type <code>/upgrade</code>, then click your main-hand weapon in the top row.</li>
+<li>Right-click a scroll in your bag, then press <strong>Regrade</strong>.
+   - Basic to Grand always works (100%).
+   - Open your character window. Attack Power should have gone up by about 5%.</li>
+<li>Open the <strong>Sockets</strong> tab and right-click a Lesser Ruby. Strength should go up by 3.</li>
+<li>Press <strong>Remove</strong>. The extractor is used up and the ruby comes back to your bag.</li>
+<li>Die a few times. Then talk to Hilda and check the <strong>Repair All</strong> price.</li>
+<li>Mail the sword to another of your characters, or put it in a house coffer. Hover over it: the grade and gems are still there.</li>
+</ol>
+<hr>
+<h2 id="3-for-designers-the-data">3. For designers: the data<a class="anchor" href="#3-for-designers-the-data" title="Permanent link">#</a></h2>
+<p>All of this is in Content Studio under <strong>Items</strong>.</p>
+<h3 id="items-new-column"><code>Items</code> (new column)<a class="anchor" href="#items-new-column" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_stack</code></td>
+<td>How many fit in one slot. 0 = default: 1 for gear, otherwise the <code>ItemDefaultMaxStack</code> rule (1000).</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="itemstats-gear-new-columns"><code>ItemStats</code> (gear; new columns)<a class="anchor" href="#itemstats-gear-new-columns" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SocketCount</code></td>
+<td>0–3 gem sockets.</td>
+</tr>
+<tr>
+<td><code>MaxDurability</code></td>
+<td>Durability when new. 0 = never wears out.</td>
+</tr>
+<tr>
+<td><code>BaseGrade</code></td>
+<td>The grade a new copy has. 0 = the <code>ItemDefaultGrade</code> rule (Basic).</td>
+</tr>
+<tr>
+<td><code>MaxGrade</code></td>
+<td>The highest grade it can be regraded to. 0 = the top of the ladder.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Patch 061 set the existing gear like this:</p>
+<ul>
+<li>Durability: one-handed weapons 100, two-handed 120, shields / chest / legs 90, head / hands / feet 70, accessories 0.</li>
+<li>Sockets: 1 for Common gear, 2 for Uncommon, 3 for Rare and better.</li>
+</ul>
+<h3 id="itemgrades-new-table"><code>ItemGrades</code> (new table)<a class="anchor" href="#itemgrades-new-table" title="Permanent link">#</a></h3>
+<p>One row per grade, <strong>ordered by Id</strong> (a higher Id is a better grade).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code>, <code>ColorHex</code></td>
+<td>Shown in tooltips.</td>
+</tr>
+<tr>
+<td><code>StatPercent</code></td>
+<td>Gear stats at this grade (100 = as listed). Whole stats are rounded; percent stats keep one decimal.</td>
+</tr>
+<tr>
+<td><code>RepairPercent</code></td>
+<td>Repair price multiplier.</td>
+</tr>
+<tr>
+<td><code>SuccessChance</code></td>
+<td>Chance (%) that a regrade <strong>into</strong> this grade works.</td>
+</tr>
+<tr>
+<td><code>DestroyChance</code></td>
+<td>On failure: chance (%) the item is destroyed. This is checked first.</td>
+</tr>
+<tr>
+<td><code>DowngradeChance</code></td>
+<td>On failure: chance (%) the item drops one grade. Otherwise it stays as it was.</td>
+</tr>
+<tr>
+<td><code>GoldCost</code></td>
+<td>Copper per attempt.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="itemgems-new-table"><code>ItemGems</code> (new table)<a class="anchor" href="#itemgems-new-table" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ItemId</code></td>
+<td>The gem item.</td>
+</tr>
+<tr>
+<td><code>AllowedSlots</code></td>
+<td>Flags, one per equip slot (tick boxes in Content Studio). None ticked = fits any gear.</td>
+</tr>
+<tr>
+<td>Stat columns</td>
+<td><code>Strength</code> ... <code>Haste</code>: what the gem adds while it's socketed.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="itemupgradematerials-new-table"><code>ItemUpgradeMaterials</code> (new table)<a class="anchor" href="#itemupgradematerials-new-table" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Kind</code></td>
+<td>1 Regrade Scroll, 2 Regrade Charm, 3 Gem Extractor.</td>
+</tr>
+<tr>
+<td><code>MinGrade</code>, <code>MaxGrade</code></td>
+<td>Scrolls and charms only work on gear whose <strong>current</strong> grade is in this range (0 = no limit).</td>
+</tr>
+<tr>
+<td><code>BonusChance</code></td>
+<td>Charms: percentage points added to the success chance.</td>
+</tr>
+<tr>
+<td><code>Protects</code></td>
+<td>Charms: a failure never destroys or downgrades the item.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rules-combatrules">Rules (<code>CombatRules</code>)<a class="anchor" href="#rules-combatrules" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ItemDefaultMaxStack</code></td>
+<td>1000</td>
+<td>Stack limit when <code>max_stack</code> is 0.</td>
+</tr>
+<tr>
+<td><code>ItemDefaultGrade</code></td>
+<td>2</td>
+<td>Grade used when <code>BaseGrade</code> is 0.</td>
+</tr>
+<tr>
+<td><code>DurabilityDeathPct</code></td>
+<td>10</td>
+<td>% of max durability lost by each worn item on death.</td>
+</tr>
+<tr>
+<td><code>DurabilityWeaponWearChance</code></td>
+<td>3</td>
+<td>% chance per landed hit to wear the weapon 1 point.</td>
+</tr>
+<tr>
+<td><code>DurabilityArmorWearChance</code></td>
+<td>3</td>
+<td>% chance per hit taken to wear one armor piece 1 point.</td>
+</tr>
+<tr>
+<td><code>RepairGoldPerPoint</code></td>
+<td>2</td>
+<td>Copper per point × (1 + level / 10) × the grade's <code>RepairPercent</code> / 100.</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="4-for-programmers">4. For programmers<a class="anchor" href="#4-for-programmers" title="Permanent link">#</a></h2>
+<h3 id="the-shared-type">The shared type<a class="anchor" href="#the-shared-type" title="Permanent link">#</a></h3>
+<p><code>Axiom.Network.Shared.Items.ItemInstance</code> is a struct with <code>Grade</code>, <code>Wear</code>, <code>Gem1</code>, <code>Gem2</code> and <code>Gem3</code>. It also has these helpers:</p>
+<ul>
+<li><code>IsPlain</code></li>
+<li><code>GetGem(i)</code> and <code>WithGem(i, id)</code></li>
+<li><code>==</code>, which stacking uses</li>
+</ul>
+<p><code>ItemDurability</code> has the repair formula. The client and the server both use it, so the price the client shows matches what the server charges.</p>
+<p>DTOs that now carry an <code>Inst</code> field:</p>
+<ul>
+<li><code>InventorySlotDto</code>, <code>InventorySlotData</code></li>
+<li><code>W2CInventorySlotChangedPacket</code></li>
+<li><code>EquipmentSlotData</code></li>
+<li><code>MailDto</code>, <code>MailEntryData</code>, <code>W2PMailSendRequest</code></li>
+<li><code>AuctionListingDto</code>, <code>AuctionEntryData</code>, <code>W2PAuctionCreateRequest</code></li>
+<li><code>TradeItemData</code></li>
+</ul>
+<h3 id="world-server">World server<a class="anchor" href="#world-server" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InventorySlot.Inst</code></td>
+<td>Because it's a struct field, every move, swap, equip and unequip keeps it automatically.</td>
+</tr>
+<tr>
+<td><code>ItemManager</code></td>
+<td>Loads grades, gems and materials. Its helpers: <code>MaxStack</code>, <code>Normalize</code> (grade 0 → base grade, clamps wear, drops gems beyond the socket count, keeps non-gear plain), <code>CollectModifiers</code> (grade-scaled stats plus gems, nothing when broken), <code>RepairCost</code>, <code>BuildGradeCatalog</code>.</td>
+</tr>
+<tr>
+<td><code>Core/Inventory/BagMath</code></td>
+<td>The one placement rule for everything that writes a bag. <code>CanMerge</code> means same item, same binding, same instance, and the item stacks. <code>Place</code> fills stacks up to the limit, then empty slots. <code>Take</code> takes back exactly one copy (used to undo a failed save).</td>
+</tr>
+<tr>
+<td><code>PlayerManager.TryAddItem(peer, id, qty, inst)</code> / <code>CanAddItem(...)</code></td>
+<td>All or nothing, with stack limits. The old 3-argument versions give a new copy.</td>
+</tr>
+<tr>
+<td><code>PlayerManager.TryTakeFromSlot(peer, slot, qty, out InventorySlot taken)</code></td>
+<td>Tells you which copy left the bag.</td>
+</tr>
+<tr>
+<td><code>Core/Items/ItemUpgradeService</code></td>
+<td>Regrade, socket, unsocket, repair (<code>C2WItemUpgrade</code> 161 → <code>W2CItemUpgradeResult</code> 162), plus durability wear. It's hooked into <code>CombatManager.DeliverHit</code> (wear from hits) and <code>KillPlayer</code> (wear on death).</td>
+</tr>
+<tr>
+<td><code>StatsService.CollectGear</code></td>
+<td>Calls <code>ItemManager.CollectModifiers</code>.</td>
+</tr>
+<tr>
+<td>Storage, trade, mail, auction</td>
+<td>Each one carries the instance and undoes the exact copy if a save fails.</td>
+</tr>
+<tr>
+<td>Shop exchange</td>
+<td>Places through <code>BagMath</code>, so purchases respect stack limits.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="persistence-server">Persistence server<a class="anchor" href="#persistence-server" title="Permanent link">#</a></h3>
+<ul>
+<li>Columns <code>grade</code>, <code>wear</code>, <code>gem1</code>, <code>gem2</code>, <code>gem3</code> (int, default 0) on <code>character_inventory</code>, <code>character_equipment</code>, <code>doodad_storage</code> and <code>mail</code>.</li>
+<li>Migration <code>20261012120000_ItemInstances</code>, or run <code>SQL/item_instances.sql</code> instead (not both).</li>
+<li>Items mailed back from a removed house coffer keep their instance.</li>
+</ul>
+<h3 id="auction-service">Auction service<a class="anchor" href="#auction-service" title="Permanent link">#</a></h3>
+<ul>
+<li>The same five columns on <code>auction_listings</code> and <code>mail_outbox</code>.</li>
+<li>It adds them by itself on startup if they're missing.</li>
+<li>The instance follows the item through listing, purchase, cancellation and expiry mail.</li>
+</ul>
+<h3 id="client">Client<a class="anchor" href="#client" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LocalCharacterState.InstanceAt(index)</code></td>
+<td>The instance in a bag slot.</td>
+</tr>
+<tr>
+<td><code>GearCatalog</code></td>
+<td><code>Grades</code>, <code>Grade(id)</code>, <code>GradeOf</code>, <code>NextGrade</code>, <code>IsGem</code>, <code>UpgradeKind</code>, <code>GemFits</code>, <code>IsBroken</code>, <code>RepairCost</code>, <code>Scaled</code>.</td>
+</tr>
+<tr>
+<td><code>UiItemSlot.Set(..., instance:)</code></td>
+<td>Draws the grade frame and the broken tint; the tooltip shows grade, scaled stats, sockets and durability.</td>
+</tr>
+<tr>
+<td><code>ItemUpgradeWindow</code></td>
+<td>The upgrade window.</td>
+</tr>
+<tr>
+<td><code>ShopWindow</code></td>
+<td>The <strong>Repair All</strong> button.</td>
+</tr>
+<tr>
+<td><code>InventoryPanelUI</code></td>
+<td>Right-clicking an upgrade material or a gem opens the upgrade window.</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="5-whats-next">5. What's next<a class="anchor" href="#5-whats-next" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Phase 2 — grouped loot.</strong> Loot groups, weighted picks, always-drop items, and <strong>grade rolls</strong>: a drop can come out Grand or Rare. That's what <code>TryAddItem(..., inst)</code> is for.</li>
+<li><strong>Phase 3 — quest types.</strong> Craft, use an item, use a skill, enter an area, timed, interact with a doodad; choose-one rewards.</li>
+</ul>
+<p>Known limits for now:</p>
+<ul>
+<li>Crafting and quest turn-ins that consume gear take any copy of that item, not a specific one.</li>
+<li>The auction "sell" preview icon doesn't show the grade yet. The listing itself does.</li>
+</ul>
+<nav class="pager">
+<a class="prev" href="client-HLOD.html"><span>Previous</span>HLOD: far-distance tile proxies (18 Oct 2026)</a>
+<a class="next" href="client-LOOT.html"><span>Next</span>Loot: groups, grades and party rolls</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#1-for-players">1. For players</a>
+<ul>
+<li><a href="#grades">Grades</a>
+</li>
+<li><a href="#the-item-upgrade-window">The Item Upgrade window</a>
+</li>
+<li><a href="#durability">Durability</a>
+</li>
+<li><a href="#stack-limits">Stack limits</a>
+</li>
+<li><a href="#where-to-get-the-materials">Where to get the materials</a>
+</li>
+</ul>
+</li>
+<li><a href="#2-testing-it-quickly">2. Testing it quickly</a>
+</li>
+<li><a href="#3-for-designers-the-data">3. For designers: the data</a>
+<ul>
+<li><a href="#items-new-column">Items (new column)</a>
+</li>
+<li><a href="#itemstats-gear-new-columns">ItemStats (gear; new columns)</a>
+</li>
+<li><a href="#itemgrades-new-table">ItemGrades (new table)</a>
+</li>
+<li><a href="#itemgems-new-table">ItemGems (new table)</a>
+</li>
+<li><a href="#itemupgradematerials-new-table">ItemUpgradeMaterials (new table)</a>
+</li>
+<li><a href="#rules-combatrules">Rules (CombatRules)</a>
+</li>
+</ul>
+</li>
+<li><a href="#4-for-programmers">4. For programmers</a>
+<ul>
+<li><a href="#the-shared-type">The shared type</a>
+</li>
+<li><a href="#world-server">World server</a>
+</li>
+<li><a href="#persistence-server">Persistence server</a>
+</li>
+<li><a href="#auction-service">Auction service</a>
+</li>
+<li><a href="#client">Client</a>
+</li>
+</ul>
+</li>
+<li><a href="#5-whats-next">5. What&#x27;s next</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Code Map: Unity Client &amp; Editor · Axiom Docs</title>
-<meta name="description" content="Every C# file of the Unity client and editor (528 files, 73,755 lines) with its types and purpose.">
+<meta name="description" content="Every C# file of the Unity client and editor (554 files, 79,683 lines) with its types and purpose.">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/pygments.css">
 <script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -247,7 +254,7 @@
 <h1 id="code-map-unity-client--editor">Code Map: Unity Client &amp; Editor<a class="anchor" href="#code-map-unity-client--editor" title="Permanent link">#</a></h1>
 <p>Every C# file under <code>Assets/AxiomMMOKit/Axiom.Client</code> and <code>Assets/AxiomMMOKit/Editor</code>, grouped by folder, with its types and the summary its own comments give.</p>
 <h2 id="axiomclient">Axiom.Client<a class="anchor" href="#axiomclient" title="Permanent link">#</a></h2>
-<p><code>Assets/AxiomMMOKit/Axiom.Client</code> · 406 files · 45,170 lines</p>
+<p><code>Assets/AxiomMMOKit/Axiom.Client</code> · 407 files · 45,309 lines</p>
 <h3 id="axiomclient--movement">Axiom.Client · Movement<a class="anchor" href="#axiomclient--movement" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -340,6 +347,12 @@
 </thead>
 <tbody>
 <tr>
+<td><code>Networking/AuthServerAddress.cs</code></td>
+<td>AuthServerAddress, FileConfig, Verdict</td>
+<td>109</td>
+<td>The one place the game gets the Auth server's address, and the guard that keeps a shipped build from talking to it over plain HTTP. Every HTTP call the game makes to Auth (world list, character counts with the login ticket, the gamedata.bin download) goes through BaseUrl. Address: Resources/UI/Selection/WorldDirectory.json "AuthBaseUrl", overridden by the "-auth-url &lt;url&gt;" command-line argument (the launcher passes it). Guard: https:// is always fine. http:// is fine to this machine (localhost, 127.x, ::1). http:// to any other machine works only in the editor and Development builds (with a warning in the Console); a release build refuses it with a clear message instead of sending the login ticket where anyone on the network can read it. Server side: docs/guide/30-server/215-https.md.</td>
+</tr>
+<tr>
 <td><code>Networking/ClientCreationBudget.cs</code></td>
 <td>ClientCreationBudget</td>
 <td>24</td>
@@ -390,8 +403,8 @@
 <tr>
 <td><code>Networking/WorldDirectoryClient.cs</code></td>
 <td>WorldDirectoryItem, WorldDirectoryResponse, WorldCharacterCountsResponse, WorldCharacterCountRow, WorldDirectoryClientConfig, WorldDirectoryClient</td>
-<td>197</td>
-<td></td>
+<td>195</td>
+<td>AuthBaseUrl in the same file is read by AuthServerAddress (with the -auth-url override and the HTTPS guard).</td>
 </tr>
 <tr>
 <td><code>Networking/WorldEntryGate.cs</code></td>
@@ -1140,7 +1153,7 @@
 <tr>
 <td><code>Scripts/GameData/GameDataBootstrap.cs</code></td>
 <td>GameDataBootstrap</td>
-<td>228</td>
+<td>235</td>
 <td>Attach to a GameObject in the server_select scene. Checks for a new gamedata.bin on the auth server, downloads if outdated, then loads it before the player connects to the world. Note: gamedata.bin is stored encrypted on disk (both the bundled StreamingAssets copy and whatever the Authserver serves) — see GameDataCrypto.cs / the Editor's "Export Binary + Encrypt" step. This class only ever moves the encrypted bytes around; GameDataDatabase.Initialize() is what decrypts and parses it right before use. Only the file extension changed from the SQLite-backed version (gamedata.db → gamedata.bin) — the version-check/download/fallback flow below is otherwise identical, since none of it ever looked at what was inside the file.</td>
 </tr>
 <tr>
@@ -1152,7 +1165,7 @@
 <tr>
 <td><code>Scripts/GameData/GameDataDatabase.cs</code></td>
 <td>GameDataDatabase</td>
-<td>86</td>
+<td>103</td>
 <td>Loads gamedata into memory once and holds it for the session. Call Initialize(encryptedDbPath) once during bootstrap before any repository is used. encryptedDbPath should be the path resolved by GameDataBootstrap (persistentDataPath copy, kept current by the hash-check/download pipeline) — not StreamingAssets directly, since StreamingAssets only ever holds the day-0 baseline shipped in the build. This replaces the previous SQLite-backed version. Since gamedata is read-only on the client, there's no reason to keep a live connection or a decrypted temp file on disk at all — decrypt straight into memory, parse once, and hand repositories a plain Dictionary. This is both simpler and leaves no plaintext copy on disk, not even briefly in the temp cache.</td>
 </tr>
 <tr>
@@ -1753,7 +1766,7 @@
 <tr>
 <td><code>Scripts/Gameplay/Player/PlayerController.cs</code></td>
 <td>PlayerController</td>
-<td>212</td>
+<td>209</td>
 <td>Owns the local/remote split and the network side of one character. It no longer simulates movement: LocalCharacterMotor does that for the local player, RemoteEntityInterpolator plays back received state for everyone else. EXACTLY ONE THING MAY WRITE transform.position. For the local player that is the motor; for a remote it is the interpolator. Both live on the same prefab, so this class is responsible for making sure only the right one is enabled - two systems writing one transform is what put remote players under the terrain, and the CharacterController this replaced was a third. PIVOT: the transform is at the character's FEET. The old CharacterController had center (0,0,0) with height 2, which put it at the waist. Everything that carried a Y - spawn points, NPC spawner rows, saved character positions, the camera's pivotHeight - is therefore a metre off until the data is migrated. See MIGRATION notes.</td>
 </tr>
 <tr>
@@ -2122,7 +2135,7 @@
 <tr>
 <td><code>Scripts/UI/InventoryPanelUI.cs</code></td>
 <td>InventoryPanelUI</td>
-<td>250</td>
+<td>254</td>
 <td></td>
 </tr>
 <tr>
@@ -2614,7 +2627,7 @@
 <tr>
 <td><code>Scripts/UI/Market/UiAuctionHouseView.cs</code></td>
 <td>UiAuctionHouseView, SaleTerms</td>
-<td>644</td>
+<td>645</td>
 <td>The auction house layout (protocol 36), three tabs: Bid the board: Name, Level, Time Left, Seller, Current Bid, Buy Now. Pick a row, then Bid (the amount field starts at the least you may bid) or Purchase at Buy Now. List Item the listing form on the left (item, Buy Now - optional, Starting Bid - optional, bidding period 6/12/24/48 h, deposit and fee) and your listings on the right with their status and bid price. A listing with bids can't be cancelled. Bid History the listings you bid on: Name, Time Left, Bid Status (Leading / Outbid / Won / Refunded), Your Bid, Current Bid. Outbid on a running listing? Select it and bid again. The footer holds your coins and the Bid / Purchase controls. Networking and bag checks stay in AuctionWindowUI; the server checks every rule again. (UiAuctionView, the older layout, is kept for the editor checks that build it.)</td>
 </tr>
 </tbody>
@@ -2875,7 +2888,7 @@
 <tr>
 <td><code>Scripts/UI/Toolkit/CoinMoney.cs</code></td>
 <td>CoinMoney</td>
-<td>67</td>
+<td>70</td>
 <td>Money is stored as copper. Legacy Gold fields/packets still carry this total. 100 copper = 1 silver; 100 silver = 1 gold. No balances or prices are converted.</td>
 </tr>
 <tr>
@@ -3080,7 +3093,7 @@
 <tr>
 <td><code>Scripts/UI/Toolkit/Lua/LuaUiApi.cs</code></td>
 <td>LuaUiApi, LuaGame, LuaElement, LuaWindowHandle, LuaWindow</td>
-<td>295</td>
+<td>296</td>
 <td>The UI table in Lua. UI.Window(id, title, width, height) a window (height 0 = fit its content) UI.Command(name, function(args)) /name in chat runs it UI.Every(seconds, function) repeat; returns a timer (t:Stop()) UI.After(seconds, function) once UI.SetScale(0.75 .. 1.5) the whole UI's scale</td>
 </tr>
 <tr>
@@ -3374,7 +3387,7 @@
 <tr>
 <td><code>Scripts/World/NpcCollisionLibrary.cs</code></td>
 <td>NpcCollisionLibrary, NpcCollisionAuthoringEntry</td>
-<td>34</td>
+<td>36</td>
 <td>Optional per-template SHAPE overrides. Most NPCs inherit their model's body. Blocking rules live in worldserver.db &gt; NpcTemplates, edited through Content Studio. Online movement uses collision bodies sent by the server.</td>
 </tr>
 <tr>
@@ -3478,7 +3491,7 @@
 </tbody>
 </table></div>
 <h2 id="editor">Editor<a class="anchor" href="#editor" title="Permanent link">#</a></h2>
-<p><code>Assets/AxiomMMOKit/Editor</code> · 122 files · 28,585 lines</p>
+<p><code>Assets/AxiomMMOKit/Editor</code> · 147 files · 34,374 lines</p>
 <h3 id="editor--assetpipeline">Editor · AssetPipeline<a class="anchor" href="#editor--assetpipeline" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -3612,6 +3625,24 @@
 <td>166</td>
 <td>Edits server offers and synchronizes only currency display records to the client.</td>
 </tr>
+<tr>
+<td><code>Content/QuestGraphWindow.cs</code></td>
+<td>QuestGraphWindow</td>
+<td>460</td>
+<td>Tools &gt; Axiom &gt; Content &gt; Quest Graph: every quest as a node, every chain as arrows, left to right in the order a player meets them. Select a quest to edit what the NPCs say and what the player must do, with a live preview; drag from a quest's right-hand dot onto another quest to make that one come after it; right-click for a new follow-up. Quests the World server would skip are outlined red, quests in a loop orange, unsaved ones green. Edits are kept until you Commit, which writes one SQL patch (and pushes to a running server when Push Content is on). The model, the rules and the edits are plain C# (Create/Quests): QuestGraphModel, QuestRules, QuestDraft, QuestObjectiveText.</td>
+</tr>
+<tr>
+<td><code>Content/SkillLabWindow.cs</code></td>
+<td>SkillLabWindow</td>
+<td>418</td>
+<td>Tools &gt; Axiom &gt; Content &gt; Skill Lab: pick a skill, change its numbers and effects, and see at once what it does - per hit, per cast, DPS, damage per mana, time to kill - against any NPC, worked out with the World server's own combat formulas (SkillMath: attack table, mitigation, crits, ranks, haste, status ticks), plus a timeline of 20 seconds of casting it. Pin a result to compare before and after. Edits are kept until Commit (one SQL patch; pushed to a running server when Push Content is on).</td>
+</tr>
+<tr>
+<td><code>Content/WorldEventsWindow.cs</code></td>
+<td>WorldEventsWindow</td>
+<td>234</td>
+<td>Tools &gt; Axiom &gt; Content &gt; World Events: every world boss and rift drawn in the Scene view where it happens - its area, the ring its monsters appear on, the boss's spot, and the reward range (twice the radius) - with handles to move it and resize it. The window lists them with their next runs (your local time), a 24-hour timeline that shows clashes, and the server's checks. Edits are kept until Commit (one SQL patch). World events are read when the World server starts: restart it after a commit, then try one with Play Mode Live Tools &gt; Start world event.</td>
+</tr>
 </tbody>
 </table></div>
 <h3 id="editor--contentstudiodata">Editor · ContentStudio/Data<a class="anchor" href="#editor--contentstudiodata" title="Permanent link">#</a></h3>
@@ -3634,7 +3665,7 @@
 <tr>
 <td><code>ContentStudio/Data/CommitService.cs</code></td>
 <td>CommitMode, CommitResult, CommitService, KeyComparer</td>
-<td>230</td>
+<td>243</td>
 <td>Numeric keys in number order, then text.</td>
 </tr>
 <tr>
@@ -3879,7 +3910,7 @@
 <tr>
 <td><code>Core/AxiomMenu.cs</code></td>
 <td>AxiomToolAttribute, AxiomMenu, Order</td>
-<td>202</td>
+<td>218</td>
 <td>Describes a menu tool for Home &gt; Tools (search, tooltips). Put it on the same method as the [MenuItem]. Text is one or two plain sentences: what it does and when you'd use it.</td>
 </tr>
 <tr>
@@ -3934,7 +3965,7 @@
 <tr>
 <td><code>Create/AxiomCreateWindow.cs</code></td>
 <td>AxiomCreateWindow</td>
-<td>139</td>
+<td>155</td>
 <td>Open via: Axiom &gt; Create &gt; ... or the Hub's Create buttons One window for every Create wizard: the kinds of content on the left, the wizard on the right. Wizards are found by reflection (any class deriving from CreateWizard), so adding one is adding a file.</td>
 </tr>
 <tr>
@@ -3946,7 +3977,7 @@
 <tr>
 <td><code>Create/CreateWizard.cs</code></td>
 <td>CreateWizard</td>
-<td>438</td>
+<td>440</td>
 <td>What every Create wizard has in common, so each one is mostly a list of the fields that matter for its kind of content: 1. Start from scratch, or as a copy of something that already works (copies bring their children: an NPC's abilities, a doodad's phases and actions, an item's stats) 2. Details the fields that matter, drawn with Content Studio's own editors (reference pickers, enums, icons, model keys) 3. Extras what else the content needs to be usable: gear looks, loot, shops, spawns in the world 4. Create check, then write it all as one SQL patch (and to the database, unless the World server has it locked) Unfinished work survives script reloads and editor restarts.</td>
 </tr>
 <tr>
@@ -3974,10 +4005,109 @@
 <td>A new NPC - monster, guard, vendor, quest giver - with its stats, model, abilities, loot, an optional shop, and spawners placed where the Scene view is looking. Best started as a copy of a working NPC, so it already fights.</td>
 </tr>
 <tr>
+<td><code>Create/QuestWizard.cs</code></td>
+<td>QuestWizard</td>
+<td>228</td>
+<td>A quest, end to end: who offers it and takes it in, what they say (with a preview of what the player reads), its objectives (text written from the real names), rewards, and where it sits in a chain. Before Create, the quest is checked against the exact rules the World server uses when it loads quests (QuestRules): the server SKIPS a quest that fails them with only a log line, so here they are errors. The chain is easier to see in Tools &gt; Axiom &gt; Content &gt; Quest Graph.</td>
+</tr>
+<tr>
+<td><code>Create/SkillWizard.cs</code></td>
+<td>SkillWizard</td>
+<td>135</td>
+<td>A skill: who can use it, how it targets, its timing and cost, and what it does (its Effects rows: damage, heals, statuses, taunts...). The preview works it out with the World server's own combat formulas (SkillMath) against a target you pick, and the skill is checked against the server's skill rules before Create (SkillRules): the server skips a skill that fails them, and a passive without modifiers or a class without a starter skill stops every skill from loading. For tuning existing skills side by side, use Tools &gt; Axiom &gt; Content &gt; Skill Lab.</td>
+</tr>
+<tr>
+<td><code>Create/WorldEventWizard.cs</code></td>
+<td>WorldEventWizard</td>
+<td>170</td>
+<td>A world event: a world boss that appears on a timer, or a rift that pours out waves and then its master. Place it where the Scene view is looking, pick its schedule (the next runs are shown in your local time), and see the waves, their total health and whether a group can clear it in time. Checked against the World server's rules before Create (WorldEventPlan): the server skips an event that fails them without a word. World events are read when the World server starts (Push Content doesn't reload them); test one with Play Mode Live Tools &gt; Start world event. The placed events are drawn in the Scene view by Tools &gt; Axiom &gt; Content &gt; World Events.</td>
+</tr>
+<tr>
 <td><code>Create/WorldObjectWizard.cs</code></td>
 <td>WorldObjectWizard</td>
 <td>126</td>
 <td>A new world object (a doodad): an ore vein, herb, tree to chop, chest, crafting station, door. These are phases (Full / Depleted...), actions on each phase (what F and G do, how long, what skill plays), what the action gives, and timers that move between phases - too much to start from nothing, so this wizard always starts from a working copy and gives the copy its OWN actions, so changing what it gives never changes the original.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--createevents">Editor · Create/Events<a class="anchor" href="#editor--createevents" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Create/Events/WorldEventPlan.cs</code></td>
+<td>WorldEventPlan, Event, Wave</td>
+<td>168</td>
+<td>World events (world bosses and rifts) worked out the way the World server runs them (WorldEventService, ExplorationCatalog): Problems why the server would skip the event (it loads nothing, says nothing) NextStarts when it comes round: AnchorUnixMinutes + k x IntervalMinutes (wall clock) SpawnPoints where each NPC appears: a ring of min(Radius/2, 4 + count) round (X, Z) Waves what a run is made of, its total health and how long a group needs to clear it Overlaps other events that run at the same time in the same place Plain C#: checked outside Unity against the real database.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--createquests">Editor · Create/Quests<a class="anchor" href="#editor--createquests" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Create/Quests/QuestDraft.cs</code></td>
+<td>QuestDraft</td>
+<td>112</td>
+<td>The edits the Quest wizard and the Quest Graph make, as plain operations on a working set: a new quest, a follow-up that continues a chain, objectives with their text written for you, rewards, and chain links that refuse to make a loop. Nothing here writes the database - the caller commits (one SQL patch). Plain C#: checked outside Unity against the real database.</td>
+</tr>
+<tr>
+<td><code>Create/Quests/QuestGraphModel.cs</code></td>
+<td>QuestGraphModel, EdgeKind, Node, Edge</td>
+<td>164</td>
+<td>The quest chains as a graph, for the Quest Graph window. A quest is a node; an edge runs from a quest to the one that needs it first - through RequiredQuestId ("requires") or a Complete Quest objective ("objective"). Layers are the longest chain leading to a quest, so a chain reads left to right. Quests in a loop (which nobody can ever start) are flagged, not laid out wrong. Plain C#: checked outside Unity against the real database.</td>
+</tr>
+<tr>
+<td><code>Create/Quests/QuestObjectiveText.cs</code></td>
+<td>QuestObjectiveText</td>
+<td>98</td>
+<td>Objective lines for the Quest wizard and the Quest Graph: Suggest a full sentence with the real names ("Slay 5 Orc Grunts"), for the Text column; ServerDefault exactly what the World server shows when Text is left empty (QuestManager.GenerateText), so the preview never lies. Plain C#: checked outside Unity against the real database.</td>
+</tr>
+<tr>
+<td><code>Create/Quests/QuestRules.cs</code></td>
+<td>QuestRules</td>
+<td>100</td>
+<td>The checks the World server makes when it loads a quest (QuestManager.LoadFromDatabase and its Validate / ValidateReward), run on the editor's working copy. A quest that fails one of them is SKIPPED by the server with only a log line, so it never appears in game - which is why the Quest wizard and the Quest Graph treat every one of these as an error, not a warning. Keep in step with the server. Plain C#: checked outside Unity against the real database.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--createskills">Editor · Create/Skills<a class="anchor" href="#editor--createskills" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Create/Skills/SkillMath.cs</code></td>
+<td>SkillMath, Rules, Fighter, Line, Result, Options</td>
+<td>332</td>
+<td>The Skill Lab's numbers: what a skill does to a target, worked out with the World server's own formulas (CombatMath, StatSheet, StatusManager ticks, AbilityCatalog.RankScale, the hasted cooldowns) - as averages over the attack table instead of random rolls. Everything here is the expected value; the server rounds each hit and never deals less than 1, which this ignores. Plain C#: checked outside Unity against the real database and the server's CombatMath.</td>
+</tr>
+<tr>
+<td><code>Create/Skills/SkillRules.cs</code></td>
+<td>SkillRules</td>
+<td>124</td>
+<td>The checks the World server makes when it loads skills (AbilityCatalog.Load) and their effect rows (EffectCatalog.Validate, the combat kinds), on the editor's working copy. A skill that fails Problems() is SKIPPED by the server with a log line; an effect row that fails is dropped. Fatal() lists the few that stop the whole skill catalogue from loading (and so block a content push): a passive with no modifiers, a class with no starter skill. Keep in step with the server. Plain C#: checked outside Unity against the real database.</td>
 </tr>
 </tbody>
 </table></div>
@@ -4086,7 +4216,7 @@
 <tr>
 <td><code>DevTools/Tabs/SettingsTab.cs</code></td>
 <td>SettingsTab</td>
-<td>363</td>
+<td>365</td>
 <td>Every path the editor suite uses, on one page (also Axiom &gt; Settings…). You set the server repository; everything else is worked out from it (AxiomProjectPaths) and shown here with its state. Any worked-out path can be overridden ("Change…") and put back ("Use default"). Read-only rows are where the editor writes server data - they follow the Data folder. Saved in ProjectSettings/AxiomDevTools.asset. Paths near the project are stored relative to it, so the file can be committed and shared.</td>
 </tr>
 <tr>
@@ -4154,26 +4284,69 @@
 <tr>
 <td><code>Project/AxiomBuildRelease.cs</code></td>
 <td>AxiomBuildRelease</td>
-<td>168</td>
-<td>Axiom &gt; Build and Release. One place to produce a release: bump the version, run every check, build the client, publish the servers (Release), and write release notes - into Builds/&lt;version&gt;/ next to the Unity project. Steps run in order; a failure stops the rest.</td>
+<td>327</td>
+<td>Axiom &gt; Build and Release. One place to produce a release: bump the version, build the client, publish it for the launcher to download, publish the servers (Release), and write release notes - into Builds/&lt;version&gt;/ next to the Unity project. Steps run in order; a failure stops the rest. "Publish for the launcher" runs the server repo's axiom-publish tool (src/Tools/Axiom.Tools.ClientPublish): it signs the build and writes it as plain files that any static web host can serve, then runs your own upload command. Guide: docs/guide/50-tools/95-client-publish.md</td>
 </tr>
 <tr>
 <td><code>Project/AxiomProjectHealth.cs</code></td>
 <td>AxiomProjectHealth, State, Check</td>
-<td>305</td>
+<td>354</td>
 <td>Axiom &gt; Project Setup and Health. Checks everything a development machine needs for the client and the servers to work together, and fixes what it can with one button: - where the server repository is - the World server's ClientContent settings (gamedata.bin outputs and the encryption key) - the Auth server serving gamedata.bin (/gamedata/version) - the client's gamedata.bin (bundled and the working copy) - the shared network DLL's protocol against the server source, and the MessagePack version Nothing is changed until you press a Fix button. Every JSON file it edits is backed up first (*.bak next to it), and only the keys it manages are touched.</td>
 </tr>
 <tr>
 <td><code>Project/AxiomServerControl.cs</code></td>
 <td>AxiomServerControl, Server</td>
-<td>239</td>
+<td>276</td>
 <td>Axiom &gt; Server Control. Build, start, stop and restart the Axiom servers from Unity, each with its own log tab. Servers run from their built .dll (one process each, so Stop really stops them); Start builds first when there's no build yet. Start All goes in dependency order: Persistence, Auth, World (then Auction if enabled).</td>
+</tr>
+<tr>
+<td><code>Project/AxiomSetupBridge.cs</code></td>
+<td>AxiomSetupBridge</td>
+<td>85</td>
+<td>Hands Axiom Setup (its own assembly, Editor/Setup/) the suite's services: paths and Settings, Server Control, the service probe, Project Health and Editor Login. Registered on every load.</td>
 </tr>
 <tr>
 <td><code>Project/ClientNetworkLoginInspector.cs</code></td>
 <td>ClientNetworkEditorLogin, LoginResponse, ClientNetworkLoginInspector</td>
 <td>233</td>
 <td>The Client Network inspector: its normal fields plus Editor Login.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--projectcontentpush">Editor · Project/ContentPush<a class="anchor" href="#editor--projectcontentpush" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Project/ContentPush/ContentPush.cs</code></td>
+<td>ContentPush</td>
+<td>251</td>
+<td>Push Content to Running Server (Ctrl+Alt+R): the running World server re-reads items, quests, shops, loot, skills, NPC abilities, effects, statuses, NPC templates and recipes from the database, so a change is live without a restart. With "Push Content Automatically After Commit" on (the default), every successful commit from Content Studio, a Create wizard or a Dev Tools tab pushes by itself when a server is running. Server side: Docs/CONTENT_RELOAD.md.</td>
+</tr>
+<tr>
+<td><code>Project/ContentPush/ContentPushProtocol.cs</code></td>
+<td>ContentPushProtocol, ServerStatus, Result</td>
+<td>220</td>
+<td>The file handshake between the editor and a running World server for content hot reload (Docs/CONTENT_RELOAD.md). Plain C#, no Unity, so it is checked outside the editor. &lt;folder of the world database the server runs&gt;/reload/ server.txt written by the server every second while World:AllowContentReload is on request.txt written by the editor: id=&lt;guid&gt;, by=&lt;user&gt; result.txt written by the server when the reload finishes: id, ok, message, reloaded, problem... Every file is "key=value" lines. The server's side is ContentReloader (Axiom.Server.World).</td>
+</tr>
+<tr>
+<td><code>Project/ContentPush/LiveToolsCatalog.cs</code></td>
+<td>LiveToolsCatalog, Entry, Kind</td>
+<td>65</td>
+<td>The id/name lists Play Mode Live Tools searches (items, NPC templates, world events, quests), read straight from the world database. Plain C# (sqlite-net only), so it is checked outside Unity.</td>
+</tr>
+<tr>
+<td><code>Project/ContentPush/LiveToolsWindow.cs</code></td>
+<td>LiveToolsWindow, Tab</td>
+<td>257</td>
+<td>Play Mode Live Tools (Ctrl+Alt+L): the quick loop for testing content while the game runs in the editor. Push your committed edits to the running World server, move your character to where the Scene view is looking, give yourself an item, spawn an NPC at your feet, start a world event, and heal, reset or kill what you're targeting. Everything goes through the GM commands the in-game staff panel uses (GmPanelState), so your account needs staff access (4 Game Master or 5 Developer; see GmRules.MinLevel), and the server checks every command as usual.</td>
 </tr>
 </tbody>
 </table></div>
@@ -4197,7 +4370,7 @@
 <tr>
 <td><code>ServerExports/NetcodeBuildValidator.cs</code></td>
 <td>NetcodeBuildValidator</td>
-<td>109</td>
+<td>105</td>
 <td></td>
 </tr>
 <tr>
@@ -4211,6 +4384,68 @@
 <td>NpcCollisionPreview, Doc, ModelShape</td>
 <td>138</td>
 <td>Review tool for exported NPC bodies. With "Show NPC Bodies In Scene" ticked, selecting an NPC (a scene instance of a catalog prefab, or the prefab itself in prefab mode) draws the body the server will use: green = from a collider on the prefab, orange = measured from the mesh. If an orange body looks wrong, add an upright CapsuleCollider or a BoxCollider named "Body" and export again.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--setup">Editor · Setup<a class="anchor" href="#editor--setup" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Setup/AxiomSetupServices.cs</code></td>
+<td>IAxiomSetupServices, AxiomSetup</td>
+<td>66</td>
+<td>What Axiom Setup needs from the rest of the editor suite (paths, Server Control, the service probe, Project Health, Editor Login). Axiom Setup is its own assembly with no package dependencies, so steps 1 and 2 (render pipeline, packages) work even when the suite itself can't compile yet. The suite (Axiom.Editor) registers the implementation when it loads; until then Services is null and steps 3-8 say so.</td>
+</tr>
+<tr>
+<td><code>Setup/AxiomSetupWindow.cs</code></td>
+<td>AxiomSetupWindow, Status, Step, AxiomSetupAutoOpen</td>
+<td>756</td>
+<td>Opens Axiom Setup on the first load in a project, and again (once per session) when a quick check that passed before fails now. Per project, per machine (EditorPrefs keyed by project path).</td>
+</tr>
+<tr>
+<td><code>Setup/SetupJson.cs</code></td>
+<td>JsonObject, JsonNumber, SetupJson, Reader</td>
+<td>311</td>
+<td>A JSON object that keeps its keys in order. Values: JsonObject, List&lt;object&gt;, string, JsonNumber, bool, null.</td>
+</tr>
+<tr>
+<td><code>Setup/SetupLogic.cs</code></td>
+<td>ServerSpec, ServerConfigState, MySqlLogin, SetupConfig, SetupPackages, Required, SetupTools, SetupDatabase, SetupServerZip, SetupAccount</td>
+<td>482</td>
+<td>Where each server keeps its shared secret and its MySQL connection string.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="editor--tests">Editor · Tests<a class="anchor" href="#editor--tests" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tests/AxiomChecksTests.cs</code></td>
+<td>AxiomChecksTests</td>
+<td>42</td>
+<td>Every check under Tools &gt; Axiom &gt; Validation as an EditMode test, so they run in the Test Runner window and headless on a build machine: Unity -batchmode -projectPath &lt;project&gt; -runTests -testPlatform EditMode -testResults results.xml A check that only makes sense in (or out of) Play Mode says so by throwing a message containing "Play Mode"; that is reported as Ignored, exactly like Run All Checks reports SKIP. Needs the Test Framework package (com.unity.test-framework); without it this assembly simply isn't compiled (defineConstraints UNITY_INCLUDE_TESTS).</td>
+</tr>
+<tr>
+<td><code>Tests/ContentToolsTests.cs</code></td>
+<td>ContentToolsTests</td>
+<td>148</td>
+<td>The content tools' rules against YOUR world database (the one Settings points at), on a temporary copy that is deleted afterwards - the real database is never opened for writing. These are the same checks the World server makes when it loads content, so a failure here is content the server would skip, and the message says which and why. With no world database configured they are Ignored.</td>
 </tr>
 </tbody>
 </table></div>
@@ -4294,6 +4529,12 @@
 <td>The report: one line per check, failures first.</td>
 </tr>
 <tr>
+<td><code>Validation/AxiomChecksCommandLine.cs</code></td>
+<td>AxiomChecksCommandLine</td>
+<td>52</td>
+<td>Run All Checks without opening the editor (a build machine, a pre-release script): Unity -batchmode -nographics -projectPath &lt;project&gt; -logFile - \ -executeMethod Axiom.EditorTools.Checks.AxiomChecksCommandLine.Run [-axiomReport &lt;file&gt;] Exit code 0: every check passed (Play Mode-only checks are skipped); 1: something failed. The same checks also run as EditMode tests (Editor/Tests, the Test Runner window, or "-runTests -testPlatform EditMode") when the Test Framework package is installed.</td>
+</tr>
+<tr>
 <td><code>Validation/AxiomCommunityChecks.cs</code></td>
 <td>AxiomCommunityChecks</td>
 <td>69</td>
@@ -4332,7 +4573,7 @@
 <tr>
 <td><code>Validation/AxiomHudChecks.cs</code></td>
 <td>AxiomHudChecks</td>
-<td>75</td>
+<td>78</td>
 <td></td>
 </tr>
 <tr>
@@ -4368,13 +4609,13 @@
 <tr>
 <td><code>Validation/AxiomWindowGeometryChecks.cs</code></td>
 <td>AxiomWindowGeometryChecks</td>
-<td>215</td>
+<td>217</td>
 <td>Uses Unity's actual layout engine with the imported styles, not a reconstruction of flex layout.</td>
 </tr>
 <tr>
 <td><code>Validation/CoinMoneyValidation.cs</code></td>
 <td>CoinMoneyValidation</td>
-<td>53</td>
+<td>55</td>
 <td>Runs against the actual formatter/converter. No network or saved balances are changed.</td>
 </tr>
 <tr>
@@ -4418,7 +4659,7 @@
 <tr>
 <td><code>World/Housing/AxiomHousePrefabSetup.cs</code></td>
 <td>AxiomHousePrefabSetup</td>
-<td>157</td>
+<td>171</td>
 <td></td>
 </tr>
 <tr>
@@ -4528,7 +4769,7 @@
 <a class="next" href="../80-notes/server-AREA_TARGETING.html"><span>Next</span>Area targeting and AoE falloff</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">
@@ -4682,6 +4923,12 @@
 </li>
 <li><a href="#editor--create">Editor · Create</a>
 </li>
+<li><a href="#editor--createevents">Editor · Create/Events</a>
+</li>
+<li><a href="#editor--createquests">Editor · Create/Quests</a>
+</li>
+<li><a href="#editor--createskills">Editor · Create/Skills</a>
+</li>
 <li><a href="#editor--devtools">Editor · DevTools</a>
 </li>
 <li><a href="#editor--devtoolstabs">Editor · DevTools/Tabs</a>
@@ -4690,7 +4937,13 @@
 </li>
 <li><a href="#editor--project">Editor · Project</a>
 </li>
+<li><a href="#editor--projectcontentpush">Editor · Project/ContentPush</a>
+</li>
 <li><a href="#editor--serverexports">Editor · ServerExports</a>
+</li>
+<li><a href="#editor--setup">Editor · Setup</a>
+</li>
+<li><a href="#editor--tests">Editor · Tests</a>
 </li>
 <li><a href="#editor--ui">Editor · UI</a>
 </li>

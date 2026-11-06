@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -297,10 +304,28 @@
 <td>Believe the X-Forwarded-For header for the client's address. ONLY turn this on when Auth sits behind a reverse proxy (nginx, Caddy) that sets it - otherwise any client can type a fake address into the header and walk around every per-IP limit.</td>
 </tr>
 <tr>
+<td><code>TrustedProxies</code></td>
+<td><code>string[]</code></td>
+<td><code>Array.Empty&lt;string&gt;()</code></td>
+<td>Proxies on OTHER machines whose X-Forwarded-For / X-Forwarded-Proto are believed (addresses or networks, e.g. "10.0.0.5" or "10.0.0.0/24"). This machine (loopback) is always trusted, which covers Caddy or nginx on the same box. Only used with TrustForwardedFor.</td>
+</tr>
+<tr>
+<td><code>RequireHttps</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Refuse plain HTTP from other machines (HttpsGuard). This machine is always allowed. Leave on for anything players reach over the internet.</td>
+</tr>
+<tr>
+<td><code>PlainHttpAllowedNetworks</code></td>
+<td><code>string[]</code></td>
+<td><code>Array.Empty&lt;string&gt;()</code></td>
+<td>Machines allowed to use plain HTTP anyway while RequireHttps is on: addresses, networks, or "private" (10/8, 172.16/12, 192.168/16, fc00::/7, fe80::/10) for testing with friends on one LAN. Not for a public server.</td>
+</tr>
+<tr>
 <td><code>SessionLifetimeHours</code></td>
 <td><code>int</code></td>
 <td><code>24</code></td>
-<td>How long an issued session token stays valid, if unused.</td>
+<td>Unused. Every token Auth hands out is a one-use launch ticket that lives LaunchTokenSeconds and is deleted when a World server redeems it. Kept so an old appsettings file still binds.</td>
 </tr>
 <tr>
 <td><code>LaunchTokenSeconds</code></td>
@@ -577,6 +602,12 @@
 <td><code>bool</code></td>
 <td><code>false</code></td>
 <td>Additional server-wide switch for staff mutations (grants, level-up, NPC/doodad/PvP debug actions). Every request also requires current account access level 3-5 from Auth. Default false; enable deliberately on shards where staff should use those actions.</td>
+</tr>
+<tr>
+<td><code>AllowContentReload</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Content hot reload (Docs/CONTENT_RELOAD.md): staff ".reload" in chat, and the Unity editor's "Push Content to Running Server", re-read items, quests, shops, loot, skills, NPC AI, effects, statuses, NPC templates and recipes from worldserver.db without a restart. Pending SQL patches are applied first. Default false: a development switch. Turn it on in appsettings.Local.json.</td>
 </tr>
 <tr>
 <td><code>AllowPlayerVersusPlayer</code></td>
@@ -1430,7 +1461,10 @@
 <span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;MaxLoginAttempts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;LockoutMinutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;SessionLifetimeHours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span>
+<span class="w">    </span><span class="nt">&quot;RequireHttps&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;TrustForwardedFor&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;TrustedProxies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;PlainHttpAllowedNetworks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;WorldDirectory&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;StaleAfterSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
@@ -1524,6 +1558,7 @@
 <span class="w">    </span><span class="nt">&quot;AutosaveIntervalSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;AllowLoadTestBypass&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;AllowDebugCommands&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;AllowContentReload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;ShardName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dawnmere&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;TerrainIdleUnloadMinutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;NpcGroundSnap&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -1539,8 +1574,12 @@
 <span class="w">    </span><span class="nt">&quot;NavMeshWorkers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;ClientContent&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;OutputPaths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">      </span><span class="nt">&quot;KeyHex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;OutputPaths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;F:/Development/AxiomCore/Axiom.Client/Assets/StreamingAssets/GameData/gamedata.bin&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;F:/Development/AxiomCore/AxiomCore/src/Servers/Axiom.Server.Auth/bin/Debug/net10.0/gamedata.bin&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;F:/Development/Unity/Axjuomstest3/Assets/StreamingAssets/GameData/gamedata.bin&quot;</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;KeyHex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;secret&gt;&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;RequireMatch&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
@@ -1649,7 +1688,7 @@
 <a class="next" href="lua-api.html"><span>Next</span>Lua API Reference</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">

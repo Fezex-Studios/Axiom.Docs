@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Code Map: Server &amp; Shared · Axiom Docs</title>
-<meta name="description" content="Every C# file of the servers and shared libraries (779 files, 100,895 lines) with its types and purpose.">
+<meta name="description" content="Every C# file of the servers and shared libraries (788 files, 102,440 lines) with its types and purpose.">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/pygments.css">
 <script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -331,7 +338,7 @@
 </tbody>
 </table></div>
 <h2 id="axiomserverauth">Axiom.Server.Auth<a class="anchor" href="#axiomserverauth" title="Permanent link">#</a></h2>
-<p><code>src/Servers/Axiom.Server.Auth</code> · 27 files · 2,410 lines</p>
+<p><code>src/Servers/Axiom.Server.Auth</code> · 30 files · 2,704 lines</p>
 <h3 id="axiomserverauth--root">Axiom.Server.Auth · (root)<a class="anchor" href="#axiomserverauth--root" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -346,7 +353,7 @@
 <tr>
 <td><code>Program.cs</code></td>
 <td></td>
-<td>177</td>
+<td>186</td>
 <td></td>
 </tr>
 </tbody>
@@ -365,7 +372,7 @@
 <tr>
 <td><code>Config/AuthServerConfig.cs</code></td>
 <td>AuthServerConfig</td>
-<td>123</td>
+<td>150</td>
 <td>Replaces ServerConfig.ts and the .env file it read. The old server pulled AUTH_DATABASE_PATH, GAME_DATABASE_PATH and INTERNAL_SECRET out of process.env via dotenv, which meant the auth server's configuration lived in a different place, a different format, and a different editor from the other two servers. It's all appsettings.json now, same as World and Persistence. Environment variables still work and still win, which is what you want for deployment: ASP.NET Core's default configuration chain reads appsettings.json, then appsettings.{Environment}.json, then environment variables. So <code>Auth__InternalSecret=...</code> in the environment overrides the file without editing it. (Double underscore is the separator for nested keys.) The database connection is NOT here — it lives under ConnectionStrings with the name "Auth", matching how the persistence server does it.</td>
 </tr>
 <tr>
@@ -532,8 +539,8 @@
 <tr>
 <td><code>Services/ClientAddress.cs</code></td>
 <td>ClientAddress</td>
-<td>25</td>
-<td>The address a request came from, for rate limits and lockouts. X-Forwarded-For is only believed when Auth:TrustForwardedFor is on, i.e. when a reverse proxy that sets it sits in front of Auth. Believing it otherwise let any client pick a fresh fake address per request and step around every per-IP limit.</td>
+<td>70</td>
+<td>The address a request came from, for rate limits, lockouts and the HTTPS guard. X-Forwarded-For is only believed when Auth:TrustForwardedFor is on AND the connection itself comes from a trusted proxy: this machine (loopback, where Caddy or nginx normally runs) or an address in Auth:TrustedProxies. Anyone else's header is ignored, so a player connecting straight to Kestrel can't type a fake address into it. The client is the RIGHT-most address in the header that isn't a trusted proxy. Proxies append the address they saw; the left end is whatever the client sent, which is why reading the first entry (as this used to) let a client behind nginx pick a fresh address per request and walk around every per-IP limit.</td>
 </tr>
 <tr>
 <td><code>Services/GameDataProvider.cs</code></td>
@@ -542,10 +549,22 @@
 <td>Backs /gamedata/version and /gamedata/db. The old GameDataRoute.ts had a split personality: it computed DB_HASH once at import time and commented that the hash was cached, but /gamedata/version called getDbHash() again on every single request, re-reading and re-hashing the whole multi-megabyte file each time. The cached value was only ever used as an existence check by /gamedata/db. So the comment described the intent and the code did the opposite, and the launcher polls /gamedata/version as its "is the server up?" health check. This caches for real, and invalidates on the file's last-write time and length, so replacing gamedata.bin no longer requires a server restart to be noticed — which is what the old comment told you to do.</td>
 </tr>
 <tr>
+<td><code>Services/HttpsGuard.cs</code></td>
+<td>HttpsGuard</td>
+<td>93</td>
+<td>Refuses plain HTTP from other machines (Auth:RequireHttps, on by default). Passwords, refresh tokens, launch tokens and World servers' internal secret all cross this server. Over plain HTTP anyone on the path (cafe Wi-Fi, an ISP, a compromised router) reads them. This machine is always allowed, so local development and a reverse proxy on the same box (Caddy, see docs/guide/30-server/215-https.md) keep working. Other machines must arrive over HTTPS: Kestrel with a certificate, or a trusted proxy that reports X-Forwarded-Proto: https. Auth:PlainHttpAllowedNetworks lets a LAN in ("private" = the usual home ranges). A refusal is 403 with Success = false / Valid = false and a Message, so the launcher shows the reason instead of "invalid credentials".</td>
+</tr>
+<tr>
 <td><code>Services/LoginThrottle.cs</code></td>
 <td>LoginThrottle, Entry</td>
 <td>105</td>
 <td>Failed-login lockout keyed on (username, IP) - audit gap 3. The old lockout was keyed on the username alone, so ANYONE could lock ANY account: type the name and five wrong passwords. Now five failures lock that name only for the address they came from; the real owner, logging in from their own address, is unaffected. The account-wide lock in the failed_logins table still exists, at a much higher threshold (Auth:AccountLockAttempts), as the backstop against one account being guessed at from many addresses. In memory: a restart forgets it, which only ever unlocks early. One Auth process, so no sharing needed.</td>
+</tr>
+<tr>
+<td><code>Services/NetworkRules.cs</code></td>
+<td>NetworkRules</td>
+<td>68</td>
+<td>Address lists in appsettings (Auth:TrustedProxies, Auth:PlainHttpAllowedNetworks): single addresses ("10.0.0.5", "::1") or networks ("192.168.0.0/16", "fd00::/8").</td>
 </tr>
 <tr>
 <td><code>Services/PasswordService.cs</code></td>
@@ -572,6 +591,12 @@
 <td>Port of SessionService.ts. The old version returned a v4 UUID, which carries 122 bits of randomness inside a fixed, recognisable shape. This returns 256 bits of CSPRNG output, base64url-encoded. Changing the format costs nothing: tokens are one-shot (burned by /validate-session on first use) and expire in a day, so there is no stored token anywhere that needs to keep parsing. Nothing downstream inspects the token's structure — the WorldServer treats it as an opaque string and hands it straight back here.</td>
 </tr>
 <tr>
+<td><code>Services/TransportReport.cs</code></td>
+<td>TransportReport</td>
+<td>52</td>
+<td>One start-up summary of how players reach this server: which addresses Kestrel listens on, whether any is HTTPS, and what HttpsGuard will refuse. Says plainly when players on other machines can't log in yet.</td>
+</tr>
+<tr>
 <td><code>Services/WorldCharacterCounts.cs</code></td>
 <td>WorldCharacterCounts</td>
 <td>80</td>
@@ -586,7 +611,7 @@
 </tbody>
 </table></div>
 <h2 id="axiomserverpersistence">Axiom.Server.Persistence<a class="anchor" href="#axiomserverpersistence" title="Permanent link">#</a></h2>
-<p><code>src/Servers/Axiom.Server.Persistence</code> · 59 files · 5,661 lines</p>
+<p><code>src/Servers/Axiom.Server.Persistence</code> · 60 files · 5,741 lines</p>
 <h3 id="axiomserverpersistence--root">Axiom.Server.Persistence · (root)<a class="anchor" href="#axiomserverpersistence--root" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -601,7 +626,7 @@
 <tr>
 <td><code>Program.cs</code></td>
 <td>PatronRow, OutboxRow</td>
-<td>2,358</td>
+<td>2,388</td>
 <td>Row shape for account_patron (raw SQL; the table is not in the EF model, like world_outbox).</td>
 </tr>
 </tbody>
@@ -713,7 +738,7 @@
 <tr>
 <td><code>Api/Models/Character.cs</code></td>
 <td>Character</td>
-<td>45</td>
+<td>46</td>
 <td>Mirrors the original <code>characters</code> SQLite table 1:1 — same columns, same defaults (Level=1, PosY=2 on create).</td>
 </tr>
 <tr>
@@ -1017,10 +1042,16 @@
 <td>21</td>
 <td>Character customisation (26 Oct 2026, protocol 43): characters.appearance, the look as JSON. Existing characters: null = defaults.</td>
 </tr>
+<tr>
+<td><code>Migrations/20261102120000_GoldToLong.cs</code></td>
+<td>GoldToLong</td>
+<td>49</td>
+<td>64-bit gold (2 Nov 2026, protocol 46): characters.gold and characters.warehouse_gold INT → BIGINT. A balance was capped at 2,147,483,647 copper (214,748g 36s 47c); the World server now allows up to CoinMoney.MaxBalance (10^15 copper). Existing values are kept. The non-negative CHECK constraints are dropped and re-added around the change so every MySQL/MariaDB version accepts it.</td>
+</tr>
 </tbody>
 </table></div>
 <h2 id="axiomserverworld">Axiom.Server.World<a class="anchor" href="#axiomserverworld" title="Permanent link">#</a></h2>
-<p><code>src/Servers/Axiom.Server.World</code> · 427 files · 67,601 lines</p>
+<p><code>src/Servers/Axiom.Server.World</code> · 428 files · 68,154 lines</p>
 <h3 id="axiomserverworld--root">Axiom.Server.World · (root)<a class="anchor" href="#axiomserverworld--root" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -1079,13 +1110,13 @@
 <tr>
 <td><code>Core/WorldServer.cs</code></td>
 <td>WorldServer</td>
-<td>476</td>
+<td>504</td>
 <td>The World server process: boot (config, database, client content, the persistence link), the UDP socket and its packet gate, the tick loop, and shutdown. The world itself - every manager and the body of a tick - is a WorldSimulation. With World:ZoneThreads off (the default) there is one, ticked here on one thread exactly as before. With it on, ZoneShard runs one simulation per zone host, each on its own thread, and this class's network thread routes every packet to the host that owns the player (Docs/ZONE_THREADS.md).</td>
 </tr>
 <tr>
 <td><code>Core/WorldSimulation.cs</code></td>
 <td>WorldSimulation</td>
-<td>833</td>
+<td>865</td>
 <td>One running world: every stateful manager, the service container, the packet dispatcher, and the body of one tick. It was the inside of WorldServer until the zone-thread split (Docs/ZONE_THREADS.md); the code is the same, moved. With World:ZoneThreads off there is exactly one simulation and WorldServer ticks it on the one tick thread, as before. With it on, each ZoneHost owns one simulation and ticks it on its own thread; Scope then says which part of the world it owns. Tick thread only (the thread of whoever calls Tick), except where a member says otherwise.</td>
 </tr>
 </tbody>
@@ -1263,6 +1294,12 @@
 <td>One source of truth for the client's game data (Docs/CLIENT_CONTENT.md). Classic MMOs ship one content database that the client and the zone servers both read, so they could not disagree about an item. Axiom used to keep a second, client-side catalog (_oggamedata.db) that an editor button synced from the server and packed into gamedata.bin - and it drifted (items 90010-90012 were on the server and missing from the client's catalog). Now the world server builds gamedata.bin itself, at boot, from the very database it just patched, so the file the client downloads always describes the content this server runs. Then: * ContentHash (SHA-256 of the PLAINTEXT package) goes to every client in W2CEnterWorld (WorldSettingsData.ContentHash). The client hashes what it decrypted and compares: a different hash means it is showing items from different data than the server's. * The encrypted file is DETERMINISTIC: the IV is derived from the key and the plaintext, so an unchanged database produces a byte-identical file, the auth server's hash doesn't change, and clients don't re-download. * Files are only rewritten when their bytes change, atomically (temp + move), so the auth server never serves half a file. The layout is GameDataBinaryFormat v3 on the client (Assets/Axiom.Client/Scripts/GameData/GameDataBinaryFormat.cs). The query is the one the editor's GameDataItemSync used, unchanged.</td>
 </tr>
 <tr>
+<td><code>Core/Content/ContentReloader.cs</code></td>
+<td>ContentReloadResult, ContentReloader</td>
+<td>356</td>
+<td>What a content reload did. Problems lists what stopped it (empty on success).</td>
+</tr>
+<tr>
 <td><code>Core/Content/GearVisualRow.cs</code></td>
 <td>GearVisualRow</td>
 <td>44</td>
@@ -1437,7 +1474,7 @@
 <tr>
 <td><code>Core/Economy/CoinMoney.cs</code></td>
 <td>CoinMoney</td>
-<td>67</td>
+<td>87</td>
 <td>Money is stored as copper. Legacy Gold fields/packets still carry this total. 100 copper = 1 silver; 100 silver = 1 gold. No balances or prices are converted.</td>
 </tr>
 <tr>
@@ -1888,7 +1925,7 @@
 <tr>
 <td><code>Core/Loot/LootManager.cs</code></td>
 <td>LootManager</td>
-<td>535</td>
+<td>537</td>
 <td>Loot tables and corpses. Roadmap I. When an NPC dies, CombatManager asks for a corpse. Its loot is rolled ONCE, right then, from the NPC template's loot table - so what's in a corpse never changes, whoever opens it and however often. No drops (every roll missed, no gold range) means no corpse at all. Corpses live in the shared interest grid exactly like harvest nodes (this is an IWorldEntitySource): walk near one and it spawns on your client, walk away and W2CNpcDespawn removes it. Only the killer can loot; everyone else sees it. Two ways to loot, both the killer's only (F and G by default, from the InteractableActions table): LootAll - everything that FITS goes into the bag through TryAddItem (the one add-item path) plus the gold; whatever doesn't fit stays on the corpse. OpenLoot - sends the loot window; each click there is a C2WLootTake for one entry (or the gold). While a player has a corpse's window open, every change re-sends it, so the window never shows something that's already gone. An empty corpse, or one past its lifetime, disappears - which also closes the window on the client (it listens for the despawn).</td>
 </tr>
 <tr>
@@ -2098,7 +2135,7 @@
 <tr>
 <td><code>Core/Npcs/SpawnManager.cs</code></td>
 <td>SpawnManager, SpawnerRuntime, PendingSpawn</td>
-<td>480</td>
+<td>499</td>
 <td>Owns spawner <em>definitions</em> (loaded from DB) and decides, on a timer, which spawners should currently have their NPCs alive - mirrors active-region tick -&gt; is the spawner active? -&gt; spawner update pattern: a spawner only spawns its group once a player is within its radius, and despawns the group again once nobody's been nearby for a grace period. This used to spawn every NPC from every spawner unconditionally at boot (SpawnInitialObjects). That's gone - see LoadSpawnerDefinitions, which only loads the <em>definitions</em>, and ScanSpawners, which is what actually spawns/despawns groups based on player proximity. ScanSpawners is MAIN-THREAD ONLY. InterestManager/SpatialGrid dropped their internal locking (see those classes) on the assumption that exactly one thread ever touches them - that's now the main tick thread, via NpcAiManager.Tick(). It reads InterestManager/SpatialGrid and returns the resulting spawn/despawn work as data; it does NOT mutate NpcSpawner's live dictionary or InteractionRegistry itself, or send any packets - callers still run ApplySpawn/ApplyDespawn through the existing _pendingActions queue pattern in PlayerManager, which is now a same-thread deferral (applied next tick) rather than a cross-thread handoff.</td>
 </tr>
 </tbody>
@@ -2141,7 +2178,7 @@
 <tr>
 <td><code>Core/Packets/C2WHandlers/C2WChatHandler.cs</code></td>
 <td>C2WChatHandler</td>
-<td>213</td>
+<td>236</td>
 <td></td>
 </tr>
 <tr>
@@ -2812,7 +2849,7 @@
 <tr>
 <td><code>Core/Players/PlayerManager.cs</code></td>
 <td>PlayerManager</td>
-<td>1,389</td>
+<td>1,408</td>
 <td></td>
 </tr>
 <tr>
@@ -2824,7 +2861,7 @@
 <tr>
 <td><code>Core/Players/PlayerSpawnManager.cs</code></td>
 <td>PlayerSpawnManager</td>
-<td>661</td>
+<td>670</td>
 <td>Owns the full connect/disconnect lifecycle for a player: turning a pending, authenticated peer into a spawned character in the world, and tearing that down again on disconnect (including the save-on-disconnect call, interest cleanup and snapshot removal). Tick thread only.</td>
 </tr>
 <tr>
@@ -2879,7 +2916,7 @@
 <tr>
 <td><code>Core/Players/Components/InventoryComponent.cs</code></td>
 <td>InventoryComponent</td>
-<td>112</td>
+<td>114</td>
 <td>Gold, the bag and item cooldowns. Saved. Server-authoritative: the only writers are PlayerManager's TryAddGold / TryAddItem / TryMoveItem / TryDropItem / TryUseItem (and MailManager putting a claimed mail's contents in). Every writer sets Dirty.</td>
 </tr>
 <tr>
@@ -2921,7 +2958,7 @@
 <tr>
 <td><code>Core/Players/Components/WarehouseComponent.cs</code></td>
 <td>WarehouseComponent</td>
-<td>63</td>
+<td>64</td>
 <td></td>
 </tr>
 </tbody>
@@ -3119,7 +3156,7 @@
 <tr>
 <td><code>Core/Quests/QuestManager.cs</code></td>
 <td>QuestManager, Definition, QuestRewardKind</td>
-<td>1,099</td>
+<td>1,114</td>
 <td>Quests: the definitions, each character's state, and everything that moves one forward. Roadmap K (persistence), L (events) and M (givers), extended in Phase 3 of the data plan (Docs/QUESTS.md). HOW PROGRESS HAPPENS QuestManager listens to LuaEngine.EventFired - the SAME events Lua scripts hook - so killing an orc advances a quest for exactly the reason it runs a script. One event system, two listeners. OnKill Kill, KillGroup, KillInZone OnInteract Talk (NPCs) OnHarvest recount Collect; Gather (counts what you harvest) OnCraft Craft OnItemUse UseItem; quests that start by using an item OnSkillUse UseSkill OnDoodadUse Interact OnLevelUp ReachLevel a turn-in CompleteQuest once a second (Sweep): EnterArea, quests that start in an area, ReachLevel / ProficiencyRank, time limits Collect objectives are COUNTED FROM THE BAG rather than accumulated. STAGES: objectives of stage 2 only count once every stage 1 objective is done, and so on. Hidden objectives aren't shown until their stage starts. EVERY REQUEST IS RE-CHECKED. Accepting re-checks the giver, range, level, prerequisite and repeat period; handing in re-checks the objectives, the reward choice and bag room before anything is taken.</td>
 </tr>
 <tr>
@@ -3255,7 +3292,7 @@
 <tr>
 <td><code>Core/Services/Authservice/Authservice.cs</code></td>
 <td>AuthenticatedAccount, AuthService, ValidateResponse, AccessResponse, AccountLookup, BanResult</td>
-<td>148</td>
+<td>158</td>
 <td></td>
 </tr>
 <tr>
@@ -3595,7 +3632,7 @@
 <tr>
 <td><code>Core/Trade/TradePackService.cs</code></td>
 <td>TradePackService, Quote</td>
-<td>477</td>
+<td>478</td>
 <td>Phase 9.1: trade packs (Docs/PHASE9.md). A trade pack is an item that never goes in a bag. It lives in exactly one of four places, and moves between them only through here: ON YOUR BACK EquipSlot.Backpack - saved with your equipment. You're slower (the pack's MoveSpeedPct, applied as a stat), and you can't ride a mount that isn't a pack mount. ON THE GROUND a persistent doodad holding it (HeldItemId) - set down (C2WUnequip on the Backpack slot) or dropped where you died. Anyone may pick it up (its F, the PickUpPack effect); the owner is told if someone else does - unless it's on house land, where the house's access rules. IN A CARGO a parked vehicle's storage (StorageService, cargo mode). SOLD at a trade outlet (the SellPack effect) - for gold that scales with how far it came, times the outlet's demand for that kind of pack, which drops with every delivery and recovers over time. TradeQuote shows the price. No dupes, by the same rules as everything else: setting a pack down saves the carrier (pack off their back) BEFORE the doodad row is written (DoodadManager.PlaceAt); picking one up deletes the row BEFORE the pack goes on a back (DoodadManager's reward rule); selling takes the pack and pays the gold in one character save; cargo moves are one transaction with the character save (StorageService). Tick thread only, except the demand store's awaits.</td>
 </tr>
 <tr>
@@ -4756,7 +4793,7 @@
 <tr>
 <td><code>Utils/Config/WorldServerConfig.cs</code></td>
 <td>WorldServerConfig</td>
-<td>257</td>
+<td>270</td>
 <td></td>
 </tr>
 <tr>
@@ -4781,7 +4818,7 @@
 <tr>
 <td><code>Utils/Database/SQLite/GameDataPatchRunner.cs</code></td>
 <td>GameDataPatchRunner</td>
-<td>103</td>
+<td>106</td>
 <td></td>
 </tr>
 <tr>
@@ -5043,7 +5080,7 @@
 </tbody>
 </table></div>
 <h2 id="axiomnetwork">Axiom.Network<a class="anchor" href="#axiomnetwork" title="Permanent link">#</a></h2>
-<p><code>src/Shared/Axiom.Network</code> · 168 files · 9,267 lines</p>
+<p><code>src/Shared/Axiom.Network</code> · 168 files · 9,273 lines</p>
 <h3 id="axiomnetwork--client">Axiom.Network · Client<a class="anchor" href="#axiomnetwork--client" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -5137,8 +5174,8 @@
 <tr>
 <td><code>Shared/ProtocolVersion.cs</code></td>
 <td>ProtocolVersion</td>
-<td>136</td>
-<td>The wire protocol's version (audit, client section). It is part of the LiteNetLib connection key, so a client built against a different Axiom.Network.dll is refused at connect - with a message saying so - instead of connecting and then failing on the first packet with a MessagePackSerializationException that looks like anything else. BUMP THIS whenever packets, opcodes, channels or encodings change in a way an older client can't read. Then rebuild and copy the DLL into the client's Assets/Plugins, as always. 1 everything up to 2026-09-24 2 2026-09-25: packet channels, velocity codec, create-failed packet 3 2026-09-26: Phase 3 - stats, equipment, status effects, skills, combat outcomes (new opcodes 83-89, new fields on combat events, health updates, spawns and inventory slots) 4 2026-09-26: Phase 4 - abilities, casting, crowd control, hotbar (opcodes 90-97, AbilitiesDto on load/save, cast fields on skills, Yaw on C2WAttack, Combo on combat events, Crowd on statuses) 5 2026-09-27: Phase 5 - experience (opcode 98, Experience on load/save), NPC rank on spawns, quest RewardXp, NpcOnly skills, the NpcYell chat channel 6 2026-09-27: doodads - opcodes 100-104 replace the harvest-node packets 43-47; Use/PickUp/Plant interaction types 7 2026-09-27: Phase 6 - party, raid and guilds (opcodes 105-113), Party/Raid/Guild/Zone/System chat channels, GuildName on player spawns 8 2026-09-27: Phase 7 - labor, proficiency and crafting (opcodes 114-120), the Craft interaction type, Labor/Proficiency on load/save 9 2026-09-27: Phase 8.1 - dungeon instances (opcode 121), the Enter and Leave interaction types 10 2026-09-28: Phase 8.2-8.4 - coffers and fishing (opcodes 122-124), the Fish interaction type, Access on doodad state 11 2026-10-03: Phase 9 - trade packs, vehicles, player trade (opcodes 125-131), EquipSlot.Backpack, the Deliver and Drive interaction types, IsCargo on W2CStorage, carry/vehicle fields on player spawns 12 2026-10-04: Phase 10 - factions, PvP rules, crime and justice, territory and sieges (opcodes 132-141), FactionId/PvpFlags on player spawns, FactionId on NPC spawns, Health on doodad state, factions on the character list, FactionId on character create 13 2026-10-04: Phase 11 - naval, exploration and the long tail (opcodes 142-149), EquipSlot.Glider, ship fields and Fire/Repair on vehicles, Title on player spawns 14 2026-10-06: inventory currency vendor tabs, atomic cart checkout and configured remote currency shop requests (opcode 152). 15 2026-10-07: authenticated character return and world switching (153-154). 16 2026-10-09: bound housing parts and server-driven climb frames (202/203). 17 2026-10-09: placard housing menu and explicit permission selection (204/205). 18 2026-10-09: Trade chat, structured chat links and whisper recipient labels. 19 2026-10-09: furniture action requests, occupancy frames and viewer-specific furniture actions (206/207). 20 2026-10-09: direct furniture prompts and persistent property pickup protection. 21 2026-10-09: skill-bound world actions, furniture skill ids and correlated interaction casts. 22 2026-10-09: hybrid functions, stable function identities and doodad combat targeting. 23 2026-10-10: gliders removed (EquipSlot.Glider and EquipSlots.Count 13 -&gt; 12, the Gliding movement bit retired, Gliders off W2CExplorationCatalog); visible equipment (W2CPlayerAppearance 155, W2CSpawnPlayer.Gear); SkillData.AnimationParameter; instant W2CCastStart broadcast to observers. 24 2026-10-10: fixed Warrior/Healer/Mage identity on creation, roster, load and abilities; class/passive/weapon skill metadata; class gear metadata and HealingPower stat 25; opcode 92 retired. 25 2026-10-10: ships, naval combat and the sea removed for now. W2CShipHit (143) retired, VehicleCommand Fire (4) / Repair (5) retired, LocomotionMode.Sailing retired, Water off W2CExplorationCatalog, ship fields off VehicleData and W2CVehicleState. 26 2026-10-10: flying mounts (LocomotionMode.Flying 8, MovementState.Flying reuses the retired Gliding bit, flight fields on W2CMountState); dungeon runs (timer, bosses, entry limits on W2CInstance; W2CDungeonProgress 156, C2WLeaveDungeon 157); dungeon entry counts in the character load/save. 27 2026-10-11: siege v2 - bidding, rosters, lockdown, weapons, camps, waves, rewards, castle upgrades (C2WSiegeCommand 158, W2CSiegeInfo 159, W2CSiegeScore 160; Packets/SiegePackets.cs). 28 2026-10-12: item instances - grade, durability and gem sockets on every copy of an item (ItemInstance Inst on bag, equipment, storage, mail, trade and auction DTOs); grades, gems, upgrade materials and stack limits in W2CItemGearCatalog; C2WItemUpgrade 161, W2CItemUpgradeResult 162. 29 2026-10-13: personal warehouse action 22, request/frame 210-211; item instances and atomic warehouse state in character load/save. 30 2026-10-13: classic MMO-style systems, phases 2-6 (Docs/DATA_PHASES.md): grouped loot + grade rolls + party Need/Greed (163-165, LootWindowItem.Inst); quest objective types 4-14, stages, timers, repeatables, reward lists (QuestDefinitionData/QuestProgressData, C2WQuestComplete.RewardChoice); crop growth + climate (DoodadStateData growth fields); skill steps (W2CSkillStep 166); dungeon scripts (W2CDungeonProgress Banner/Rooms). 31 2026-10-13: quest prerequisite ids on QuestDefinitionData for per-character NPC quest/shop interaction visibility and priority. 34 2026-10-15: ordered world-entry release (173), entry loading flag on movement configuration. 35 2026-10-17: party/raid UI - member roles (PartyMemberData.Role, PartyAction.SetRole), Radius Invite (PartyAction.RadiusInvite, W2CPartyInvite.ByRadius), family names on nameplates (W2CSpawnPlayer.FamilyName, W2CPlayerFamily 175). 36 2026-10-17: auction bidding (C2WAuctionBid 176; start bid, current bid and bid status on AuctionEntryData; C2WAuctionCreate StartBid/Hours; browse Mode incl. Bid History); GM panel (C2WGmCommand 177, W2CGmState 178, W2CGmVisibility 179, W2CSpawnPlayer.GmHidden). 37 2026-10-18: NPC collision box bodies and pet pass-through (NpcBodyData Shape, Hx/Hy/Hz, Yaw, OwnerId). 38 2026-10-18: Patron and Loyalty Tokens (C2WPatronClaim 180, W2CPatronState 181, PatronDto in load/save); character select shows gear, coins and location (CharacterSummary 5-10) and the account header (AccountSummaryData on W2CCharacterList / W2CSelectionReturn); GM GrantPatron/GiveLoyalty. 39 2026-10-19: loot belongs to a CHARACTER, not a login. W2CSpawnCorpse drops OwnerId (7) and Looters (9), which were network ids and went stale on every re-login, and gains CanLoot (14): the server tells each player whether they may loot it. 40 2026-10-20: item boxes. W2CCastStart gains Label (5): the text on the cast bar for a timed action that isn't a skill (opening a box). ItemUses gains CastTimeMs and LaborCost (world database only). 41 2026-10-23: races and genders (CharacterRaceRules). RaceId/GenderId on C2WCreateCharacterRequest (3-4), W2PCreateCharacterRequest (5-6), P2WCreateCharacterResponse (9-10), P2WCharacterLoadResponse (24-25), CharacterSummary (11-12), W2CSpawnPlayer (23-24) and CharacterData (3-4). 42 2026-10-25: races and body types are data (world database Races / BodyTypes): Races and BodyTypes on W2CCharacterList (4-5) and W2CSelectionReturn (8-9). BodyParts widened to 32 flags. 43 2026-10-26: character appearance. AppearanceData on C2WCreateCharacterRequest (5), W2PCreateCharacterRequest (7), P2WCreateCharacterResponse (11), P2WCharacterLoadResponse (26), CharacterSummary (13), W2CSpawnPlayer (25); AppearanceOptions on W2CCharacterList (6) and W2CSelectionReturn (10). 44 2026-10-26: project renamed to Axiom everywhere. The connection key is now "Axiom/44"; no packet changed. Rebuild Axiom.Network.dll and copy it (and Axiom.Movement.dll) into the client's Assets/Plugins. 45 2026-10-31: riding. MotorProfileData gains SurfaceSwimOnly (26): a mounted character swims on the surface only. Rebuild Axiom.Network.dll and Axiom.Movement.dll and copy both into the client's Assets/AxiomMMOKit/Plugins. The connection key is now "Axiom/45".</td>
+<td>142</td>
+<td>The wire protocol's version (audit, client section). It is part of the LiteNetLib connection key, so a client built against a different Axiom.Network.dll is refused at connect - with a message saying so - instead of connecting and then failing on the first packet with a MessagePackSerializationException that looks like anything else. BUMP THIS whenever packets, opcodes, channels or encodings change in a way an older client can't read. Then rebuild and copy the DLL into the client's Assets/Plugins, as always. 1 everything up to 2026-09-24 2 2026-09-25: packet channels, velocity codec, create-failed packet 3 2026-09-26: Phase 3 - stats, equipment, status effects, skills, combat outcomes (new opcodes 83-89, new fields on combat events, health updates, spawns and inventory slots) 4 2026-09-26: Phase 4 - abilities, casting, crowd control, hotbar (opcodes 90-97, AbilitiesDto on load/save, cast fields on skills, Yaw on C2WAttack, Combo on combat events, Crowd on statuses) 5 2026-09-27: Phase 5 - experience (opcode 98, Experience on load/save), NPC rank on spawns, quest RewardXp, NpcOnly skills, the NpcYell chat channel 6 2026-09-27: doodads - opcodes 100-104 replace the harvest-node packets 43-47; Use/PickUp/Plant interaction types 7 2026-09-27: Phase 6 - party, raid and guilds (opcodes 105-113), Party/Raid/Guild/Zone/System chat channels, GuildName on player spawns 8 2026-09-27: Phase 7 - labor, proficiency and crafting (opcodes 114-120), the Craft interaction type, Labor/Proficiency on load/save 9 2026-09-27: Phase 8.1 - dungeon instances (opcode 121), the Enter and Leave interaction types 10 2026-09-28: Phase 8.2-8.4 - coffers and fishing (opcodes 122-124), the Fish interaction type, Access on doodad state 11 2026-10-03: Phase 9 - trade packs, vehicles, player trade (opcodes 125-131), EquipSlot.Backpack, the Deliver and Drive interaction types, IsCargo on W2CStorage, carry/vehicle fields on player spawns 12 2026-10-04: Phase 10 - factions, PvP rules, crime and justice, territory and sieges (opcodes 132-141), FactionId/PvpFlags on player spawns, FactionId on NPC spawns, Health on doodad state, factions on the character list, FactionId on character create 13 2026-10-04: Phase 11 - naval, exploration and the long tail (opcodes 142-149), EquipSlot.Glider, ship fields and Fire/Repair on vehicles, Title on player spawns 14 2026-10-06: inventory currency vendor tabs, atomic cart checkout and configured remote currency shop requests (opcode 152). 15 2026-10-07: authenticated character return and world switching (153-154). 16 2026-10-09: bound housing parts and server-driven climb frames (202/203). 17 2026-10-09: placard housing menu and explicit permission selection (204/205). 18 2026-10-09: Trade chat, structured chat links and whisper recipient labels. 19 2026-10-09: furniture action requests, occupancy frames and viewer-specific furniture actions (206/207). 20 2026-10-09: direct furniture prompts and persistent property pickup protection. 21 2026-10-09: skill-bound world actions, furniture skill ids and correlated interaction casts. 22 2026-10-09: hybrid functions, stable function identities and doodad combat targeting. 23 2026-10-10: gliders removed (EquipSlot.Glider and EquipSlots.Count 13 -&gt; 12, the Gliding movement bit retired, Gliders off W2CExplorationCatalog); visible equipment (W2CPlayerAppearance 155, W2CSpawnPlayer.Gear); SkillData.AnimationParameter; instant W2CCastStart broadcast to observers. 24 2026-10-10: fixed Warrior/Healer/Mage identity on creation, roster, load and abilities; class/passive/weapon skill metadata; class gear metadata and HealingPower stat 25; opcode 92 retired. 25 2026-10-10: ships, naval combat and the sea removed for now. W2CShipHit (143) retired, VehicleCommand Fire (4) / Repair (5) retired, LocomotionMode.Sailing retired, Water off W2CExplorationCatalog, ship fields off VehicleData and W2CVehicleState. 26 2026-10-10: flying mounts (LocomotionMode.Flying 8, MovementState.Flying reuses the retired Gliding bit, flight fields on W2CMountState); dungeon runs (timer, bosses, entry limits on W2CInstance; W2CDungeonProgress 156, C2WLeaveDungeon 157); dungeon entry counts in the character load/save. 27 2026-10-11: siege v2 - bidding, rosters, lockdown, weapons, camps, waves, rewards, castle upgrades (C2WSiegeCommand 158, W2CSiegeInfo 159, W2CSiegeScore 160; Packets/SiegePackets.cs). 28 2026-10-12: item instances - grade, durability and gem sockets on every copy of an item (ItemInstance Inst on bag, equipment, storage, mail, trade and auction DTOs); grades, gems, upgrade materials and stack limits in W2CItemGearCatalog; C2WItemUpgrade 161, W2CItemUpgradeResult 162. 29 2026-10-13: personal warehouse action 22, request/frame 210-211; item instances and atomic warehouse state in character load/save. 30 2026-10-13: classic MMO-style systems, phases 2-6 (Docs/DATA_PHASES.md): grouped loot + grade rolls + party Need/Greed (163-165, LootWindowItem.Inst); quest objective types 4-14, stages, timers, repeatables, reward lists (QuestDefinitionData/QuestProgressData, C2WQuestComplete.RewardChoice); crop growth + climate (DoodadStateData growth fields); skill steps (W2CSkillStep 166); dungeon scripts (W2CDungeonProgress Banner/Rooms). 31 2026-10-13: quest prerequisite ids on QuestDefinitionData for per-character NPC quest/shop interaction visibility and priority. 34 2026-10-15: ordered world-entry release (173), entry loading flag on movement configuration. 35 2026-10-17: party/raid UI - member roles (PartyMemberData.Role, PartyAction.SetRole), Radius Invite (PartyAction.RadiusInvite, W2CPartyInvite.ByRadius), family names on nameplates (W2CSpawnPlayer.FamilyName, W2CPlayerFamily 175). 36 2026-10-17: auction bidding (C2WAuctionBid 176; start bid, current bid and bid status on AuctionEntryData; C2WAuctionCreate StartBid/Hours; browse Mode incl. Bid History); GM panel (C2WGmCommand 177, W2CGmState 178, W2CGmVisibility 179, W2CSpawnPlayer.GmHidden). 37 2026-10-18: NPC collision box bodies and pet pass-through (NpcBodyData Shape, Hx/Hy/Hz, Yaw, OwnerId). 38 2026-10-18: Patron and Loyalty Tokens (C2WPatronClaim 180, W2CPatronState 181, PatronDto in load/save); character select shows gear, coins and location (CharacterSummary 5-10) and the account header (AccountSummaryData on W2CCharacterList / W2CSelectionReturn); GM GrantPatron/GiveLoyalty. 39 2026-10-19: loot belongs to a CHARACTER, not a login. W2CSpawnCorpse drops OwnerId (7) and Looters (9), which were network ids and went stale on every re-login, and gains CanLoot (14): the server tells each player whether they may loot it. 40 2026-10-20: item boxes. W2CCastStart gains Label (5): the text on the cast bar for a timed action that isn't a skill (opening a box). ItemUses gains CastTimeMs and LaborCost (world database only). 41 2026-10-23: races and genders (CharacterRaceRules). RaceId/GenderId on C2WCreateCharacterRequest (3-4), W2PCreateCharacterRequest (5-6), P2WCreateCharacterResponse (9-10), P2WCharacterLoadResponse (24-25), CharacterSummary (11-12), W2CSpawnPlayer (23-24) and CharacterData (3-4). 42 2026-10-25: races and body types are data (world database Races / BodyTypes): Races and BodyTypes on W2CCharacterList (4-5) and W2CSelectionReturn (8-9). BodyParts widened to 32 flags. 43 2026-10-26: character appearance. AppearanceData on C2WCreateCharacterRequest (5), W2PCreateCharacterRequest (7), P2WCreateCharacterResponse (11), P2WCharacterLoadResponse (26), CharacterSummary (13), W2CSpawnPlayer (25); AppearanceOptions on W2CCharacterList (6) and W2CSelectionReturn (10). 44 2026-10-26: project renamed to Axiom everywhere. The connection key is now "Axiom/44"; no packet changed. Rebuild Axiom.Network.dll and copy it (and Axiom.Movement.dll) into the client's Assets/Plugins. 45 2026-10-31: riding. MotorProfileData gains SurfaceSwimOnly (26): a mounted character swims on the surface only. Rebuild Axiom.Network.dll and Axiom.Movement.dll and copy both into the client's Assets/AxiomMMOKit/Plugins. The connection key is now "Axiom/45". 46 2026-11-02: gold balances are 64-bit. The copper total a character holds was an int, capping a wallet at 214,748g 36s 47c (a mail that would pass it could not be taken). Now long on W2CGoldUpdatePacket (0), W2CEnterWorldPacket (1), W2PCharacterSaveRequest (7), W2PCharacterSaveFullRequest (7), P2WCharacterLoadResponse (9), WarehouseDto (1) and GmPlayerDetail (5). Single amounts (prices, mail and trade gold, rewards) stay int. Persistence migration GoldToLong. Rebuild Axiom.Network.dll and copy it into Assets/AxiomMMOKit/Plugins. The connection key is now "Axiom/46".</td>
 </tr>
 <tr>
 <td><code>Shared/VelocityCodec.cs</code></td>
@@ -6673,6 +6710,33 @@
 </tr>
 </tbody>
 </table></div>
+<h2 id="axiomtoolsclientpublish">Axiom.Tools.ClientPublish<a class="anchor" href="#axiomtoolsclientpublish" title="Permanent link">#</a></h2>
+<p><code>src/Tools/Axiom.Tools.ClientPublish</code> · 2 files · 393 lines</p>
+<h3 id="axiomtoolsclientpublish--root">Axiom.Tools.ClientPublish · (root)<a class="anchor" href="#axiomtoolsclientpublish--root" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Types</th>
+<th>Lines</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Program.cs</code></td>
+<td>Cli</td>
+<td>136</td>
+<td>axiom-publish: publish a client build for the Axiom Launcher. See Publisher.cs for the format.</td>
+</tr>
+<tr>
+<td><code>Publisher.cs</code></td>
+<td>ManifestFile, ManifestObjects, Manifest, PublishOptions, PublishResult, Publisher</td>
+<td>257</td>
+<td>Publisher.cs - the client release format the Axiom Launcher downloads. A published folder is plain static files, so any web host serves it: &lt;publish folder&gt;/ manifest.json every file of the build: path, size, SHA-256; version, protocol, exe manifest.json.sig ECDSA P-256 / SHA-256 signature of manifest.json's exact bytes (base64) objects/ab/ab12… each file stored under its own hash (the "pattern"), so versions share unchanged files and an upload never overwrites a file a player is downloading upload-new.txt the objects this publish added (upload these, then the two manifest files) upload-all.txt every object this version needs (for hosts that start empty each release) The launcher downloads manifest.json + .sig, checks the signature with the public key in its launcher.config.json, and only then trusts the file list. A host that's broken into can't make players run anything you didn't sign.</td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="axiomtoolsnavbake">Axiom.Tools.NavBake<a class="anchor" href="#axiomtoolsnavbake" title="Permanent link">#</a></h2>
 <p><code>src/Tools/Axiom.Tools.NavBake</code> · 1 files · 106 lines</p>
 <h3 id="axiomtoolsnavbake--root">Axiom.Tools.NavBake · (root)<a class="anchor" href="#axiomtoolsnavbake--root" title="Permanent link">#</a></h3>
@@ -6716,7 +6780,7 @@
 </tbody>
 </table></div>
 <h2 id="axiomserverworldchecks">Axiom.Server.World.Checks<a class="anchor" href="#axiomserverworldchecks" title="Permanent link">#</a></h2>
-<p><code>src/Tests/Axiom.Server.World.Checks</code> · 10 files · 1,009 lines</p>
+<p><code>src/Tests/Axiom.Server.World.Checks</code> · 12 files · 1,228 lines</p>
 <h3 id="axiomserverworldchecks--root">Axiom.Server.World.Checks · (root)<a class="anchor" href="#axiomserverworldchecks--root" title="Permanent link">#</a></h3>
 <div class="table-wrap"><table>
 <thead>
@@ -6745,6 +6809,18 @@
 <td>ClientContentChecks</td>
 <td>79</td>
 <td>The package the world server builds must be exactly what the client's GameDataBinaryFormat.ReadItems and GameDataCrypto.Decrypt read, and must be byte-stable while the content is unchanged (so launchers don't re-download). Set AXIOM_WORLD_DB to a patched worldserver.db to also check real data.</td>
+</tr>
+<tr>
+<td><code>ContentReloadChecks.cs</code></td>
+<td>ContentReloadChecks, FakeTickThread</td>
+<td>186</td>
+<td>Content hot reload (Docs/CONTENT_RELOAD.md): the editor's file protocol, the pause gate every tick thread parks on, and (with AXIOM_WORLD_DB set to a patched worldserver.db) the dry run and template reload against real data. The real database is copied first; it's never written.</td>
+</tr>
+<tr>
+<td><code>GoldBalanceChecks.cs</code></td>
+<td>GoldBalanceChecks</td>
+<td>31</td>
+<td>64-bit gold balances (protocol 46): the old 214,748g cap is gone, the new cap holds, nothing overflows.</td>
 </tr>
 <tr>
 <td><code>GuildShopChecks.cs</code></td>
@@ -6779,7 +6855,7 @@
 <tr>
 <td><code>Program.cs</code></td>
 <td></td>
-<td>24</td>
+<td>26</td>
 <td></td>
 </tr>
 <tr>
@@ -6795,7 +6871,7 @@
 <a class="next" href="codemap-client.html"><span>Next</span>Code Map: Unity Client &amp; Editor</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">
@@ -7112,6 +7188,12 @@
 <li><a href="#axiomloadtest--telemetry">Axiom.LoadTest · Telemetry</a>
 </li>
 <li><a href="#axiomloadtest--ui">Axiom.LoadTest · Ui</a>
+</li>
+</ul>
+</li>
+<li><a href="#axiomtoolsclientpublish">Axiom.Tools.ClientPublish</a>
+<ul>
+<li><a href="#axiomtoolsclientpublish--root">Axiom.Tools.ClientPublish · (root)</a>
 </li>
 </ul>
 </li>

@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="20-add-server-system.html">Add a Server System</a></li>
 <li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="100-add-ability.html">Add an Ability</a></li>
 <li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="120-deploy.html" class="active" aria-current="page">Deploy a Shard</a></li>
+<li><a href="125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -245,6 +252,7 @@
 <div class="crumbs">Cookbook (How-To)</div>
 
 <h1 id="deploy-a-shard">Deploy a Shard<a class="anchor" href="#deploy-a-shard" title="Permanent link">#</a></h1>
+<p>First time letting players in? <a href="126-alpha-launch.html">Alpha Launch</a> is the step-by-step version of this page for a first closed test, with a Windows host and the Axiom Launcher.</p>
 <p>A shard is <strong>four .NET services + MySQL + a client build</strong>. This page is a checklist from an empty Linux VM (Windows works the same way with Windows services).</p>
 <div class="hl"><pre><span></span><code>                Internet
    players ──UDP 7777──► World ──HTTP 127.0.0.1:7778──► Persistence ──► MySQL axiom_persistence
@@ -269,13 +277,12 @@
 <span class="k">GRANT</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">axiom_auction</span><span class="p">.</span><span class="o">*</span><span class="w">     </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;axiom_auction&#39;</span><span class="o">@</span><span class="s1">&#39;localhost&#39;</span><span class="p">;</span>
 </code></pre></div>
 
-<p>Persistence migrations are applied <strong>by hand</strong> before its first start (and after every update that adds one):</p>
+<p>Every service creates its own tables on start: Persistence and Auth apply their EF migrations (Persistence's <code>AutoMigrate</code>, default on), Auction uses <code>EnsureCreated</code>. To control Persistence's schema changes on a live shard yourself, set <code>"AutoMigrate": false</code> and apply them by hand before starting a new build:</p>
 <div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>src/Servers/Axiom.Server.Persistence
 <span class="nv">ConnectionStrings__Persistence</span><span class="o">=</span><span class="s2">&quot;Server=…;Database=axiom_persistence;User=axiom_persistence;Password=…&quot;</span><span class="w"> </span>dotnet<span class="w"> </span>ef<span class="w"> </span>database<span class="w"> </span>update
 <span class="c1"># or generate a script to run on the server:  dotnet ef migrations script --idempotent -o persistence.sql</span>
 </code></pre></div>
 
-<p>Auth migrates itself at start-up; Auction uses <code>EnsureCreated</code>.</p>
 <h2 id="3-publish">3. Publish<a class="anchor" href="#3-publish" title="Permanent link">#</a></h2>
 <div class="hl"><pre><span></span><code><span class="k">for</span><span class="w"> </span>s<span class="w"> </span><span class="k">in</span><span class="w"> </span>Persistence<span class="w"> </span>Auth<span class="w"> </span>World<span class="w"> </span>Auction<span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w">  </span>dotnet<span class="w"> </span>publish<span class="w"> </span>src/Servers/Axiom.Server.<span class="nv">$s</span><span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>-r<span class="w"> </span>linux-x64<span class="w"> </span>--self-contained<span class="w"> </span><span class="nb">false</span><span class="w"> </span>-o<span class="w"> </span>/opt/axiom/<span class="nv">$s</span>
@@ -352,13 +359,14 @@
 </tr>
 </tbody>
 </table></div>
-<p>Caddy (automatic Let's Encrypt):</p>
+<p>Production choices (Caddy vs an AWS load balancer, DDoS protection, an AWS walkthrough): <a href="125-production-hosting.html">Production Hosting</a>.</p>
+<p>Caddy (automatic, free Let's Encrypt certificates): the repository ships <code>src/Servers/Axiom.Server.Auth/deploy/Caddyfile</code>. Full steps, and the Kestrel-certificate alternative: <a href="../30-server/215-https.html">HTTPS for Auth</a>.</p>
 <div class="hl"><pre><span></span><code>auth.example.com {
     reverse_proxy 127.0.0.1:3000
 }
 </code></pre></div>
 
-<p>Set <code>Auth:TrustForwardedFor = true</code> <strong>only</strong> behind the proxy (login rate limits and lockouts use the client address). Firewall: allow 443/tcp and 7777/udp; deny everything else inbound.</p>
+<p>Set <code>Auth:TrustForwardedFor = true</code> behind the proxy (login rate limits and lockouts use the client address). Auth refuses plain HTTP from other machines (<code>Auth:RequireHttps</code>), so a World server on another machine uses <code>https://auth.example.com</code> as <code>World:AuthServerUrl</code>. Firewall: allow 443/tcp and 7777/udp; deny everything else inbound.</p>
 <h2 id="6-run-as-services-systemd">6. Run as services (systemd)<a class="anchor" href="#6-run-as-services-systemd" title="Permanent link">#</a></h2>
 <p><code>/etc/systemd/system/axiom-persistence.service</code> (one per service; World <code>After=axiom-persistence.service axiom-auth.service</code>):</p>
 <div class="hl"><pre><span></span><code><span class="k">[Unit]</span>
@@ -383,10 +391,10 @@
 <p>Start order: <strong>Persistence → Auth → World → Auction</strong> (the World server calls Persistence during start-up). <code>systemctl stop axiom-world</code> sends SIGTERM, which the .NET host handles like Ctrl+C: <code>StopAsync</code> saves territories (5 s budget) and every character (10 s, <code>ShutdownSaveTimeout</code>) before closing the socket (<a href="../10-architecture/30-world-server.html#shutdown">Shutdown</a>). Keep <code>TimeoutStopSec</code> above that, and never <code>kill -9</code> a World server.</p>
 <h2 id="7-the-client-build">7. The client build<a class="anchor" href="#7-the-client-build" title="Permanent link">#</a></h2>
 <ul>
-<li><code>GameDataBootstrap.AuthServerUrl</code> is a <strong>constant</strong> (<code>http://127.0.0.1:3000</code>): change it to <code>https://auth.example.com</code> (or read it from the <code>-auth-url</code> argument that <code>WorldDirectoryClient</code> already accepts) before building.</li>
-<li><strong>Tools ▸ Axiom ▸ Build and Release</strong> runs the checks (Validate Netcode Build runs automatically), builds the client and publishes the servers into <code>Builds/&lt;version&gt;/</code>.</li>
+<li>The client's Auth address is <code>AuthBaseUrl</code> in <code>Resources/UI/Selection/WorldDirectory.json</code>, overridden by <code>-auth-url &lt;url&gt;</code> (<code>AuthServerAddress</code>; the world list and the <code>gamedata.bin</code> download both use it). Set it to <code>https://auth.example.com</code>; a release build refuses <code>http://</code> to other machines.</li>
+<li><strong>Tools ▸ Axiom ▸ Build and Release</strong> builds the client (Validate Netcode Build runs automatically before every player build), publishes it for the launcher (<a href="../50-tools/95-client-publish.html">Client publish</a>) and publishes the servers into <code>Builds/&lt;version&gt;/</code>. Press its <strong>Run all checks</strong> first and read the report.</li>
 <li>Ship the client with the <strong>same</strong> movement collision export and zone map as the servers (both are in StreamingAssets).</li>
-<li>A launcher is not part of the repository: it should log in (<code>/login</code>), get a one-use <strong>launch token</strong> (120 s) and start the client with <code>-token &lt;token&gt;</code> (<a href="../10-architecture/20-login-flow.html">Login flow</a>).</li>
+<li>The <strong>Axiom Launcher</strong> (Tauri, its own repository) logs in (<code>/login</code>), gets a one-use <strong>launch token</strong> (120 s) and starts the client with <code>-token &lt;token&gt; -ip &lt;world&gt;</code> (<a href="../10-architecture/20-login-flow.html">Login flow</a>). It reads its addresses from <code>launcher.config.json</code> (<a href="126-alpha-launch.html#9-the-launcher">Alpha Launch, step 9</a>).</li>
 <li><code>gamedata.bin</code>: the client downloads the newest from Auth at the server-select screen, so content-only updates don't need a new client build.</li>
 </ul>
 <h2 id="8-backups">8. Backups<a class="anchor" href="#8-backups" title="Permanent link">#</a></h2>
@@ -418,7 +426,7 @@
 </tr>
 <tr>
 <td>Persistence schema</td>
-<td><code>dotnet ef database update</code> (or the idempotent script) <strong>before</strong> starting the new Persistence</td>
+<td>applied by the new Persistence on start (<code>AutoMigrate</code>); back up <code>axiom_persistence</code> first. With <code>AutoMigrate: false</code>, <code>dotnet ef database update</code> (or the idempotent script) before starting it</td>
 </tr>
 <tr>
 <td>Movement collision / zones / navmesh</td>
@@ -431,10 +439,10 @@
 <p>Run a <strong>load test</strong> against the real machine with the expected number of players (<a href="../30-server/240-loadtest.html">Load testing</a>), check tick times under load, and do a restore drill from last night's backup.</p>
 <nav class="pager">
 <a class="prev" href="110-add-doodad.html"><span>Previous</span>Add a World Object (Doodad)</a>
-<a class="next" href="130-troubleshooting.html"><span>Next</span>Troubleshooting</a>
+<a class="next" href="125-production-hosting.html"><span>Next</span>Production Hosting: HTTPS, DDoS and AWS</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">

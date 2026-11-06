@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Editor Menu Reference · Axiom Docs</title>
-<meta name="description" content="All 101 Axiom menu items, 15 Dev Tools tabs and 5 Create wizards of the Unity editor.">
+<meta name="description" content="All 110 Axiom menu items, 15 Dev Tools tabs and 8 Create wizards of the Unity editor.">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/pygments.css">
 <script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -284,7 +291,7 @@
 </tr>
 <tr>
 <td>Axiom ▸ Build and Release</td>
-<td>Produce a release: bump the version, run all checks, build the client, publish the servers and write release notes into Builds/&lt;version&gt;.</td>
+<td>Produce a release: bump the version, build the client, publish it for the launcher, publish the servers and write release notes into Builds/&lt;version&gt;.</td>
 <td><code>Project/AxiomBuildRelease.cs</code> → <code>Open</code></td>
 </tr>
 <tr>
@@ -343,6 +350,21 @@
 <td><code>Content/AxiomCurrencyShopEditor.cs</code> → <code>Open</code></td>
 </tr>
 <tr>
+<td>Axiom ▸ Content ▸ Quest Graph</td>
+<td>Every quest chain as a graph: see what leads to what, edit dialogue and objectives with a preview, link quests by dragging, add follow-ups. Flags quests the World server would skip.</td>
+<td><code>Content/QuestGraphWindow.cs</code> → <code>OpenMenu</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Content ▸ Skill Lab</td>
+<td>Tune skills with live numbers: damage per hit and per cast, DPS, damage per mana and time to kill against any NPC, using the server's combat formulas. Edit effects, compare before and after.</td>
+<td><code>Content/SkillLabWindow.cs</code> → <code>Open</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Content ▸ World Events</td>
+<td>World bosses and rifts drawn in the Scene view (area, spawn ring, reward range) with handles to move and resize them, their next runs and a 24-hour timeline that shows clashes.</td>
+<td><code>Content/WorldEventsWindow.cs</code> → <code>OpenMenu</code></td>
+</tr>
+<tr>
 <td>Axiom ▸ Create ▸ Dungeon…</td>
 <td>Guided creation of a doodad (ore, herb, tree, chest, crafting station): phases, actions, rewards, timers and placement.</td>
 <td><code>Create/AxiomCreateWindow.cs</code> → <code>CreateDungeon</code></td>
@@ -361,6 +383,21 @@
 <td>Axiom ▸ Create ▸ NPC…</td>
 <td>Guided creation of a weapon, armour piece, consumable or material: stats, effects, drops, shops and how it looks when worn.</td>
 <td><code>Create/AxiomCreateWindow.cs</code> → <code>CreateNpc</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Create ▸ Quest…</td>
+<td>Guided creation of a loot table (gold and item drops with chances) and the NPCs that use it.</td>
+<td><code>Create/AxiomCreateWindow.cs</code> → <code>CreateQuest</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Create ▸ Skill…</td>
+<td>Guided creation of a skill: targeting, timing, cost and its effects (damage, heals, statuses), with a preview worked out by the server's combat formulas.</td>
+<td><code>Create/AxiomCreateWindow.cs</code> → <code>CreateSkill</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Create ▸ World Event (rift, world boss)…</td>
+<td>Guided creation of a world boss or rift: placed where the Scene view looks, its schedule in your local time, its waves and whether a group can clear it in time.</td>
+<td><code>Create/AxiomCreateWindow.cs</code> → <code>CreateWorldEvent</code></td>
 </tr>
 <tr>
 <td>Axiom ▸ Create ▸ World Object (gatherable, chest, station)…</td>
@@ -548,9 +585,24 @@
 <td><code>Hub/AxiomHubWindow.cs</code> → <code>Open</code></td>
 </tr>
 <tr>
+<td>Axiom ▸ Play Mode Live Tools</td>
+<td>While the game runs in the editor: push content to the server, teleport to the Scene view, give items, spawn NPCs, start world events, heal or reset your target.</td>
+<td><code>Project/ContentPush/LiveToolsWindow.cs</code> → <code>Open</code></td>
+</tr>
+<tr>
 <td>Axiom ▸ Project Setup and Health</td>
 <td>Check this machine's setup (server repository, game data outputs and key, auth server, protocol DLL, MessagePack) and fix what can be fixed.</td>
 <td><code>Project/AxiomProjectHealth.cs</code> → <code>Open</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Push Content Automatically After Commit</td>
+<td>When on, every successful commit (Content Studio, Create wizards, Dev Tools) pushes the change to a running World server.</td>
+<td><code>Project/ContentPush/ContentPush.cs</code> → <code>ToggleAutoPush</code></td>
+</tr>
+<tr>
+<td>Axiom ▸ Push Content to Running Server</td>
+<td>Make your committed content live on the running World server without a restart: items, quests, shops, loot, skills, NPC abilities, effects, statuses, NPC stats and recipes.</td>
+<td><code>Project/ContentPush/ContentPush.cs</code> → <code>PushFromMenu</code></td>
 </tr>
 <tr>
 <td>Axiom ▸ Server Control</td>
@@ -905,6 +957,24 @@
 <td><code>Create/NpcWizard.cs</code></td>
 </tr>
 <tr>
+<td>Quest</td>
+<td><a href="worlddb.html#quests"><code>Quests</code></a></td>
+<td>A quest someone offers: what they say, what the player must do, what they get, and which quest comes before it.</td>
+<td><code>Create/QuestWizard.cs</code></td>
+</tr>
+<tr>
+<td>Skill</td>
+<td><a href="worlddb.html#skills"><code>Skills</code></a></td>
+<td>An ability a class learns (or an NPC uses): its targeting, cast time, cooldown and cost, and the effects it lands.</td>
+<td><code>Create/SkillWizard.cs</code></td>
+</tr>
+<tr>
+<td>World Event</td>
+<td><a href="worlddb.html#worldevents"><code>WorldEvents</code></a></td>
+<td>A world boss on a timer, or a rift: waves of monsters and then its master. Everyone who fights it nearby shares the reward.</td>
+<td><code>Create/WorldEventWizard.cs</code></td>
+</tr>
+<tr>
 <td>World Object</td>
 <td><a href="worlddb.html#doodadtemplates"><code>DoodadTemplates</code></a></td>
 <td>Gatherables (ore, herbs, trees), chests, crafting stations, doors. Copy one that works, rename it, give it a model, change what it gives and how long it takes, place it in the world, and press Create.</td>
@@ -917,7 +987,7 @@
 <a class="next" href="codemap-server.html"><span>Next</span>Code Map: Server &amp; Shared</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">

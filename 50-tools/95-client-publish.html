@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Publish &amp; Launcher Updates · Axiom Docs</title>
+<meta name="description" content="Ship the game through the Axiom Launcher: make a signing key, publish each client build as signed static files, host them anywhere (Cloudflare R2, S3, B2, GitHub Releases, your own web server), and what players see when they install, update and verify.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
+<li><a href="10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="20-content-studio.html">Content Studio</a></li>
+<li><a href="30-create-wizards.html">Create Wizards</a></li>
+<li><a href="35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
+<li><a href="40-dev-tools.html">Dev Tools</a></li>
+<li><a href="50-world-tools.html">World Building Tools</a></li>
+<li><a href="60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="80-server-exports.html">Server Exports</a></li>
+<li><a href="90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="95-client-publish.html" class="active" aria-current="page">Client Publish &amp; Launcher Updates</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
+<li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
+<li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="../60-cookbook/40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="../60-cookbook/50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="../60-cookbook/60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="../60-cookbook/70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="../60-cookbook/80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="../60-cookbook/90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
+<li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
+<li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Tools</div>
+
+<h1 id="client-publish--launcher-updates">Client Publish &amp; Launcher Updates<a class="anchor" href="#client-publish--launcher-updates" title="Permanent link">#</a></h1>
+<p>Players download only the launcher. The launcher installs the game, keeps it up to date, and repairs broken files. You publish each new client build once; the launcher fetches only the files that changed.</p>
+<p>There is no update server to run. A release is plain files, so <strong>any host that serves files over HTTP(S) works</strong>: a cloud bucket, a CDN, GitHub Releases, or a folder on your own web server.</p>
+<div class="hl"><pre><span></span><code>Unity build ──► axiom-publish ──► publish folder ──► your upload command ──► any static host
+                 (hash + sign)    manifest.json                               ▲
+                                  manifest.json.sig                           │ HTTPS GET
+                                  objects/…                          Axiom Launcher (checks the signature
+                                                                     and every file&#39;s SHA-256)
+</code></pre></div>
+
+<h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works" title="Permanent link">#</a></h2>
+<ul>
+<li><strong><code>manifest.json</code></strong> lists every file in the build with its size and SHA-256, plus the version, the protocol number and the game's <code>.exe</code>.</li>
+<li><strong><code>manifest.json.sig</code></strong> is the manifest's signature (ECDSA P-256). The launcher has your <strong>public key</strong> built into its config and refuses any manifest that wasn't signed with your private key. A hacked host or a tampered download can't push files to players.</li>
+<li><strong>Objects</strong> are the files themselves, named by their hash (<code>objects/3f/3f59…</code>). A file that didn't change keeps its name, so each release uploads only what's new, and players download only what's new.</li>
+<li><strong>Nothing changes in the game folder until every file has downloaded and checked out.</strong> A cancelled or failed update leaves the installed game as it was, and the next attempt resumes the partial downloads.</li>
+</ul>
+<h2 id="one-time-setup">One-time setup<a class="anchor" href="#one-time-setup" title="Permanent link">#</a></h2>
+<h3 id="1-make-a-signing-key">1. Make a signing key<a class="anchor" href="#1-make-a-signing-key" title="Permanent link">#</a></h3>
+<p><strong>In Unity:</strong> <strong>Tools ▸ Axiom ▸ Build and Release</strong> ▸ tick <em>Publish the client for the launcher</em> ▸ <strong>Settings</strong> ▸ <strong>Create signing key</strong>. Do this <strong>once, ever</strong>: the button greys out when the key exists.</p>
+<p><strong>Or from the server repo:</strong></p>
+<div class="hl"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>src/Tools/Axiom.Tools.ClientPublish<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>keygen<span class="w"> </span>--out<span class="w"> </span>~/.axiom/keys/MyGame
+</code></pre></div>
+
+<p>You get two files:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>What to do with it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>publish-key.private.pem</code></td>
+<td><strong>Secret.</strong> Back it up (password manager, encrypted USB). Never commit it, never upload it. Anyone with it can ship files to your players.</td>
+</tr>
+<tr>
+<td><code>publish-key.public.txt</code></td>
+<td>Goes in <code>launcher.config.json</code> as <code>patchPublicKey</code>. Safe to share.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>If you lose the private key, launchers you've already shipped can't accept updates signed with a new key. Players would need a new launcher. Back it up.</p>
+</blockquote>
+<p>The default key location in Unity is <code>~/.axiom/keys/&lt;product name&gt;/</code>, outside the repo on purpose. The tool refuses to overwrite an existing key.</p>
+<h3 id="2-point-the-launcher-at-your-host">2. Point the launcher at your host<a class="anchor" href="#2-point-the-launcher-at-your-host" title="Permanent link">#</a></h3>
+<p>In <code>launcher.config.json</code> (next to the launcher's <code>.exe</code>):</p>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;authServerUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://auth.example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;worldServerIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;world.example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;patchUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://cdn.example.com/client&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;patchPublicKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BHal…(from publish-key.public.txt)…&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;installDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;game&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>patchUrl</code></td>
+<td>The URL of the folder that holds <code>manifest.json</code>. Empty = the launcher doesn't install or update, and starts the game at <code>gamePath</code> as before.</td>
+</tr>
+<tr>
+<td><code>patchPublicKey</code></td>
+<td>The text from <code>publish-key.public.txt</code>.</td>
+</tr>
+<tr>
+<td><code>installDir</code></td>
+<td>Where the game is installed, relative to the launcher's folder unless absolute. Default <code>game</code>. <code>AXIOM_INSTALL_DIR</code> overrides it.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Then build the launcher (<code>npm run tauri build</code>) and ship the installer. The NSIS installer installs per user (<code>%LOCALAPPDATA%</code>), so the launcher can write the game next to itself. If you ship the <strong>MSI</strong> (installs to Program Files, which needs admin rights to write to), set <code>installDir</code> to an absolute, writable folder.</p>
+<h2 id="each-release">Each release<a class="anchor" href="#each-release" title="Permanent link">#</a></h2>
+<h3 id="from-unity">From Unity<a class="anchor" href="#from-unity" title="Permanent link">#</a></h3>
+<p><strong>Tools ▸ Axiom ▸ Build and Release</strong>:</p>
+<ol>
+<li>Press <strong>Run all checks</strong> and wait for the report (optional, recommended).</li>
+<li>Set the <strong>Version</strong> (or press <strong>Bump patch</strong>). Every release needs a new version.</li>
+<li>Tick <strong>Build the client</strong> and <strong>Publish the client for the launcher to download</strong>.</li>
+<li>Open <strong>Settings</strong> once and fill them in:</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Publish folder</td>
+<td>Default <code>Builds/Launcher</code>. <strong>Keep it between releases</strong>: unchanged files stay and only new ones are added. Must not be inside the client build.</td>
+</tr>
+<tr>
+<td>Signing key</td>
+<td>Your <code>publish-key.private.pem</code>.</td>
+</tr>
+<tr>
+<td>Object names</td>
+<td>Default <code>objects/{h2}/{hash}</code>. Use <code>{hash}</code> for hosts without folders (GitHub Releases).</td>
+</tr>
+<tr>
+<td>Objects URL</td>
+<td>Only if the files live somewhere other than next to <code>manifest.json</code>.</td>
+</tr>
+<tr>
+<td>Upload command</td>
+<td>Runs after publishing; <code>{out}</code> is the publish folder. Examples below. Empty = upload the folder yourself.</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="5">
+<li>Press <strong>Build release</strong>. The protocol number (<code>ProtocolVersion.Current</code>) and the game's <code>.exe</code> name (product name) are filled in for you.</li>
+</ol>
+<p><strong>Publish last build</strong> publishes <code>Builds/&lt;version&gt;/Client</code> again without rebuilding (handy after fixing the upload command).</p>
+<p>The settings are saved per machine (EditorPrefs), because the key path and the upload credentials are personal.</p>
+<h3 id="from-the-command-line-ci-scripts">From the command line (CI, scripts)<a class="anchor" href="#from-the-command-line-ci-scripts" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>src/Tools/Axiom.Tools.ClientPublish<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>publish<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build<span class="w">  </span><span class="s2">&quot;C:/MyGame/Builds/1.2.0/Client&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--out<span class="w">    </span><span class="s2">&quot;C:/MyGame/Builds/Launcher&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--key<span class="w">    </span><span class="s2">&quot;C:/Users/me/.axiom/keys/MyGame/publish-key.private.pem&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--version<span class="w"> </span><span class="m">1</span>.2.0<span class="w"> </span>--protocol<span class="w"> </span><span class="m">46</span><span class="w"> </span>--exe<span class="w"> </span>MyGame.exe<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--then<span class="w"> </span><span class="s2">&quot;rclone sync \&quot;{out}\&quot; r2:my-bucket/client&quot;</span>
+</code></pre></div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--build</code></td>
+<td>The client build folder (the one with the <code>.exe</code>).</td>
+</tr>
+<tr>
+<td><code>--out</code></td>
+<td>The publish folder. Re-use it every release.</td>
+</tr>
+<tr>
+<td><code>--key</code></td>
+<td>The private key.</td>
+</tr>
+<tr>
+<td><code>--version</code></td>
+<td>Shown in the launcher; must change every release.</td>
+</tr>
+<tr>
+<td><code>--protocol</code></td>
+<td><code>ProtocolVersion.Current</code>. Recorded in the manifest.</td>
+</tr>
+<tr>
+<td><code>--exe</code></td>
+<td>The game's <code>.exe</code>, relative to the build folder. The launcher starts this.</td>
+</tr>
+<tr>
+<td><code>--product</code></td>
+<td>Optional name recorded in the manifest.</td>
+</tr>
+<tr>
+<td><code>--pattern</code></td>
+<td>Object names: <code>{hash}</code>, <code>{h2}</code> (first two hex digits), <code>{path}</code> (the file's path in the game).</td>
+</tr>
+<tr>
+<td><code>--objects-url</code></td>
+<td>Objects live elsewhere: an absolute URL, or a path relative to the manifest's folder (<code>../store</code>).</td>
+</tr>
+<tr>
+<td><code>--exclude &lt;glob&gt;</code></td>
+<td>Leave files out (repeatable). Unity's <code>*_DoNotShip/**</code>, <code>*_BackUpThisFolder_ButDontShipItWithYourGame/**</code> and <code>**/*.pdb</code> are left out by default; <code>--no-default-excludes</code> turns that off.</td>
+</tr>
+<tr>
+<td><code>--then "&lt;cmd&gt;"</code></td>
+<td>Run a command afterwards (<code>cmd /c</code> on Windows, <code>sh -c</code> elsewhere). Exit code 3 if it fails.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Check a publish folder, before or after uploading:</p>
+<div class="hl"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>src/Tools/Axiom.Tools.ClientPublish<span class="w"> </span>-c<span class="w"> </span>Release<span class="w"> </span>--<span class="w"> </span>verify<span class="w"> </span>--folder<span class="w"> </span>Builds/Launcher<span class="w"> </span>--pubkey<span class="w"> </span>~/.axiom/keys/MyGame/publish-key.public.txt
+</code></pre></div>
+
+<h3 id="the-release-loop-once-its-set-up">The release loop, once it's set up<a class="anchor" href="#the-release-loop-once-its-set-up" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Bump patch</strong> (0.1.1 → 0.1.2). Always bump: launchers decide "update or not" by comparing versions.</li>
+<li><strong>Build release</strong>. It builds the client, adds the changed files to <code>Builds/Launcher</code>, writes the new signed manifest, and runs your upload command.</li>
+<li>Players' launchers show <strong>Update · size</strong>. That's it: nothing is sent to players by hand.</li>
+</ol>
+<p>If the release changes the protocol, netcode or collision data, tick <strong>Publish servers</strong> too and redeploy the servers at the same time; players on the old client are told to update and reconnect after pressing <strong>Update</strong>. Client-only changes (UI, art) don't need a server restart.</p>
+<h3 id="the-folders-under-builds">The folders under <code>Builds/</code><a class="anchor" href="#the-folders-under-builds" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>What it is</th>
+<th>Keep it?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Builds/Launcher/</code></td>
+<td><strong>The game download.</strong> Hashed copies of every file you've ever published (<code>objects/</code>) plus the signed manifest for the current version. Build release updates it in place every time.</td>
+<td><strong>Yes, always.</strong> Never replace or delete it; it's what you upload. (If you lose it, the next publish starts a fresh one and uploads everything again.)</td>
+</tr>
+<tr>
+<td><code>Builds/&lt;version&gt;/Client/</code></td>
+<td>That version's normal client build, playable directly.</td>
+<td>Keep the newest one or two (testing crash reports, <strong>Publish last build</strong>); delete older ones. Nothing depends on them.</td>
+</tr>
+<tr>
+<td><code>Builds/&lt;version&gt;/Server/</code></td>
+<td>The servers published with that release (when ticked).</td>
+<td>Keep the version you're running in production.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The objects are your build's files byte for byte, only renamed to their SHA-256. Rename one back and it's the original file. The names are what make updates small (an unchanged file has the same name, so it's never uploaded or downloaded twice), let old and new versions sit side by side, and let the launcher check every download. Nothing is compressed: the first install is the full size of the build.</p>
+<p><code>StreamingAssets</code> (movement and NPC collision, the zone map, <code>gamedata.bin</code>, Entities scenes) ships like every other file. The client loads it at runtime, and the collision must match the World server's, which is why the client and servers go out together after a collision export.</p>
+<h3 id="whats-in-the-publish-folder">What's in the publish folder<a class="anchor" href="#whats-in-the-publish-folder" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>Builds/Launcher/
+├── manifest.json        upload LAST
+├── manifest.json.sig    upload second to last
+├── objects/ab/ab12…     the files, named by hash
+├── upload-new.txt       what this publish added, in upload order
+└── upload-all.txt       everything the current release needs, in upload order
+</code></pre></div>
+
+<p><strong>Upload order matters on a live host:</strong> objects first, then <code>manifest.json.sig</code>, then <code>manifest.json</code>. If the manifest goes up first, a player who checks in that moment is told to download objects that aren't there yet (the launcher stops with a clear error and nothing is changed, but it's avoidable). Sync tools like <code>rclone</code> and <code>aws s3 sync</code> upload in no particular order; for a busy game, upload <code>objects/</code> first, then the two manifest files:</p>
+<div class="hl"><pre><span></span><code>rclone<span class="w"> </span>copy<span class="w"> </span><span class="s2">&quot;{out}/objects&quot;</span><span class="w"> </span>r2:my-bucket/client/objects<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rclone<span class="w"> </span>copy<span class="w"> </span><span class="s2">&quot;{out}&quot;</span><span class="w"> </span>r2:my-bucket/client<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;manifest.json*&quot;</span>
+</code></pre></div>
+
+<p>Old objects are never deleted by the tool, and leaving them on the host is harmless. They also let a player who's mid-download finish.</p>
+<h2 id="where-to-host">Where to host<a class="anchor" href="#where-to-host" title="Permanent link">#</a></h2>
+<p><strong>Which should I pick?</strong></p>
+<ul>
+<li><strong>Most games: Cloudflare R2 with a custom domain.</strong> Downloads (egress) are free, the free tier (10 GB of storage a month, 1 million writes and 10 million reads) covers an alpha, and <code>rclone</code> uploads only what changed. You need a Cloudflare account and a domain on Cloudflare.</li>
+<li><strong>No domain or card yet: GitHub Releases.</strong> Free, no bandwidth bill. More manual (flat names, one release you keep adding to, a 1000-file limit per release). Fine for a closed alpha.</li>
+<li><strong>You already rent a server (VPS) with a web server: use it.</strong> No extra account; watch your bandwidth allowance, since every player downloads the whole game once.</li>
+<li><strong>Already on AWS: S3 + CloudFront.</strong> Works well, but you pay for every GB players download, so it gets expensive as the player count grows.</li>
+<li><strong>Avoid:</strong> Google Drive, Dropbox, OneDrive, Mega. They don't give stable direct links to individual files, rate-limit downloads and sometimes return a web page instead of the file.</li>
+</ul>
+<p>Rough sizing: total download = game size × players × releases that touch big files. A 2 GB game and 100 testers is about 200 GB for the first install alone: free on R2 or GitHub, a real bill on a pay-per-GB host. Check each provider's current pricing and limits before you commit.</p>
+<p>The common choices in detail:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Host</th>
+<th><code>patchUrl</code></th>
+<th>Pattern</th>
+<th>Upload command (<code>--then</code>)</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cloudflare R2</strong></td>
+<td><code>https://cdn.yourgame.com/client</code> (a custom domain on the bucket)</td>
+<td>default</td>
+<td><code>rclone sync "{out}" r2:my-bucket/client</code></td>
+<td>Free egress, and a free tier that covers a small game. The <code>r2.dev</code> address is rate-limited and meant for development; use a custom domain for players.</td>
+</tr>
+<tr>
+<td><strong>AWS S3</strong> (+ CloudFront)</td>
+<td><code>https://dxxxx.cloudfront.net/client</code></td>
+<td>default</td>
+<td><code>aws s3 sync "{out}" s3://my-bucket/client</code></td>
+<td>Pay for egress. CloudFront in front lowers cost and speeds up downloads.</td>
+</tr>
+<tr>
+<td><strong>Backblaze B2</strong>, <strong>DigitalOcean Spaces</strong>, <strong>Wasabi</strong>, any S3-compatible store</td>
+<td>the bucket's public or CDN URL</td>
+<td>default</td>
+<td><code>rclone sync "{out}" b2:my-bucket/client</code></td>
+<td><code>rclone</code> speaks to all of them.</td>
+</tr>
+<tr>
+<td><strong>GitHub Releases</strong></td>
+<td><code>https://github.com/&lt;you&gt;/&lt;repo&gt;/releases/download/client</code></td>
+<td><code>{hash}</code></td>
+<td>see below</td>
+<td>Free bandwidth. Files must be under 2 GiB, and a release holds at most 1000 files.</td>
+</tr>
+<tr>
+<td><strong>Your own server</strong> (Caddy, nginx, IIS, Apache)</td>
+<td><code>https://yourgame.com/client</code></td>
+<td>default</td>
+<td><code>robocopy "{out}" \\server\www\client /E</code> or <code>rsync -a "{out}/" me@host:/var/www/client/</code></td>
+<td>Any web server that serves static files. Range requests (resume) work out of the box on all four.</td>
+</tr>
+<tr>
+<td><strong>Any FTP or shared web host</strong></td>
+<td>the folder's URL</td>
+<td>default</td>
+<td><code>rclone sync "{out}" ftp-host:public_html/client</code> (or upload by hand)</td>
+<td>Works as long as it serves the files unchanged.</td>
+</tr>
+<tr>
+<td><strong>itch.io, Steam</strong></td>
+<td>not used</td>
+<td></td>
+<td></td>
+<td>They have their own patchers. Ship the game there directly.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="github-releases">GitHub Releases<a class="anchor" href="#github-releases" title="Permanent link">#</a></h3>
+<p>Use one release that you keep adding to (tag <code>client</code>), with flat names:</p>
+<ol>
+<li>Create the release once: <code>gh release create client --title "Game files" --notes "Downloaded by the launcher"</code>.</li>
+<li>In Unity set <strong>Object names</strong> to <code>{hash}</code>, or pass <code>--pattern "{hash}"</code>.</li>
+<li>Upload what's new, overwriting the manifest. In PowerShell:</li>
+</ol>
+<p><code>powershell
+   cd Builds/Launcher; gh release upload client --clobber (Get-Content upload-new.txt)</code></p>
+<p>As an upload command (runs through <code>cmd</code>):
+   <code>powershell -NoProfile -Command "cd '{out}'; gh release upload client --clobber (Get-Content upload-new.txt)"</code></p>
+<ol start="4">
+<li><code>patchUrl</code> = <code>https://github.com/&lt;you&gt;/&lt;repo&gt;/releases/download/client</code>.</li>
+</ol>
+<p>When the release nears 1000 files, start a new tag (<code>client2</code>), publish into a fresh publish folder, upload everything (<code>upload-all.txt</code>), and update <code>patchUrl</code> in the next launcher build. Keep the old release until players have updated their launcher.</p>
+<h3 id="caching">Caching<a class="anchor" href="#caching" title="Permanent link">#</a></h3>
+<p>Objects never change (their name is their content), so they can be cached forever. <code>manifest.json</code> and <code>manifest.json.sig</code> <strong>must not be cached for long</strong>, or players won't see a new release until the cache expires. On a CDN, give the two manifest files <code>Cache-Control: no-cache</code> (or a max age of a minute), or purge them after each upload:</p>
+<div class="hl"><pre><span></span><code>rclone<span class="w"> </span>copy<span class="w"> </span><span class="s2">&quot;{out}&quot;</span><span class="w"> </span>r2:my-bucket/client<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;manifest.json*&quot;</span><span class="w"> </span>--header-upload<span class="w"> </span><span class="s2">&quot;Cache-Control: no-cache&quot;</span>
+</code></pre></div>
+
+<h3 id="try-it-locally">Try it locally<a class="anchor" href="#try-it-locally" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>Builds/Launcher
+python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8080</span>
+</code></pre></div>
+
+<p>Set <code>"patchUrl": "http://127.0.0.1:8080"</code> and start the launcher. <code>launcher.config.json</code> is read at start-up, so restart the launcher (or <code>tauri dev</code>) after editing it. With <code>tauri dev</code>, the default <code>installDir</code> (<code>game</code>) is next to the dev launcher's exe, in <code>src-tauri/target/debug/game</code>; the account menu's <strong>Open game folder</strong> shows it. (Python's server doesn't support resuming; the launcher then restarts a cancelled file from the beginning, which is fine.)</p>
+<h2 id="what-players-see">What players see<a class="anchor" href="#what-players-see" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Install · 1.4 GB</strong> the first time, <strong>Update · 23 MB</strong> when there's a new version, <strong>Play</strong> when the game is up to date. The game can't be started while an update is pending.</li>
+<li>A progress bar with speed and time left, and <strong>Cancel</strong>. Cancelling keeps what's downloaded; the next Install or Update picks up where it stopped.</li>
+<li><strong>Verify game files</strong> in the account menu re-checks every file against the manifest and repairs anything that's wrong or missing.</li>
+<li><strong>Check for updates</strong> in the same menu. The launcher also checks every 10 minutes while open.</li>
+<li>If the update host can't be reached, an installed game can still be played; the launcher says it couldn't check for updates.</li>
+<li>Files that a previous version installed and the new one doesn't have are deleted. Anything else in the game folder (settings, logs, screenshots) is left alone.</li>
+</ul>
+<p>The launcher keeps its record of the install in <code>&lt;installDir&gt;/.axiom/install.json</code>, and partial downloads in <code>&lt;installDir&gt;/.axiom/staging/</code>.</p>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The update's signature doesn't match…"</td>
+<td><code>patchPublicKey</code> isn't the public half of the key you published with, or <code>manifest.json</code> / <code>.sig</code> were changed or uploaded from different publishes. Re-upload both from the same publish.</td>
+</tr>
+<tr>
+<td>"The update server answered 404 Not Found for …/manifest.json"</td>
+<td><code>patchUrl</code> points at the wrong folder, or the files aren't uploaded (or aren't public). Open that URL in a browser.</td>
+</tr>
+<tr>
+<td>"Downloading X failed: the server answered 404 …"</td>
+<td>The manifest is up but an object isn't: wrong upload order, an incomplete upload, or the wrong <strong>Object names</strong> / <strong>Objects URL</strong>. Run <code>verify</code> on the publish folder, then upload <code>objects/</code>.</td>
+</tr>
+<tr>
+<td>"X downloaded with the wrong content…"</td>
+<td>The host serves something other than the published file (an old cached copy, an HTML error page, or a host that rewrites files). Check caching; nothing was changed on the player's PC.</td>
+</tr>
+<tr>
+<td>"Can't write to the game folder…"</td>
+<td>The launcher was installed somewhere players can't write (Program Files via the MSI). Use the NSIS installer or an absolute <code>installDir</code>.</td>
+</tr>
+<tr>
+<td>"Couldn't replace X. Is the game still running?"</td>
+<td>Close the game. The launcher refuses to update while it started the game, but a game started some other way can still hold files open.</td>
+</tr>
+<tr>
+<td>"\"patchPublicKey\" is missing…"</td>
+<td>Add it to <code>launcher.config.json</code>.</td>
+</tr>
+<tr>
+<td>Installed, but the game disconnects right after loading ("…collision versions differ. Please update your client.")</td>
+<td>Not a launcher problem: the World server runs an older collision export than the client. Re-export, restart World, and ship client and servers from the same Build release.</td>
+</tr>
+<tr>
+<td>The game itself crashes</td>
+<td>Its log, not the launcher's: see <a href="../60-cookbook/130-troubleshooting.html#client-logs-and-crashes">Troubleshooting ▸ Client logs and crashes</a>.</td>
+</tr>
+<tr>
+<td>Players don't see a new release</td>
+<td><code>manifest.json</code> is cached by your CDN. See <a href="#caching">Caching</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="releasing-as-a-team">Releasing as a team<a class="anchor" href="#releasing-as-a-team" title="Permanent link">#</a></h2>
+<p>Only someone with <strong>both</strong> the private key and the host's upload credentials (the R2 token, for example) can ship to players. Everyone else can build and test freely.</p>
+<ul>
+<li><strong>Small team:</strong> one or two release owners. Keep the key and the upload token in a shared password-manager vault only they can open. Everyone else commits to git; the release owner pulls, bumps the version and presses Build release. One owner avoids two people publishing at once (the last <code>manifest.json</code> uploaded wins) and colliding version numbers.</li>
+<li><strong>Later:</strong> CI (GitHub Actions or a build machine) with the key and token stored as secrets, so nobody has them on their PC. A release becomes "push a version tag". It needs a Unity license on the build machine.</li>
+<li>Build and Release's launcher settings are saved per machine, so each release owner fills them in once. Each PC has its own <code>Builds/Launcher</code>; that's fine, because the objects are named by content and the upload skips anything already on the host.</li>
+<li>If the key leaks, anyone can sign releases, and the only fix is a new key and a new launcher build for every player. Keep it in as few hands as possible.</li>
+</ul>
+<h2 id="what-the-signature-protects-and-what-it-doesnt">What the signature protects, and what it doesn't<a class="anchor" href="#what-the-signature-protects-and-what-it-doesnt" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Protects against:</strong> a compromised or misconfigured host, a man-in-the-middle, a corrupted download. The launcher installs nothing it can't verify.</li>
+<li><strong>Doesn't protect against:</strong> someone who has your private key, or a malicious build you published yourself. Guard the key like a password, and keep it off build servers you don't control (on CI, store it as a secret and write it to a temporary file).</li>
+<li>Serve over <strong>HTTPS</strong> anyway: it keeps the download private and stops networks that inject content.</li>
+</ul>
+<h2 id="code">Code<a class="anchor" href="#code" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/Tools/Axiom.Tools.ClientPublish/Publisher.cs</code></td>
+<td>Hashing, the manifest, signing, verify</td>
+</tr>
+<tr>
+<td><code>src/Tools/Axiom.Tools.ClientPublish/Program.cs</code></td>
+<td>The <code>axiom-publish</code> command line</td>
+</tr>
+<tr>
+<td><code>Assets/AxiomMMOKit/Editor/Project/AxiomBuildRelease.cs</code></td>
+<td>The Unity step and its settings</td>
+</tr>
+<tr>
+<td><code>Axiom.Client.Launcher/src-tauri/src/patcher.rs</code></td>
+<td>The launcher's side: plan, download, resume, verify, apply</td>
+</tr>
+<tr>
+<td><code>Axiom.Client.Launcher/src/lib/patcher.ts</code>, <code>src/pages/Play.tsx</code></td>
+<td>Install / Update / Play button, progress, Verify</td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="90-server-scripts.html"><span>Previous</span>Server Scripts &amp; Command Line</a>
+<a class="next" href="../60-cookbook/10-add-packet.html"><span>Next</span>Add a Packet (end to end)</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#how-it-works">How it works</a>
+</li>
+<li><a href="#one-time-setup">One-time setup</a>
+<ul>
+<li><a href="#1-make-a-signing-key">1. Make a signing key</a>
+</li>
+<li><a href="#2-point-the-launcher-at-your-host">2. Point the launcher at your host</a>
+</li>
+</ul>
+</li>
+<li><a href="#each-release">Each release</a>
+<ul>
+<li><a href="#from-unity">From Unity</a>
+</li>
+<li><a href="#from-the-command-line-ci-scripts">From the command line (CI, scripts)</a>
+</li>
+<li><a href="#the-release-loop-once-its-set-up">The release loop, once it&#x27;s set up</a>
+</li>
+<li><a href="#the-folders-under-builds">The folders under Builds/</a>
+</li>
+<li><a href="#whats-in-the-publish-folder">What&#x27;s in the publish folder</a>
+</li>
+</ul>
+</li>
+<li><a href="#where-to-host">Where to host</a>
+<ul>
+<li><a href="#github-releases">GitHub Releases</a>
+</li>
+<li><a href="#caching">Caching</a>
+</li>
+<li><a href="#try-it-locally">Try it locally</a>
+</li>
+</ul>
+</li>
+<li><a href="#what-players-see">What players see</a>
+</li>
+<li><a href="#troubleshooting">Troubleshooting</a>
+</li>
+<li><a href="#releasing-as-a-team">Releasing as a team</a>
+</li>
+<li><a href="#what-the-signature-protects-and-what-it-doesnt">What the signature protects, and what it doesn&#x27;t</a>
+</li>
+<li><a href="#code">Code</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

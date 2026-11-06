@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -246,7 +253,7 @@
 <div class="gen-banner">Generated from the source code and databases. Every entry links back to the file it came from.</div>
 <h1 id="worldserverdb-reference">worldserver.db Reference<a class="anchor" href="#worldserverdb-reference" title="Permanent link">#</a></h1>
 <p>Every table of the content database: what it holds (from the Content Studio annotations), every column with its type, references, enums and editor tips, child tables, row counts and sample rows from the shipped database (<code>src/Servers/Axiom.Server.World/Data/worldserver.db</code>). Concepts: <a href="../20-data/20-worldserver-db.html">worldserver.db</a>.</p>
-<p>94 tables · 52 EF migrations · 10 pending SQL patches (0 archived).</p>
+<p>94 tables · 52 EF migrations · 15 pending SQL patches (0 archived).</p>
 <h2 id="tables-by-category">Tables by category<a class="anchor" href="#tables-by-category" title="Permanent link">#</a></h2>
 <p><strong>📦 Items</strong>: <a href="#items"><code>Items</code></a>, <a href="#itemcategories"><code>ItemCategories</code></a>, <a href="#itemrarities"><code>ItemRarities</code></a>, <a href="#itemstats"><code>ItemStats</code></a>, <a href="#gearvisuals"><code>GearVisuals</code></a>, <a href="#races"><code>Races</code></a>, <a href="#bodytypes"><code>BodyTypes</code></a>, <a href="#appearanceoptions"><code>AppearanceOptions</code></a>, <a href="#weaponsheaths"><code>WeaponSheaths</code></a>, <a href="#gearvisualslotdefaults"><code>GearVisualSlotDefaults</code></a>, <a href="#itemgrades"><code>ItemGrades</code></a>, <a href="#itemgems"><code>ItemGems</code></a>, <a href="#itemupgradematerials"><code>ItemUpgradeMaterials</code></a>, <a href="#itemuses"><code>ItemUses</code></a>, <a href="#treasuremaps"><code>TreasureMaps</code></a>, <a href="#treasureloot"><code>TreasureLoot</code></a></p>
 <p><strong>🧌 NPCs</strong>: <a href="#npctemplates"><code>NpcTemplates</code></a>, <a href="#npcspawners"><code>NpcSpawners</code></a>, <a href="#npcabilities"><code>NpcAbilities</code></a>, <a href="#npcphases"><code>NpcPhases</code></a>, <a href="#aiprofiles"><code>AiProfiles</code></a>, <a href="#spawnpointtables"><code>SpawnPointTables</code></a>, <a href="#mounts"><code>Mounts</code></a>, <a href="#petbuffs"><code>PetBuffs</code></a></p>
@@ -258,7 +265,7 @@
 <p><strong>🛡 Factions &amp; PvP</strong>: <a href="#factions"><code>Factions</code></a>, <a href="#factionrelations"><code>FactionRelations</code></a>, <a href="#territories"><code>Territories</code></a>, <a href="#siegeweapons"><code>SiegeWeapons</code></a>, <a href="#siegerewards"><code>SiegeRewards</code></a>, <a href="#lodestonerewards"><code>LodestoneRewards</code></a>, <a href="#castleupgrades"><code>CastleUpgrades</code></a>, <a href="#zonefestivals"><code>ZoneFestivals</code></a></p>
 <p><strong>🗂 Other</strong>: <a href="#testtableones"><code>TestTableOnes</code></a>, <a href="#zoneconflicts"><code>ZoneConflicts</code></a></p>
 <h2 id="items">Items<a class="anchor" href="#items" title="Permanent link">#</a></h2>
-<p>Content Studio: <strong>Items</strong> · Items · 102 rows</p>
+<p>Content Studio: <strong>Items</strong> · Items · 101 rows</p>
 <p>Everything that can be in a bag. Stats, uses and treasure data hang off the item.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -386,7 +393,7 @@
 <td>1</td>
 <td>A long ash-wood spear with an iron head. Keeps enemies at a…</td>
 <td>als_si</td>
-<td>longspear</td>
+<td>Longspear</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -399,7 +406,7 @@
 <td>2</td>
 <td>A great curved blade, taller than most who wield it.</td>
 <td>Nodachi_ico</td>
-<td>nodachi</td>
+<td>Nodachi</td>
 <td>1</td>
 <td>3</td>
 <td>10</td>
@@ -412,7 +419,7 @@
 <td>3</td>
 <td>A dependable one-handed blade of plain steel.</td>
 <td>sword_icon</td>
-<td>sword</td>
+<td>Sword</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
@@ -551,7 +558,7 @@
 </table></div>
 </details>
 <h2 id="itemstats">ItemStats<a class="anchor" href="#itemstats" title="Permanent link">#</a></h2>
-<p>Content Studio: <strong>Gear Stats</strong> · Items · 33 rows</p>
+<p>Content Studio: <strong>Gear Stats</strong> · Items · 32 rows</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -848,7 +855,7 @@
 </table></div>
 </details>
 <h2 id="gearvisuals">GearVisuals<a class="anchor" href="#gearvisuals" title="Permanent link">#</a></h2>
-<p>Content Studio: <strong>Gear Visuals</strong> · Items · 2 rows</p>
+<p>Content Studio: <strong>Gear Visuals</strong> · Items · 1 row</p>
 <p>Per-item appearance. Saved to the world database, exported in gamedata.bin. Prefabs remain client assets.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -1025,24 +1032,6 @@
 <td></td>
 <td></td>
 <td>284</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>1.0</td>
-<td>1.0</td>
-</tr>
-<tr>
-<td>2</td>
-<td>970008</td>
-<td>6</td>
-<td>Gear/Prefabs/fbf954ef330784a409615221411e2f8c</td>
-<td>0</td>
-<td></td>
-<td></td>
-<td>0</td>
 <td>0.0</td>
 <td>0.0</td>
 <td>0.0</td>
@@ -2309,7 +2298,7 @@
 <tr>
 <td>3</td>
 <td>87</td>
-<td>Ahnimar Ruins map</td>
+<td>Greywatch Ruins map</td>
 <td>-180.0</td>
 <td>960.0</td>
 <td>8.0</td>
@@ -3514,7 +3503,7 @@
 </tr>
 <tr>
 <td>91</td>
-<td>Haranya Outpost</td>
+<td>Eastreach Outpost</td>
 <td>320.0</td>
 <td>2.0</td>
 <td>470.0</td>
@@ -6542,7 +6531,7 @@
 <tr>
 <td>2</td>
 <td>Riftbreaker</td>
-<td>Closed the Ahnimar Rift.</td>
+<td>Closed the Greywatch Rift.</td>
 <td>#B07CFF</td>
 </tr>
 <tr>
@@ -8048,7 +8037,7 @@
 </table></div>
 </details>
 <h2 id="shopitems">ShopItems<a class="anchor" href="#shopitems" title="Permanent link">#</a></h2>
-<p>Content Studio: <strong>Shop Items</strong> · Loot &amp; Economy · 79 rows</p>
+<p>Content Studio: <strong>Shop Items</strong> · Loot &amp; Economy · 78 rows</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -12114,7 +12103,7 @@
 <tr>
 <td>1</td>
 <td>TestFaction1</td>
-<td>The western kingdoms: Solzreed, Ahnimar and the lands aroun…</td>
+<td>The western kingdoms: Sunreach, Greywatch and the lands aro…</td>
 <td>0</td>
 <td>1</td>
 <td>0</td>
@@ -13381,7 +13370,7 @@
 <a class="next" href="mysql.html"><span>Next</span>MySQL Reference</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">

@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production Hosting: HTTPS, DDoS and AWS · Axiom Docs</title>
+<meta name="description" content="How production MMOs put HTTPS in front of the login server (reverse proxy vs Kestrel certificate vs cloud load balancer), what DDoS protection is and where it comes from, a recommended launch setup, and a step-by-step guide to hosting Axiom on AWS with an Application Load Balancer.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/pygments.css">
+<script>try{var t=localStorage.getItem('axiom-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="../00-start/00-index.html">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L29 9.5 V22.5 L16 30 L3 22.5 V9.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 L22.5 24 H19.4 L18 20.4 H14 L12.6 24 H9.5 Z M15 17.8 H17 L16 15 Z" fill="currentColor"/></svg>
+    <span>Axiom <em>Engine Docs</em></span>
+  </a>
+  <div class="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="search" type="search" placeholder="Search the docs   ( / )" autocomplete="off" spellcheck="false" aria-label="Search the documentation">
+    <div class="search-results" id="search-results" role="listbox" hidden></div>
+  </div>
+  <button class="icon-btn theme-btn" type="button" aria-label="Toggle light and dark theme">
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+<nav class="side-nav" aria-label="Documentation">
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
+<li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
+<li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
+<li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
+<li><a href="../00-start/30-glossary.html">Glossary</a></li>
+<li><a href="../00-start/40-learning-path.html">Learning Path</a></li>
+<li><a href="../00-start/50-docs-system.html">How These Docs Are Built</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Architecture<span class="nav-count">7</span></summary><ul>
+<li><a href="../10-architecture/10-overview.html">Architecture Overview</a></li>
+<li><a href="../10-architecture/20-login-flow.html">Login &amp; World Entry</a></li>
+<li><a href="../10-architecture/30-world-server.html">The World Server</a></li>
+<li><a href="../10-architecture/40-networking.html">Networking &amp; Packets</a></li>
+<li><a href="../10-architecture/50-movement.html">Movement &amp; Netcode</a></li>
+<li><a href="../10-architecture/60-interest-replication.html">Interest &amp; Replication</a></li>
+<li><a href="../10-architecture/70-persistence-flow.html">Persistence Flow</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Data &amp; Databases<span class="nav-count">6</span></summary><ul>
+<li><a href="../20-data/10-data-overview.html">Data Overview</a></li>
+<li><a href="../20-data/20-worldserver-db.html">worldserver.db (Game Content)</a></li>
+<li><a href="../20-data/30-mysql.html">MySQL Databases</a></li>
+<li><a href="../20-data/40-gamedata-bin.html">gamedata.bin (Client Content)</a></li>
+<li><a href="../20-data/50-world-files.html">World Files</a></li>
+<li><a href="../20-data/60-config.html">Configuration</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
+<li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
+<li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
+<li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
+<li><a href="../30-server/40-progression.html">Classes, Skills &amp; Progression</a></li>
+<li><a href="../30-server/50-items-inventory.html">Items, Inventory &amp; Equipment</a></li>
+<li><a href="../30-server/60-loot.html">Loot</a></li>
+<li><a href="../30-server/70-doodads-gathering.html">Doodads, Gathering &amp; Interaction</a></li>
+<li><a href="../30-server/80-crafting.html">Crafting, Labor &amp; Proficiency</a></li>
+<li><a href="../30-server/90-quests.html">Quests</a></li>
+<li><a href="../30-server/100-economy.html">Economy: Shops, Mail, Auction &amp; Cash Shop</a></li>
+<li><a href="../30-server/110-trade-packs.html">Trade Packs &amp; Vehicles</a></li>
+<li><a href="../30-server/120-housing-farming.html">Housing, Farming &amp; Furniture</a></li>
+<li><a href="../30-server/130-social.html">Social: Chat, Parties, Guilds &amp; Friends</a></li>
+<li><a href="../30-server/131-guild-progression.html">Guild &amp; Family Progression: Missions, Levels, Buffs</a></li>
+<li><a href="../30-server/132-guild-recruitment.html">Guild Recruitment (Recruit/Search)</a></li>
+<li><a href="../30-server/133-guild-shop.html">Guild Shop &amp; Prestige</a></li>
+<li><a href="../30-server/140-pvp-sieges.html">Factions, PvP, Justice &amp; Sieges</a></li>
+<li><a href="../30-server/150-instances-dungeons.html">Instances &amp; Dungeons</a></li>
+<li><a href="../30-server/160-exploration-events.html">World Events, Exploration &amp; Achievements</a></li>
+<li><a href="../30-server/170-mounts-pets.html">Mounts &amp; Pets</a></li>
+<li><a href="../30-server/180-patron-labor.html">Patron, Loyalty &amp; Account-Wide Data</a></li>
+<li><a href="../30-server/190-staff-gm.html">Staff, GM Panel &amp; Debug Tools</a></li>
+<li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
+<li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
+<li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
+<li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
+<li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
+<li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
+<li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
+<li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Unity Client<span class="nav-count">9</span></summary><ul>
+<li><a href="../40-client/10-overview.html">Client Overview</a></li>
+<li><a href="../40-client/20-networking.html">Client Networking</a></li>
+<li><a href="../40-client/30-world-streaming.html">World Streaming, Floating Origin &amp; Zones</a></li>
+<li><a href="../40-client/40-characters.html">Characters, Gear &amp; Animation</a></li>
+<li><a href="../40-client/50-movement-camera.html">Input, Local Movement &amp; Camera</a></li>
+<li><a href="../40-client/60-gamedata.html">Client Data &amp; State</a></li>
+<li><a href="../40-client/70-ui.html">User Interface (UI Toolkit)</a></li>
+<li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
+<li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
+<li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
+<li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
+<li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
+<li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
+<li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
+<li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
+<li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
+<li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
+<li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
+<li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
+<li><a href="20-add-server-system.html">Add a Server System</a></li>
+<li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
+<li><a href="40-add-persisted-field.html">Add a Persisted Character Field</a></li>
+<li><a href="50-add-content.html">Add Content (a whole hamlet, no code)</a></li>
+<li><a href="60-add-ui-window.html">Add a UI Window or HUD Widget</a></li>
+<li><a href="70-add-lua-script.html">Add a Server Lua Script</a></li>
+<li><a href="80-add-gm-command.html">Add a GM Command</a></li>
+<li><a href="90-add-zone.html">Add a Zone or a New Region</a></li>
+<li><a href="100-add-ability.html">Add an Ability</a></li>
+<li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
+<li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="125-production-hosting.html" class="active" aria-current="page">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
+<li><a href="130-troubleshooting.html">Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
+<li><a href="../70-reference/packets.html">Packet Reference</a></li>
+<li><a href="../70-reference/services.html">Service Endpoints</a></li>
+<li><a href="../70-reference/worlddb.html">worldserver.db Reference</a></li>
+<li><a href="../70-reference/mysql.html">MySQL Reference</a></li>
+<li><a href="../70-reference/enums.html">Shared Enums</a></li>
+<li><a href="../70-reference/config.html">Configuration Reference</a></li>
+<li><a href="../70-reference/lua-api.html">Lua API Reference</a></li>
+<li><a href="../70-reference/gm-commands.html">GM Command Reference</a></li>
+<li><a href="../70-reference/editor.html">Editor Menu Reference</a></li>
+<li><a href="../70-reference/codemap-server.html">Code Map: Server &amp; Shared</a></li>
+<li><a href="../70-reference/codemap-client.html">Code Map: Unity Client &amp; Editor</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Server Notes<span class="nav-count">28</span></summary><ul>
+<li><a href="../80-notes/server-AREA_TARGETING.html">Area targeting and AoE falloff</a></li>
+<li><a href="../80-notes/server-AUCTION_BIDDING.html">Auction House bidding (protocol 36)</a></li>
+<li><a href="../80-notes/server-CLASS_BASED.html">Axiom: Warrior, Healer and Mage</a></li>
+<li><a href="../80-notes/server-CLIENT_CONTENT.html">Client game data: one source of truth</a></li>
+<li><a href="../80-notes/server-CORE_SYSTEMS.html">Core systems</a></li>
+<li><a href="../80-notes/server-DOODADS.html">Doodads - interactive world objects</a></li>
+<li><a href="../80-notes/server-GM_PANEL.html">GM Panel (protocol 36)</a></li>
+<li><a href="../80-notes/server-GUILD_RECRUITMENT.html">Guild Recruitment and Guild Buffs</a></li>
+<li><a href="../80-notes/server-GUILD_SHOP.html">Guild Shop and Temporary Guild Buffs</a></li>
+<li><a href="../80-notes/server-HARDENING.html">Hardening pass: audit High + Medium items (2026-09-25)</a></li>
+<li><a href="../80-notes/server-INSTANCE_ZONES.html">Instance zones: every dungeon run on its own thread</a></li>
+<li><a href="../80-notes/server-ITEM_UIDS.html">Item uids</a></li>
+<li><a href="../80-notes/server-MISSIONS.html">Guild and Family Missions</a></li>
+<li><a href="../80-notes/server-NAVMESH.html">NavMesh: NPCs walk paths, not straight lines</a></li>
+<li><a href="../80-notes/server-OPS.html">Running Axiom safely (audit gap 3)</a></li>
+<li><a href="../80-notes/server-PARALLEL_STAGES.html">Parallel zone stages</a></li>
+<li><a href="../80-notes/server-PARTY_RAID_UI.html">Party / Raid UI and name display (17 Oct 2026, protocol 35)</a></li>
+<li><a href="../80-notes/server-PATRON.html">Patron, Loyalty Tokens and the new character select</a></li>
+<li><a href="../80-notes/server-PROJECT_LAYOUT.html">Axiom project layout</a></li>
+<li><a href="../80-notes/server-SAVES.html">Character saves</a></li>
+<li><a href="../80-notes/server-SPAWNING.html">Spawning and NPC movement</a></li>
+<li><a href="../80-notes/server-WORLD_PARTITIONING.html">World partitioning and streaming</a></li>
+<li><a href="../80-notes/server-ZONES.html">Zones</a></li>
+<li><a href="../80-notes/server-LUASDK.html">Axiom Server Lua SDK</a></li>
+<li><a href="../80-notes/server-SQL_PATCHES.html">server-SQL_PATCHES.html</a></li>
+<li><a href="../80-notes/server-MOVEMENT_ARCHITECTURE.html">Axiom.Movement — architecture and migration</a></li>
+<li><a href="../80-notes/server-LOADTEST_FLEET.html">Fleet: testing 1,000 to 10,000 bots</a></li>
+<li><a href="../80-notes/server-LOADTEST_VALIDATION.html">Validation record</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Client &amp; Editor Notes<span class="nav-count">23</span></summary><ul>
+<li><a href="../80-notes/client-ASSET_PIPELINE.html">Asset pipeline</a></li>
+<li><a href="../80-notes/client-CHARACTER_ANIMATION_README.html">Animation guide: players, NPCs, gear and actions</a></li>
+<li><a href="../80-notes/client-CLIENT_CHARACTERS.html">Characters: models, gear, animation, camera</a></li>
+<li><a href="../80-notes/client-CONTENT_STUDIO.html">Axiom Content Studio</a></li>
+<li><a href="../80-notes/client-CROPS_AND_CLIMATE.html">Crops and climate</a></li>
+<li><a href="../80-notes/client-DUNGEON_SCRIPTS.html">Dungeon scripts</a></li>
+<li><a href="../80-notes/client-DUNGEONS.html">Dungeons: end to end</a></li>
+<li><a href="../80-notes/client-EDITOR_ARCHITECTURE_PLAN.html">Axiom Editor Architecture: Assessment and Plan</a></li>
+<li><a href="../80-notes/client-EDITOR_SETTINGS.html">Editor Settings</a></li>
+<li><a href="../80-notes/client-EDITOR_SUITE.html">Axiom Editor Suite</a></li>
+<li><a href="../80-notes/client-EDITOR_TOOLS_REFERENCE.html">Axiom Editor Tools Reference</a></li>
+<li><a href="../80-notes/client-HLOD.html">HLOD: far-distance tile proxies (18 Oct 2026)</a></li>
+<li><a href="../80-notes/client-ITEMS_AND_GRADES.html">Items: Grades, Sockets, Durability and Stack Limits</a></li>
+<li><a href="../80-notes/client-LOOT.html">Loot: groups, grades and party rolls</a></li>
+<li><a href="../80-notes/client-MOUNTS_AND_PETS.html">Mounts and Pets</a></li>
+<li><a href="../80-notes/client-MOVEMENT_AND_CAMERA.html">Movement, camera and tab targeting</a></li>
+<li><a href="../80-notes/client-PVP_AND_HONOR.html">PvP and Honor</a></li>
+<li><a href="../80-notes/client-QUESTS.html">Quests: objective types, stages, timers, repeatables and rewards</a></li>
+<li><a href="../80-notes/client-SIEGES.html">Sieges</a></li>
+<li><a href="../80-notes/client-SKILL_PLOTS.html">Skill plots: multi-stage skills</a></li>
+<li><a href="../80-notes/client-UI.html">UI overhaul: UI Toolkit, the classic MMO-style theme, and Lua UI</a></li>
+<li><a href="../80-notes/client-WORLD_BUILDING_GUIDE.html">World building guide</a></li>
+<li><a href="../80-notes/client-LUASDK.html">Axiom Client UI Lua SDK</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Content Handbook<span class="nav-count">15</span></summary><ul>
+<li><a href="../80-notes/handbook-00_INDEX.html">Axiom Developer Handbook</a></li>
+<li><a href="../80-notes/handbook-01_GETTING_STARTED.html">1. Getting Started</a></li>
+<li><a href="../80-notes/handbook-02_TOOLS_REFERENCE.html">2. Tools Reference</a></li>
+<li><a href="../80-notes/handbook-03_CONTENT_PIPELINE.html">3. The Content Pipeline</a></li>
+<li><a href="../80-notes/handbook-10_ADDING_ITEMS.html">10. Adding Items</a></li>
+<li><a href="../80-notes/handbook-11_ADDING_WEAPONS.html">11. Adding Weapons</a></li>
+<li><a href="../80-notes/handbook-12_ADDING_ARMOR.html">12. Adding Armor</a></li>
+<li><a href="../80-notes/handbook-13_ADDING_ANIMATIONS.html">13. Adding Animations</a></li>
+<li><a href="../80-notes/handbook-14_CHARACTERS_RACES_GENDERS.html">14. Characters, Races and Genders</a></li>
+<li><a href="../80-notes/handbook-15_NPCS_LOOT_SHOPS.html">15. NPCs, Loot, Shops and World Objects</a></li>
+<li><a href="../80-notes/handbook-16_WALKTHROUGH_RANGER_GEAR.html">16. Walkthrough: the Ranger Tunic, then Boots and a Sword</a></li>
+<li><a href="../80-notes/handbook-17_BRING_YOUR_OWN_CHARACTERS.html">17. Bringing Your Own Characters</a></li>
+<li><a href="../80-notes/handbook-18_BOOTS_AND_SWORD_NEW_SETUP.html">18. Adding the Ranger Boots and a Sword (current setup)</a></li>
+<li><a href="../80-notes/handbook-19_CHARACTER_CUSTOMISATION.html">19. Character Customisation</a></li>
+<li><a href="../80-notes/handbook-20_TROUBLESHOOTING.html">20. Troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Animation Handbook<span class="nav-count">8</span></summary><ul>
+<li><a href="../80-notes/animation-00_INDEX.html">Animation handbook</a></li>
+<li><a href="../80-notes/animation-01_CONCEPTS.html">01 Concepts: how animation works in Axiom</a></li>
+<li><a href="../80-notes/animation-02_GETTING_ANIMATIONS.html">02 Getting and importing animations</a></li>
+<li><a href="../80-notes/animation-03_GATHERING.html">03 Gathering: chopping, mining, picking, harvesting</a></li>
+<li><a href="../80-notes/animation-04_CLASS_SKILLS.html">04 Class skills</a></li>
+<li><a href="../80-notes/animation-05_MOUNTS_AND_FLYING.html">05 Mounts and flying (horse, griffin)</a></li>
+<li><a href="../80-notes/animation-06_PETS_AND_NPCS.html">06 Pets and NPCs</a></li>
+<li><a href="../80-notes/animation-07_CHECKLISTS_AND_TROUBLESHOOTING.html">07 Checklists and troubleshooting</a></li>
+</ul></details>
+<details class="nav-sec" open><summary>Archive (old notes)<span class="nav-count">15</span></summary><ul>
+<li><a href="../90-archive/00-INDEX.html">Axiom Documentation</a></li>
+<li><a href="../90-archive/01-ARCHITECTURE.html">Axiom Architecture</a></li>
+<li><a href="../90-archive/02-NETWORKING-AND-PACKETS.html">Networking &amp; Packets</a></li>
+<li><a href="../90-archive/03-DATABASE-AND-PERSISTENCE.html">Database &amp; Persistence</a></li>
+<li><a href="../90-archive/04-LUA-SCRIPTING.html">Lua Scripting System</a></li>
+<li><a href="../90-archive/05-GAMEPLAY-SYSTEMS.html">Gameplay Systems</a></li>
+<li><a href="../90-archive/06-AUTH-AND-SESSION-FLOW.html">Auth &amp; Session Flow, End to End</a></li>
+<li><a href="../90-archive/07-BUILDING-A-FEATURE-END-TO-END.html">Building a Feature End-to-End: Client ↔ WorldServer ↔ PersistenceServer</a></li>
+<li><a href="../90-archive/08-CLIENT-ARCHITECTURE.html">Client Architecture (Unity)</a></li>
+<li><a href="../90-archive/09-KNOWN-GAPS-AND-NEXT-STEPS.html">Known Gaps &amp; Next Steps</a></li>
+<li><a href="../90-archive/ADDING_PACKETSv2.html">Adding a new packet</a></li>
+<li><a href="../90-archive/AUDIT_FIXES_2026-10-17.html">Audit fixes (17 Oct 2026)</a></li>
+<li><a href="../90-archive/FIRST_TABLE_BATCH.html">First Table Batch: Items, Shop, Quests (15 new tables)</a></li>
+<li><a href="../90-archive/JUMP_INPUT_FIX.html">Lost jumps / &quot;half jump&quot; fix (17 Oct 2026)</a></li>
+<li><a href="../90-archive/MIGRATION-STEPS.html">Migration Steps: Retiring `GameDataPatchRunner`</a></li>
+</ul></details>
+</nav>
+  </aside>
+  <main class="content" id="main">
+    <article class="doc">
+<div class="crumbs">Cookbook (How-To)</div>
+
+<h1 id="production-hosting-https-ddos-and-aws">Production Hosting: HTTPS, DDoS and AWS<a class="anchor" href="#production-hosting-https-ddos-and-aws" title="Permanent link">#</a></h1>
+<p>This page answers three questions:
+- Which way of doing HTTPS is right for production?
+- How do I protect the servers from DDoS attacks?
+- How do I host on AWS?</p>
+<p>Local development needs none of it (<a href="../30-server/215-https.html#the-three-ways-to-connect">HTTPS for Auth</a>, Mode 1).</p>
+<h2 id="the-industry-standard-a-proxy-in-front-of-auth">The industry standard: a proxy in front of Auth<a class="anchor" href="#the-industry-standard-a-proxy-in-front-of-auth" title="Permanent link">#</a></h2>
+<p>In production, the app does not hold the certificate. A <strong>reverse proxy</strong> or <strong>load balancer</strong> sits in front of Auth, does the HTTPS, and passes requests on to Auth over a private connection. Microsoft's ASP.NET Core guidance recommends the same for Kestrel servers that face the internet.</p>
+<div class="hl"><pre><span></span><code>Player ──https──► proxy / load balancer ──http (private)──► Auth (Kestrel)
+</code></pre></div>
+
+<p><strong>Kestrel</strong> is the web server built into every ASP.NET Core app, Auth included. It always runs. With a proxy in front, it simply doesn't need a certificate.</p>
+<h3 id="three-ways-to-do-https">Three ways to do HTTPS<a class="anchor" href="#three-ways-to-do-https" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Reverse proxy (Caddy or nginx)</th>
+<th>Cloud load balancer (AWS ALB, Azure Application Gateway)</th>
+<th>Certificate on Kestrel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Where</td>
+<td>your own server or a VPS</td>
+<td>AWS, Azure or Google Cloud</td>
+<td>anywhere</td>
+</tr>
+<tr>
+<td>Who runs it</td>
+<td>you</td>
+<td>the cloud provider</td>
+<td>you</td>
+</tr>
+<tr>
+<td>Certificate</td>
+<td>Let's Encrypt, automatic (Caddy)</td>
+<td>the provider's, free and automatic</td>
+<td>Let's Encrypt via certbot or win-acme</td>
+</tr>
+<tr>
+<td>Renewal</td>
+<td>automatic</td>
+<td>automatic</td>
+<td>the tool renews; <strong>Auth must restart</strong> to load the new certificate</td>
+</tr>
+<tr>
+<td>Several Auth servers</td>
+<td>yes (<code>reverse_proxy auth1:3000 auth2:3000</code>)</td>
+<td>yes, and it can add servers under load</td>
+<td>every server needs its own copy</td>
+</tr>
+<tr>
+<td>Updating Auth with no downtime</td>
+<td>yes: traffic goes to the instances still running</td>
+<td>yes</td>
+<td>no: a restart drops connections</td>
+</tr>
+<tr>
+<td>Auth reachable from the internet</td>
+<td>no</td>
+<td>no</td>
+<td>yes, directly</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>free</td>
+<td>about $20+/month per load balancer, plus traffic</td>
+<td>free</td>
+</tr>
+<tr>
+<td>Use it for</td>
+<td><strong>self-hosting: the default for Axiom</strong></td>
+<td><strong>hosting on a cloud provider</strong></td>
+<td>one small server where you can't run a proxy</td>
+</tr>
+</tbody>
+</table></div>
+<p>All three work with Axiom without code changes:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Set-up</th>
+<th>Auth settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proxy on the same machine</td>
+<td><code>TrustForwardedFor: true</code></td>
+</tr>
+<tr>
+<td>Proxy or load balancer on other machines</td>
+<td><code>TrustForwardedFor: true</code> plus <code>TrustedProxies</code></td>
+</tr>
+<tr>
+<td>Certificate on Kestrel</td>
+<td>the <code>Https</code> endpoint</td>
+</tr>
+</tbody>
+</table></div>
+<p>You can switch later.</p>
+<p><strong>Is Caddy fine for a high-performance production server? Yes.</strong>
+- <strong>It's fast enough.</strong> Caddy (written in Go) handles thousands of requests per second on modest hardware. Auth's traffic (logins, the world list, character counts, the game-data download) is tiny next to that.
+- <strong>The real limit is the login.</strong> Each password check (BCrypt) takes about 250 ms of CPU, plus a MySQL query, and those run out long before Caddy does.
+- <strong>Game traffic never touches it.</strong> Movement, combat and chat go straight from the client to the World server over UDP, so Caddy has no effect on in-game performance.</p>
+<p>nginx would do the same job at the same speed. If Auth ever struggles, add Auth instances and tune MySQL; a different proxy won't help.</p>
+<h2 id="ddos-protection">DDoS protection<a class="anchor" href="#ddos-protection" title="Permanent link">#</a></h2>
+<p>A <strong>DDoS</strong> (distributed denial of service) attack floods your internet connection with junk traffic from thousands of machines.</p>
+<p><strong>Caddy, Auth's rate limits and anything else on your machine cannot stop it.</strong> The connection fills up before the traffic ever reaches them. Rate limits protect against abuse, such as password guessing; they don't stop floods. Protection has to come from the network <strong>in front of</strong> your server, which absorbs or filters the flood before it reaches you.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What needs protecting</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auth</strong> (HTTPS)</td>
+<td><strong>Cloudflare, free plan.</strong> Move your domain's DNS to Cloudflare and turn on the orange-cloud proxy for the Auth name. Floods stop at Cloudflare. Caddy keeps running behind it (see <a href="#cloudflare-in-front-of-caddy">Cloudflare in front of Caddy</a>).</td>
+</tr>
+<tr>
+<td><strong>World server</strong> (UDP 7777)</td>
+<td>Cloudflare's free plan <strong>does not carry UDP game traffic.</strong> Use a host whose network filters game traffic: <strong>OVH</strong> game servers (protection included) or a game-DDoS specialist such as Path.net. Cloudflare Spectrum covers UDP but is costly.</td>
+</tr>
+<tr>
+<td>On AWS</td>
+<td><strong>AWS Shield Standard</strong> is free and automatic for every AWS service and covers common network-level attacks. <strong>Shield Advanced</strong> (about $3,000/month) adds more for large targets.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>For an MMO, the World server is the usual target.</strong> Knocking it offline kicks every player, while a slow login server is merely annoying. Your DDoS plan is mostly about choosing a host that protects UDP.</p>
+<p><strong>Hosting at home is fine for testing, not for launch.</strong> Players learn your home IP, and an attack takes down your whole internet connection, not just the game.</p>
+<h3 id="cloudflare-in-front-of-caddy">Cloudflare in front of Caddy<a class="anchor" href="#cloudflare-in-front-of-caddy" title="Permanent link">#</a></h3>
+<div class="hl"><pre><span></span><code>Player ──https──► Cloudflare ──https──► Caddy ──http──► Auth
+</code></pre></div>
+
+<ol>
+<li>Add your domain to Cloudflare (free plan) and change its nameservers to Cloudflare's. A free DuckDNS name can't do this: you need a real domain, about $10/year.</li>
+<li>Create an <strong>A record</strong> for <code>auth</code> → your server's IP, with <strong>Proxied</strong> (orange cloud) on.</li>
+<li>Under <strong>SSL/TLS</strong>, choose <strong>Full (strict)</strong>. Caddy keeps its own certificate, so the link from Cloudflare to Caddy is encrypted too.</li>
+<li><strong>Pass the player's real IP to Auth.</strong> Otherwise Auth sees Cloudflare's address, and every player behind the same Cloudflare server would share one rate limit. Caddy needs two additions:</li>
+</ol>
+<p>```
+   {
+    servers {
+        # Cloudflare's ranges: the current list is at https://www.cloudflare.com/ips/
+        trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 ... 2400:cb00::/32 ...
+        client_ip_headers CF-Connecting-IP
+    }
+   }</p>
+<p>auth.yourgame.com {
+    reverse_proxy 127.0.0.1:3000 {
+        header_up X-Forwarded-For {client_ip}
+    }
+   }
+   ```</p>
+<ul>
+<li><strong><code>trusted_proxies</code> and <code>client_ip_headers</code></strong> tell Caddy to read the player's IP from Cloudflare's <code>CF-Connecting-IP</code> header. Caddy only does this for requests that really come from Cloudflare.</li>
+<li><strong><code>header_up</code></strong> hands that one address to Auth.</li>
+</ul>
+<p>Auth needs no changes beyond <code>TrustForwardedFor: true</code>.
+5. The World server's address (UDP) must <strong>not</strong> go through the orange cloud. Give it its own DNS name with the proxy <strong>off</strong> (grey cloud), or use its IP directly.</p>
+<h2 id="recommended-launch-set-up-self-hosted">Recommended launch set-up (self-hosted)<a class="anchor" href="#recommended-launch-set-up-self-hosted" title="Permanent link">#</a></h2>
+<div class="hl"><pre><span></span><code>                         ┌───────────── one OVH game server ─────────────┐
+Player ──https──► Cloudflare ──► Caddy :443 ──► Auth 127.0.0.1:3000      │
+Player ──UDP 7777──────────────► World (OVH game DDoS protection)        │
+                         │       Persistence 127.0.0.1, Auction, MySQL   │
+                         └────────────────────────────────────────────────┘
+</code></pre></div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Choice</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Machine</td>
+<td>an OVH game server (or any host with game UDP protection)</td>
+<td>protects the World server, the real target</td>
+</tr>
+<tr>
+<td>HTTPS for Auth</td>
+<td>Caddy, on the same machine</td>
+<td>free, automatic, nothing to maintain</td>
+</tr>
+<tr>
+<td>DDoS for Auth</td>
+<td>Cloudflare free plan</td>
+<td>absorbs floods at the login server</td>
+</tr>
+<tr>
+<td>Auth settings</td>
+<td><code>TrustForwardedFor: true</code>, Kestrel on <code>http://127.0.0.1:3000</code></td>
+<td>real player IPs; Auth only reachable through Caddy</td>
+</tr>
+</tbody>
+</table></div>
+<p>Steps: <a href="120-deploy.html">Deploy a Shard</a> for the services, and <a href="../30-server/215-https.html#mode-3-players-over-the-internet-caddy">HTTPS for Auth</a> for Caddy.</p>
+<h2 id="hosting-on-aws">Hosting on AWS<a class="anchor" href="#hosting-on-aws" title="Permanent link">#</a></h2>
+<p>On AWS you don't run Caddy. The <strong>Application Load Balancer (ALB)</strong> does its job, with a free certificate from <strong>AWS Certificate Manager (ACM)</strong>.</p>
+<div class="hl"><pre><span></span><code>                      ┌──────────────────────── AWS (one VPC) ─────────────────────────┐
+Player ──https 443──► │ ALB (ACM certificate) ──http 3000──► EC2: Auth                 │
+                      │                                       EC2: World ◄── UDP 7777 ──┼── Player
+                      │                                       Persistence, Auction      │
+                      │                                       MySQL (EC2 or RDS)        │
+                      └─────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+<p>The ALB only carries web traffic (HTTP and HTTPS). <strong>The World server's UDP does not go through it.</strong> Players reach the World server directly on its public address.</p>
+<h3 id="aws-terms">AWS terms<a class="anchor" href="#aws-terms" title="Permanent link">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EC2</strong></td>
+<td>a virtual server you rent; your services run on it</td>
+</tr>
+<tr>
+<td><strong>VPC</strong></td>
+<td>your private network inside AWS</td>
+</tr>
+<tr>
+<td><strong>Security group</strong></td>
+<td>a firewall attached to a server or load balancer</td>
+</tr>
+<tr>
+<td><strong>Elastic IP</strong></td>
+<td>a fixed public IP address for an EC2 server</td>
+</tr>
+<tr>
+<td><strong>ALB</strong></td>
+<td>Application Load Balancer: HTTPS in front of Auth</td>
+</tr>
+<tr>
+<td><strong>ACM</strong></td>
+<td>AWS Certificate Manager: free certificates for the ALB</td>
+</tr>
+<tr>
+<td><strong>Target group</strong></td>
+<td>the list of Auth servers the ALB sends requests to</td>
+</tr>
+<tr>
+<td><strong>RDS</strong></td>
+<td>managed MySQL (optional; MySQL on your EC2 server works too)</td>
+</tr>
+<tr>
+<td><strong>Route 53</strong></td>
+<td>AWS's DNS (optional; any DNS provider works)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="step-1-the-server">Step 1: The server<a class="anchor" href="#step-1-the-server" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>EC2 → Launch instance</strong>: Ubuntu, for example a <code>c6i.large</code> or larger (compute-optimised types suit game servers). Pick the region closest to your players.</li>
+<li><strong>Elastic IPs → Allocate</strong>, then <strong>Associate</strong> it with the instance. This is the World server's public address and never changes.</li>
+<li>Install .NET and MySQL and publish the four services, as in <a href="120-deploy.html">Deploy a Shard</a>. <strong>RDS → Create database (MySQL)</strong> is the managed alternative to MySQL on the server; point the connection strings at its address.</li>
+</ol>
+<h3 id="step-2-security-groups-the-firewall">Step 2: Security groups (the firewall)<a class="anchor" href="#step-2-security-groups-the-firewall" title="Permanent link">#</a></h3>
+<p>Create two:</p>
+<p><strong><code>axiom-alb</code></strong> (for the load balancer):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Inbound</th>
+<th>Port</th>
+<th>From</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTPS</td>
+<td>443</td>
+<td><code>0.0.0.0/0</code> (everyone)</td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td>80</td>
+<td><code>0.0.0.0/0</code>; the ALB only redirects it to HTTPS</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong><code>axiom-server</code></strong> (for the EC2 server):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Inbound</th>
+<th>Port</th>
+<th>From</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Custom TCP</td>
+<td>3000 (Auth)</td>
+<td>the <strong><code>axiom-alb</code> security group</strong> only</td>
+</tr>
+<tr>
+<td>Custom UDP</td>
+<td>7777 (World)</td>
+<td><code>0.0.0.0/0</code> (players)</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td>your own IP only</td>
+</tr>
+</tbody>
+</table></div>
+<p>The rule that matters is <strong>3000 from <code>axiom-alb</code> only</strong>: nobody can reach Auth without going through the ALB's HTTPS. Persistence, Auction and MySQL get no inbound rules at all, because they only talk over <code>127.0.0.1</code> on the same server.</p>
+<h3 id="step-3-the-certificate-acm">Step 3: The certificate (ACM)<a class="anchor" href="#step-3-the-certificate-acm" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>Certificate Manager → Request → Public certificate</strong>, domain <code>auth.yourgame.com</code>.</li>
+<li>Choose <strong>DNS validation</strong>. ACM shows a CNAME record. Add it at your DNS provider (Route 53 can add it for you with one click).</li>
+<li>Wait for <strong>Issued</strong>, usually a few minutes. ACM renews it automatically, for as long as the CNAME stays in place.</li>
+</ol>
+<p>ACM certificates are free, but they only work on AWS services such as the ALB.</p>
+<h3 id="step-4-the-target-group">Step 4: The target group<a class="anchor" href="#step-4-the-target-group" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>EC2 → Target groups → Create</strong>: type <strong>Instances</strong>, protocol <strong>HTTP</strong>, port <strong>3000</strong>, your VPC.</li>
+<li><strong>Health check:</strong> path <code>/worlds</code>, success code <code>200</code>. The ALB calls it to know Auth is alive.</li>
+<li>Register your EC2 instance. For several Auth servers later, register each one here.</li>
+</ol>
+<h3 id="step-5-the-load-balancer">Step 5: The load balancer<a class="anchor" href="#step-5-the-load-balancer" title="Permanent link">#</a></h3>
+<ol>
+<li><strong>EC2 → Load balancers → Create → Application Load Balancer</strong>: internet-facing, at least two availability zones (AWS requires it), security group <code>axiom-alb</code>.</li>
+<li><strong>Listener HTTPS:443</strong> → forward to your target group, with the ACM certificate.</li>
+<li><strong>Listener HTTP:80</strong> → <strong>redirect</strong> to HTTPS:443.</li>
+<li>When it's active, copy its <strong>DNS name</strong> (like <code>axiom-alb-123.us-east-1.elb.amazonaws.com</code>).</li>
+</ol>
+<h3 id="step-6-dns">Step 6: DNS<a class="anchor" href="#step-6-dns" title="Permanent link">#</a></h3>
+<p>Point <code>auth.yourgame.com</code> at the ALB:
+- <strong>Route 53:</strong> an <strong>A record → Alias → your load balancer</strong>.
+- <strong>Another DNS provider:</strong> a <strong>CNAME</strong> to the ALB's DNS name.</p>
+<p>Give the World server its own name too: <code>world.yourgame.com</code> → an A record with the <strong>Elastic IP</strong>.</p>
+<h3 id="step-7-axioms-settings">Step 7: Axiom's settings<a class="anchor" href="#step-7-axioms-settings" title="Permanent link">#</a></h3>
+<p><strong>Auth</strong> <code>appsettings.Local.json</code>:</p>
+<div class="hl"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;InternalSecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;TrustForwardedFor&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;TrustedProxies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;10.0.0.0/16&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Kestrel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;Endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;Http&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;Url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://0.0.0.0:3000&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><strong><code>TrustedProxies</code> = your VPC's address range.</strong> It's shown in VPC → Your VPCs, as "IPv4 CIDR"; <code>172.31.0.0/16</code> is the default VPC.</li>
+<li>The ALB is on a <strong>different machine</strong> from Auth, so it isn't trusted automatically the way Caddy on <code>127.0.0.1</code> is.</li>
+<li>With this setting, Auth believes the ALB's <code>X-Forwarded-For</code> (the player's real IP) and <code>X-Forwarded-Proto: https</code>.</li>
+<li>Without it, Auth refuses every login as plain HTTP, because the ALB's address isn't a trusted proxy.</li>
+<li><strong>Health checks.</strong> The ALB's health check comes from the ALB itself, with no forwarded headers. Auth lets a trusted proxy's own requests through, so the check passes once <code>TrustedProxies</code> is set.</li>
+<li><strong><code>0.0.0.0:3000</code>, not <code>127.0.0.1</code>.</strong> The ALB connects over the network. The security group from Step 2 is what keeps everyone else out.</li>
+</ul>
+<p><strong>World</strong> <code>appsettings.Local.json</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>World:AuthServerUrl</code></td>
+<td><code>http://127.0.0.1:3000</code> when Auth runs on the same server; otherwise <code>https://auth.yourgame.com</code></td>
+</tr>
+<tr>
+<td><code>WorldDirectory:PublicHost</code></td>
+<td><code>world.yourgame.com</code> (or the Elastic IP)</td>
+</tr>
+<tr>
+<td><code>WorldDirectory:PublicPort</code></td>
+<td><code>7777</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Client / launcher:</strong> <code>-auth-url https://auth.yourgame.com</code>.</p>
+<h3 id="step-8-test">Step 8: Test<a class="anchor" href="#step-8-test" title="Permanent link">#</a></h3>
+<ol>
+<li>Open <code>https://auth.yourgame.com/worlds</code> on your phone, on mobile data. You should get the world list with a padlock.</li>
+<li>Auth's start-up log: <code>HTTPS: expected from a reverse proxy (Auth:TrustForwardedFor)…</code>.</li>
+<li>Log in from the launcher. Auth's log should show your real IP, not a <code>10.x</code> address.</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALB returns <strong>502 / 503</strong></td>
+<td>The target is unhealthy. Check the target group's health status: Auth isn't running, isn't on <code>0.0.0.0:3000</code>, or port 3000 isn't open to <code>axiom-alb</code>.</td>
+</tr>
+<tr>
+<td>Login: "only accepts secure (HTTPS) connections"</td>
+<td><code>TrustedProxies</code> is missing or doesn't contain the VPC range.</td>
+</tr>
+<tr>
+<td>World list works but the game can't connect</td>
+<td>UDP 7777 isn't open in <code>axiom-server</code>, or <code>PublicHost</code> is wrong.</td>
+</tr>
+<tr>
+<td>Certificate stuck on "Pending validation"</td>
+<td>The ACM CNAME record isn't in your DNS yet, or was typed wrong.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="ddos-on-aws">DDoS on AWS<a class="anchor" href="#ddos-on-aws" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>Shield Standard</strong> is on automatically, free, for the ALB and the Elastic IP. It covers common network floods.</li>
+<li>For the login side, Cloudflare can also sit in front of the ALB. Point Cloudflare's proxied record at the ALB's DNS name.</li>
+<li>UDP game traffic on AWS gets only Shield Standard unless you pay for Shield Advanced. For a game that's likely to be targeted, a host with built-in game UDP protection (OVH and similar) is the cheaper route, at the cost of fewer managed services.</li>
+</ul>
+<h3 id="roughly-what-it-costs">Roughly what it costs<a class="anchor" href="#roughly-what-it-costs" title="Permanent link">#</a></h3>
+<p>Prices change; check the AWS pricing pages for your region.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Ballpark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALB</td>
+<td>about $20+/month plus traffic</td>
+</tr>
+<tr>
+<td>ACM certificate, Shield Standard</td>
+<td>free</td>
+</tr>
+<tr>
+<td>EC2 server</td>
+<td>depends on size: tens to a few hundred dollars a month</td>
+</tr>
+<tr>
+<td>Elastic IP</td>
+<td>small monthly charge</td>
+</tr>
+<tr>
+<td>RDS (optional)</td>
+<td>from about $15–30/month for small sizes</td>
+</tr>
+<tr>
+<td>Data out to players</td>
+<td>per GB; the biggest variable for an MMO</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="which-to-choose">Which to choose<a class="anchor" href="#which-to-choose" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Developing</td>
+<td>nothing (<a href="../30-server/215-https.html#mode-1-just-you-on-your-pc">Mode 1</a>)</td>
+</tr>
+<tr>
+<td>Friends test from their homes</td>
+<td>Caddy on your PC (<a href="../30-server/215-https.html#mode-3-players-over-the-internet-caddy">Mode 3</a>)</td>
+</tr>
+<tr>
+<td>Public launch, best value</td>
+<td>an OVH-style game server + Caddy + Cloudflare free</td>
+</tr>
+<tr>
+<td>Public launch, managed services, room to scale</td>
+<td>AWS: ALB + ACM + EC2 (+ RDS)</td>
+</tr>
+<tr>
+<td>One small server, no proxy allowed</td>
+<td>a certificate on Kestrel</td>
+</tr>
+</tbody>
+</table></div>
+<nav class="pager">
+<a class="prev" href="120-deploy.html"><span>Previous</span>Deploy a Shard</a>
+<a class="next" href="126-alpha-launch.html"><span>Next</span>Alpha Launch: Run the Servers and Let Players In</a>
+</nav>
+    </article>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
+  </main>
+  <aside class="toc" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-title">On this page</div>
+<ul>
+<li><a href="#the-industry-standard-a-proxy-in-front-of-auth">The industry standard: a proxy in front of Auth</a>
+<ul>
+<li><a href="#three-ways-to-do-https">Three ways to do HTTPS</a>
+</li>
+</ul>
+</li>
+<li><a href="#ddos-protection">DDoS protection</a>
+<ul>
+<li><a href="#cloudflare-in-front-of-caddy">Cloudflare in front of Caddy</a>
+</li>
+</ul>
+</li>
+<li><a href="#recommended-launch-set-up-self-hosted">Recommended launch set-up (self-hosted)</a>
+</li>
+<li><a href="#hosting-on-aws">Hosting on AWS</a>
+<ul>
+<li><a href="#aws-terms">AWS terms</a>
+</li>
+<li><a href="#step-1-the-server">Step 1: The server</a>
+</li>
+<li><a href="#step-2-security-groups-the-firewall">Step 2: Security groups (the firewall)</a>
+</li>
+<li><a href="#step-3-the-certificate-acm">Step 3: The certificate (ACM)</a>
+</li>
+<li><a href="#step-4-the-target-group">Step 4: The target group</a>
+</li>
+<li><a href="#step-5-the-load-balancer">Step 5: The load balancer</a>
+</li>
+<li><a href="#step-6-dns">Step 6: DNS</a>
+</li>
+<li><a href="#step-7-axioms-settings">Step 7: Axiom&#x27;s settings</a>
+</li>
+<li><a href="#step-8-test">Step 8: Test</a>
+</li>
+<li><a href="#ddos-on-aws">DDoS on AWS</a>
+</li>
+<li><a href="#roughly-what-it-costs">Roughly what it costs</a>
+</li>
+</ul>
+</li>
+<li><a href="#which-to-choose">Which to choose</a>
+</li>
+</ul>
+    </div>
+  </aside>
+</div>
+<div class="scrim" hidden></div>
+<script src="../assets/search-index.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 docs/guide/00-start/00-index.md	00-start/00-index.html
+docs/guide/00-start/05-setup.md	00-start/05-setup.html
 docs/guide/00-start/10-quickstart.md	00-start/10-quickstart.html
 docs/guide/00-start/20-project-layout.md	00-start/20-project-layout.html
 docs/guide/00-start/30-glossary.md	00-start/30-glossary.html
@@ -42,9 +43,11 @@ docs/guide/30-server/190-staff-gm.md	30-server/190-staff-gm.html
 docs/guide/30-server/200-lua.md	30-server/200-lua.html
 docs/guide/30-server/205-plugins.md	30-server/205-plugins.html
 docs/guide/30-server/210-auth-server.md	30-server/210-auth-server.html
+docs/guide/30-server/215-https.md	30-server/215-https.html
 docs/guide/30-server/220-persistence-server.md	30-server/220-persistence-server.html
 docs/guide/30-server/230-auction-server.md	30-server/230-auction-server.html
 docs/guide/30-server/240-loadtest.md	30-server/240-loadtest.html
+docs/guide/30-server/245-content-reload.md	30-server/245-content-reload.html
 docs/guide/30-server/250-navigation.md	30-server/250-navigation.html
 docs/guide/30-server/260-zones-terrain.md	30-server/260-zones-terrain.html
 docs/guide/40-client/10-overview.md	40-client/10-overview.html
@@ -59,12 +62,14 @@ docs/guide/40-client/90-art-assets.md	40-client/90-art-assets.html
 docs/guide/50-tools/10-editor-overview.md	50-tools/10-editor-overview.html
 docs/guide/50-tools/20-content-studio.md	50-tools/20-content-studio.html
 docs/guide/50-tools/30-create-wizards.md	50-tools/30-create-wizards.html
+docs/guide/50-tools/35-content-tools.md	50-tools/35-content-tools.html
 docs/guide/50-tools/40-dev-tools.md	50-tools/40-dev-tools.html
 docs/guide/50-tools/50-world-tools.md	50-tools/50-world-tools.html
 docs/guide/50-tools/60-asset-character-pipeline.md	50-tools/60-asset-character-pipeline.html
 docs/guide/50-tools/70-validation.md	50-tools/70-validation.html
 docs/guide/50-tools/80-server-exports.md	50-tools/80-server-exports.html
 docs/guide/50-tools/90-server-scripts.md	50-tools/90-server-scripts.html
+docs/guide/50-tools/95-client-publish.md	50-tools/95-client-publish.html
 docs/guide/60-cookbook/10-add-packet.md	60-cookbook/10-add-packet.html
 docs/guide/60-cookbook/20-add-server-system.md	60-cookbook/20-add-server-system.html
 docs/guide/60-cookbook/30-add-worlddb-table.md	60-cookbook/30-add-worlddb-table.html
@@ -77,6 +82,8 @@ docs/guide/60-cookbook/90-add-zone.md	60-cookbook/90-add-zone.html
 docs/guide/60-cookbook/100-add-ability.md	60-cookbook/100-add-ability.html
 docs/guide/60-cookbook/110-add-doodad.md	60-cookbook/110-add-doodad.html
 docs/guide/60-cookbook/120-deploy.md	60-cookbook/120-deploy.html
+docs/guide/60-cookbook/125-production-hosting.md	60-cookbook/125-production-hosting.html
+docs/guide/60-cookbook/126-alpha-launch.md	60-cookbook/126-alpha-launch.html
 docs/guide/60-cookbook/130-troubleshooting.md	60-cookbook/130-troubleshooting.html
 docs/notes/server/AREA_TARGETING.md	80-notes/server-AREA_TARGETING.html
 docs/notes/server/AUCTION_BIDDING.md	80-notes/server-AUCTION_BIDDING.html

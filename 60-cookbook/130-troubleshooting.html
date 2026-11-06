@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="20-add-server-system.html">Add a Server System</a></li>
 <li><a href="30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="100-add-ability.html">Add an Ability</a></li>
 <li><a href="110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="120-deploy.html">Deploy a Shard</a></li>
+<li><a href="125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="130-troubleshooting.html" class="active" aria-current="page">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -265,7 +272,11 @@
 </tr>
 <tr>
 <td>Persistence: pending migrations</td>
-<td><code>dotnet ef database update</code> in <code>Axiom.Server.Persistence</code> (<a href="../20-data/30-mysql.html">MySQL</a>).</td>
+<td>Only with <code>AutoMigrate: false</code>: <code>dotnet ef database update</code> in <code>Axiom.Server.Persistence</code> (<a href="../20-data/30-mysql.html">MySQL</a>).</td>
+</tr>
+<tr>
+<td>Persistence: "A table this migration creates already exists"</td>
+<td>A <code>SQL/*.sql</code> script made it, so EF's history doesn't know. Record the migration in <code>__EFMigrationsHistory</code>, or set <code>AutoMigrate: false</code> (<a href="../20-data/30-mysql.html">MySQL</a>).</td>
 </tr>
 <tr>
 <td><code>[Patcher] Failed applying NNN_… — rolled back</code></td>
@@ -307,8 +318,8 @@
 <td>launch tokens are <strong>one-use, 120 s</strong>. Get a fresh one. In the editor, turn on <strong>ClientNetwork ▸ Editor Login ▸ Log in when I press Play</strong> so every Play gets one; its message under the button says why a login failed. Each ParrelSync clone logs in with its own account.</td>
 </tr>
 <tr>
-<td>Disconnected right after the loading screen</td>
-<td><code>C2WMovementReady.CollisionHash</code> ≠ server's collision hash → re-export Movement Collision so client StreamingAssets and server <code>Data/world_collision</code> match.</td>
+<td>Disconnected right after the loading screen ("Client and server world collision versions differ. Please update your client."; the client logs <code>[Movement] Client/server collision data mismatch</code>)</td>
+<td><code>C2WMovementReady.CollisionHash</code> ≠ server's collision hash → re-export Movement Collision so client StreamingAssets and server <code>Data/world_collision</code> match, and <strong>restart World</strong> (it loads collision at start-up).</td>
 </tr>
 <tr>
 <td>Stuck on the loading screen</td>
@@ -448,6 +459,36 @@
 </tr>
 </tbody>
 </table></div>
+<h2 id="builds-and-releases">Builds and releases<a class="anchor" href="#builds-and-releases" title="Permanent link">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause → fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build fails: "Axiom.Network.dll … is protocol X, but …ProtocolVersion.cs says Y"</td>
+<td>the DLL in <code>Assets/AxiomMMOKit/Plugins</code> is older or newer than the server source. Rebuild Axiom.Network and Axiom.Movement and copy both DLLs in. The check finds the source through the server folder in Axiom Setup; if it can't, it warns and builds anyway.</td>
+</tr>
+<tr>
+<td>UI checks fail only when run together with a build (window geometry, auction filter, housing Save; <code>RenderTreeManager</code> NullReferenceException)</td>
+<td>the checks ran while the player build was going, when Unity can't draw editor windows. Press <strong>Run all checks</strong>, wait for the report, then build.</td>
+</tr>
+<tr>
+<td>"EndLayoutGroup: BeginLayoutGroup must be called first" after a build</td>
+<td>an older Build and Release that built inside its own OnGUI; update <code>AxiomBuildRelease.cs</code>. Harmless.</td>
+</tr>
+<tr>
+<td>Launcher install/update problems</td>
+<td>see <a href="../50-tools/95-client-publish.html#troubleshooting">Client publish ▸ Troubleshooting</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="client-logs-and-crashes">Client logs and crashes<a class="anchor" href="#client-logs-and-crashes" title="Permanent link">#</a></h2>
+<p>A built client writes Unity's log to <code>%USERPROFILE%\AppData\LocalLow\&lt;Company Name&gt;\&lt;Product Name&gt;\Player.log</code> (names from <strong>Project Settings ▸ Player</strong>). Starting the game again moves the last run to <code>Player-prev.log</code>, so after a crash ask testers for <code>Player-prev.log</code> if they've already restarted. A hard crash also leaves <code>crash.dmp</code>, <code>error.log</code> and a copy of the log in <code>%TEMP%\&lt;Company Name&gt;\&lt;Product Name&gt;\Crashes\</code>. The launcher shows the game's exit code when it closes unexpectedly.</p>
+<p>Harmless lines you'll see in every client log: MoonSharp's <code>Error initializing UnityScriptLoader</code> (it can't find a default script folder and carries on; the Lua UI loads right after) and "The tree TestTree must use the Nature/Soft Occlusion shader".</p>
 <h2 id="editor-tools">Editor tools<a class="anchor" href="#editor-tools" title="Permanent link">#</a></h2>
 <div class="table-wrap"><table>
 <thead>
@@ -513,11 +554,11 @@
 <li>The load tester's <code>selftest-network</code> exercises login, select and movement against a local server with bypass auth - a quick way to tell client problems from server problems.</li>
 </ul>
 <nav class="pager">
-<a class="prev" href="120-deploy.html"><span>Previous</span>Deploy a Shard</a>
+<a class="prev" href="126-alpha-launch.html"><span>Previous</span>Alpha Launch: Run the Servers and Let Players In</a>
 <a class="next" href="../70-reference/packets.html"><span>Next</span>Packet Reference</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">
@@ -534,6 +575,10 @@
 <li><a href="#npcs">NPCs</a>
 </li>
 <li><a href="#content-doesnt-show-up">Content doesn&#x27;t show up</a>
+</li>
+<li><a href="#builds-and-releases">Builds and releases</a>
+</li>
+<li><a href="#client-logs-and-crashes">Client logs and crashes</a>
 </li>
 <li><a href="#editor-tools">Editor tools</a>
 </li>

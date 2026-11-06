@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="../30-server/10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="../30-server/20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="../30-server/30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="../30-server/200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="../30-server/205-plugins.html">C# Server Plugins</a></li>
 <li><a href="../30-server/210-auth-server.html">Auth Server</a></li>
+<li><a href="../30-server/215-https.html">HTTPS for Auth</a></li>
 <li><a href="../30-server/220-persistence-server.html">Persistence Server</a></li>
 <li><a href="../30-server/230-auction-server.html">Auction Server</a></li>
 <li><a href="../30-server/240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="../30-server/245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="../30-server/250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="../30-server/260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -508,7 +515,7 @@
 </table></div>
 <p>The server deserialises untrusted data with <code>MessagePackSecurity.UntrustedData</code>. <strong>Treat every field as hostile</strong>: check slot indices are in range, counts are positive, ids exist, the player is close enough, owns the item, isn't dead, isn't trading. The handlers in <code>C2WHandlers</code> show the pattern: look the session up, validate, then call a manager that validates again.</p>
 <h2 id="protocol-versions">Protocol versions<a class="anchor" href="#protocol-versions" title="Permanent link">#</a></h2>
-<p><code>ProtocolVersion.Current</code> is part of the LiteNetLib <strong>connection key</strong>: the client connects with <code>"Axiom/45"</code>. The server compares the key exactly. An older or newer client is refused at connect with a message the player can read ("Your client is out of date (protocol 43, server 44). Update the game.") instead of connecting and failing on its first packet.</p>
+<p><code>ProtocolVersion.Current</code> is part of the LiteNetLib <strong>connection key</strong>: the client connects with <code>"Axiom/46"</code>. The server compares the key exactly. An older or newer client is refused at connect with a message the player can read ("Your client is out of date (protocol 43, server 44). Update the game.") instead of connecting and failing on its first packet.</p>
 <p><strong>Bump <code>Current</code> and <code>ConnectionKey</code> together</strong> whenever opcodes, packet fields, channels or encodings change in a way the other side can't read, and add a line to the history comment above it. Then rebuild <code>Axiom.Network.dll</code> and copy it to the client.</p>
 <p>The history, kept in <code>ProtocolVersion.cs</code>, is also a changelog of the whole project:</p>
 <div class="table-wrap"><table>
@@ -691,9 +698,13 @@
 <td>45</td>
 <td>2026-10-30: mounts swim at the surface. <code>MotorProfileData</code> gains <code>SurfaceSwimOnly</code> (26), set while riding: Swim Down does nothing. Rebuild both DLLs.</td>
 </tr>
+<tr>
+<td>46</td>
+<td>2026-11-02: coin <strong>balances</strong> are <code>long</code> (copper): <code>W2CEnterWorld.Gold</code> (1), <code>W2CGoldUpdate.Gold</code> (0), <code>WarehouseDto.Gold</code> (1), <code>GmPlayerDetail.Gold</code> (5), <code>W2PCharacterSave(Full)Request.Gold</code> (7), <code>P2WCharacterLoadResponse.Gold</code> (9). Single amounts (prices, mail, trade offers, bids) stay <code>int</code>. Persistence migration <code>GoldToLong</code>. Rebuild <code>Axiom.Network.dll</code>.</td>
+</tr>
 </tbody>
 </table></div>
-<p>Current version: <strong>45</strong> (connection key <code>"Axiom/45"</code>).</p>
+<p>Current version: <strong>46</strong> (connection key <code>"Axiom/46"</code>).</p>
 <h2 id="the-other-protocols">The other protocols<a class="anchor" href="#the-other-protocols" title="Permanent link">#</a></h2>
 <div class="table-wrap"><table>
 <thead>
@@ -753,7 +764,7 @@
 <a class="next" href="50-movement.html"><span>Next</span>Movement &amp; Netcode</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">

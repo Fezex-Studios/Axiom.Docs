@@ -32,8 +32,9 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
 <nav class="side-nav" aria-label="Documentation">
-<details class="nav-sec" open><summary>Getting Started<span class="nav-count">6</span></summary><ul>
+<details class="nav-sec" open><summary>Getting Started<span class="nav-count">7</span></summary><ul>
 <li><a href="../00-start/00-index.html">Axiom Engine Documentation</a></li>
+<li><a href="../00-start/05-setup.html">Axiom Setup</a></li>
 <li><a href="../00-start/10-quickstart.html">Quick Start</a></li>
 <li><a href="../00-start/20-project-layout.html">Project Layout</a></li>
 <li><a href="../00-start/30-glossary.html">Glossary</a></li>
@@ -57,7 +58,7 @@
 <li><a href="../20-data/50-world-files.html">World Files</a></li>
 <li><a href="../20-data/60-config.html">Configuration</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Server Systems<span class="nav-count">30</span></summary><ul>
+<details class="nav-sec" open><summary>Server Systems<span class="nav-count">32</span></summary><ul>
 <li><a href="10-players-sessions.html">Players &amp; Sessions</a></li>
 <li><a href="20-npcs-ai.html">NPCs, Spawning &amp; AI</a></li>
 <li><a href="30-combat.html">Combat, Effects &amp; Statuses</a></li>
@@ -83,9 +84,11 @@
 <li><a href="200-lua.html">Lua Scripting (Server &amp; Client UI)</a></li>
 <li><a href="205-plugins.html">C# Server Plugins</a></li>
 <li><a href="210-auth-server.html" class="active" aria-current="page">Auth Server</a></li>
+<li><a href="215-https.html">HTTPS for Auth</a></li>
 <li><a href="220-persistence-server.html">Persistence Server</a></li>
 <li><a href="230-auction-server.html">Auction Server</a></li>
 <li><a href="240-loadtest.html">Load Testing (Axiom.LoadTest)</a></li>
+<li><a href="245-content-reload.html">Content Hot Reload</a></li>
 <li><a href="250-navigation.html">NPC Navigation (Navmesh)</a></li>
 <li><a href="260-zones-terrain.html">World Grid, Zones &amp; Terrain</a></li>
 </ul></details>
@@ -100,18 +103,20 @@
 <li><a href="../40-client/80-gameplay.html">Client Gameplay Systems</a></li>
 <li><a href="../40-client/90-art-assets.html">Art &amp; Assets</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Tools<span class="nav-count">9</span></summary><ul>
+<details class="nav-sec" open><summary>Tools<span class="nav-count">11</span></summary><ul>
 <li><a href="../50-tools/10-editor-overview.html">The Editor Suite</a></li>
 <li><a href="../50-tools/20-content-studio.html">Content Studio</a></li>
 <li><a href="../50-tools/30-create-wizards.html">Create Wizards</a></li>
+<li><a href="../50-tools/35-content-tools.html">Content Tools: Push, Live Tools, Quests, Skills, World Events</a></li>
 <li><a href="../50-tools/40-dev-tools.html">Dev Tools</a></li>
 <li><a href="../50-tools/50-world-tools.html">World Building Tools</a></li>
 <li><a href="../50-tools/60-asset-character-pipeline.html">Asset &amp; Character Pipeline</a></li>
 <li><a href="../50-tools/70-validation.html">Validation &amp; Checks</a></li>
 <li><a href="../50-tools/80-server-exports.html">Server Exports</a></li>
 <li><a href="../50-tools/90-server-scripts.html">Server Scripts &amp; Command Line</a></li>
+<li><a href="../50-tools/95-client-publish.html">Client Publish &amp; Launcher Updates</a></li>
 </ul></details>
-<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">13</span></summary><ul>
+<details class="nav-sec" open><summary>Cookbook (How-To)<span class="nav-count">15</span></summary><ul>
 <li><a href="../60-cookbook/10-add-packet.html">Add a Packet (end to end)</a></li>
 <li><a href="../60-cookbook/20-add-server-system.html">Add a Server System</a></li>
 <li><a href="../60-cookbook/30-add-worlddb-table.html">Add a worldserver.db Table</a></li>
@@ -124,6 +129,8 @@
 <li><a href="../60-cookbook/100-add-ability.html">Add an Ability</a></li>
 <li><a href="../60-cookbook/110-add-doodad.html">Add a World Object (Doodad)</a></li>
 <li><a href="../60-cookbook/120-deploy.html">Deploy a Shard</a></li>
+<li><a href="../60-cookbook/125-production-hosting.html">Production Hosting: HTTPS, DDoS and AWS</a></li>
+<li><a href="../60-cookbook/126-alpha-launch.html">Alpha Launch: Run the Servers and Let Players In</a></li>
 <li><a href="../60-cookbook/130-troubleshooting.html">Troubleshooting</a></li>
 </ul></details>
 <details class="nav-sec" open><summary>Reference (generated)<span class="nav-count">11</span></summary><ul>
@@ -277,7 +284,11 @@
 </tr>
 <tr>
 <td><code>Services/</code></td>
-<td><code>PasswordService</code> (BCrypt 12, timing defence), <code>TokenService</code>, <code>RefreshTokens</code>, <code>LoginThrottle</code>, <code>WorldDirectoryRegistry</code>, <code>WorldCharacterCounts</code>, <code>GameDataProvider</code>, <code>SessionPurgeService</code>, <code>ClientAddress</code></td>
+<td><code>PasswordService</code> (BCrypt 12, timing defence), <code>TokenService</code>, <code>RefreshTokens</code>, <code>LoginThrottle</code>, <code>WorldDirectoryRegistry</code>, <code>WorldCharacterCounts</code>, <code>GameDataProvider</code>, <code>SessionPurgeService</code>, <code>ClientAddress</code>, <code>NetworkRules</code>, <code>HttpsGuard</code>, <code>TransportReport</code></td>
+</tr>
+<tr>
+<td><code>deploy/Caddyfile</code></td>
+<td>HTTPS in front of Auth (<a href="215-https.html">HTTPS for Auth</a>)</td>
 </tr>
 <tr>
 <td><code>Migrations/</code></td>
@@ -368,7 +379,8 @@
 <li><strong>Refresh tokens</strong>: only their <strong>hash</strong> is stored; rotated on every use; revoked on logout and ban.</li>
 <li><strong>Internal secret</strong>: compared in constant time (<code>CryptographicOperations.FixedTimeEquals</code>); missing/placeholder/short secrets stop the server at start.</li>
 <li><strong>Rate limiting</strong>: global 10 requests/min per IP; <code>/login</code> and <code>/register</code> 5/min (<code>auth-strict</code>); <code>/worlds</code> 30/min; <code>/internal/*</code>, <code>/validate-session</code>, <code>/gamedata</code> exempt (server-to-server or downloads). 429 responses.</li>
-<li><strong>Client IP</strong>: <code>X-Forwarded-For</code> is trusted only with <code>Auth:TrustForwardedFor = true</code> (behind your reverse proxy).</li>
+<li><strong>HTTPS</strong>: plain HTTP from other machines is refused (<code>Auth:RequireHttps</code>, <code>HttpsGuard</code>); this machine is always allowed. Set-up: <a href="215-https.html">HTTPS for Auth</a>.</li>
+<li><strong>Client IP</strong>: <code>X-Forwarded-For</code> is trusted only with <code>Auth:TrustForwardedFor = true</code>, and only from this machine or <code>Auth:TrustedProxies</code>. The client is the right-most address that isn't one of your proxies (the left end is whatever the client sent).</li>
 <li><strong>CORS</strong>: any origin, GET/POST, no credentials (the launcher is a webview whose origin varies).</li>
 </ul>
 <h2 id="the-world-directory">The world directory<a class="anchor" href="#the-world-directory" title="Permanent link">#</a></h2>
@@ -377,11 +389,11 @@
 <h2 id="game-data">Game data<a class="anchor" href="#game-data" title="Permanent link">#</a></h2>
 <p><code>GameDataProvider</code> serves the file at <code>Auth:GameDataPath</code>. The SHA-256 is cached and recomputed only when the file's write time or length changes, so replacing <code>gamedata.bin</code> needs no restart. <code>/gamedata/version</code> answers 503 when the file is missing (<a href="../20-data/40-gamedata-bin.html">gamedata.bin</a>).</p>
 <h2 id="a-launcher">A launcher<a class="anchor" href="#a-launcher" title="Permanent link">#</a></h2>
-<p>The repository doesn't include the launcher (a Tauri app in the original design), only the API it uses. A minimal launcher:</p>
+<p>The launcher is the <strong>Axiom Launcher</strong>, a Tauri app in its own repository (<code>Axiom.Client.Launcher</code>); its set-up is in <a href="../60-cookbook/126-alpha-launch.html#9-the-launcher">Alpha Launch, step 9</a>. It has Sign in and Create account screens. Any launcher does this:</p>
 <ol>
 <li><code>POST /login {Username, Password}</code> (or <code>/session/launch-token {RefreshToken}</code> if remembered). Store <code>RefreshToken</code> securely.</li>
 <li>Optionally <code>GET /gamedata/version</code> and update the client's file.</li>
-<li>Start <code>Axiom.Client.exe -token &lt;Token&gt; -auth-url &lt;your auth url&gt;</code>.</li>
+<li>Start the game: <code>&lt;Game&gt;.exe -token &lt;Token&gt; -auth-url &lt;your auth url&gt; -ip &lt;world host&gt;</code>. Without <code>-ip</code> it connects to 127.0.0.1.</li>
 <li>On logout, <code>POST /logout {RefreshToken}</code>.</li>
 </ol>
 <h2 id="adding-an-endpoint">Adding an endpoint<a class="anchor" href="#adding-an-endpoint" title="Permanent link">#</a></h2>
@@ -406,10 +418,10 @@
 <p>Register it in <code>Program.cs</code> with the others (<code>app.MapAccountInfo();</code>). Copy the secret check from <code>WorldDirectoryEndpoints.Authorized</code> (or factor it into a small helper like the <code>InternalSecret.Matches</code> used above). Paths under <code>/internal/</code> are already exempt from the global rate limiter. For a <strong>public</strong> endpoint, add <code>.RequireRateLimiting("auth-strict")</code> or a new policy. New columns → a new EF migration in <code>Migrations/</code> (<code>dotnet ef migrations add Name</code>), applied automatically on the next start.</p>
 <nav class="pager">
 <a class="prev" href="205-plugins.html"><span>Previous</span>C# Server Plugins</a>
-<a class="next" href="220-persistence-server.html"><span>Next</span>Persistence Server</a>
+<a class="next" href="215-https.html"><span>Next</span>HTTPS for Auth</a>
 </nav>
     </article>
-    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-01</footer>
+    <footer class="foot">Axiom Engine documentation · generated from the AxiomCore server and Axiom.Client sources · works offline · built 2026-11-05</footer>
   </main>
   <aside class="toc" aria-label="On this page">
     <div class="toc-inner">
